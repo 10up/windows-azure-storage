@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Windows Azure Storage for WordPress
  * 
- * Plugin URI: http://www.wordpress.org/extend/plugins/wpazurestorage/
+ * Plugin URI: http://www.wordpress.org/extend/plugins/windows-azure-storage/
  * 
  * Description: This WordPress plugin allows you to use Windows Azure Storage Service to host your media for your WordPress powered blog.
  * 
