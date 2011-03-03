@@ -4,7 +4,7 @@
  * 
  * Shows popup dialog when clicked on the Windows Azure Toolbar 
  * 
- * Version: 1.0
+ * Version: 1.1
  * 
  * Author: Microsoft
  * 
@@ -12,7 +12,7 @@
  * 
  * License: New BSD License (BSD)
  * 
- * Copyright (c) 2010, Microsoft Corporation. All Rights Reserved.
+ * Copyright (c) 2011, Microsoft Corporation. All Rights Reserved.
  * Redistribution and use in source and binary forms, with or without modification, 
  * are permitted provided that the following conditions are met:
  * 
@@ -43,7 +43,7 @@
  * @category  WordPress_Plugin
  * @package   Windows_Azure_Storage_For_WordPress
  * @author    Satish Nikam <v-sanika@microsoft.com>
- * @copyright 2010 Copyright © Microsoft Corporation. All Rights Reserved
+ * @copyright 2011 Copyright © Microsoft Corporation. All Rights Reserved
  * @license   New BSD License (BSD)
  * @link      http://www.microsoft.com
  */
