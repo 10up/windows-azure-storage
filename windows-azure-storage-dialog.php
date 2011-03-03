@@ -49,7 +49,7 @@
  */
 
 require_once 'Microsoft/WindowsAzure/Storage/Blob.php';
-require_once 'Microsoft/WindowsAzure/SharedAccessSignatureCredentials.php';
+require_once 'Microsoft/WindowsAzure/Credentials/SharedAccessSignature.php';
 
 /**
  * Setup javascripts and css needed by the Windows Azure Storage popup dialog
@@ -198,7 +198,7 @@ function windows_azure_storage_dialog_browse_tab()
                                     $container->Name, $blob->Name
                                 );
                                 if (!empty($fileTypeFilter)) {
-                                    if (stripos($metadata["mime-type"], $fileTypeFilter) === false) {
+                                    if (stripos($metadata["mimetype"], $fileTypeFilter) === false) {
                                         continue;
                                     }
                                 }
@@ -226,7 +226,7 @@ function windows_azure_storage_dialog_browse_tab()
 
                             $metadata = $storageClient->getBlobMetadata($searchContainer, $blob->Name);
                             if (!empty($fileTypeFilter)) {
-                                if (stripos($metadata["mime-type"], $fileTypeFilter) === false) {
+                                if (stripos($metadata["mimetype"], $fileTypeFilter) === false) {
                                     continue;
                                 }
                             }
@@ -548,7 +548,7 @@ function windows_azure_storage_dialog_upload_tab()
                     echo "<p>Uploaded file " . $_FILES['uploadFileName']['tmp_name'] . " does not exist</p><br/>";
                 } else {
                     $expiryTime = $_POST["expiryTime"];
-                    $metaData = array('mime-type' => $_FILES['uploadFileName']['type']);
+                    $metaData = array('mimetype' => $_FILES['uploadFileName']['type']);
                     if (!empty($_POST["uploadFileTag"])) {
                         $metaData["tag"] = $_POST["uploadFileTag"];
                     }

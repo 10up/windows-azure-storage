@@ -143,9 +143,7 @@ class WindowsAzureStorageUtil
         $storageClient = new Microsoft_WindowsAzure_Storage_Blob(
             Microsoft_WindowsAzure_Storage::URL_CLOUD_BLOB, 
             WindowsAzureStorageUtil::getAccountName(), 
-            WindowsAzureStorageUtil::getAccountKey(), 
-            false, 
-            Microsoft_WindowsAzure_RetryPolicy::retryN(10, 250)
+            WindowsAzureStorageUtil::getAccountKey()
         );
         
         // Set optional HTTP proxy

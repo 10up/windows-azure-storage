@@ -174,7 +174,6 @@ function show_windows_azure_storage_settings($mode)
     }
     catch (Exception $ex) {
         // Ignore exception as account keys are not yet set
-        
     }
 ?>
             </select>

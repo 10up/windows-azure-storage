@@ -58,10 +58,9 @@
  * of the Windows Azure Project. If this SDK is in some other folder, then
  * append this relative path at the end.
  */
-if (isset($_SERVER["RoleRoot"])) {
+if (isset($_SERVER["APPL_PHYSICAL_PATH"])) {
     set_include_path(
-        get_include_path() . 
-        PATH_SEPARATOR . $_SERVER["RoleRoot"] . "\\approot\\"
+        get_include_path() .  PATH_SEPARATOR . $_SERVER["APPL_PHYSICAL_PATH"]
     );
 }
 
@@ -203,15 +202,20 @@ function windows_azure_storage_wp_update_attachment_metadata($data, $postID)
         // Get full file path of uploaded file
         $data['file'] = get_attached_file($postID, true);
 
-        $storageClient->putBlob(
-            $default_azure_storage_account_container_name, 
-            $relativeFileName, 
-            $uploadFileName, 
-            array(
-                'tag' => "WordPressDefaultUpload", 
-                'mime-type' => get_post_mime_type($postID)
-            )
-        );
+        try {
+            $storageClient->putBlob(
+                $default_azure_storage_account_container_name, 
+                $relativeFileName, 
+                $uploadFileName, 
+                array(
+                    'tag' => "WordPressDefaultUpload", 
+                    'mimetype' => get_post_mime_type($postID)
+                )
+            );
+        } catch (Exception $e) {
+            echo "<p>Error in uploading file. Error: " . $e->getMessage() . "</p><br/>";
+            return $data;
+        }
         
         $url = WindowsAzureStorageUtil::getStorageUrlPrefix() 
             . "/" . $relativeFileName;

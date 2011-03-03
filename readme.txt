@@ -2,9 +2,9 @@
 Contributors: Microsoft
 Tags: Microsoft, Windows Azure, Windows Azure Storage, WordPress, Media Files, Upload
 Requires at least: 2.8.0
-Tested up to: 2.9.2
+Tested up to: 3.1
 
-Stable tag: 1.0
+Stable tag: 1.1
 
 This WordPress plugin allows you to use Windows Azure Storage Service to host your media for your WordPress powered blog.
 
@@ -24,7 +24,7 @@ Related Links:
 *<a href="http://wordpress.org/extend/plugins/windows-azure-storage/" title="Windows Azure Storage for WordPress">Plugin Homepage</a>*
 
 == Installation ==
-1. Download <a href="http://phpazure.codeplex.com/releases/view/36423#DownloadId=94530">Windows Azure SDK for PHP</a> 
+1. Download <a href="http://phpazure.codeplex.com/releases/view/56412#DownloadId=172028">Windows Azure SDK for PHP v2.1.0</a>
 and extract the zip file on the server where WordPress is installed. 
 e.g. Extract the zip file in "/usr/local/PHPAzureSDK/" folder.
 
@@ -36,8 +36,9 @@ include_path = ".:/php/includes:/var/www/html/phpdataservices/framework:/usr/loc
 1. If user wants to install this plugin on WordPress instance hosted on Windows Azure, then no need to modify the 
 php.ini file. User can edit following line within the windows-azure-storage.php file and adjust path at the end. 
 If PHP SDK for Azure in installed at the WebRole root, then no need to modify this setting. Otherwise append 
-appropriate folder name after "\\approot\\".
-set_include_path(get_include_path() . PATH_SEPARATOR . $_SERVER["RoleRoot"] . "\\approot\\");
+appropriate folder name after "$_SERVER["APPL_PHYSICAL_PATH"]" in the following line.
+get_include_path() .  PATH_SEPARATOR . $_SERVER["APPL_PHYSICAL_PATH"]
+
 
 1. Extract the Windows Azure Storage Plugin windows-azure-storage.zip to the plugins directory of the WordPress installation. 
 e.g. if WordPress is installed in "/var/www/html/wordpress" directory, extract the windows-azure-storage.zip file into directory "/var/www/html/wordpress/wp-content/plugins".
@@ -45,6 +46,9 @@ e.g. if WordPress is installed in "/var/www/html/wordpress" directory, extract t
 1. To activate the plugin, log in into the WordPress as administrator and navigate to list of plugins. Then check the associated checkbox for the plugin and click on "Activate" link.
 
 == Changelog ==
+= 1.1 =
+* This release is compatible with Windows Azure SDK for PHP v2.1.0 and WordPress 3.1
+
 = 1.0 =
 * First release of Windows Azure Storage plugin for WordPress
 
