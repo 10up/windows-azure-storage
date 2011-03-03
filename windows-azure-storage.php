@@ -289,8 +289,7 @@ function windows_azure_storage_wp_handle_upload($uploads)
 {
     $wp_upload_dir = wp_upload_dir();
     $uploads['url'] = WindowsAzureStorageUtil::getStorageUrlPrefix() 
-        . $wp_upload_dir['subdir'] . "/" . $uploads['file'];
-
+        . $wp_upload_dir['subdir'] . "/" . basename($uploads['file']);
     return $uploads;
 }
 
