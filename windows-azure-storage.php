@@ -226,18 +226,18 @@ function windows_azure_storage_wp_update_attachment_metadata($data, $postID)
         // Handle thumbnail and medium size files
         $sizes = $data["sizes"];
         if (!empty($sizes)) {
-            $wp_upload_dir = wp_upload_dir();
+            $file_upload_dir = substr($relativeFileName, 0, strripos($relativeFileName, "/"));
             
             foreach ($sizes as $size) {
                 // Do not prefix file name with wordpress upload folder path
                 $sizeFileName = dirname($data['file']) . "/" . $size["file"];
-                $blobName = $wp_upload_dir['subdir'] . "/" . $size["file"];
-                $blobName = substr($blobName, 1);
+                $blobName = $file_upload_dir . "/" . $size["file"];
                 
                 $storageClient->putBlob(
                     $default_azure_storage_account_container_name, 
-                    $blobName, $sizeFileName, 
-                    array('tag' => "WordPressDefaultUploadSizes")
+                    $blobName, 
+                    $sizeFileName, 
+                    array('tag' => "WordPressDefaultUploadSizesThumbnail")
                 );
                 
                 // Delete the local file
@@ -418,7 +418,8 @@ function windows_azure_storage_plugin_menu()
 {
     add_options_page(
         'Windows Azure Storage Plugin Settings', 
-        'Windows Azure', 8, 
+        'Windows Azure', 
+        'manage_options', 
         'b5506889-50de-42db-bf63-e9f248ca94e9', 
         'windows_azure_storage_plugin_options_page'
     );
