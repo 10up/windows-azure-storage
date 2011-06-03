@@ -98,7 +98,6 @@ function windows_azure_storage_dialog_browse_tab()
     
     media_upload_header();
     
-    $blobStorageHostName = Microsoft_WindowsAzure_Storage::URL_CLOUD_BLOB;
     $storageClient = WindowsAzureStorageUtil::getStorageClient();
     $azure_storage_account_name = WindowsAzureStorageUtil::getAccountName();
     $azure_storage_account_primary_access_key 
@@ -139,7 +138,7 @@ function windows_azure_storage_dialog_browse_tab()
             }
 
             $storageClient->setContainerAcl($selected_container_name, $newACL);
-        } else if ($_POST['DeleteAllBlobs'] == 'true') {
+        } else if ((!empty($_POST['DeleteAllBlobs'])) && ($_POST['DeleteAllBlobs'] == 'true')) {
             // Get list of blobs in specified container
             $blobs = $storageClient->listBlobs($selected_container_name);
 
@@ -154,7 +153,7 @@ function windows_azure_storage_dialog_browse_tab()
         }
 
         // Handle file search
-        if ($_POST["action"] == "Search") {
+        if ((!empty($_POST['action'])) && ($_POST["action"] == "Search")) {
             try {
                 $fileTagFilter = $_POST["searchFileTag"];
                 $fileNameFilter = $_POST["searchFileName"];
@@ -208,7 +207,7 @@ function windows_azure_storage_dialog_browse_tab()
                                     }
                                 }
                                 
-                                $searchResult[] = "http://$azure_storage_account_name.$blobStorageHostName/$container->Name/$blob->Name";
+                                $searchResult[] = WindowsAzureStorageUtil::getStorageUrlPrefix(false) . "/$container->Name/$blob->Name";
                             }
                         }
                     } else {
@@ -237,7 +236,7 @@ function windows_azure_storage_dialog_browse_tab()
                                 }
                             }
 
-                            $searchResult[] = "http://$azure_storage_account_name.$blobStorageHostName/$searchContainer/$blob->Name";
+                            $searchResult[] = WindowsAzureStorageUtil::getStorageUrlPrefix(false) . "/$searchContainer/$blob->Name";
                         }
                     }
 
@@ -406,7 +405,6 @@ function windows_azure_storage_dialog_search_tab()
     
     media_upload_header();
     
-    $blobStorageHostName = Microsoft_WindowsAzure_Storage::URL_CLOUD_BLOB;
     $storageClient = WindowsAzureStorageUtil::getStorageClient();
     $azure_storage_account_name = WindowsAzureStorageUtil::getAccountName();
     $azure_storage_account_primary_access_key = WindowsAzureStorageUtil::getAccountKey();
@@ -517,7 +515,6 @@ function windows_azure_storage_dialog_upload_tab()
     add_filter("media_upload_tabs", "windows_azure_storage_dialog_add_tab");
     
     media_upload_header();
-    $blobStorageHostName = Microsoft_WindowsAzure_Storage::URL_CLOUD_BLOB;
     $storageClient = WindowsAzureStorageUtil::getStorageClient();
     $azure_storage_account_name = WindowsAzureStorageUtil::getAccountName();
     $azure_storage_account_primary_access_key = WindowsAzureStorageUtil::getAccountKey();
@@ -542,19 +539,18 @@ function windows_azure_storage_dialog_upload_tab()
         }
         
         // Handle file upload
-        if ($_POST["action"] == "Upload") {
+        if ((!empty($_POST['action'])) && ($_POST["action"] == "Upload")) {
             if ($_FILES["uploadFileName"]["error"] == 0) {
                 if (!file_exists($_FILES['uploadFileName']['tmp_name'])) {
                     echo "<p>Uploaded file " . $_FILES['uploadFileName']['tmp_name'] . " does not exist</p><br/>";
                 } else {
-                    $expiryTime = $_POST["expiryTime"];
                     $metaData = array('mimetype' => $_FILES['uploadFileName']['type']);
                     if (!empty($_POST["uploadFileTag"])) {
                         $metaData["tag"] = $_POST["uploadFileTag"];
                     }
-                    if (!empty($expiryTime)) {
+                    if (!empty($_POST['expiryTime'])) {
                         $start = time();
-                        $end = $start + $expiryTime * 60;
+                        $end = $start + $_POST['expiryTime'] * 60;
                         $credentials = new Microsoft_WindowsAzure_SharedAccessSignatureCredentials(WindowsAzureStorageUtil::getAccountName(), WindowsAzureStorageUtil::getAccountKey(), false);
                         $signature = $credentials->createSignature($selected_container_name . "/" . $_FILES['uploadFileName']['name'], 'b', 'r', isoDate($start), isoDate($end));
                         $signatureURL = "st=" . urlencode(isoDate($start)) . "&se=" . urlencode(isoDate($end));
@@ -563,10 +559,10 @@ function windows_azure_storage_dialog_upload_tab()
                     }
                     try {
                         $storageClient->putBlob($selected_container_name, $_FILES['uploadFileName']['name'], $_FILES['uploadFileName']['tmp_name'], $metaData);
-                        $uploadMessage = "Successfully uploaded file " . $_FILES['uploadFileName']['name'] . " in container " . $selected_container_name;
+                        $uploadMessage = "Successfully uploaded file '" . $_FILES['uploadFileName']['name'] . "' to the container '" . $selected_container_name . "'.";
                     }
                     catch (Exception $e) {
-                        $uploadMessage = "Error in uploading file: " . $_FILES['uploadFileName']['name'] . ", Error: " . $e->getMessage();
+                        $uploadMessage = "Error in uploading file '" . $_FILES['uploadFileName']['name'] . "', Error: " . $e->getMessage();
                     }
                 }
             }

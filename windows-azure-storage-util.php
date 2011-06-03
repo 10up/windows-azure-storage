@@ -63,6 +63,23 @@ require_once 'Microsoft/WindowsAzure/Storage/Blob.php';
 class WindowsAzureStorageUtil
 {
     /**
+     * Get Windows Azure Storage host name defined as per plugin settings
+     * 
+     * @return string host Name
+     */
+    public static function getHostName()
+    {
+        $storageAccountName = WindowsAzureStorageUtil::getAccountName();
+        if ($storageAccountName == 'devstoreaccount1') {
+            // Use development storage
+            return Microsoft_WindowsAzure_Storage::URL_DEV_BLOB;
+        } else {
+            // Use cloud storage
+            return Microsoft_WindowsAzure_Storage::URL_CLOUD_BLOB;
+        }
+    }
+
+    /**
      * Get Windows Azure Storage account name defined in plugin settings
      * 
      * @return string Account Name
@@ -140,21 +157,28 @@ class WindowsAzureStorageUtil
     public static function getStorageClient()
     {
         // Storage Account Settings
-        $storageClient = new Microsoft_WindowsAzure_Storage_Blob(
-            Microsoft_WindowsAzure_Storage::URL_CLOUD_BLOB, 
-            WindowsAzureStorageUtil::getAccountName(), 
-            WindowsAzureStorageUtil::getAccountKey()
-        );
-        
-        // Set optional HTTP proxy
-        $httpProxyHost = WindowsAzureStorageUtil::getHttpProxyHost();
-        
-        if (!empty($httpProxyHost)) {
-            $storageClient->setProxy(
-                true, $httpProxyHost, 
-                WindowsAzureStorageUtil::getHttpProxyPort(), 
-                WindowsAzureStorageUtil::getHttpProxyCredentials()
+        $storageAccountName = WindowsAzureStorageUtil::getAccountName();
+        if ($storageAccountName == 'devstoreaccount1') {
+            // Use development storage
+            $storageClient = new Microsoft_WindowsAzure_Storage_Blob();
+        } else {
+            // Use cloud storage
+            $storageClient = new Microsoft_WindowsAzure_Storage_Blob(
+                Microsoft_WindowsAzure_Storage::URL_CLOUD_BLOB, 
+                WindowsAzureStorageUtil::getAccountName(), 
+                WindowsAzureStorageUtil::getAccountKey()
             );
+            
+            // Set optional HTTP proxy
+            $httpProxyHost = WindowsAzureStorageUtil::getHttpProxyHost();
+            
+            if (!empty($httpProxyHost)) {
+                $storageClient->setProxy(
+                    true, $httpProxyHost, 
+                    WindowsAzureStorageUtil::getHttpProxyPort(), 
+                    WindowsAzureStorageUtil::getHttpProxyCredentials()
+                );
+            }
         }
         return $storageClient;
     }
@@ -185,9 +209,7 @@ class WindowsAzureStorageUtil
      */
     public static function getStorageUrlPrefix($appendContainer = true)
     {
-        $blobStorageHostName = Microsoft_WindowsAzure_Storage::URL_CLOUD_BLOB;
         $azure_storage_account_name = WindowsAzureStorageUtil::getAccountName();
-        
         $default_azure_storage_account_container_name 
             = WindowsAzureStorageUtil::getDefaultContainer();
             
@@ -200,13 +222,29 @@ class WindowsAzureStorageUtil
                 return $cname;
             }
         } else {
-            if ($appendContainer) {
-                return 'http://' . $azure_storage_account_name 
-                    . '.' . $blobStorageHostName 
-                    . '/' . $default_azure_storage_account_container_name;
+            $blobStorageHostName = WindowsAzureStorageUtil::getHostName();
+            $storageAccountName = WindowsAzureStorageUtil::getAccountName();
+
+            if ($storageAccountName == 'devstoreaccount1') {
+                // Use development storage
+                if ($appendContainer) {
+                    return 'http://' . $blobStorageHostName 
+                        . '/'. $azure_storage_account_name 
+                        . '/' . $default_azure_storage_account_container_name;
+                } else {
+                    return 'http://' . $blobStorageHostName 
+                        . '/'. $azure_storage_account_name;
+                }
             } else {
-                return 'http://' . $azure_storage_account_name 
-                    . '.' . $blobStorageHostName;
+                // Use cloud storage
+                if ($appendContainer) {
+                    return 'http://' . $azure_storage_account_name 
+                        . '.' . $blobStorageHostName 
+                        . '/' . $default_azure_storage_account_container_name;
+                } else {
+                    return 'http://' . $azure_storage_account_name 
+                        . '.' . $blobStorageHostName;
+                }
             }
         }
     }

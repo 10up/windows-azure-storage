@@ -6,7 +6,7 @@
  * 
  * Description: This WordPress plugin allows you to use Windows Azure Storage Service to host your media for your WordPress powered blog.
  * 
- * Version: 1.1
+ * Version: 1.2
  * 
  * Author: Microsoft
  * 
@@ -83,7 +83,9 @@ add_action("media_upload_upload", "upload_tab");
 if (get_option('azure_storage_use_for_default_upload') == 1) {
     add_filter(
         'wp_update_attachment_metadata', 
-        'windows_azure_storage_wp_update_attachment_metadata', 9, 2
+        'windows_azure_storage_wp_update_attachment_metadata', 
+        9, 
+        2
     );
     
     // Hook for handling blog posts via xmlrpc. This is not full proof check
@@ -96,13 +98,17 @@ if (get_option('azure_storage_use_for_default_upload') == 1) {
 // Hook for acecssing attachment (media file) URL
 add_filter(
     'wp_get_attachment_url',
-    'windows_azure_storage_wp_get_attachment_url', 9, 2
+    'windows_azure_storage_wp_get_attachment_url', 
+    9, 
+    2
 );
 
 // Hook for acecssing metadata about attachment (media file)
 add_filter(
     'wp_get_attachment_metadata', 
-    'windows_azure_storage_wp_get_attachment_metadata', 9, 2
+    'windows_azure_storage_wp_get_attachment_metadata', 
+    9, 
+    2
 );
 
 // Hook for handling deleting media files from standard WordpRess dialog
@@ -224,11 +230,11 @@ function windows_azure_storage_wp_update_attachment_metadata($data, $postID)
         $data['url'] = $url;
         
         // Handle thumbnail and medium size files
-        $sizes = $data["sizes"];
-        if (!empty($sizes)) {
+        $thumbnails = Array();
+        if (!empty($data["sizes"])) {
             $file_upload_dir = substr($relativeFileName, 0, strripos($relativeFileName, "/"));
             
-            foreach ($sizes as $size) {
+            foreach ($data["sizes"] as $size) {
                 // Do not prefix file name with wordpress upload folder path
                 $sizeFileName = dirname($data['file']) . "/" . $size["file"];
                 $blobName = $file_upload_dir . "/" . $size["file"];
@@ -239,6 +245,7 @@ function windows_azure_storage_wp_update_attachment_metadata($data, $postID)
                     $sizeFileName, 
                     array('tag' => "WordPressDefaultUploadSizesThumbnail")
                 );
+                $thumbnails[] = $blobName;
                 
                 // Delete the local file
                 unlink($sizeFileName);
@@ -252,7 +259,8 @@ function windows_azure_storage_wp_update_attachment_metadata($data, $postID)
             array(
                 'container' => $default_azure_storage_account_container_name, 
                 'blob' => $relativeFileName, 
-                'url' => $url
+                'url' => $url,
+                'thumbnails' => $thumbnails
             )
         );
         
@@ -323,9 +331,18 @@ function windows_azure_storage_delete_attachment($postID)
         $mediaInfo = get_post_meta($postID, 'windows_azure_storage_info', true);
 
         if (!empty($mediaInfo)) {
+            // Delete media file from blob storage
             $containerName = $mediaInfo['container'];
             $blobName = $mediaInfo['blob'];
             WindowsAzureStorageUtil::deleteBlob($containerName, $blobName);
+
+            // Delete associated thumbnails from blob storage (if any)
+            $thumbnails = $mediaInfo['thumbnails'];
+            if (!empty($thumbnails)) {
+                foreach ($thumbnails as $thumbnail_blob) {
+                    WindowsAzureStorageUtil::deleteBlob($containerName, $thumbnail_blob);
+                }
+            }
         }
     }
 }
@@ -423,5 +440,8 @@ function windows_azure_storage_plugin_menu()
         'b5506889-50de-42db-bf63-e9f248ca94e9', 
         'windows_azure_storage_plugin_options_page'
     );
+
+    // Call register settings function
+    add_action('admin_init', 'windows_azure_storage_plugin_register_settings');
 }
 ?>

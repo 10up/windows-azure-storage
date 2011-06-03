@@ -73,7 +73,7 @@ function windows_azure_storage_plugin_options_page()
           <a href="http://www.microsoft.com/azure/windowsazure.mspx">Windows Azure 
           Platform web-site</a>.<br/>
 
-          <p>This plugin is developed in PHP and uses PHP SDK for Azure (<a 
+          <p>This plugin uses Windows Azure SDK for PHP (<a 
           href="http://phpazure.codeplex.com/">http://phpazure.codeplex.com/</a>). </p>
           <b>Plugin Web Site:</b> 
           <a href="http://wordpress.org/extend/plugins/windows-azure-storage/">
@@ -91,24 +91,38 @@ function windows_azure_storage_plugin_options_page()
                  <a href="http://go.microsoft.com/fwlink/?LinkID=129453">register
                  </a>for Windows Azure Services.</p>
                     <form method="post" action="options.php">
-    <?php
-    wp_nonce_field('update-options');
-    show_windows_azure_storage_settings('admin');
-    ?>
-                        <input type="hidden" name="action" value="update" />
-                        <input type="hidden" name="page_options" 
-                        value="azure_storage_account_name,azure_storage_account_primary_access_key,default_azure_storage_account_container_name,cname,azure_storage_use_for_default_upload,http_proxy_host,http_proxy_port,http_proxy_credentials,azure_storage_allow_per_user_settings" />
-
+                        <?php
+                            settings_fields('windows-azure-storage-settings-group');
+                            show_windows_azure_storage_settings('admin');
+                        ?>
                         <p class="submit">
-                              <input type="submit" class="button-primary" value="<?php
-    _e('Save Changes'); ?>" />
-                          </p>
+                            <input type="submit" class="button-primary" 
+                                value="<?php _e('Save Changes'); ?>" />
+                        </p>
                       </form>
               </td>
          </tr>
       </table>
   </div>
 <?php
+}
+
+/**
+ * Register custom settings for Windows Azure Storage Plugin
+ * 
+ * @return void
+ */
+function windows_azure_storage_plugin_register_settings()
+{
+    register_setting('windows-azure-storage-settings-group', 'azure_storage_account_name');
+    register_setting('windows-azure-storage-settings-group', 'azure_storage_account_primary_access_key');
+    register_setting('windows-azure-storage-settings-group', 'default_azure_storage_account_container_name');
+    register_setting('windows-azure-storage-settings-group', 'cname');
+    register_setting('windows-azure-storage-settings-group', 'azure_storage_use_for_default_upload');
+    register_setting('windows-azure-storage-settings-group', 'http_proxy_host');
+    register_setting('windows-azure-storage-settings-group', 'http_proxy_port');
+    register_setting('windows-azure-storage-settings-group', 'http_proxy_credentials');
+    register_setting('windows-azure-storage-settings-group', 'azure_storage_allow_per_user_settings');
 }
 
 /**
@@ -151,7 +165,6 @@ function show_windows_azure_storage_settings($mode)
 <?php
     try {
         // Storage Account Settings
-        $blobStorageHostName = Microsoft_WindowsAzure_Storage::URL_CLOUD_BLOB;
         $azure_storage_account_name = WindowsAzureStorageUtil::getAccountName();
         $azure_storage_account_primary_access_key 
             = WindowsAzureStorageUtil::getAccountKey();
