@@ -1,0 +1,1 @@
+You scaffolder's content can be located in this folder.
