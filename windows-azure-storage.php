@@ -6,7 +6,7 @@
  * 
  * Description: This WordPress plugin allows you to use Windows Azure Storage Service to host your media for your WordPress powered blog.
  * 
- * Version: 1.2
+ * Version: 1.3
  * 
  * Author: Microsoft
  * 
