@@ -31,7 +31,7 @@ e.g. if WordPress is installed in "/var/www/html/wordpress" directory, extract t
 
 == Changelog ==
 = 1.3 =
-* Included Windows Azure SDK for PHP v4.0.1 with the plugin, so need to install the SDK separetely. Also fixed thumbnail handling issue while uploading files when some specific theme is enabled.
+* Included Windows Azure SDK for PHP v4.0.1 with the plugin, so no need to install the SDK separetely. Also fixed thumbnail handling issue while uploading files when some specific theme is enabled.
 
 = 1.2 =
 * This release is compatible with Windows Azure SDK for PHP v3.0.0. It also fixes issue with deleting media files when thumbnails are associated.
