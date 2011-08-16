@@ -51,18 +51,14 @@
  */
 
 /**
- * This set_include_path statement is needed if you want to deploy wordpress 
- * plugin on Windows Azure. This will add PHP Azure SDK to the PHP include_path.
+ * Add Windows Azure SDK for PHP into include_path for PHP runtime
+ * This SDK provide access to underlying Windows Azure Blob Storage
  *
- * Note: Here we assume that PHP Azure SDK is avilable in Web Role Root folder
- * of the Windows Azure Project. If this SDK is in some other folder, then
- * append this relative path at the end.
+ * Currently the library folder includes Windows Azure SDK for PHP v4.0.1.
  */
-if (isset($_SERVER["APPL_PHYSICAL_PATH"])) {
-    set_include_path(
-        get_include_path() .  PATH_SEPARATOR . $_SERVER["APPL_PHYSICAL_PATH"]
-    );
-}
+set_include_path(
+    dirname(__FILE__) .  '/library' . PATH_SEPARATOR .  get_include_path()
+);
 
 // Check prerequisite for plugin
 register_activation_hook(__FILE__, 'check_prerequisite'); 
@@ -237,18 +233,22 @@ function windows_azure_storage_wp_update_attachment_metadata($data, $postID)
             foreach ($data["sizes"] as $size) {
                 // Do not prefix file name with wordpress upload folder path
                 $sizeFileName = dirname($data['file']) . "/" . $size["file"];
-                $blobName = $file_upload_dir . "/" . $size["file"];
+
+                // Move only if file exists. Some theme may use same file name for multiple sizes
+                if (file_exists($sizeFileName)) {
+                    $blobName = $file_upload_dir . "/" . $size["file"];
                 
-                $storageClient->putBlob(
-                    $default_azure_storage_account_container_name, 
-                    $blobName, 
-                    $sizeFileName, 
-                    array('tag' => "WordPressDefaultUploadSizesThumbnail")
-                );
-                $thumbnails[] = $blobName;
+                    $storageClient->putBlob(
+                        $default_azure_storage_account_container_name, 
+                        $blobName, 
+                        $sizeFileName, 
+                        array('tag' => "WordPressDefaultUploadSizesThumbnail")
+                    );
+                    $thumbnails[] = $blobName;
                 
-                // Delete the local file
-                unlink($sizeFileName);
+                    // Delete the local thumbnail file
+                    unlink($sizeFileName);
+                }
             }
         }
         
@@ -267,8 +267,7 @@ function windows_azure_storage_wp_update_attachment_metadata($data, $postID)
         // Delete the local file
         unlink($uploadFileName);
     } catch (Exception $e) {
-        echo "<p>Error in uploading file: " 
-            . $newFileName . ", Error: " . $e->getMessage() . "</p><br/>";
+        echo "<p>Error in uploading file. Error: " . $e->getMessage() . "</p><br/>";
     }
 
     return $data;
