@@ -4,7 +4,7 @@
  * 
  * Shows various settings for Windows Azure Storage Plugin
  * 
- * Version: 1.3
+ * Version: 1.4
  * 
  * Author: Microsoft
  * 

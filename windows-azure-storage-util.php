@@ -4,7 +4,7 @@
  * 
  * Various utility functions for accessing Windows Azure Storage
  * 
- * Version: 1.3
+ * Version: 1.4
  * 
  * Author: Microsoft
  * 
@@ -72,11 +72,19 @@ class WindowsAzureStorageUtil
         $storageAccountName = WindowsAzureStorageUtil::getAccountName();
         if ($storageAccountName == 'devstoreaccount1') {
             // Use development storage
-            return Microsoft_WindowsAzure_Storage::URL_DEV_BLOB;
+            $hostName = Microsoft_WindowsAzure_Storage::URL_DEV_BLOB;
         } else {
             // Use cloud storage
-            return Microsoft_WindowsAzure_Storage::URL_CLOUD_BLOB;
+            $hostName = Microsoft_WindowsAzure_Storage::URL_CLOUD_BLOB;
         }
+
+        // Remove http/https from the beginning
+        if (substr($hostName, 0, 4) == "http") {
+            $parts = parse_url($hostName);
+            $hostName = $parts["host"];
+        }
+
+        return $hostName;
     }
 
     /**

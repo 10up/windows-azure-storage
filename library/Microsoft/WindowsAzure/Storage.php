@@ -30,7 +30,7 @@
  * @subpackage Storage
  * @copyright  Copyright (c) 2009 - 2011, RealDolmen (http://www.realdolmen.com)
  * @license    http://phpazure.codeplex.com/license
- * @version    $Id: Storage.php 64514 2011-08-05 05:46:18Z unknown $
+ * @version    $Id: Storage.php 64671 2011-08-14 11:11:13Z unknown $
  */
 
 /**
@@ -211,12 +211,12 @@ class Microsoft_WindowsAzure_Storage
 		$this->_accountName = $accountName;
 		$this->_accountKey = $accountKey;
 		$this->_usePathStyleUri = $usePathStyleUri;
-		
+
 		// Using local storage?
 		if (!$this->_usePathStyleUri
-			&& ($this->_host == self::URL_DEV_BLOB
-				|| $this->_host == self::URL_DEV_QUEUE
-				|| $this->_host == self::URL_DEV_TABLE)
+			&& ($this->_protocol . $this->_host == self::URL_DEV_BLOB
+				|| $this->_protocol . $this->_host == self::URL_DEV_QUEUE
+				|| $this->_protocol . $this->_host == self::URL_DEV_TABLE)
 		) {
 			// Local storage
 			$this->_usePathStyleUri = true;
