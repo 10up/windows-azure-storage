@@ -6,7 +6,7 @@
  * 
  * Description: This WordPress plugin allows you to use Windows Azure Storage Service to host your media for your WordPress powered blog.
  * 
- * Version: 1.4
+ * Version: 1.5
  * 
  * Author: Microsoft
  * 
@@ -14,7 +14,7 @@
  * 
  * License: New BSD License (BSD)
  * 
- * Copyright (c) 2011, Microsoft Corporation. All Rights Reserved.
+ * Copyright (c) 2012, Microsoft Corporation. All Rights Reserved.
  * Redistribution and use in source and binary forms, with or without modification, 
  * are permitted provided that the following conditions are met:
  * 
@@ -45,7 +45,7 @@
  * @category  WordPress_Plugin
  * @package   Windows_Azure_Storage_For_WordPress
  * @author    Satish Nikam <v-sanika@microsoft.com>
- * @copyright 2011 Copyright © Microsoft Corporation. All Rights Reserved
+ * @copyright 2012 Copyright © Microsoft Corporation. All Rights Reserved
  * @license   New BSD License (BSD)
  * @link      http://www.microsoft.com
  */
@@ -54,11 +54,11 @@
  * Add Windows Azure SDK for PHP into include_path for PHP runtime
  * This SDK provide access to underlying Windows Azure Blob Storage
  *
- * Currently the library folder includes Windows Azure SDK for PHP v4.0.1.
+ * Currently the library folder includes Windows Azure SDK for PHP v4.1.0
  */
-set_include_path(
-    dirname(__FILE__) .  '/library' . PATH_SEPARATOR .  get_include_path()
-);
+if(!class_exists('Microsoft_WindowsAzure_Storage_Blob')) {
+    require_once('library/Microsoft/Autoloader.php');
+}
 
 // Check prerequisite for plugin
 register_activation_hook(__FILE__, 'check_prerequisite'); 
@@ -204,6 +204,13 @@ function windows_azure_storage_wp_update_attachment_metadata($data, $postID)
         // Get full file path of uploaded file
         $data['file'] = get_attached_file($postID, true);
 
+        // Get mime-type of the file and prepare additional properties 
+        // array for setting content type of the blob to be uploaded
+        $mimeType = get_post_mime_type($postID);
+        $additionalHeaders = array(
+            'x-ms-blob-content-type' => $mimeType
+        );
+
         try {
             $storageClient->putBlob(
                 $default_azure_storage_account_container_name, 
@@ -211,8 +218,10 @@ function windows_azure_storage_wp_update_attachment_metadata($data, $postID)
                 $uploadFileName, 
                 array(
                     'tag' => "WordPressDefaultUpload", 
-                    'mimetype' => get_post_mime_type($postID)
-                )
+                    'mimetype' => $mimeType
+                ),
+                null,
+                $additionalHeaders
             );
         } catch (Exception $e) {
             echo "<p>Error in uploading file. Error: " . $e->getMessage() . "</p><br/>";
@@ -242,7 +251,12 @@ function windows_azure_storage_wp_update_attachment_metadata($data, $postID)
                         $default_azure_storage_account_container_name, 
                         $blobName, 
                         $sizeFileName, 
-                        array('tag' => "WordPressDefaultUploadSizesThumbnail")
+                        array(
+                            'tag' => "WordPressDefaultUploadSizesThumbnail",
+                            'mimetype' => $mimeType
+                        ),
+                        null,
+                        $additionalHeaders
                     );
                     $thumbnails[] = $blobName;
                 

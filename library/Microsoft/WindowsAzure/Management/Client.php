@@ -113,7 +113,7 @@ class Microsoft_WindowsAzure_Management_Client
 	protected $_lastRequestId = null;
 	
 	/**
-	 * Creates a new Microsoft_WindowsAzure_Management instance
+	 * Creates a new Microsoft_WindowsAzure_Management_Client instance
 	 * 
 	 * @param string $subscriptionId Subscription ID
 	 * @param string $certificatePath Management certificate path (.PEM)
@@ -207,7 +207,7 @@ class Microsoft_WindowsAzure_Management_Client
 	 * Perform request using Microsoft_Http_Client channel
 	 *
 	 * @param string $path Path
-	 * @param string $queryString Query string
+	 * @param array $query Query arguments
 	 * @param string $httpVerb HTTP verb the request will use
 	 * @param array $headers x-ms headers to add
 	 * @param mixed $rawData Optional RAW HTTP data to be sent over the wire
@@ -215,7 +215,7 @@ class Microsoft_WindowsAzure_Management_Client
 	 */
 	protected function _performRequest(
 		$path = '/',
-		$queryString = '',
+		$query = array(),
 		$httpVerb = Microsoft_Http_Client::GET,
 		$headers = array(),
 		$rawData = null
@@ -240,15 +240,18 @@ class Microsoft_WindowsAzure_Management_Client
 
 		// Add version header
 		$headers['x-ms-version'] = $this->_apiVersion;
-		    
-		// URL encoding
-		$path           = self::urlencode($path);
-		$queryString    = self::urlencode($queryString);
 
 		// Generate URL and sign request
-		$requestUrl     = $this->getBaseUrl() . $path . $queryString;
+		$requestUrl = $this->getBaseUrl() . rawurlencode($path);
 		$requestHeaders = $headers;
-
+		if (count($query) > 0) {
+			$queryString = '';
+			foreach ($query as $key => $value) {
+				$queryString .= ($queryString ? '&' : '?') . rawurlencode($key) . '=' . rawurlencode($value);
+			}			
+			$requestUrl .= $queryString;
+		}
+		
 		// Prepare request 
 		$this->_httpClientChannel->resetParameters(true);
 		$this->_httpClientChannel->setUri($requestUrl);
@@ -296,28 +299,6 @@ class Microsoft_WindowsAzure_Management_Client
         
         return $xml;
 	}
-	
-	/**
-	 * URL encode function
-	 * 
-	 * @param  string $value Value to encode
-	 * @return string        Encoded value
-	 */
-	public static function urlencode($value)
-	{
-	    return str_replace(' ', '%20', $value);
-	}
-	
-    /**
-     * Builds a query string from an array of elements
-     * 
-     * @param array     Array of elements
-     * @return string   Assembled query string
-     */
-    public static function createQueryStringFromArray($queryString)
-    {
-    	return count($queryString) > 0 ? '?' . implode('&', $queryString) : '';
-    }
     
 	/**
 	 * Get error message from Microsoft_Http_Response
@@ -401,19 +382,19 @@ class Microsoft_WindowsAzure_Management_Client
     	}
     	
     	$parameters = array();
-    	$parameters[] = 'StartTime=' . $startTime;
-    	$parameters[] = 'EndTime=' . $endTime;
+    	$parameters['StartTime'] = $startTime;
+    	$parameters['EndTime'] = $endTime;
     	if ($objectIdFilter != '' && !is_null($objectIdFilter)) {
-    		$parameters[] = 'ObjectIdFilter=' . $objectIdFilter;
+    		$parameters['ObjectIdFilter'] = $objectIdFilter;
     	}
     	if ($operationResultFilter != '' && !is_null($operationResultFilter)) {
-    		$parameters[] = 'OperationResultFilter=' . ucfirst($operationResultFilter);
+    		$parameters['OperationResultFilter'] = ucfirst($operationResultFilter);
     	}
     	if ($continuationToken != '' && !is_null($continuationToken)) {
-    		$parameters[] = 'ContinuationToken=' . $continuationToken;
+    		$parameters['ContinuationToken'] = $continuationToken;
     	}
     	
-    	$response = $this->_performRequest(self::OP_OPERATIONS, '?' . implode('&', $parameters));
+    	$response = $this->_performRequest(self::OP_OPERATIONS, $parameters);
 
     	if ($response->isSuccessful()) {
 			$result = $this->_parseResponse($response);
@@ -684,7 +665,7 @@ class Microsoft_WindowsAzure_Management_Client
     	}
     	
     	$response = $this->_performRequest(
-    		self::OP_STORAGE_ACCOUNTS . '/' . $serviceName . '/keys', '?action=regenerate',
+    		self::OP_STORAGE_ACCOUNTS . '/' . $serviceName . '/keys', array('action' => 'regenerate'),
     		Microsoft_Http_Client::POST,
     		array('Content-Type' => 'application/xml'),
     		'<?xml version="1.0" encoding="utf-8"?>
@@ -743,7 +724,7 @@ class Microsoft_WindowsAzure_Management_Client
     		? '<AffinityGroup>' . $affinityGroup . '</AffinityGroup>'
     		: '<Location>' . $location . '</Location>';
     	
-        $response = $this->_performRequest(self::OP_STORAGE_ACCOUNTS, '',
+        $response = $this->_performRequest(self::OP_STORAGE_ACCOUNTS, array(),
     		Microsoft_Http_Client::POST,
     		array('Content-Type' => 'application/xml; charset=utf-8'),
     		'<CreateStorageServiceInput xmlns="http://schemas.microsoft.com/windowsazure"><ServiceName>' . $serviceName . '</ServiceName><Description>' . $serviceName . '</Description><Label>' . base64_encode($label) . '</Label>' . $locationOrAffinityGroup . '</CreateStorageServiceInput>');
@@ -788,7 +769,7 @@ class Microsoft_WindowsAzure_Management_Client
     		throw new Microsoft_WindowsAzure_Management_Exception('Description is too long. The maximum length is 1024 characters.');
     	}
     	
-        $response = $this->_performRequest(self::OP_STORAGE_ACCOUNTS . '/' . $serviceName, '',
+        $response = $this->_performRequest(self::OP_STORAGE_ACCOUNTS . '/' . $serviceName, array(),
     		Microsoft_Http_Client::PUT,
     		array('Content-Type' => 'application/xml; charset=utf-8'),
     		'<UpdateStorageServiceInput xmlns="http://schemas.microsoft.com/windowsazure"><Description>' . $description . '</Description><Label>' . base64_encode($label) . '</Label></UpdateStorageServiceInput>');
@@ -810,7 +791,7 @@ class Microsoft_WindowsAzure_Management_Client
     		throw new Microsoft_WindowsAzure_Management_Exception('Service name should be specified.');
     	}
     	
-        $response = $this->_performRequest(self::OP_STORAGE_ACCOUNTS . '/' . $serviceName, '', Microsoft_Http_Client::DELETE);
+        $response = $this->_performRequest(self::OP_STORAGE_ACCOUNTS . '/' . $serviceName, array(), Microsoft_Http_Client::DELETE);
         
     	if (!$response->isSuccessful()) {
 			throw new Microsoft_WindowsAzure_Management_Exception($this->_getErrorMessage($response, 'Resource could not be accessed.'));
@@ -858,7 +839,7 @@ class Microsoft_WindowsAzure_Management_Client
     /**
      * The Create Hosted Service operation creates a new hosted service in Windows Azure.
      * 
-     * @param string $serviceName A name for the hosted service that is unique to the subscription.
+     * @param string $serviceName A name for the hosted service that is unique to the subscription. This is the DNS name used for production deployments.
      * @param string $label A label for the hosted service. The label may be up to 100 characters in length.
      * @param string $description A description for the hosted service. The description may be up to 1024 characters in length.
      * @param string $location Required if AffinityGroup is not specified. The location where the hosted service will be created. 
@@ -886,7 +867,7 @@ class Microsoft_WindowsAzure_Management_Client
     		? '<AffinityGroup>' . $affinityGroup . '</AffinityGroup>'
     		: '<Location>' . $location . '</Location>';
     	
-        $response = $this->_performRequest(self::OP_HOSTED_SERVICES, '',
+        $response = $this->_performRequest(self::OP_HOSTED_SERVICES, array(),
     		Microsoft_Http_Client::POST,
     		array('Content-Type' => 'application/xml; charset=utf-8'),
     		'<CreateHostedService xmlns="http://schemas.microsoft.com/windowsazure"><ServiceName>' . $serviceName . '</ServiceName><Label>' . base64_encode($label) . '</Label><Description>' . $description . '</Description>' . $locationOrAffinityGroup . '</CreateHostedService>');
@@ -899,7 +880,7 @@ class Microsoft_WindowsAzure_Management_Client
     /**
      * The Update Hosted Service operation updates the label and/or the description for a hosted service in Windows Azure.
      * 
-     * @param string $serviceName A name for the hosted service that is unique to the subscription.
+     * @param string $serviceName A name for the hosted service that is unique to the subscription. This is the DNS name used for production deployments.
      * @param string $label A label for the hosted service. The label may be up to 100 characters in length.
      * @param string $description A description for the hosted service. The description may be up to 1024 characters in length.
      */
@@ -915,7 +896,7 @@ class Microsoft_WindowsAzure_Management_Client
     		throw new Microsoft_WindowsAzure_Management_Exception('Label is too long. The maximum length is 100 characters.');
     	}
     	
-        $response = $this->_performRequest(self::OP_HOSTED_SERVICES . '/' . $serviceName, '',
+        $response = $this->_performRequest(self::OP_HOSTED_SERVICES . '/' . $serviceName, array(),
     		Microsoft_Http_Client::PUT,
     		array('Content-Type' => 'application/xml; charset=utf-8'),
     		'<UpdateHostedService xmlns="http://schemas.microsoft.com/windowsazure"><Label>' . base64_encode($label) . '</Label><Description>' . $description . '</Description></UpdateHostedService>');
@@ -928,7 +909,7 @@ class Microsoft_WindowsAzure_Management_Client
     /**
      * The Delete Hosted Service operation deletes the specified hosted service in Windows Azure.
      * 
-     * @param string $serviceName A name for the hosted service that is unique to the subscription.
+     * @param string $serviceName A name for the hosted service that is unique to the subscription. This is the DNS name used for production deployments.
      */
     public function deleteHostedService($serviceName)
     {
@@ -936,7 +917,7 @@ class Microsoft_WindowsAzure_Management_Client
     		throw new Microsoft_WindowsAzure_Management_Exception('Service name should be specified.');
     	}
     	
-        $response = $this->_performRequest(self::OP_HOSTED_SERVICES . '/' . $serviceName, '', Microsoft_Http_Client::DELETE);
+        $response = $this->_performRequest(self::OP_HOSTED_SERVICES . '/' . $serviceName, array(), Microsoft_Http_Client::DELETE);
  	
     	if (!$response->isSuccessful()) {
 			throw new Microsoft_WindowsAzure_Management_Exception($this->_getErrorMessage($response, 'Resource could not be accessed.'));
@@ -950,7 +931,7 @@ class Microsoft_WindowsAzure_Management_Client
      * belongs, or its location if it is not part of an affinity group; and
      * optionally, information on the service's deployments.
      *
-     * @param string $serviceName The name of your service.
+     * @param string $serviceName The name of your service. This is the DNS name used for production deployments.
      * @return Microsoft_WindowsAzure_Management_HostedServiceInstance
      * @throws Microsoft_WindowsAzure_Management_Exception
      */
@@ -960,7 +941,7 @@ class Microsoft_WindowsAzure_Management_Client
     		throw new Microsoft_WindowsAzure_Management_Exception('Service name should be specified.');
     	}
     	
-    	$response = $this->_performRequest(self::OP_HOSTED_SERVICES . '/' . $serviceName, '?embed-detail=true');
+    	$response = $this->_performRequest(self::OP_HOSTED_SERVICES . '/' . $serviceName, array('embed-detail' => 'true'));
 
     	if ($response->isSuccessful()) {
 			$xmlService = $this->_parseResponse($response);
@@ -1000,7 +981,7 @@ class Microsoft_WindowsAzure_Management_Client
      * The Create Deployment operation uploads a new service package
      * and creates a new deployment on staging or production.
      * 
-     * @param string $serviceName		The service name
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
      * @param string $deploymentSlot	The deployment slot (production or staging)
 	 * @param string $name              The name for the deployment. The deployment ID as listed on the Windows Azure management portal must be unique among other deployments for the hosted service.
 	 * @param string $label             A URL that refers to the location of the service package in the Blob service. The service package must be located in a storage account beneath the same subscription.
@@ -1043,7 +1024,7 @@ class Microsoft_WindowsAzure_Management_Client
     	$conformingConfiguration = $this->_cleanConfiguration($configuration);
     	
     	$operationUrl = self::OP_HOSTED_SERVICES . '/' . $serviceName . '/deploymentslots/' . $deploymentSlot;
-        $response = $this->_performRequest($operationUrl, '',
+        $response = $this->_performRequest($operationUrl, array(),
     		Microsoft_Http_Client::POST,
     		array('Content-Type' => 'application/xml; charset=utf-8'),
     		'<CreateDeployment xmlns="http://schemas.microsoft.com/windowsazure"><Name>' . $name . '</Name><PackageUrl>' . $packageUrl . '</PackageUrl><Label>' . base64_encode($label) . '</Label><Configuration>' . base64_encode($conformingConfiguration) . '</Configuration><StartDeployment>' . ($startDeployment ? 'true' : 'false') . '</StartDeployment><TreatWarningsAsError>' . ($treatWarningsAsErrors ? 'true' : 'false') . '</TreatWarningsAsError></CreateDeployment>');
@@ -1057,7 +1038,7 @@ class Microsoft_WindowsAzure_Management_Client
      * The Get Deployment operation returns configuration information, status,
      * and system properties for the specified deployment.
      * 
-     * @param string $serviceName		The service name
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
      * @param string $deploymentSlot	The deployment slot (production or staging)
      * @return Microsoft_WindowsAzure_Management_DeploymentInstance
      * @throws Microsoft_WindowsAzure_Management_Exception
@@ -1080,7 +1061,7 @@ class Microsoft_WindowsAzure_Management_Client
      * The Get Deployment operation returns configuration information, status,
      * and system properties for the specified deployment.
      * 
-     * @param string $serviceName		The service name
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
      * @param string $deploymentId	The deployment ID as listed on the Windows Azure management portal
      * @return Microsoft_WindowsAzure_Management_DeploymentInstance
      * @throws Microsoft_WindowsAzure_Management_Exception
@@ -1098,6 +1079,53 @@ class Microsoft_WindowsAzure_Management_Client
     	return $this->_getDeployment($operationUrl);
     }
     
+	 /**
+     * The Get Role Instances by Deployment Slot operation returns an array of arrays containing role instance information
+     * for each role instance associated with the deployment specified by slot (staging or production).
+     * 
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
+     * @param string $deploymentSlot	The deployment slot (production or staging)
+     * @return Array
+     * @throws Microsoft_WindowsAzure_Management_Exception
+     */
+    public function getRoleInstancesByDeploymentSlot($serviceName, $deploymentSlot)
+    {
+        if ($serviceName == '' || is_null($serviceName)) {
+    		throw new Microsoft_WindowsAzure_Management_Exception('Service name should be specified.');
+    	}
+    	$deploymentSlot = strtolower($deploymentSlot);
+    	if ($deploymentSlot != 'production' && $deploymentSlot != 'staging') {
+    		throw new Microsoft_WindowsAzure_Management_Exception('Deployment slot should be production|staging.');
+    	}
+    	
+    	$operationUrl = self::OP_HOSTED_SERVICES . '/' . $serviceName . '/deploymentslots/' . $deploymentSlot;
+    	$deployment = $this->_getDeployment($operationUrl);
+		return $deployment->roleInstanceList;
+    }
+	
+	/**
+     * The Get Role Instances by Deployment Slot operation returns an array of arrays containing role instance information
+     * for each role instance associated with the deployment specified by Id.
+     * 
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
+     * @param string $deploymentId		The deployment ID as listed on the Windows Azure management portal
+     * @return Array
+     * @throws Microsoft_WindowsAzure_Management_Exception
+     */
+    public function getRoleInstancesByDeploymentId($serviceName, $deploymentId)
+    {
+        if ($serviceName == '' || is_null($serviceName)) {
+    		throw new Microsoft_WindowsAzure_Management_Exception('Service name should be specified.');
+    	}
+        if ($deploymentId == '' || is_null($deploymentId)) {
+    		throw new Microsoft_WindowsAzure_Management_Exception('Deployment ID should be specified.');
+    	}
+    	
+    	$operationUrl = self::OP_HOSTED_SERVICES . '/' . $serviceName . '/deployments/' . $deploymentId;
+    	$deployment = $this->_getDeployment($operationUrl);
+		return $deployment->roleInstanceList;
+    }
+	
     /**
      * The Get Deployment operation returns configuration information, status,
      * and system properties for the specified deployment.
@@ -1126,7 +1154,7 @@ class Microsoft_WindowsAzure_Management_Client
      * it will be swapped to the production environment. If it is running
      * in the production environment, it will be swapped to staging.
      * 
-     * @param string $serviceName The service name.
+     * @param string $serviceName The service name. This is the DNS name used for production deployments.
      * @param string $productionDeploymentName The name of the production deployment.
      * @param string $sourceDeploymentName The name of the source deployment.
      * @throws Microsoft_WindowsAzure_Management_Exception
@@ -1144,7 +1172,7 @@ class Microsoft_WindowsAzure_Management_Client
     	}
     	
     	$operationUrl = self::OP_HOSTED_SERVICES . '/' . $serviceName;
-        $response = $this->_performRequest($operationUrl, '',
+        $response = $this->_performRequest($operationUrl, array(),
     		Microsoft_Http_Client::POST,
     		array('Content-Type' => 'application/xml; charset=utf-8'),
     		'<Swap xmlns="http://schemas.microsoft.com/windowsazure"><Production>' . $productionDeploymentName . '</Production><SourceDeployment>' . $sourceDeploymentName . '</SourceDeployment></Swap>');
@@ -1157,7 +1185,7 @@ class Microsoft_WindowsAzure_Management_Client
     /**
      * The Delete Deployment operation deletes the specified deployment.
      * 
-     * @param string $serviceName		The service name
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
      * @param string $deploymentSlot	The deployment slot (production or staging)
      * @throws Microsoft_WindowsAzure_Management_Exception
      */
@@ -1178,7 +1206,7 @@ class Microsoft_WindowsAzure_Management_Client
     /**
      * The Delete Deployment operation deletes the specified deployment.
      * 
-     * @param string $serviceName		The service name
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
      * @param string $deploymentId	The deployment ID as listed on the Windows Azure management portal
      * @throws Microsoft_WindowsAzure_Management_Exception
      */
@@ -1203,7 +1231,7 @@ class Microsoft_WindowsAzure_Management_Client
      */
     protected function _deleteDeployment($operationUrl)
     {
-        $response = $this->_performRequest($operationUrl, '', Microsoft_Http_Client::DELETE);
+        $response = $this->_performRequest($operationUrl, array(), Microsoft_Http_Client::DELETE);
 			 
     	if (!$response->isSuccessful()) {
 			throw new Microsoft_WindowsAzure_Management_Exception($this->_getErrorMessage($response, 'Resource could not be accessed.'));
@@ -1213,7 +1241,7 @@ class Microsoft_WindowsAzure_Management_Client
     /**
      * The Update Deployment Status operation initiates a change in deployment status.
      * 
-     * @param string $serviceName		The service name
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
      * @param string $deploymentSlot	The deployment slot (production or staging)
      * @param string $status            The deployment status (running|suspended)
      * @throws Microsoft_WindowsAzure_Management_Exception
@@ -1239,7 +1267,7 @@ class Microsoft_WindowsAzure_Management_Client
     /**
      * The Update Deployment Status operation initiates a change in deployment status.
      * 
-     * @param string $serviceName		The service name
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
      * @param string $deploymentId	The deployment ID as listed on the Windows Azure management portal
      * @param string $status            The deployment status (running|suspended)
      * @throws Microsoft_WindowsAzure_Management_Exception
@@ -1270,7 +1298,7 @@ class Microsoft_WindowsAzure_Management_Client
      */
     protected function _updateDeploymentStatus($operationUrl, $status = 'running')
     {
-        $response = $this->_performRequest($operationUrl . '/', '?comp=status',
+        $response = $this->_performRequest($operationUrl . '/', array('comp' => 'status'),
     		Microsoft_Http_Client::POST,
     		array('Content-Type' => 'application/xml; charset=utf-8'),
     		'<UpdateDeploymentStatus xmlns="http://schemas.microsoft.com/windowsazure"><Status>' . ucfirst($status) . '</Status></UpdateDeploymentStatus>');
@@ -1378,7 +1406,7 @@ class Microsoft_WindowsAzure_Management_Client
     /**
      * Updates a deployment's role instance count.
      * 
-     * @param string $serviceName		The service name
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
      * @param string $deploymentSlot	The deployment slot (production or staging)
      * @param string|array $roleName	The role name
      * @param string|array $instanceCount The instance count
@@ -1408,7 +1436,7 @@ class Microsoft_WindowsAzure_Management_Client
     /**
      * Updates a deployment's role instance count.
      * 
-     * @param string $serviceName		The service name
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
      * @param string $deploymentSlot	The deployment slot (production or staging)
      * @param string|array $roleName	The role name
      * @param string|array $instanceCount The instance count
@@ -1481,7 +1509,7 @@ class Microsoft_WindowsAzure_Management_Client
      * Note that you can change a deployment's configuration either by specifying the deployment
      * environment (staging or production), or by specifying the deployment's unique name. 
      * 
-     * @param string $serviceName		The service name
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
      * @param string $deploymentSlot	The deployment slot (production or staging)
      * @param string $configuration     XML configuration represented as a string
      * @throws Microsoft_WindowsAzure_Management_Exception
@@ -1512,7 +1540,7 @@ class Microsoft_WindowsAzure_Management_Client
      * Note that you can change a deployment's configuration either by specifying the deployment
      * environment (staging or production), or by specifying the deployment's unique name. 
      * 
-     * @param string $serviceName		The service name
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
      * @param string $deploymentId	The deployment ID as listed on the Windows Azure management portal
      * @param string $configuration     XML configuration represented as a string
      * @throws Microsoft_WindowsAzure_Management_Exception
@@ -1551,7 +1579,7 @@ class Microsoft_WindowsAzure_Management_Client
     	// Clean up the configuration
     	$conformingConfiguration = $this->_cleanConfiguration($configuration);
 
-        $response = $this->_performRequest($operationUrl . '/', '?comp=config',
+        $response = $this->_performRequest($operationUrl . '/', array('comp' => 'config'),
     		Microsoft_Http_Client::POST,
     		array('Content-Type' => 'application/xml; charset=utf-8'),
     		'<ChangeConfiguration xmlns="http://schemas.microsoft.com/windowsazure" xmlns:i="http://www.w3.org/2001/XMLSchema-instance"><Configuration>' . base64_encode($conformingConfiguration) . '</Configuration></ChangeConfiguration>');
@@ -1564,7 +1592,7 @@ class Microsoft_WindowsAzure_Management_Client
     /**
      * The Upgrade Deployment operation initiates an upgrade.
      * 
-     * @param string $serviceName		The service name
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
      * @param string $deploymentSlot	The deployment slot (production or staging)
 	 * @param string $label             A URL that refers to the location of the service package in the Blob service. The service package must be located in a storage account beneath the same subscription.
 	 * @param string $packageUrl        The service configuration file for the deployment.
@@ -1610,7 +1638,7 @@ class Microsoft_WindowsAzure_Management_Client
     /**
      * The Upgrade Deployment operation initiates an upgrade.
      * 
-     * @param string $serviceName		The service name
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
      * @param string $deploymentId	The deployment ID as listed on the Windows Azure management portal
 	 * @param string $label             A URL that refers to the location of the service package in the Blob service. The service package must be located in a storage account beneath the same subscription.
 	 * @param string $packageUrl        The service configuration file for the deployment.
@@ -1669,7 +1697,7 @@ class Microsoft_WindowsAzure_Management_Client
     	// Clean up the configuration
     	$conformingConfiguration = $this->_cleanConfiguration($configuration);
     	
-        $response = $this->_performRequest($operationUrl . '/', '?comp=upgrade',
+        $response = $this->_performRequest($operationUrl . '/', array('comp' => 'upgrade'),
     		Microsoft_Http_Client::POST,
     		array('Content-Type' => 'application/xml; charset=utf-8'),
     		'<UpgradeDeployment xmlns="http://schemas.microsoft.com/windowsazure"><Mode>' . ucfirst($mode) . '</Mode><PackageUrl>' . $packageUrl . '</PackageUrl><Configuration>' . base64_encode($conformingConfiguration) . '</Configuration><Label>' . base64_encode($label) . '</Label>' . (!is_null($roleToUpgrade) ? '<RoleToUpgrade>' . $roleToUpgrade . '</RoleToUpgrade>' : '') . '</UpgradeDeployment>');		
@@ -1682,7 +1710,7 @@ class Microsoft_WindowsAzure_Management_Client
     /**
      * The Walk Upgrade Domain operation specifies the next upgrade domain to be walked during an in-place upgrade.
      * 
-     * @param string $serviceName		The service name
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
      * @param string $deploymentSlot	The deployment slot (production or staging)
 	 * @param int $upgradeDomain     An integer value that identifies the upgrade domain to walk. Upgrade domains are identified with a zero-based index: the first upgrade domain has an ID of 0, the second has an ID of 1, and so on.
      * @throws Microsoft_WindowsAzure_Management_Exception
@@ -1704,7 +1732,7 @@ class Microsoft_WindowsAzure_Management_Client
     /**
      * The Walk Upgrade Domain operation specifies the next upgrade domain to be walked during an in-place upgrade.
      * 
-     * @param string $serviceName		The service name
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
      * @param string $deploymentId	The deployment ID as listed on the Windows Azure management portal
 	 * @param int $upgradeDomain     An integer value that identifies the upgrade domain to walk. Upgrade domains are identified with a zero-based index: the first upgrade domain has an ID of 0, the second has an ID of 1, and so on.
      * @throws Microsoft_WindowsAzure_Management_Exception
@@ -1732,7 +1760,7 @@ class Microsoft_WindowsAzure_Management_Client
      */
     protected function _walkUpgradeDomain($operationUrl, $upgradeDomain = 0)
     {
-        $response = $this->_performRequest($operationUrl . '/', '?comp=walkupgradedomain',
+        $response = $this->_performRequest($operationUrl . '/', array('comp' => 'walkupgradedomain'),
     		Microsoft_Http_Client::POST,
     		array('Content-Type' => 'application/xml; charset=utf-8'),
     		'<WalkUpgradeDomain xmlns="http://schemas.microsoft.com/windowsazure"><UpgradeDomain>' . $upgradeDomain . '</UpgradeDomain></WalkUpgradeDomain>');		
@@ -1746,7 +1774,7 @@ class Microsoft_WindowsAzure_Management_Client
      * The Reboot Role Instance operation requests a reboot of a role instance
      * that is running in a deployment.
      * 
-     * @param string $serviceName		The service name
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
      * @param string $deploymentSlot	The deployment slot (production or staging)
      * @param string $roleInstanceName  The role instance name
      * @throws Microsoft_WindowsAzure_Management_Exception
@@ -1772,7 +1800,7 @@ class Microsoft_WindowsAzure_Management_Client
      * The Reboot Role Instance operation requests a reboot of a role instance
      * that is running in a deployment.
      * 
-     * @param string $serviceName		The service name
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
      * @param string $deploymentId	The deployment ID as listed on the Windows Azure management portal
      * @param string $roleInstanceName  The role instance name
      * @throws Microsoft_WindowsAzure_Management_Exception
@@ -1797,7 +1825,7 @@ class Microsoft_WindowsAzure_Management_Client
      * The Reimage Role Instance operation requests a reimage of a role instance
      * that is running in a deployment.
      * 
-     * @param string $serviceName		The service name
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
      * @param string $deploymentSlot	The deployment slot (production or staging)
      * @param string $roleInstanceName  The role instance name
      * @throws Microsoft_WindowsAzure_Management_Exception
@@ -1823,7 +1851,7 @@ class Microsoft_WindowsAzure_Management_Client
      * The Reimage Role Instance operation requests a reimage of a role instance
      * that is running in a deployment.
      * 
-     * @param string $serviceName		The service name
+     * @param string $serviceName		The service name. This is the DNS name used for production deployments.
      * @param string $deploymentId	    The deployment ID as listed on the Windows Azure management portal
      * @param string $roleInstanceName  The role instance name
      * @throws Microsoft_WindowsAzure_Management_Exception
@@ -1853,7 +1881,7 @@ class Microsoft_WindowsAzure_Management_Client
      */
     protected function _rebootOrReimageRoleInstance($operationUrl, $operation = 'reboot')
     {
-        $response = $this->_performRequest($operationUrl, '?comp=' . $operation, Microsoft_Http_Client::POST);
+        $response = $this->_performRequest($operationUrl, array('comp' => $operation), Microsoft_Http_Client::POST);
     		
     	if (!$response->isSuccessful()) {
 			throw new Microsoft_WindowsAzure_Management_Exception($this->_getErrorMessage($response, 'Resource could not be accessed.'));
@@ -1936,8 +1964,8 @@ class Microsoft_WindowsAzure_Management_Client
 			
 			return new Microsoft_WindowsAzure_Management_CertificateInstance(
 				$this->getBaseUrl() . $operationUrl,
-				$algorithm,
 				$thumbprint,
+				$algorithm,
 				(string)$result->Data
 			);
 		} else {
@@ -1974,7 +2002,7 @@ class Microsoft_WindowsAzure_Management_Client
     	}
     	
     	$operationUrl = self::OP_HOSTED_SERVICES . '/' . $serviceName . '/certificates';
-        $response = $this->_performRequest($operationUrl, '',
+        $response = $this->_performRequest($operationUrl, array(),
     		Microsoft_Http_Client::POST,
     		array('Content-Type' => 'application/xml; charset=utf-8'),
     		'<CertificateFile xmlns="http://schemas.microsoft.com/windowsazure"><Data>' . base64_encode($certificateData) . '</Data><CertificateFormat>' . $certificateFormat . '</CertificateFormat><Password>' . $certificatePassword . '</Password></CertificateFile>');
@@ -2006,7 +2034,7 @@ class Microsoft_WindowsAzure_Management_Client
     		$operationUrl = self::OP_HOSTED_SERVICES . '/' . $serviceName . '/certificates/' . $algorithm . '-' . strtoupper($thumbprint);
     	}
     	
-        $response = $this->_performRequest($operationUrl, '', Microsoft_Http_Client::DELETE);
+        $response = $this->_performRequest($operationUrl, array(), Microsoft_Http_Client::DELETE);
 
     	if (!$response->isSuccessful()) {
 			throw new Microsoft_WindowsAzure_Management_Exception($this->_getErrorMessage($response, 'Resource could not be accessed.'));
@@ -2079,7 +2107,7 @@ class Microsoft_WindowsAzure_Management_Client
     		throw new Microsoft_WindowsAzure_Management_Exception('Location should be specified.');
     	}
     	
-        $response = $this->_performRequest(self::OP_AFFINITYGROUPS, '',
+        $response = $this->_performRequest(self::OP_AFFINITYGROUPS, array(),
     		Microsoft_Http_Client::POST,
     		array('Content-Type' => 'application/xml; charset=utf-8'),
     		'<CreateAffinityGroup xmlns="http://schemas.microsoft.com/windowsazure"><Name>' . $name . '</Name><Label>' . base64_encode($label) . '</Label><Description>' . $description . '</Description><Location>' . $location . '</Location></CreateAffinityGroup>');	
@@ -2111,7 +2139,7 @@ class Microsoft_WindowsAzure_Management_Client
     		throw new Microsoft_WindowsAzure_Management_Exception('Description is too long. The maximum length is 1024 characters.');
     	}
     	
-        $response = $this->_performRequest(self::OP_AFFINITYGROUPS . '/' . $name, '',
+        $response = $this->_performRequest(self::OP_AFFINITYGROUPS . '/' . $name, array(),
     		Microsoft_Http_Client::PUT,
     		array('Content-Type' => 'application/xml; charset=utf-8'),
     		'<UpdateAffinityGroup xmlns="http://schemas.microsoft.com/windowsazure"><Label>' . base64_encode($label) . '</Label><Description>' . $description . '</Description></UpdateAffinityGroup>');	
@@ -2132,7 +2160,7 @@ class Microsoft_WindowsAzure_Management_Client
     		throw new Microsoft_WindowsAzure_Management_Exception('Affinity group name should be specified.');
     	}
     	
-        $response = $this->_performRequest(self::OP_AFFINITYGROUPS . '/' . $name, '',
+        $response = $this->_performRequest(self::OP_AFFINITYGROUPS . '/' . $name, array(),
     		Microsoft_Http_Client::DELETE);
     		
     	if (!$response->isSuccessful()) {

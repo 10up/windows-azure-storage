@@ -109,7 +109,7 @@ class Microsoft_SqlAzure_Management_Client
 	protected $_lastRequestId = null;
 	
 	/**
-	 * Creates a new Microsoft_SqlAzure_Management instance
+	 * Creates a new Microsoft_SqlAzure_Management_Client instance
 	 * 
 	 * @param string $subscriptionId Subscription ID
 	 * @param string $certificatePath Management certificate path (.PEM)
@@ -203,7 +203,7 @@ class Microsoft_SqlAzure_Management_Client
 	 * Perform request using Microsoft_Http_Client channel
 	 *
 	 * @param string $path Path
-	 * @param string $queryString Query string
+	 * @param array $query Query parameters
 	 * @param string $httpVerb HTTP verb the request will use
 	 * @param array $headers x-ms headers to add
 	 * @param mixed $rawData Optional RAW HTTP data to be sent over the wire
@@ -211,7 +211,7 @@ class Microsoft_SqlAzure_Management_Client
 	 */
 	protected function _performRequest(
 		$path = '/',
-		$queryString = '',
+		$query = array(),
 		$httpVerb = Microsoft_Http_Client::GET,
 		$headers = array(),
 		$rawData = null
@@ -236,14 +236,17 @@ class Microsoft_SqlAzure_Management_Client
 
 		// Add version header
 		$headers['x-ms-version'] = $this->_apiVersion;
-		    
-		// URL encoding
-		$path           = self::urlencode($path);
-		$queryString    = self::urlencode($queryString);
 
 		// Generate URL and sign request
-		$requestUrl     = $this->getBaseUrl() . $path . $queryString;
+		$requestUrl = $this->getBaseUrl() . rawurlencode($path);
 		$requestHeaders = $headers;
+		if (count($query) > 0) {
+			$queryString = '';
+			foreach ($query as $key => $value) {
+				$queryString .= ($queryString ? '&' : '?') . rawurlencode($key) . '=' . rawurlencode($value);
+			}			
+			$requestUrl .= $queryString;
+		}
 
 		// Prepare request 
 		$this->_httpClientChannel->resetParameters(true);
@@ -292,28 +295,6 @@ class Microsoft_SqlAzure_Management_Client
         
         return $xml;
 	}
-	
-	/**
-	 * URL encode function
-	 * 
-	 * @param  string $value Value to encode
-	 * @return string        Encoded value
-	 */
-	public static function urlencode($value)
-	{
-	    return str_replace(' ', '%20', $value);
-	}
-	
-    /**
-     * Builds a query string from an array of elements
-     * 
-     * @param array     Array of elements
-     * @return string   Assembled query string
-     */
-    public static function createQueryStringFromArray($queryString)
-    {
-    	return count($queryString) > 0 ? '?' . implode('&', $queryString) : '';
-    }
     
 	/**
 	 * Get error message from Microsoft_Http_Response
@@ -353,7 +334,7 @@ class Microsoft_SqlAzure_Management_Client
     		throw new Microsoft_SqlAzure_Management_Exception('Please specify a location for the server.');
     	}
     	
-        $response = $this->_performRequest(self::OP_SERVERS, '',
+        $response = $this->_performRequest(self::OP_SERVERS, array(),
     		Microsoft_Http_Client::POST,
     		array('Content-Type' => 'application/xml; charset=utf-8'),
     		'<Server xmlns="http://schemas.microsoft.com/sqlazure/2010/12/"><AdministratorLogin>' . $administratorLogin . '</AdministratorLogin><AdministratorLoginPassword>' . $administratorPassword . '</AdministratorLoginPassword><Location>' . $location . '</Location></Server>');
@@ -422,7 +403,7 @@ class Microsoft_SqlAzure_Management_Client
     		throw new Microsoft_SqlAzure_Management_Exception('Server name should be specified.');
     	}
     	
-        $response = $this->_performRequest(self::OP_SERVERS . '/' . $serverName, '', Microsoft_Http_Client::DELETE);
+        $response = $this->_performRequest(self::OP_SERVERS . '/' . $serverName, array(), Microsoft_Http_Client::DELETE);
 
     	if (!$response->isSuccessful()) {
 			throw new Microsoft_SqlAzure_Management_Exception($this->_getErrorMessage($response, 'Resource could not be accessed.'));
@@ -445,7 +426,7 @@ class Microsoft_SqlAzure_Management_Client
     		throw new Microsoft_SqlAzure_Management_Exception('Administrator password should be specified.');
     	}
     	
-        $response = $this->_performRequest(self::OP_SERVERS . '/' . $serverName, '?op=ResetPassword',
+        $response = $this->_performRequest(self::OP_SERVERS . '/' . $serverName, array('op' => 'ResetPassword'),
     		Microsoft_Http_Client::POST,
     		array('Content-Type' => 'application/xml; charset=utf-8'),
     		'<AdministratorLoginPassword xmlns="http://schemas.microsoft.com/sqlazure/2010/12/">' . $administratorPassword . '</AdministratorLoginPassword>');
@@ -480,7 +461,7 @@ class Microsoft_SqlAzure_Management_Client
     		throw new Microsoft_SqlAzure_Management_Exception('End IP address should be specified.');
     	}
     	
-        $response = $this->_performRequest(self::OP_SERVERS . '/' . $serverName . '/' . self::OP_FIREWALLRULES . '/' . $ruleName, '',
+        $response = $this->_performRequest(self::OP_SERVERS . '/' . $serverName . '/' . self::OP_FIREWALLRULES . '/' . $ruleName, array(),
     		Microsoft_Http_Client::PUT,
     		array('Content-Type' => 'application/xml; charset=utf-8'),
     		'<FirewallRule xmlns="http://schemas.microsoft.com/sqlazure/2010/12/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.microsoft.com/sqlazure/2010/12/ FirewallRule.xsd"><StartIpAddress>' . $startIpAddress . '</StartIpAddress><EndIpAddress>' . $endIpAddress . '</EndIpAddress></FirewallRule>');
@@ -556,7 +537,7 @@ class Microsoft_SqlAzure_Management_Client
     		throw new Microsoft_SqlAzure_Management_Exception('Rule name should be specified.');
     	}
     	
-        $response = $this->_performRequest(self::OP_SERVERS . '/' . $serverName . '/' . self::OP_FIREWALLRULES . '/' . $ruleName, '',
+        $response = $this->_performRequest(self::OP_SERVERS . '/' . $serverName . '/' . self::OP_FIREWALLRULES . '/' . $ruleName, array(),
     		Microsoft_Http_Client::DELETE);
 
     	if (!$response->isSuccessful()) {

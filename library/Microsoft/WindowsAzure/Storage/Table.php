@@ -129,14 +129,13 @@ class Microsoft_WindowsAzure_Storage_Table
 	public function listTables($nextTableName = '')
 	{
 	    // Build query string
-		$queryString = array();
+		$query = array();
 	    if ($nextTableName != '') {
-	        $queryString[] = 'NextTableName=' . $nextTableName;
+	        $query['NextTableName'] = $nextTableName;
 	    }
-	    $queryString = self::createQueryStringFromArray($queryString);
 	    
 		// Perform request
-		$response = $this->_performRequest('Tables', $queryString, Microsoft_Http_Client::GET, null, true);
+		$response = $this->_performRequest('Tables', $query, Microsoft_Http_Client::GET, null, true);
 		if ($response->isSuccessful()) {	    
 		    // Parse result
 		    $result = $this->_parseResponse($response);	
@@ -223,7 +222,7 @@ class Microsoft_WindowsAzure_Storage_Table
         $headers['MaxDataServiceVersion'] = '1.0;NetFx';        
 
 		// Perform request
-		$response = $this->_performRequest('Tables', '', Microsoft_Http_Client::POST, $headers, true, $requestBody);
+		$response = $this->_performRequest('Tables', array(), Microsoft_Http_Client::POST, $headers, true, $requestBody);
 		if ($response->isSuccessful()) {
 		    // Parse response
 		    $entry = $this->_parseResponse($response);
@@ -272,7 +271,7 @@ class Microsoft_WindowsAzure_Storage_Table
         $headers['Content-Type'] = 'application/atom+xml';
 
 		// Perform request
-		$response = $this->_performRequest('Tables(\'' . $tableName . '\')', '', Microsoft_Http_Client::DELETE, $headers, true, null);
+		$response = $this->_performRequest('Tables(\'' . $tableName . '\')', array(), Microsoft_Http_Client::DELETE, $headers, true, null);
 		if (!$response->isSuccessful()) {
 			throw new Microsoft_WindowsAzure_Exception($this->_getErrorMessage($response, 'Resource could not be accessed.'));
 		}
@@ -323,10 +322,10 @@ class Microsoft_WindowsAzure_Storage_Table
 		// Perform request
 	    $response = null;
 	    if ($this->isInBatch()) {
-		    $this->getCurrentBatch()->enlistOperation($tableName, '', Microsoft_Http_Client::POST, $headers, true, $requestBody);
+		    $this->getCurrentBatch()->enlistOperation($tableName, array(), Microsoft_Http_Client::POST, $headers, true, $requestBody);
 		    return null;
 		} else {
-		    $response = $this->_performRequest($tableName, '', Microsoft_Http_Client::POST, $headers, true, $requestBody);
+		    $response = $this->_performRequest($tableName, array(), Microsoft_Http_Client::POST, $headers, true, $requestBody);
 		}
 		if ($response->isSuccessful()) {
 		    // Parse result
@@ -381,10 +380,10 @@ class Microsoft_WindowsAzure_Storage_Table
 		// Perform request
 	    $response = null;
 	    if ($this->isInBatch()) {
-		    $this->getCurrentBatch()->enlistOperation($tableName . '(PartitionKey=\'' . $entity->getPartitionKey() . '\', RowKey=\'' . $entity->getRowKey() . '\')', '', Microsoft_Http_Client::DELETE, $headers, true, null);
+		    $this->getCurrentBatch()->enlistOperation($tableName . '(PartitionKey=\'' . $entity->getPartitionKey() . '\', RowKey=\'' . $entity->getRowKey() . '\')', array(), Microsoft_Http_Client::DELETE, $headers, true, null);
 		    return null;
 		} else {
-		    $response = $this->_performRequest($tableName . '(PartitionKey=\'' . $entity->getPartitionKey() . '\', RowKey=\'' . $entity->getRowKey() . '\')', '', Microsoft_Http_Client::DELETE, $headers, true, null);
+		    $response = $this->_performRequest($tableName . '(PartitionKey=\'' . $entity->getPartitionKey() . '\', RowKey=\'' . $entity->getRowKey() . '\')', array(), Microsoft_Http_Client::DELETE, $headers, true, null);
 		}
 		if (!$response->isSuccessful()) {
 		    throw new Microsoft_WindowsAzure_Exception($this->_getErrorMessage($response, 'Resource could not be accessed.'));
@@ -483,7 +482,7 @@ class Microsoft_WindowsAzure_Storage_Table
 		}
 			
 		// Query string
-		$queryString = '';
+		$query = array();
 
 		// Determine query
 		if (is_string($tableName)) {
@@ -499,40 +498,30 @@ class Microsoft_WindowsAzure_Storage_Table
     	    
     		// Filter?
     		if ($filter !== '') {
-    		    $query[] = '$filter=' . Microsoft_WindowsAzure_Storage_TableEntityQuery::encodeQuery($filter);
+    		    $query['$filter'] = $filter;
     		}
-    		    
-    	    // Build queryString
-    	    if (count($query) > 0)  {
-    	        $queryString = '?' . implode('&', $query);
-    	    }
 		} else if (get_class($tableName) == 'Microsoft_WindowsAzure_Storage_TableEntityQuery') {
 		    // Option 2: $tableName is a Microsoft_WindowsAzure_Storage_TableEntityQuery instance
 
-		    // Build queryString
-		    $queryString = $tableName->assembleQueryString(true);
+		    // Build query
+		    $query = $tableName->assembleQuery();
 
 		    // Change $tableName
-		    $tableName = $tableName->assembleFrom(true);
+		    $tableName = $tableName->assembleFrom();
 		} else {
 		    throw new Microsoft_WindowsAzure_Exception('Invalid argument: $tableName');
 		}
 		
 		// Add continuation querystring parameters?
 		if (!is_null($nextPartitionKey) && !is_null($nextRowKey)) {
-		    if ($queryString !== '') {
-		        $queryString .= '&';
-		    } else {
-		    	$queryString .= '?';
-		    }
-		        
-		    $queryString .= 'NextPartitionKey=' . rawurlencode($nextPartitionKey) . '&NextRowKey=' . rawurlencode($nextRowKey);
+		    $query['NextPartitionKey'] = $nextPartitionKey;
+		    $query['NextRowKey'] = $nextRowKey;
 		}
 
 		// Perform request
 	    $response = null;
 	    if ($this->isInBatch() && $this->getCurrentBatch()->getOperationCount() == 0) {
-		    $this->getCurrentBatch()->enlistOperation($tableName, $queryString, Microsoft_Http_Client::GET, array(), true, null);
+		    $this->getCurrentBatch()->enlistOperation($tableName, $query, Microsoft_Http_Client::GET, array(), true, null);
 		    $response = $this->getCurrentBatch()->commit();
 		    
 		    // Get inner response (multipart)
@@ -541,7 +530,7 @@ class Microsoft_WindowsAzure_Storage_Table
 		    $innerResponse = substr($innerResponse, 0, strpos($innerResponse, '--batchresponse'));
 		    $response = Microsoft_Http_Response::fromString($innerResponse);
 		} else {
-		    $response = $this->_performRequest($tableName, $queryString, Microsoft_Http_Client::GET, array(), true, null);
+		    $response = $this->_performRequest($tableName, $query, Microsoft_Http_Client::GET, array(), true, null);
 		}
 
 		if ($response->isSuccessful()) {
@@ -601,7 +590,7 @@ class Microsoft_WindowsAzure_Storage_Table
 
 			// More entities?
 		    if (!is_null($response->getHeader('x-ms-continuation-NextPartitionKey')) && !is_null($response->getHeader('x-ms-continuation-NextRowKey'))) {
-		        if (strpos($queryString, '$top') === false) {
+		        if (!isset($query['$top'])) {
 		            $returnValue = array_merge($returnValue, $this->retrieveEntities($tableName, $filter, $entityClass, $response->getHeader('x-ms-continuation-NextPartitionKey'), $response->getHeader('x-ms-continuation-NextRowKey')));
 		        }
 		    }
@@ -740,10 +729,10 @@ class Microsoft_WindowsAzure_Storage_Table
 		// Perform request
 		$response = null;
 	    if ($this->isInBatch()) {
-		    $this->getCurrentBatch()->enlistOperation($tableName . '(PartitionKey=\'' . $entity->getPartitionKey() . '\', RowKey=\'' . $entity->getRowKey() . '\')', '', $httpVerb, $headers, true, $requestBody);
+		    $this->getCurrentBatch()->enlistOperation($tableName . '(PartitionKey=\'' . $entity->getPartitionKey() . '\', RowKey=\'' . $entity->getRowKey() . '\')', array(), $httpVerb, $headers, true, $requestBody);
 		    return null;
 		} else {
-		    $response = $this->_performRequest($tableName . '(PartitionKey=\'' . $entity->getPartitionKey() . '\', RowKey=\'' . $entity->getRowKey() . '\')', '', $httpVerb, $headers, true, $requestBody);
+		    $response = $this->_performRequest($tableName . '(PartitionKey=\'' . $entity->getPartitionKey() . '\', RowKey=\'' . $entity->getRowKey() . '\')', array(), $httpVerb, $headers, true, $requestBody);
 		}
 		if ($response->isSuccessful()) {
 		    // Update properties
@@ -824,7 +813,7 @@ class Microsoft_WindowsAzure_Storage_Table
 	 * Perform request using Microsoft_Http_Client channel
 	 *
 	 * @param string $path Path
-	 * @param string $queryString Query string
+	 * @param array $query Query parameters
 	 * @param string $httpVerb HTTP verb the request will use
 	 * @param array $headers x-ms headers to add
 	 * @param boolean $forTableStorage Is the request for table storage?
@@ -835,7 +824,7 @@ class Microsoft_WindowsAzure_Storage_Table
 	 */
 	protected function _performRequest(
 		$path = '/',
-		$queryString = '',
+		$query = array(),
 		$httpVerb = Microsoft_Http_Client::GET,
 		$headers = array(),
 		$forTableStorage = false,
@@ -850,7 +839,7 @@ class Microsoft_WindowsAzure_Storage_Table
 		// Perform request
 		return parent::_performRequest(
 			$path,
-			$queryString,
+			$query,
 			$httpVerb,
 			$headers,
 			$forTableStorage,

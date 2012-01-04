@@ -120,6 +120,13 @@ class Microsoft_WindowsAzure_SessionHandler
 	}
 	
 	/**
+	 * Object destructor
+	 */
+	public function __destruct() {
+		session_write_close();
+	}
+	
+	/**
 	 * Registers the current session handler as PHP's session handler
 	 * 
 	 * @return boolean

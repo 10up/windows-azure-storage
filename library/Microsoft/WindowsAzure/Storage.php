@@ -30,7 +30,7 @@
  * @subpackage Storage
  * @copyright  Copyright (c) 2009 - 2011, RealDolmen (http://www.realdolmen.com)
  * @license    http://phpazure.codeplex.com/license
- * @version    $Id: Storage.php 64671 2011-08-14 11:11:13Z unknown $
+ * @version    $Id: Storage.php 66505 2011-12-02 08:45:51Z unknown $
  */
 
 /**
@@ -361,10 +361,64 @@ class Microsoft_WindowsAzure_Storage
 	}
 	
 	/**
+	 * Returns the properties of a storage service. 
+	 * Service properties include Logging (no connection with the logging components of this SDK) 
+	 * and Metrics details.
+	 * Returned strucutre:
+	 * array(
+	 *   '<Area>' => array('<Property>' => string|array)
+	 * );
+	 * <Area> can be: Logging, Metrics or other service areas.
+	 * 
+	 * @return array
+	 */
+	public function getServiceProperties()
+	{
+		// Perform request
+		$response = $this->_performRequest('/', '?restype=service&comp=properties');
+		if (!$response->isSuccessful()) {
+			throw new Microsoft_WindowsAzure_Exception($this->_getErrorMessage(
+				$response, 'Cannot obtain service properties.'
+			));
+		}
+		
+		// turn the response from a SimpleXML object to an array
+		$parsedResponse = $this->_parseResponse($response);
+		
+		$returnArray = array();
+		foreach ($parsedResponse as $key => $propertyAsXmlNode) {
+			$returnArray[$key] = $this->_parseServicePropertyResponseNode($propertyAsXmlNode);
+		}
+		
+		return $returnArray;
+	}
+	
+	/**
+	 * Parses a node of the service property response. A node is a direct child of the root
+	 * element (StorageServiceProperties). 
+	 * Returns the array representation of that node.
+	 * 
+	 * @param $responseNode
+	 * @return array
+	 */
+	protected function _parseServicePropertyResponseNode($responseNode)
+	{
+		if ($responseNode->count() > 0) {
+			$returnArray = array();
+			foreach ($responseNode as $key => $childNode) {
+				$returnArray[$key] = $this->_parseServicePropertyResponseNode($childNode);
+			}
+			return $returnArray;
+		} else {
+			return (string)$responseNode;
+		}
+	}
+	
+	/**
 	 * Perform request using Microsoft_Http_Client channel
 	 *
 	 * @param string $path Path
-	 * @param string $queryString Query string
+	 * @param array $query Query parameters
 	 * @param string $httpVerb HTTP verb the request will use
 	 * @param array $headers x-ms headers to add
 	 * @param boolean $forTableStorage Is the request for table storage?
@@ -375,7 +429,7 @@ class Microsoft_WindowsAzure_Storage
 	 */
 	protected function _performRequest(
 		$path = '/',
-		$queryString = '',
+		$query = array(),
 		$httpVerb = Microsoft_Http_Client::GET,
 		$headers = array(),
 		$forTableStorage = false,
@@ -404,15 +458,22 @@ class Microsoft_WindowsAzure_Storage
 		// Add version header
 		$headers['x-ms-version'] = $this->_apiVersion;
 		    
-		// URL encoding
-		$path           = self::urlencode($path);
-		$queryString    = self::urlencode($queryString);
-
-		// Generate URL and sign request
+		// Generate URL
+		$path = str_replace(' ', '%20', $path);
+		$requestUrl = $this->getBaseUrl() . $path;
+		if (count($query) > 0) {
+			$queryString = '';
+			foreach ($query as $key => $value) {
+				$queryString .= ($queryString ? '&' : '?') . rawurlencode($key) . '=' . rawurlencode($value);
+			}			
+			$requestUrl .= $queryString;
+		}
+		
+		// Sign request
 		$requestUrl     = $this->_credentials
-						  ->signRequestUrl($this->getBaseUrl() . $path . $queryString, $resourceType, $requiredPermission);
+						  ->signRequestUrl($requestUrl, $resourceType, $requiredPermission);
 		$requestHeaders = $this->_credentials
-						  ->signRequestHeaders($httpVerb, $path, $queryString, $headers, $forTableStorage, $resourceType, $requiredPermission, $rawData);
+						  ->signRequestHeaders($httpVerb, $path, $query, $headers, $forTableStorage, $resourceType, $requiredPermission, $rawData);
 
 		// Prepare request 
 		$this->_httpClientChannel->resetParameters(true);
@@ -548,17 +609,6 @@ class Microsoft_WindowsAzure_Storage
 	}
 	
 	/**
-	 * URL encode function
-	 * 
-	 * @param  string $value Value to encode
-	 * @return string        Encoded value
-	 */
-	public static function urlencode($value)
-	{
-	    return str_replace(' ', '%20', $value);
-	}
-	
-	/**
 	 * Is valid metadata name?
 	 *
 	 * @param string $metadataName Metadata name
@@ -576,19 +626,4 @@ class Microsoft_WindowsAzure_Storage
 
         return true;
     }
-    
-    /**
-     * Builds a query string from an array of elements
-     * 
-     * @param array     Array of elements
-     * @return string   Assembled query string
-     */
-    public static function createQueryStringFromArray($queryString)
-    {
-		if (!is_array($queryString)) {
-			throw new Microsoft_WindowsAzure_Exception(__METHOD__ . ' should be given an array as param.');
-		}
-
-    	return count($queryString) > 0 ? '?' . implode('&', $queryString) : '';
-    }	
 }

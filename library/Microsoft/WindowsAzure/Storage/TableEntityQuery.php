@@ -33,6 +33,7 @@
  * @version    $Id: Blob.php 14561 2009-05-07 08:05:12Z unknown $
  */
 
+     
 /**
  * @category   Microsoft
  * @package    Microsoft_WindowsAzure
@@ -206,39 +207,34 @@ class Microsoft_WindowsAzure_Storage_TableEntityQuery
     }
 	
     /**
-     * Assembles the query string
+     * Assembles the query 
      * 
-     * @param boolean $urlEncode Apply URL encoding to the query string
-     * @return string
+     * @return array
      */
-	public function assembleQueryString($urlEncode = false)
+	public function assembleQuery()
 	{
 		$query = array();
 		if (count($this->_where) != 0) {
 		    $filter = implode('', $this->_where);
-			$query[] = '$filter=' . ($urlEncode ? self::encodeQuery($filter) : $filter);
+			$query['$filter'] = $filter;
 		}
 		
 		if (count($this->_orderBy) != 0) {
 		    $orderBy = implode(',', $this->_orderBy);
-			$query[] = '$orderby=' . ($urlEncode ? self::encodeQuery($orderBy) : $orderBy);
+			$query['$orderby'] = $orderBy;
 		}
 		
 		if (!is_null($this->_top)) {
-			$query[] = '$top=' . $this->_top;
+			$query['$top'] = $this->_top;
 		}
 		
-		if (count($query) != 0) {
-			return '?' . implode('&', $query);
-		}
-		
-		return '';
+		return $query;
 	}
 	
 	/**
 	 * Assemble from
 	 * 
-	 * @param boolean $includeParentheses Include parentheses? ()
+	 * @param boolean $includeParentheses
 	 * @return string
 	 */
 	public function assembleFrom($includeParentheses = true)
@@ -248,7 +244,7 @@ class Microsoft_WindowsAzure_Storage_TableEntityQuery
 	        $identifier .= '(';
 	        
 	        if (!is_null($this->_partitionKey)) {
-	            $identifier .= 'PartitionKey=\'' . self::encodeQuery($this->_partitionKey) . '\'';
+	            $identifier .= 'PartitionKey=\'' . rawurlencode($this->_partitionKey) . '\'';
 	        }
 	            
 	        if (!is_null($this->_partitionKey) && !is_null($this->_rowKey)) {
@@ -256,7 +252,7 @@ class Microsoft_WindowsAzure_Storage_TableEntityQuery
 	        }
 	            
 	        if (!is_null($this->_rowKey)) {
-	            $identifier .= 'RowKey=\'' . self::encodeQuery($this->_rowKey) . '\'';
+	            $identifier .= 'RowKey=\'' . rawurlencode($this->_rowKey) . '\'';
 	        }
 	            
 	        $identifier .= ')';
@@ -269,12 +265,16 @@ class Microsoft_WindowsAzure_Storage_TableEntityQuery
 	 * 
 	 * @return string
 	 */
-	public function assembleQuery()
+	public function assemble()
 	{
 		$assembledQuery = $this->assembleFrom();
 		
-		$queryString = $this->assembleQueryString();
-		if ($queryString !== '') {
+		$query = $this->assembleQuery();
+		if (count($query) > 0) {
+			$queryString = '';
+			foreach ($query as $key => $value) {
+				$queryString .= ($queryString ? '&' : '?') . rawurlencode($key) . '=' . rawurlencode($value);
+			}			
 			$assembledQuery .= $queryString;
 		}
 		
@@ -328,37 +328,12 @@ class Microsoft_WindowsAzure_Storage_TableEntityQuery
 	}
 	
 	/**
-	 * urlencode a query
-	 * 
-	 * @param string $query Query to encode
-	 * @return string Encoded query
-	 */
-	public static function encodeQuery($query)
-	{
-		$query = str_replace('/', '%2F', $query);
-		$query = str_replace('?', '%3F', $query);
-		$query = str_replace(':', '%3A', $query);
-		$query = str_replace('@', '%40', $query);
-		$query = str_replace('&', '%26', $query);
-		$query = str_replace('=', '%3D', $query);
-		$query = str_replace('+', '%2B', $query);
-		$query = str_replace(',', '%2C', $query);
-		$query = str_replace('$', '%24', $query);
-		$query = str_replace('{', '%7B', $query);
-		$query = str_replace('}', '%7D', $query);
-
-		$query = str_replace(' ', '%20', $query);
-		
-		return $query;
-	}
-	
-	/**
 	 * __toString overload
 	 * 
 	 * @return string
 	 */
 	public function __toString()
 	{
-		return $this->assembleQuery();
+		return $this->assemble();
 	}
 }

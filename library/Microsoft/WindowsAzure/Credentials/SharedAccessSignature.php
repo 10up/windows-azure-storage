@@ -287,7 +287,7 @@ class Microsoft_WindowsAzure_Credentials_SharedAccessSignature
 	 *
 	 * @param string $httpVerb HTTP verb the request will use
 	 * @param string $path Path for the request
-	 * @param string $queryString Query string for the request
+	 * @param array $query Query arguments for the request (key/value pairs)
 	 * @param array $headers x-ms headers to add
 	 * @param boolean $forTableStorage Is the request for table storage?
 	 * @param string $resourceType Resource type
@@ -298,7 +298,7 @@ class Microsoft_WindowsAzure_Credentials_SharedAccessSignature
 	public function signRequestHeaders(
 		$httpVerb = Microsoft_Http_Client::GET,
 		$path = '/',
-		$queryString = '',
+		$query = array(),
 		$headers = null,
 		$forTableStorage = false,
 		$resourceType = Microsoft_WindowsAzure_Storage::RESOURCE_UNKNOWN,

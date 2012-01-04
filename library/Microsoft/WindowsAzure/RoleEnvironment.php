@@ -60,10 +60,6 @@ class Microsoft_WindowsAzure_RoleEnvironment
 	 */
 	public static function isAvailable()
 	{
-		if (self::isDevFabric()) {
-			return true;
-		}
-		
 		$value = strtolower(self::_runCommand('IsAvailable'));
 		return $value == 'true';
 	}
@@ -75,8 +71,8 @@ class Microsoft_WindowsAzure_RoleEnvironment
 	 */
 	public static function isDevFabric()
 	{
-		return isset($_SERVER['_DF_STATE_DIRECTORY']) || isset($_ENV['_DF_STATE_DIRECTORY'])
-			|| (isset($_SERVER['INSTANCE_NAME']) && strpos(strtolower($_SERVER['INSTANCE_NAME']), 'deployment(') !== false);
+		$value = strtolower(self::_runCommand('IsEmulated'));
+		return $value == 'true';
 	}
 	
 	/**

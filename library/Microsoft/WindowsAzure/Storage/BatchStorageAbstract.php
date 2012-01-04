@@ -129,9 +129,8 @@ abstract class Microsoft_WindowsAzure_Storage_BatchStorageAbstract
 		// Add content-type header
 		$headers['Content-Type'] = 'multipart/mixed; boundary=' . $batchBoundary;
 
-		// Set path and query string
+		// Set path
 		$path           = '/$batch';
-		$queryString    = '';
 		
 		// Set verb
 		$httpVerb = Microsoft_Http_Client::POST;
@@ -165,8 +164,8 @@ abstract class Microsoft_WindowsAzure_Storage_BatchStorageAbstract
 		}
 
 		// Generate URL and sign request
-		$requestUrl     = $this->_credentials->signRequestUrl($this->getBaseUrl() . $path . $queryString, $resourceType, $requiredPermission);
-		$requestHeaders = $this->_credentials->signRequestHeaders($httpVerb, $path, $queryString, $headers, $forTableStorage, $resourceType, $requiredPermission);
+		$requestUrl     = $this->_credentials->signRequestUrl($this->getBaseUrl() . $path, $resourceType, $requiredPermission);
+		$requestHeaders = $this->_credentials->signRequestHeaders($httpVerb, $path, array(), $headers, $forTableStorage, $resourceType, $requiredPermission);
 
 		// Prepare request
 		$this->_httpClientChannel->resetParameters(true);

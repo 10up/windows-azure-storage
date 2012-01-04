@@ -256,8 +256,9 @@ class Microsoft_Console_Command
 						$commands[] = substr($method->getName(), 0, -7); 
 					}
 			       	for ($x = 0; $x < count($commands); $x++) {
-			       		$commands[$x] = strtolower($commands[$x]); 
+			       		$commands[$x] = strtolower($commands[$x]);
 			       	}
+			       	$commands = array_unique($commands);
 			       	$commandDescriptions = self::_findValueForDocComment('@command-description', $method->getDocComment());
 			       	$commandExamples = self::_findValueForDocComment('@command-example', $method->getDocComment());
 			       	
@@ -274,7 +275,7 @@ class Microsoft_Console_Command
 							'method'      => $method->getName(),
 							'parameters'  => array()
 						);
-						
+
 						$parameters = $method->getParameters();
 						$parametersFor = self::_findValueForDocComment('@command-parameter-for', $method->getDocComment());
 						for ($pi = 0; $pi < count($parameters); $pi++) {
