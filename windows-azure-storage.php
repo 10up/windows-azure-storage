@@ -196,13 +196,25 @@ function windows_azure_storage_wp_update_attachment_metadata($data, $postID)
         
     // Get full file path of uploaded file
     $uploadFileName = get_attached_file($postID, true);
+
+    // If attachment metadata is empty (for video), generate correct blob names
+    if (empty($data)) {
+        // Get upload directory
+        $uploadDir = wp_upload_dir();
+        if ($uploadDir['subdir']{0} == "/" ) {
+            $uploadDir['subdir'] = substr($uploadDir['subdir'], 1);
+        }
+
+        // Prepare blob name
+        $relativeFileName = $uploadDir['subdir'] . "/" . basename($uploadFileName);
+    } else {
+        // Prepare blob name
+        $relativeFileName = $data['file'];
+    }
     
     try {
-        // Cache relative file name
-        $relativeFileName = $data['file'];
-
         // Get full file path of uploaded file
-        $data['file'] = get_attached_file($postID, true);
+        $data['file'] = $uploadFileName;
 
         // Get mime-type of the file and prepare additional properties 
         // array for setting content type of the blob to be uploaded

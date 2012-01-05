@@ -4,7 +4,7 @@
  * 
  * Shows popup dialog when clicked on the Windows Azure Toolbar 
  * 
- * Version: 1.5
+ * Version: 1.6
  * 
  * Author: Microsoft
  * 

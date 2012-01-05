@@ -30,6 +30,9 @@ e.g. if WordPress is installed in "/var/www/html/wordpress" directory, extract t
 1. To activate the plugin, log in into the WordPress as administrator and navigate to list of plugins. Then check the associated checkbox for the plugin and click on "Activate" link.
 
 == Changelog ==
+= 1.6 =
+* Added support to upload video files to blob storage
+
 = 1.5 =
 * Included Windows Azure SDK for PHP v4.1.0 with the plugin. Now setting mime-type for uploaded file to blob storage.
 
