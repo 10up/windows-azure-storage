@@ -4,7 +4,7 @@
  * 
  * Various utility functions for accessing Windows Azure Storage
  * 
- * Version: 1.7
+ * Version: 1.8
  * 
  * Author: Microsoft
  * 
@@ -81,6 +81,9 @@ class WindowsAzureStorageUtil
         if (substr($hostName, 0, 4) == "http") {
             $parts = parse_url($hostName);
             $hostName = $parts["host"];
+            if (!empty($parts["port"])) {
+                $hostName = $hostName . ":" . $parts["port"];
+            }
         }
 
         return $hostName;
