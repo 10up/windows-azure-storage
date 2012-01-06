@@ -6,7 +6,7 @@
  * 
  * Description: This WordPress plugin allows you to use Windows Azure Storage Service to host your media for your WordPress powered blog.
  * 
- * Version: 1.8
+ * Version: 1.9
  * 
  * Author: Microsoft
  * 
@@ -56,8 +56,8 @@
  *
  * Currently the library folder includes Windows Azure SDK for PHP v4.1.0
  */
-if(!class_exists('Microsoft_WindowsAzure_Storage_Blob')) {
-    require_once('library/Microsoft/Autoloader.php');
+if (!class_exists('Microsoft_WindowsAzure_Storage_Blob')) {
+    require_once 'library/Microsoft/AutoLoader.php';
 }
 
 // Check prerequisite for plugin

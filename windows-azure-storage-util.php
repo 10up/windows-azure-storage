@@ -4,7 +4,7 @@
  * 
  * Various utility functions for accessing Windows Azure Storage
  * 
- * Version: 1.8
+ * Version: 1.9
  * 
  * Author: Microsoft
  * 
