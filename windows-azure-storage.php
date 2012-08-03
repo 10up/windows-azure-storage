@@ -6,71 +6,101 @@
  * 
  * Description: This WordPress plugin allows you to use Windows Azure Storage Service to host your media for your WordPress powered blog.
  * 
- * Version: 1.9
+ * Version: 2.0
  * 
- * Author: Microsoft
+ * Author: Microsoft Open Technologies, Inc.
  * 
  * Author URI: http://www.microsoft.com/
  * 
  * License: New BSD License (BSD)
  * 
- * Copyright (c) 2012, Microsoft Corporation. All Rights Reserved.
+ * Copyright (c) Microsoft Open Technologies, Inc.
+ * All rights reserved. 
  * Redistribution and use in source and binary forms, with or without modification, 
- * are permitted provided that the following conditions are met:
- * 
- * Redistributions of source code must retain the above copyright notice, this 
- * list of conditions and the following disclaimer.
- * 
+ * are permitted provided that the following conditions are met: 
+ * Redistributions of source code must retain the above copyright notice, this list 
+ * of conditions and the following disclaimer. 
  * Redistributions in binary form must reproduce the above copyright notice, this 
- * list of conditions and the following disclaimer in the documentation and/or 
- * other materials provided with the distribution.
- * 
- * Neither the name of Persistent Systems Ltd. nor the names of its contributors 
- * may be used to endorse or promote products derived from this software without 
- * specific prior written permission.
- * 
+ * list of conditions  and the following disclaimer in the documentation and/or 
+ * other materials provided with the distribution. 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR 
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A  PARTICULAR PURPOSE ARE 
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR 
  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS 
- * OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY 
+ * OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER CAUSED AND ON ANY 
  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
- * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
- * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN 
+ * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  * PHP Version 5
  * 
  * @category  WordPress_Plugin
  * @package   Windows_Azure_Storage_For_WordPress
- * @author    Satish Nikam <v-sanika@microsoft.com>
- * @copyright 2012 Copyright © Microsoft Corporation. All Rights Reserved
- * @license   New BSD License (BSD)
+ * @author    Microsoft Open Technologies, Inc. <msopentech@microsoft.com>
+ * @copyright Microsoft Open Technologies, Inc.
+ * @license   New BSD license, (http://www.opensource.org/licenses/bsd-license.php)
  * @link      http://www.microsoft.com
  */
 
 /**
- * Add Windows Azure SDK for PHP into include_path for PHP runtime
- * This SDK provide access to underlying Windows Azure Blob Storage
- *
- * Currently the library folder includes Windows Azure SDK for PHP v4.1.0
+ * 'Windows Azure SDK for PHP v<TODO>' and its dependencies are included 
+ * in the library directory, this will override 'Windows Azure SDK
+ * for PHP' is already installed in the machine if USESDKINSTALLEDGLOBALLY
+ * is not defined.
+ * 'Windows Azure SDK for PHP' provide access to underlying Windows Azure 
+ * Blob Storage
+ * https://github.com/windowsazure/azure-sdk-for-php/
  */
-if (!class_exists('Microsoft_WindowsAzure_Storage_Blob')) {
-    require_once 'library/Microsoft/AutoLoader.php';
-}
 
-// Check prerequisite for plugin
-register_activation_hook(__FILE__, 'check_prerequisite'); 
+require_once "library/WindowsAzure/WindowsAzure.php";
+// include path to dependencies in the include_path
+$path = dirname(__FILE__) . '/library/dependencies';
+set_include_path(get_include_path() . PATH_SEPARATOR . $path);
+
+// import namepaces required for consuming Azure Blob Storage
+use WindowsAzure\Blob\BlobService;
+use WindowsAzure\Blob\BlobSettings;
+use WindowsAzure\Blob\Models\CreateContainerOptions;
+use WindowsAzure\Blob\Models\PublicAccessType;
+use WindowsAzure\Common\ServiceException;
+use WindowsAzure\Common\ServicesBuilder;
+use windowsazure\common\internal\resources;
+use WindowsAzure\Blob\Models\Block;
+use WindowsAzure\Blob\Models\BlobBlockType;
+use WindowsAzure\Blob\Models\CreateBlobOptions;
+use WindowsAzure\Blob\Models\CommitBlobBlocksOptions;
+use WindowsAzure\Blob\Models\ContainerAcl;
 
 require_once 'windows-azure-storage-settings.php';
 require_once 'windows-azure-storage-dialog.php';
 require_once 'windows-azure-storage-util.php';
 
+// Check prerequisite for plugin
+register_activation_hook(__FILE__, 'check_prerequisite');
+
 add_action('admin_menu', 'windows_azure_storage_plugin_menu');
 add_filter('media_buttons_context', 'windows_azure_storage_media_buttons_context');
 
-// Add three tabs to the Windows Azure Storage Dialog
+/**
+ * Define and return tabs for Windows Azure Storage Dialog.
+ *
+ * @param array  $tabs  Array of existing tabs.
+ *
+ * @return array Returns array of new tabs
+ */
+function azure_storage_media_menu($tabs) {
+  $newtab = array('browse' => __('Browse', 'storagebrowse'),
+      'search' => __('Search', 'storagesearch'),
+      'upload' => __('Upload', 'storageupload'));
+  return array_merge($tabs, $newtab);
+}
+
+// Hook for adding tabs
+add_filter('media_upload_tabs', 'azure_storage_media_menu');
+
+// Add callback for three tabs in the Windows Azure Storage Dialog
 add_action("media_upload_browse", "browse_tab");
 add_action("media_upload_search", "search_tab");
 add_action("media_upload_upload", "upload_tab");
@@ -118,15 +148,16 @@ add_action('delete_attachment', 'windows_azure_storage_delete_attachment');
  */ 
 function check_prerequisite()
 {
-    // Check for Windows Azure SDK for PHP
-    if (class_exists('Microsoft_WindowsAzure_Storage_Blob')) {
+    $windowsAzureFilePath = "../wp-content/plugins/windows-azure-storage/library/WindowsAzure/WindowsAzure.php";
+        if ((file_exists($windowsAzureFilePath) === true) && (is_readable($windowsAzureFilePath) === true)) {
         return;
     }
 
     // Windows Azure SDK for PHP is not available
-    $message = '<p style="color: red"><a href="http://phpazure.codeplex.com/">'
-        . 'Windows Azure SDK for PHP</a> is not available in the include_path. ' 
-        . 'Please install the SDK and update include_path in php.ini.</p>';
+    $message = '<p style="color: red"><a href="https://github.com/windowsazure/azure-sdk-for-php/">'
+        . 'Windows Azure SDK for PHP</a> is not found. ' 
+        . 'Please download and copy the Windows Azure SDK for PHP to library directory and dependencies to '
+        . 'to dependencies directory </p>';
 
     if (function_exists('deactivate_plugins')) { 
         deactivate_plugins(__FILE__); 
@@ -190,10 +221,8 @@ function windows_azure_storage_wp_get_attachment_metadata($data, $postID)
  */
 function windows_azure_storage_wp_update_attachment_metadata($data, $postID)
 {
-    $storageClient = WindowsAzureStorageUtil::getStorageClient();
     $default_azure_storage_account_container_name 
         = WindowsAzureStorageUtil::getDefaultContainer();
-        
     // Get full file path of uploaded file
     $uploadFileName = get_attached_file($postID, true);
 
@@ -216,24 +245,19 @@ function windows_azure_storage_wp_update_attachment_metadata($data, $postID)
         // Get full file path of uploaded file
         $data['file'] = $uploadFileName;
 
-        // Get mime-type of the file and prepare additional properties 
-        // array for setting content type of the blob to be uploaded
+        // Get mime-type of the file
         $mimeType = get_post_mime_type($postID);
-        $additionalHeaders = array(
-            'x-ms-blob-content-type' => $mimeType
-        );
 
         try {
-            $storageClient->putBlob(
-                $default_azure_storage_account_container_name, 
-                $relativeFileName, 
-                $uploadFileName, 
+            WindowsAzureStorageUtil::putBlockBlob(
+                $default_azure_storage_account_container_name,
+                $relativeFileName,
+                $uploadFileName,
+                $mimeType, 
                 array(
                     'tag' => "WordPressDefaultUpload", 
                     'mimetype' => $mimeType
-                ),
-                null,
-                $additionalHeaders
+                )
             );
         } catch (Exception $e) {
             echo "<p>Error in uploading file. Error: " . $e->getMessage() . "</p><br/>";
@@ -257,19 +281,18 @@ function windows_azure_storage_wp_update_attachment_metadata($data, $postID)
 
                 // Move only if file exists. Some theme may use same file name for multiple sizes
                 if (file_exists($sizeFileName)) {
-                    $blobName = $file_upload_dir . "/" . $size["file"];
-                
-                    $storageClient->putBlob(
-                        $default_azure_storage_account_container_name, 
-                        $blobName, 
-                        $sizeFileName, 
+                    $blobName = $file_upload_dir . "/" . $size["file"];                  
+                    WindowsAzureStorageUtil::putBlockBlob(
+                        $default_azure_storage_account_container_name,
+                        $blobName,
+                        $sizeFileName,
+                        $mimeType,
                         array(
                             'tag' => "WordPressDefaultUploadSizesThumbnail",
                             'mimetype' => $mimeType
-                        ),
-                        null,
-                        $additionalHeaders
+                        )
                     );
+
                     $thumbnails[] = $blobName;
                 
                     // Delete the local thumbnail file
@@ -437,7 +460,11 @@ function windows_azure_storage_media_buttons_context($context)
         'browse_iframe_src', 
         "$media_upload_iframe_src&amp;tab=upload"
     );
-    
+    $createcontainer_iframe_src = apply_filters(
+        'browse_iframe_src', 
+        "$media_upload_iframe_src&amp;tab=createcontainer"
+    );
+
     $out = ' <a href="' . $media_upload_iframe_src . 
         '&tab=WindowsAzureStorageTab&TB_iframe=true&height=500&width=640"' . 
         'class="thickbox" title="' . $image_title . '"><img src="' . $image_btn 
