@@ -506,23 +506,7 @@ function windows_azure_storage_dialog_upload_tab()
                     if (!empty($_POST["uploadFileTag"])) {
                         $metaData["tag"] = $_POST["uploadFileTag"];
                     }
-                    if (!empty($_POST['expiryTime'])) {
-                        $start = time();
-                        $end = $start + $_POST['expiryTime'] * 60;
-                        $signature = WindowsAzureStorageUtil::createSharedAccessSignature(
-                            WindowsAzureStorageUtil::getAccountName(),
-                            WindowsAzureStorageUtil::getAccountKey(), 
-                            false,
-                            $selected_container_name . "/" . $_FILES['uploadFileName']['name'], 
-                            'b', 
-                            'r', 
-                            isoDate($start), 
-                            isoDate($end)
-                        );
-                        $signatureURL = "st=" . urlencode(isoDate($start)) . "&se=" . urlencode(isoDate($end));
-                        $signatureURL = $signatureURL . "&sr=b&sp=r&sig=" . urlencode($signature);
-                        $metaData['signature'] = $signatureURL;
-                    }
+
                     try {
                         WindowsAzureStorageUtil::putBlockBlob($selected_container_name, $_FILES['uploadFileName']['name'], $_FILES['uploadFileName']['tmp_name'], null, $metaData);
                         $uploadMessage = "Successfully uploaded file '" . $_FILES['uploadFileName']['name'] . "' to the container '" . $selected_container_name . "'.";
