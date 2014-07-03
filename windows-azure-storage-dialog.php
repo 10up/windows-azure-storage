@@ -4,7 +4,7 @@
  * 
  * Shows popup dialog when clicked on the Windows Azure Toolbar 
  * 
- * Version: 2.0
+ * Version: 2.1
  * 
  * Author: Microsoft Open Technologies, Inc.
  * 
@@ -508,8 +508,9 @@ function windows_azure_storage_dialog_upload_tab()
                     }
 
                     try {
-                        WindowsAzureStorageUtil::putBlockBlob($selected_container_name, $_FILES['uploadFileName']['name'], $_FILES['uploadFileName']['tmp_name'], null, $metaData);
-                        $uploadMessage = "Successfully uploaded file '" . $_FILES['uploadFileName']['name'] . "' to the container '" . $selected_container_name . "'.";
+                        $blobName = WindowsAzureStorageUtil::uniqueBlobName($selected_container_name, $_FILES['uploadFileName']['name']);
+                        WindowsAzureStorageUtil::putBlockBlob($selected_container_name, $blobName, $_FILES['uploadFileName']['tmp_name'], null, $metaData);
+                        $uploadMessage = "Successfully uploaded file '" . $blobName . "' to the container '" . $selected_container_name . "'.";
                     }
                     catch (Exception $e) {
                         $uploadSuccess = false;

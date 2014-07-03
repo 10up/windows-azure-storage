@@ -6,7 +6,7 @@
  * 
  * Description: This WordPress plugin allows you to use Windows Azure Storage Service to host your media for your WordPress powered blog.
  * 
- * Version: 2.0
+ * Version: 2.1
  * 
  * Author: Microsoft Open Technologies, Inc.
  * 
@@ -116,6 +116,9 @@ if (get_option('azure_storage_use_for_default_upload') == 1) {
     
     // Hook for handling blog posts via xmlrpc. This is not full proof check
     add_filter('content_save_pre', 'windows_azure_storage_content_save_pre');
+    
+    //TODO: implement wp_unique_filename filter once it is available in WordPress
+    add_filter('wp_handle_upload_prefilter', 'windows_azure_storage_wp_handle_upload_prefilter');
 
     // Hook for handling media uploads
     add_filter('wp_handle_upload', 'windows_azure_storage_wp_handle_upload');
@@ -227,7 +230,7 @@ function windows_azure_storage_wp_update_attachment_metadata($data, $postID)
     $uploadFileName = get_attached_file($postID, true);
 
     // If attachment metadata is empty (for video), generate correct blob names
-    if (empty($data)) {
+    if (empty($data) || empty($data['file'])) {
         // Get upload directory
         $uploadDir = wp_upload_dir();
         if ($uploadDir['subdir']{0} == "/" ) {
@@ -235,7 +238,9 @@ function windows_azure_storage_wp_update_attachment_metadata($data, $postID)
         }
 
         // Prepare blob name
-        $relativeFileName = $uploadDir['subdir'] . "/" . basename($uploadFileName);
+        $relativeFileName = ($uploadDir['subdir'] == "") ? 
+                                basename($uploadFileName) : 
+                                $uploadDir['subdir'] . "/" . basename($uploadFileName);
     } else {
         // Prepare blob name
         $relativeFileName = $data['file'];
@@ -281,7 +286,7 @@ function windows_azure_storage_wp_update_attachment_metadata($data, $postID)
 
                 // Move only if file exists. Some theme may use same file name for multiple sizes
                 if (file_exists($sizeFileName)) {
-                    $blobName = $file_upload_dir . "/" . $size["file"];                  
+                    $blobName = ($file_upload_dir == "") ? $size["file"] : $file_upload_dir . "/" . $size["file"];                  
                     WindowsAzureStorageUtil::putBlockBlob(
                         $default_azure_storage_account_container_name,
                         $blobName,
@@ -335,6 +340,36 @@ function windows_azure_storage_content_save_pre($text)
 }
 
 /**
+ * TODO: Implement wp_unique_filename filter once its available in WordPress.
+ *
+ * Hook for altering the file name.
+ * Check whether the blob exists in the container and generate a unique file name for the blob.
+ *
+ * @param array $file An array of data for a single file.
+ *
+ * @return array Updated file data.
+ */
+function windows_azure_storage_wp_handle_upload_prefilter($file)
+{
+	//default azure storage container
+	$container = WindowsAzureStorageUtil::getDefaultContainer();
+
+	$uploadDir = wp_upload_dir();
+	if ($uploadDir['subdir'][0] == "/" ) {
+		$uploadDir['subdir'] = substr($uploadDir['subdir'], 1);
+	}
+
+	// Prepare blob name
+	$blobName = ($uploadDir['subdir'] == "") ? $file['name'] : $uploadDir['subdir'] . "/" . $file['name'];
+
+	$blobName = WindowsAzureStorageUtil::uniqueBlobName($container, $blobName);
+
+	$file['name'] = basename($blobName);
+
+	return $file;
+}
+
+/**
  * Hook for handling media uploads
  * 
  * @param array $uploads upload metadata
@@ -360,7 +395,7 @@ function windows_azure_storage_wp_handle_upload($uploads)
 function getUpdatedUploadUrl($url)
 {
     $wp_upload_dir = wp_upload_dir();
-    $upload_dir_url = $wp_upload_dir['url'];
+    $upload_dir_url = $wp_upload_dir['baseurl'];
     $storage_url_prefix = WindowsAzureStorageUtil::getStorageUrlPrefix();
     
     return str_replace($upload_dir_url, $storage_url_prefix, $url);

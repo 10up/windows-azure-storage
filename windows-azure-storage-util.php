@@ -4,7 +4,7 @@
  * 
  * Various utility functions for accessing Windows Azure Storage
  * 
- * Version: 2.0
+ * Version: 2.1
  * 
  * Author: Microsoft Open Technologies, Inc.
  * 
@@ -370,6 +370,63 @@ class WindowsAzureStorageUtil
                 }
             }
         }
+    }
+    
+    /**
+     * Genarate a blob name that is unique for the given container.
+     *
+     * @param string $container The default Azure storage container
+     * @param string $blobName The blob name
+     *
+     * @return string Unique blob name
+     */
+    public static function uniqueBlobName($container, $blobName)
+    {
+    	$info = pathinfo($blobName);
+    	 
+    	$uploadSubDir = ($info['dirname'] == '.')  ? '' : $info['dirname'];
+    	$filename = sanitize_file_name($info['basename']);
+    	 
+    	// sanitized blob name
+    	$blobName = ($uploadSubDir == '') ? $filename : $uploadSubDir. '/' .$filename;
+    	 
+    	$newInfo = pathinfo($blobName);
+    	$ext = !empty($newInfo['extension']) ? '.' . $newInfo['extension'] : '';
+    	 
+    	$number = '';
+    	 
+    	// change '.ext' to lower case
+    	if ( $ext && strtolower($ext) != $ext ) {
+    		$ext2 = strtolower($ext);
+    		$filename2 = preg_replace( '|' . preg_quote($ext) . '$|', $ext2, $filename );
+    		$blobName2 = ($uploadSubDir == '') ? $filename2 : $uploadSubDir. '/' .$filename2;
+    		 
+    		// check for both lower and upper case extension or image sub-sizes may be overwritten
+    		while ( WindowsAzureStorageUtil::blobExists($container, $blobName)
+    				|| WindowsAzureStorageUtil::blobExists($container, $blobName2) ) {
+    			$new_number = $number + 1;
+    			$filename = str_replace( "$number$ext", "$new_number$ext", $filename );
+    			$filename2 = str_replace( "$number$ext2", "$new_number$ext2", $filename2 );
+    			$number = $new_number;
+    			$blobName = ($uploadSubDir == '') ? $filename : $uploadSubDir. '/' .$filename;
+    			$blobName2 = ($uploadSubDir == '') ? $filename2 : $uploadSubDir. '/' .$filename2;
+    		}
+    		 
+    		return $blobName2;
+    	}
+    	 
+    	while ( WindowsAzureStorageUtil::blobExists($container, $blobName) ) {
+    		if ( '' == "$number$ext" ) {
+    			$filename = $filename . ++$number . $ext;
+    		}
+    		else {
+    			$filename = str_replace( "$number$ext", ++$number . $ext, $filename );
+    		}
+    		 
+    		$blobName = ($uploadSubDir == '') ? $filename : $uploadSubDir. '/' .$filename;
+    	}
+    	 
+    	return $blobName;
     }
     
     /**
