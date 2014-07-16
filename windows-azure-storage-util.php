@@ -4,7 +4,7 @@
  * 
  * Various utility functions for accessing Windows Azure Storage
  * 
- * Version: 2.1
+ * Version: 2.2
  * 
  * Author: Microsoft Open Technologies, Inc.
  * 

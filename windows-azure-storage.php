@@ -6,7 +6,7 @@
  * 
  * Description: This WordPress plugin allows you to use Windows Azure Storage Service to host your media for your WordPress powered blog.
  * 
- * Version: 2.1
+ * Version: 2.2
  * 
  * Author: Microsoft Open Technologies, Inc.
  * 
@@ -122,6 +122,10 @@ if (get_option('azure_storage_use_for_default_upload') == 1) {
 
     // Hook for handling media uploads
     add_filter('wp_handle_upload', 'windows_azure_storage_wp_handle_upload');
+    
+    // Filter to modify file name when XML-RPC is used
+    //TODO: remove this filter when wp_unique_filename filter is available in WordPress
+    add_filter( 'xmlrpc_methods', 'windows_azure_storage_xmlrpc_methods');
 }
 
 // Hook for acecssing attachment (media file) URL
@@ -151,8 +155,8 @@ add_action('delete_attachment', 'windows_azure_storage_delete_attachment');
  */ 
 function check_prerequisite()
 {
-    $windowsAzureFilePath = "../wp-content/plugins/windows-azure-storage/library/WindowsAzure/WindowsAzure.php";
-        if ((file_exists($windowsAzureFilePath) === true) && (is_readable($windowsAzureFilePath) === true)) {
+    $windowsAzureFilePath = WP_PLUGIN_DIR . "/windows-azure-storage/library/WindowsAzure/WindowsAzure.php";
+    if ((file_exists($windowsAzureFilePath) === true) && (is_readable($windowsAzureFilePath) === true)) {
         return;
     }
 
@@ -170,6 +174,143 @@ function check_prerequisite()
     }
 
     die($message);
+}
+
+/**
+ * Replacing the callback for XML-RPC metaWeblog.newMediaObject
+ *
+ * @param array $methods XML-RPC methods
+ *
+ * @return array $methods Modified XML-RPC methods
+ */
+function windows_azure_storage_xmlrpc_methods($methods) {
+	$methods['metaWeblog.newMediaObject'] = 'windows_azure_storage_newMediaObject';
+	return $methods;
+}
+
+/**
+ * Upload a file
+ * Added unique blob name to the WordPress core mw_newMediaObject method
+ *
+ * @param array $args Method parameters
+ *
+ * @return array
+ */
+function windows_azure_storage_newMediaObject($args) {
+	global $wpdb, $wp_xmlrpc_server;
+
+	$blog_ID     = (int) $args[0];
+	$username  = $wp_xmlrpc_server->escape($args[1]);
+	$password   = $wp_xmlrpc_server->escape($args[2]);
+	$data        = $args[3];
+
+	$name = sanitize_file_name( $data['name'] );
+	$type = $data['type'];
+	$bits = $data['bits'];
+
+	if ( !$user = $wp_xmlrpc_server->login($username, $password) )
+		return $wp_xmlrpc_server->error;
+
+	/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+	do_action( 'xmlrpc_call', 'metaWeblog.newMediaObject' );
+
+	if ( !current_user_can('upload_files') ) {
+		$wp_xmlrpc_server->error = new IXR_Error( 401, __( 'You do not have permission to upload files.' ) );
+		return $wp_xmlrpc_server->error;
+	}
+
+	/**
+	 * Filter whether to preempt the XML-RPC media upload.
+	 *
+	 * Passing a truthy value will effectively short-circuit the media upload,
+	 * returning that value as a 500 error instead.
+	 *
+	 * @since 2.1.0
+	 *
+	 * @param bool $error Whether to pre-empt the media upload. Default false.
+	 */
+	if ( $upload_err = apply_filters( 'pre_upload_error', false ) ) {
+		return new IXR_Error( 500, $upload_err );
+	}
+
+	if ( !empty($data['overwrite']) && ($data['overwrite'] == true) ) {
+		// Get postmeta info on the object.
+		$old_file = $wpdb->get_row("
+			SELECT ID
+			FROM {$wpdb->posts}
+			WHERE post_title = '{$name}'
+				AND post_type = 'attachment'
+		");
+
+		// Delete previous file.
+		wp_delete_attachment($old_file->ID);
+
+		// Make sure the new name is different by pre-pending the
+		// previous post id.
+		$filename = preg_replace('/^wpid\d+-/', '', $name);
+		$name = "wpid{$old_file->ID}-{$filename}";
+	}
+
+	//default azure storage container
+	$container = WindowsAzureStorageUtil::getDefaultContainer();
+
+	$uploadDir = wp_upload_dir();
+	if ($uploadDir['subdir'][0] == "/" ) {
+		$uploadDir['subdir'] = substr($uploadDir['subdir'], 1);
+	}
+
+	// Prepare blob name
+	$blobName = ($uploadDir['subdir'] == "") ? $name : $uploadDir['subdir'] . "/" . $name;
+
+	$blobName = WindowsAzureStorageUtil::uniqueBlobName($container, $blobName);
+
+	$name = basename($blobName);
+
+	$upload = wp_upload_bits($name, null, $bits);
+	if ( ! empty($upload['error']) ) {
+		$errorString = sprintf(__('Could not write file %1$s (%2$s)'), $name, $upload['error']);
+		return new IXR_Error(500, $errorString);
+	}
+	// Construct the attachment array
+	$post_id = 0;
+	if ( ! empty( $data['post_id'] ) ) {
+		$post_id = (int) $data['post_id'];
+
+		if ( ! current_user_can( 'edit_post', $post_id ) )
+			return new IXR_Error( 401, __( 'Sorry, you cannot edit this post.' ) );
+	}
+	$attachment = array(
+		'post_title' => $name,
+		'post_content' => '',
+		'post_type' => 'attachment',
+		'post_parent' => $post_id,
+		'post_mime_type' => $type,
+		'guid' => $upload[ 'url' ]
+	);
+
+	// Save the data
+	$id = wp_insert_attachment( $attachment, $upload[ 'file' ], $post_id );
+	wp_update_attachment_metadata( $id, wp_generate_attachment_metadata( $id, $upload['file'] ) );
+
+	/**
+	 * Fires after a new attachment has been added via the XML-RPC MovableType API.
+	 *
+	 * @since 3.4.0
+	 *
+	 * @param int   $id   ID of the new attachment.
+	 * @param array $args An array of arguments to add the attachment.
+	 */
+	do_action( 'xmlrpc_call_success_mw_newMediaObject', $id, $args );
+
+	$struct = array(
+		'id'   => strval( $id ),
+		'file' => $upload['file'],
+		'url'  => $upload[ 'url' ],
+		'type' => $type
+	);
+
+	/** This filter is documented in wp-admin/includes/file.php */
+	return apply_filters( 'wp_handle_upload', $struct, 'upload' );
 }
 
 /**

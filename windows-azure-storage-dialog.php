@@ -4,7 +4,7 @@
  * 
  * Shows popup dialog when clicked on the Windows Azure Toolbar 
  * 
- * Version: 2.1
+ * Version: 2.2
  * 
  * Author: Microsoft Open Technologies, Inc.
  * 

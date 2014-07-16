@@ -4,7 +4,7 @@ Tags: Microsoft, Microsoft Open Technologies, Windows Azure, Windows Azure Stora
 Requires at least: 2.8.0
 Tested up to: 3.9.1
 
-Stable tag: 2.1
+Stable tag: 2.2
 
 This WordPress plugin allows you to use Windows Azure Storage Service to host your media for your WordPress powered blog.
 
@@ -30,6 +30,10 @@ e.g. if WordPress is installed in "/var/www/html/wordpress" directory, extract t
 1. To activate the plugin, log in into the WordPress as administrator and navigate to list of plugins. Then check the associated checkbox for the plugin and click on "Activate" link.
 
 == Changelog ==
+= 2.2 =
+* Fixed network activation bug in WordPress multisite.
+* Fixed the issue with duplicate blob names in XML-RPC.
+
 = 2.1 =
 * Fixed the issue with duplicate blob names.
 * Fixed the bug in uploading video files to blob storage.

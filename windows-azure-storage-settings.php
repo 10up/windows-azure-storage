@@ -4,7 +4,7 @@
  * 
  * Shows various settings for Windows Azure Storage Plugin
  * 
- * Version: 2.1
+ * Version: 2.2
  * 
  * Author: Microsoft Open Technologies, Inc.
  * 
