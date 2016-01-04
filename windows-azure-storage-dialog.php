@@ -132,7 +132,7 @@ function windows_azure_storage_dialog_browse_tab()
 
             echo '<p style="margin: 10px; color: red;">' 
                 . 'Deleted all files in Windows Azure Storage Container "'
-                . $selected_container_name . '"</p><br/>';
+                . esc_html( $selected_container_name ) . '"</p><br/>';
         }
 
         // Handle file search
@@ -243,13 +243,13 @@ function windows_azure_storage_dialog_browse_tab()
                 }
             }
             catch (Exception $e) {
-                echo '<p style="margin: 10px; color: red;">Error in searching files: ' . $e->getMessage() . "</p><br/>";
+                echo '<p style="margin: 10px; color: red;">Error in searching files: ' . esc_html( $e->getMessage() ) . "</p><br/>";
             }
         }
         $first_container_name = "";
 ?>      
         <form name="SelectContainerForm" style="margin: 10px;" method="post" action="<?php
-        echo $_SERVER['REQUEST_URI']; ?>">
+        echo esc_attr( $_SERVER['REQUEST_URI'] ); ?>">
           <table style="margin: 10px; border-width: 2px;border-color: black;" >
             <tr>
                 <td><b>Container Name:</b></td>
@@ -265,9 +265,9 @@ function windows_azure_storage_dialog_browse_tab()
                 }
 ?>
                 <option value="<?php
-                echo $container->getName() ?>"
+                echo esc_attr( $container->getName() ); ?>"
                 <?php echo ($container->getName() == $selected_container_name ? 'selected="selected"' : '') ?> >
-                <?php echo $container->getName() ?>
+                <?php echo esc_html( $container->getName() ); ?>
                 </option>
     <?php
       }
@@ -321,12 +321,12 @@ function windows_azure_storage_dialog_browse_tab()
                         break;
                     }
                     $deleteLink = 'media-upload.php?post_id=0&tab=browse&deleteBlob=' . urlencode($blob->getName()) . '&selected_container=' . urlencode($selected_container_name);
-                    echo "<a style='color: red;' href=\"" . $deleteLink . "\">x</a> ";
+                    echo "<a style='color: red;' href=\"" . esc_url( $deleteLink ) . "\">x</a> ";
                 }
             }
         }
         catch (Exception $e) {
-            echo '<p style="margin: 10px; color: red;">Error in listing storage containers: ' . $e->getMessage() . "</p><br/>";
+            echo '<p style="margin: 10px; color: red;">Error in listing storage containers: ' . esc_html( $e->getMessage() ) . "</p><br/>";
         }
 ?>
             </td>
@@ -337,10 +337,10 @@ function windows_azure_storage_dialog_browse_tab()
         if (!empty($blobs)) {
 ?>    
         <form name="DeleteAllBlobsForm" style="margin: 20px;" method="post" action=""<?php
-            echo $_SERVER['REQUEST_URI']; ?>">
+            echo esc_attr( $_SERVER['REQUEST_URI'] ); ?>">
             <input type='hidden' name='DeleteAllBlobs' value='true' />
             <input type='hidden' name='selected_container' value='<?php
-            echo $selected_container_name; ?>' />
+            echo esc_attr( $selected_container_name ); ?>' />
             <u onMouseOver="style.cursor='hand'" onclick='document.DeleteAllBlobsForm.submit()' style="color: red;">Delete All Files</u>
         </form>
 <?php
@@ -385,7 +385,7 @@ function windows_azure_storage_dialog_search_tab()
         <h3 style="margin: 10px;">Search Files</h3>
         <div id="search-form">
             <form style="margin: 10px;" method="post" action="<?php
-        echo $browseUrl; ?>">
+        echo esc_attr( $browseUrl ); ?>">
                 <table class="form-table">
                   <tr valign="top">
                     <th scope="row">
@@ -427,10 +427,10 @@ function windows_azure_storage_dialog_search_tab()
             foreach ($listContainerResult->getContainers() as $container) {
 ?>
                 <option value="<?php
-                echo $container->getName() ?>"
+                echo esc_attr( $container->getName() ); ?>"
                                 <?php
                 echo ($container->getName() == $selected_container_name ? 'selected="selected"' : '') ?> ><?php
-                echo $container->getName() ?>
+                echo esc_html( $container->getName() ); ?>
                 </option>
             <?php
             }
@@ -500,7 +500,7 @@ function windows_azure_storage_dialog_upload_tab()
         if ((!empty($_POST['action'])) && ($_POST["action"] == "Upload")) {
             if ($_FILES["uploadFileName"]["error"] == 0) {
                 if (!file_exists($_FILES['uploadFileName']['tmp_name'])) {
-                    echo "<p>Uploaded file " . $_FILES['uploadFileName']['tmp_name'] . " does not exist</p><br/>";
+                    echo "<p>Uploaded file " . esc_html( $_FILES['uploadFileName']['tmp_name'] ) . " does not exist</p><br/>";
                 } else {
                     $metaData = array('mimetype' => $_FILES['uploadFileName']['type']);
                     if (!empty($_POST["uploadFileTag"])) {
@@ -537,7 +537,7 @@ function windows_azure_storage_dialog_upload_tab()
         <h3 style="margin: 10px;">Upload New File</h3>
         <div id="upload-form">
             <form name="UploadNewFileForm" style="margin: 10px;" method="post" enctype="multipart/form-data" action="<?php
-        echo $_SERVER['REQUEST_URI']; ?>">
+        echo esc_attr( $_SERVER['REQUEST_URI'] ); ?>">
                 <table class="form-table">
                   <tr valign="top">
                     <th scope="row">
@@ -554,9 +554,9 @@ function windows_azure_storage_dialog_upload_tab()
                         $selected_container_name = $container->getName();
                     }
 ?>
-                    <option value="<?php echo $container->getName(); ?>" 
+                    <option value="<?php echo esc_attr( $container->getName() ); ?>" 
             <?php echo ($container->getName() == $selected_container_name ? 'selected="selected"' : '') ?> >
-            <?php echo $container->getName() ?></option>
+            <?php echo esc_html( $container->getName() ); ?></option>
 <?php
             }
 ?>
@@ -611,8 +611,8 @@ function windows_azure_storage_dialog_upload_tab()
 <?php
         if (!empty($uploadMessage)) {
             $color = $uploadSuccess? 'green' : 'red';
-            echo '<p style="margin: 10px; color: ' . $color . ';">' 
-                . $uploadMessage . "</p><br/>";
+            echo '<p style="margin: 10px; color: ' . esc_attr( $color ) . ';">' 
+                . esc_html( $uploadMessage ) . "</p><br/>";
         }
     }
 }
@@ -638,7 +638,7 @@ function deleteBlob($containerName, $blobName)
     catch (Exception $e) {
         echo '<p style="margin: 10px; color: red;">' 
         . 'Error in deleting blob $blobName from container $containerName : ' 
-        . $e->getMessage() . "</p><br/>";
+        . esc_html( $e->getMessage() ) . "</p><br/>";
     }
 }
 

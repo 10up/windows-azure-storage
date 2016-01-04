@@ -406,7 +406,7 @@ function windows_azure_storage_wp_update_attachment_metadata($data, $postID)
                 )
             );
         } catch (Exception $e) {
-            echo "<p>Error in uploading file. Error: " . $e->getMessage() . "</p><br/>";
+            echo "<p>Error in uploading file. Error: " . esc_html( $e->getMessage() ) . "</p><br/>";
             return $data;
         }
         
@@ -462,7 +462,7 @@ function windows_azure_storage_wp_update_attachment_metadata($data, $postID)
         // Delete the local file
         unlink($uploadFileName);
     } catch (Exception $e) {
-        echo "<p>Error in uploading file. Error: " . $e->getMessage() . "</p><br/>";
+        echo "<p>Error in uploading file. Error: " . esc_html( $e->getMessage() ) . "</p><br/>";
     }
 
     return $data;

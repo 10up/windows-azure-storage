@@ -284,7 +284,7 @@ function show_windows_azure_storage_settings($mode)
         </th>
         <td>
           <input type="text" name="azure_storage_account_name" title="Windows Azure Storage Account Name" value="<?php
-    echo $storageAccountName; ?>" />
+    echo esc_attr( $storageAccountName ); ?>" />
         </td>
         <td></td>
       </tr>
@@ -295,7 +295,7 @@ function show_windows_azure_storage_settings($mode)
         </th>
         <td>
           <input type="text" name="azure_storage_account_primary_access_key" title="Windows Azure Storage Account Primary Access Key" value="<?php
-    echo $storageAccountKey; ?>" />
+    echo esc_attr( $storageAccountKey ); ?>" />
         </td>
         <td></td>
       </tr>
@@ -310,9 +310,9 @@ function show_windows_azure_storage_settings($mode)
             if (!empty($ContainerResult) && (count($ContainerResult->getContainers()) > 0)) {
                 foreach ($ContainerResult->getContainers() as $container) {
 ?>
-                    <option value="<?php echo $container->getName(); ?>"
+                    <option value="<?php echo esc_attr( $container->getName() ); ?>"
                     <?php echo ($container->getName() == $defaultContainer ? 'selected="selected"' : '') ?> >
-                    <?php echo $container->getName(); ?>
+                    <?php echo esc_html( $container->getName() ); ?>
                     </option>
 <?php
                 }
@@ -330,7 +330,7 @@ function show_windows_azure_storage_settings($mode)
       <td><label for="newcontainer" title="Name of the new container to create">Create New Container: </label></td>
       <td>
         <input type="text" name="newcontainer" title="Name of the new container to create" value="<?php echo $newContainerName; ?>" />
-        <input type="button" class="button-primary" value="<?php _e('Create'); ?>" <?php echo "onclick=\"createContainer('" . $_SERVER['REQUEST_URI'] . "')\"" ?>/>
+        <input type="button" class="button-primary" value="<?php _e('Create'); ?>" <?php echo "onclick=\"createContainer('" . esc_url( $_SERVER['REQUEST_URI'] ) . "')\"" ?>/>
       </td>
     </tr>
     </table>
@@ -338,7 +338,7 @@ function show_windows_azure_storage_settings($mode)
     </td>
     </tr>
     <tr valign="top">
-        <td colspan="3" WIDTH="300" align="center"><?php echo  $message; ?></td>
+        <td colspan="3" WIDTH="300" align="center"><?php echo  esc_html( $message ); ?></td>
     </tr>
       <tr valign="top">
         <th scope="row">
@@ -346,7 +346,7 @@ function show_windows_azure_storage_settings($mode)
         </th>
         <td colspan="2">
           <input type="text" name="cname" title="Use CNAME insted of Windows Azure Blob URL" value="<?php
-    echo WindowsAzureStorageUtil::getCNAME(); ?>" />
+    echo esc_attr( WindowsAzureStorageUtil::getCNAME() ); ?>" />
             <br /><small>Note: Use this option if you would like to display image urls belonging to your domain like http://MyDomain.com/ 
                   instead of http://YourAccountName.blob.core.windows.net/.</small>
             <br /><small>This CNAME must start with http(s) and administrator will have to update DNS entries accordingly.</small>
@@ -359,7 +359,7 @@ function show_windows_azure_storage_settings($mode)
         </th>
         <td>
           <input type="text" name="http_proxy_host" title="Use HTTP proxy server host name if web proxy server is configured" value="<?php
-    echo $httpProxyHost; ?>" />
+    echo esc_attr( $httpProxyHost ); ?>" />
         </td>
     <td></td>
       </tr>
@@ -370,7 +370,7 @@ function show_windows_azure_storage_settings($mode)
         </th>
         <td>
           <input type="text" name="http_proxy_port" title="Use HTTP proxy port if web proxy server is configured" value="<?php
-    echo $httpProxyPort; ?>" />
+    echo esc_attr( $httpProxyPort ); ?>" />
         </td>
     <td></td>
       </tr>
@@ -381,7 +381,7 @@ function show_windows_azure_storage_settings($mode)
         </th>
         <td>
           <input type="text" name="http_proxy_username" title="Use HTTP proxy user name if credential is required to access web proxy server" value="<?php
-    echo $httpProxyUserName; ?>" />
+    echo esc_attr( $httpProxyUserName ); ?>" />
         </td>
         <td></td>
       </tr>
@@ -392,7 +392,7 @@ function show_windows_azure_storage_settings($mode)
         </th>
         <td>
           <input type="text" name="http_proxy_password" title="Use HTTP proxy password if credential is required to access web proxy server" value="<?php
-    echo $httpProxyPassword; ?>" />
+    echo esc_attr( $httpProxyPassword ); ?>" />
         </td>
       <td></td>
       </tr>
