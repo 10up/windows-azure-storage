@@ -672,4 +672,3 @@ function windows_azure_storage_plugin_menu()
     // Call register settings function
     add_action('admin_init', 'windows_azure_storage_plugin_register_settings');
 }
-?>

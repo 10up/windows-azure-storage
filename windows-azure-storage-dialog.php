@@ -662,4 +662,3 @@ function isoDate($timestamp = null)
     
     return $returnValue;
 }
-?>

@@ -422,4 +422,3 @@ function show_windows_azure_storage_settings($mode)
 <?php
     }
 }
-?>

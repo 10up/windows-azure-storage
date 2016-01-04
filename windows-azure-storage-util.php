@@ -681,4 +681,3 @@ class WindowsAzureStorageProxyFilter implements IServiceFilter
       return $response;
   }
 }
-?>
