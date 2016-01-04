@@ -109,16 +109,16 @@ function windows_azure_storage_dialog_browse_tab()
         // Set selected container. If none, then use default container
         $selected_container_name = $default_azure_storage_account_container_name;
         if (!empty($_POST['selected_container'])) {
-            $selected_container_name = $_POST['selected_container'];
+            $selected_container_name = sanitize_text_field( $_POST['selected_container'] );
         } else if (!empty($_GET['selected_container'])) {
-            $selected_container_name = $_GET['selected_container'];
+            $selected_container_name = sanitize_text_field( $_GET['selected_container'] );
         }
 
         // Check if blob has to be deleted
         if (!empty($_GET['deleteBlob'])) {
             deleteBlob(
                 $selected_container_name, 
-                $_GET['deleteBlob']
+                sanitize_text_field( $_GET['deleteBlob'] )
             );
         }
 
@@ -138,10 +138,10 @@ function windows_azure_storage_dialog_browse_tab()
         // Handle file search
         if ((!empty($_POST['action'])) && ($_POST["action"] == "Search")) {
             try {
-                $fileTagFilter = $_POST["searchFileTag"];
-                $fileNameFilter = $_POST["searchFileName"];
-                $fileTypeFilter = $_POST["searchFileType"];
-                $searchContainer = $_POST["searchContainer"];
+                $fileTagFilter = sanitize_text_field( $_POST["searchFileTag"] );
+                $fileNameFilter = sanitize_text_field( $_POST["searchFileName"] );
+                $fileTypeFilter = sanitize_text_field( $_POST["searchFileType"] );
+                $searchContainer = sanitize_text_field( $_POST["searchContainer"] );
                 
                 if (empty($fileTagFilter) 
                     && empty($fileNameFilter) 
@@ -375,12 +375,12 @@ function windows_azure_storage_dialog_search_tab()
         // Set selected container. If none, then use default container
         $selected_container_name = $default_azure_storage_account_container_name;
         if (!empty($_POST['selected_container'])) {
-            $selected_container_name = $_POST['selected_container'];
+            $selected_container_name = sanitize_text_field( $_POST['selected_container'] );
         }
         if (!empty($_GET['selected_container'])) {
-            $selected_container_name = $_GET['selected_container'];
+            $selected_container_name = sanitize_text_field( $_GET['selected_container'] );
         }
-        $browseUrl = str_replace('search', 'browse', $_SERVER['REQUEST_URI']);
+        $browseUrl = str_replace('search', 'browse', sanitize_text_field( $_SERVER['REQUEST_URI']) );
 ?>
         <h3 style="margin: 10px;">Search Files</h3>
         <div id="search-form">
@@ -486,9 +486,9 @@ function windows_azure_storage_dialog_upload_tab()
         $selected_container_name = $default_azure_storage_account_container_name;
         
         if (!empty($_POST['selected_container'])) {
-            $selected_container_name = $_POST['selected_container'];
+            $selected_container_name = sanitize_text_field( $_POST['selected_container'] );
         } else if (!empty($_GET['selected_container'])) {
-            $selected_container_name = $_GET['selected_container'];
+            $selected_container_name = sanitize_text_field( $_GET['selected_container'] );
         }
         
         if (empty($selected_container_name)) {
@@ -504,7 +504,7 @@ function windows_azure_storage_dialog_upload_tab()
                 } else {
                     $metaData = array('mimetype' => $_FILES['uploadFileName']['type']);
                     if (!empty($_POST["uploadFileTag"])) {
-                        $metaData["tag"] = $_POST["uploadFileTag"];
+                        $metaData["tag"] = sanitize_text_field( $_POST["uploadFileTag"] );
                     }
 
                     try {

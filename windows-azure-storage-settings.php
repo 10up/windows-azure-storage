@@ -218,33 +218,33 @@ function show_windows_azure_storage_settings($mode)
    // Use the account settings in the $_POST if this page load is 
    // a result of container creation operation.
    if (array_key_exists("azure_storage_account_name", $_POST)) {
-       $storageAccountName = $_POST["azure_storage_account_name"];
+       $storageAccountName = sanitize_text_field( $_POST["azure_storage_account_name"] );
    }
    
    if (array_key_exists("azure_storage_account_primary_access_key", $_POST)) {
-       $storageAccountKey = $_POST["azure_storage_account_primary_access_key"];
+       $storageAccountKey = sanitize_text_field( $_POST["azure_storage_account_primary_access_key"] );
    }
    
    if (array_key_exists("http_proxy_host", $_POST)) {
-       $httpProxyHost = $_POST["http_proxy_host"];
+       $httpProxyHost = sanitize_text_field( $_POST["http_proxy_host"] );
    }
    
    if (array_key_exists("http_proxy_port", $_POST)) {
-       $httpProxyPort = $_POST["http_proxy_port"];
+       $httpProxyPort = sanitize_text_field( $_POST["http_proxy_port"] );
    }
    
    if (array_key_exists("http_proxy_host", $_POST)) {
-       $httpProxyUserName = $_POST["http_proxy_host"];
+       $httpProxyUserName = sanitize_text_field( $_POST["http_proxy_host"] );
    }
    
    if (array_key_exists("http_proxy_password", $_POST)) {
-       $httpProxyPassword = $_POST["http_proxy_password"];
+       $httpProxyPassword = sanitize_text_field( $_POST["http_proxy_password"] );
    }
 
    // We need to show the container name if the request for 
    // container creation fails.
    if (!$containerCreationStatus) {
-       $newContainerName = $_POST["newcontainer"];
+       $newContainerName = sanitize_text_field( $_POST["newcontainer"] );
    }
    
     $ContainerResult = null;
