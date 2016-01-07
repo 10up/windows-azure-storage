@@ -42,9 +42,6 @@
  * @link      http://www.microsoft.com
  */
 
-use WindowsAzure\Blob\Models\PublicAccessType;
-use WindowsAzure\Blob\Models\ContainerAcl;
-
 /**
  * Setup javascripts and css needed by the Windows Azure Storage popup dialog
  * 
