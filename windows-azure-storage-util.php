@@ -42,11 +42,6 @@
  * @link      http://www.microsoft.com
  */
 
-require_once "library/WindowsAzure/WindowsAzure.php";
-// include path to dependencies in the include_path
-$path = dirname( __FILE__ ) . '/library/dependencies';
-set_include_path( get_include_path() . PATH_SEPARATOR . $path );
-
 // import namepaces required for consuming Azure Blob Storage
 use WindowsAzure\Blob\BlobService;
 use WindowsAzure\Blob\BlobSettings;
