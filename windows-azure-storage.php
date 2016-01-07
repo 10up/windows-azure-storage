@@ -240,6 +240,15 @@ function windows_azure_storage_newMediaObject( $args ) {
 		", $wpdb->posts, $name, 'attachment' )
 		);
 
+
+		// If query isn't successful, bail.
+		if ( is_null( $old_file ) ) {
+			return new WP_Error( 'Attachment not found', sprintf(
+				__( 'Attachment not found in %s', 'msftwas' ),
+				esc_html( $name )
+			), $wpdb->print_error( $old_file ) );
+		}
+
 		// Delete previous file.
 		wp_delete_attachment( $old_file->ID );
 
