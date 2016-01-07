@@ -55,18 +55,16 @@
  * https://github.com/windowsazure/azure-sdk-for-php/
  */
 
-require_once "library/WindowsAzure/WindowsAzure.php";
-// include path to dependencies in the include_path
-$path = dirname( __FILE__ ) . '/library/dependencies';
-set_include_path( get_include_path() . PATH_SEPARATOR . $path );
+$msft_was_plugin_path = plugin_dir_path( __FILE__ );
+require_once $msft_was_plugin_path . 'library/WindowsAzure/WindowsAzure.php';
+require_once $msft_was_plug_path . 'windows-azure-storage-settings.php';
+require_once $msft_was_plug_path . 'windows-azure-storage-dialog.php';
+require_once $msft_was_plug_path . 'windows-azure-storage-util.php';
 
 // import namepaces required for consuming Azure Blob Storage
 use WindowsAzure\Blob\BlobService;
 use WindowsAzure\Blob\BlobSettings;
 
-require_once 'windows-azure-storage-settings.php';
-require_once 'windows-azure-storage-dialog.php';
-require_once 'windows-azure-storage-util.php';
 
 // Check prerequisite for plugin
 register_activation_hook( __FILE__, 'check_prerequisite' );
