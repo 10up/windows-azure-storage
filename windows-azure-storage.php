@@ -236,7 +236,8 @@ function windows_azure_storage_newMediaObject( $args ) {
 				SELECT ID
 				FROM %s
 				WHERE post_title = %s
-					AND post_type = %s;
+				  AND post_type = %s
+				LIMIT 1;
 		", $wpdb->posts, $name, 'attachment' )
 		);
 
