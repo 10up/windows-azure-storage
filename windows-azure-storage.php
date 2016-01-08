@@ -229,12 +229,24 @@ function windows_azure_storage_newMediaObject( $args ) {
 
 	if ( ! empty( $data['overwrite'] ) && ( $data['overwrite'] == true ) ) {
 		// Get postmeta info on the object.
-		$old_file = $wpdb->get_row( "
-			SELECT ID
-			FROM {$wpdb->posts}
-			WHERE post_title = '{$name}'
-				AND post_type = 'attachment'
-		" );
+		$old_file = $wpdb->get_row(
+			$wpdb->prepare( "
+				SELECT ID
+				FROM %s
+				WHERE post_title = %s
+				  AND post_type = %s
+				LIMIT 1;
+		", $wpdb->posts, $name, 'attachment' )
+		);
+
+
+		// If query isn't successful, bail.
+		if ( is_null( $old_file ) ) {
+			return new WP_Error( 'Attachment not found', sprintf(
+				__( 'Attachment not found in %s', 'windows-azure-storage' ),
+				esc_html( $name )
+			), $wpdb->print_error( $old_file ) );
+		}
 
 		// Delete previous file.
 		wp_delete_attachment( $old_file->ID );
