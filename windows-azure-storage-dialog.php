@@ -43,9 +43,12 @@
  */
 
 /**
- * Setup javascripts and css needed by the Windows Azure Storage popup dialog
+ * Enqueue JavaScript and CSS needed by the settings page dialog.
  *
- * @return void
+ * @internal Callback for 'admin_enqueue_scripts'.
+ * @since 2.3.0 Moved to a callback for 'admin_enqueue_scripts' instead of 'admin_print_scripts'.
+ *
+ * @param string $hook_suffix The hook of the current admin page.
  */
 function windows_azure_storage_dialog_scripts( $hook_suffix ) {
 	if ( 'settings_page_b5506889-50de-42db-bf63-e9f248ca94e9' !== $hook_suffix ) {
