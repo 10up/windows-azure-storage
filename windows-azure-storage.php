@@ -56,6 +56,10 @@
  */
 
 $msft_was_plugin_path = plugin_dir_path( __FILE__ );
+define( 'MSFT_AZURE_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
+define( 'MSFT_AZURE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+define( 'MSFT_AZURE_PLUGIN_VERSION', '2.2.0' );
+
 require_once $msft_was_plugin_path . 'library/WindowsAzure/WindowsAzure.php';
 require_once $msft_was_plug_path . 'windows-azure-storage-settings.php';
 require_once $msft_was_plug_path . 'windows-azure-storage-dialog.php';
