@@ -47,16 +47,19 @@
  *
  * @return void
  */
-function windows_azure_storage_dialog_scripts() {
-	?>
-	<script type="text/javascript"
-	        src="../wp-content/plugins/windows-azure-storage/js/windows-azure-storage.js">
-	</script>
-	<link rel="stylesheet"
-	      href="../wp-content/plugins/windows-azure-storage/styles/styles.css"
-	      type="text/css" />
-	<?php
+function windows_azure_storage_dialog_scripts( $hook_suffix ) {
+	if ( 'settings_page_b5506889-50de-42db-bf63-e9f248ca94e9' !== $hook_suffix ) {
+		return;
+	}
+
+	wp_register_script( 'windows-azure-storage', MSFT_AZURE_PLUGIN_URL . 'js/windows-azure-storage.js', array(), MSFT_AZURE_PLUGIN_VERSION );
+	wp_register_style( 'windows-azure-storage-style', MSFT_AZURE_PLUGIN_URL . 'css/windows-azure-storage.css', array(), MSFT_AZURE_PLUGIN_VERSION );
+
+	wp_enqueue_script( 'windows-azure-storage' );
+	wp_enqueue_style( 'windows-azure-storage-style' );
 }
+
+add_action( 'admin_enqueue_scripts', 'windows_azure_storage_dialog_scripts' );
 
 /**
  * Add browse, search and upload tab to the array needed by wordpress hook

@@ -583,7 +583,7 @@ function windows_azure_storage_delete_attachment( $postID ) {
  * @return void
  */
 function browse_tab() {
-	add_action( 'admin_print_scripts', 'windows_azure_storage_dialog_scripts' );
+	add_action( 'admin_enqueue_scripts', 'windows_azure_storage_dialog_scripts' );
 	wp_enqueue_style( 'media' );
 	wp_iframe( 'windows_azure_storage_dialog_browse_tab' );
 }
@@ -594,7 +594,7 @@ function browse_tab() {
  * @return void
  */
 function search_tab() {
-	add_action( 'admin_print_scripts', 'windows_azure_storage_dialog_scripts' );
+	add_action( 'admin_enqueue_scripts', 'windows_azure_storage_dialog_scripts' );
 	wp_enqueue_style( 'media' );
 	wp_iframe( 'windows_azure_storage_dialog_search_tab' );
 }
@@ -605,7 +605,7 @@ function search_tab() {
  * @return void
  */
 function upload_tab() {
-	add_action( 'admin_print_scripts', 'windows_azure_storage_dialog_scripts' );
+	add_action( 'admin_enqueue_scripts', 'windows_azure_storage_dialog_scripts' );
 	wp_enqueue_style( 'media' );
 	wp_iframe( 'windows_azure_storage_dialog_upload_tab' );
 }
