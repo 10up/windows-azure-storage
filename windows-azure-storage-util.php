@@ -317,8 +317,8 @@ class WindowsAzureStorageUtil {
 	 * @return string The base blob URL for an account.
 	 */
 	public static function get_storage_url_base( $append_container = true ) {
-		$azure_storage_account_name                   = WindowsAzureStorageUtil::getAccountName();
-		$default_azure_storage_account_container_name = WindowsAzureStorageUtil::getDefaultContainer();
+		$azure_storage_account_name                   = self::getAccountName();
+		$default_azure_storage_account_container_name = self::getDefaultContainer();
 
 		/**
 		 * Filter the blob URL protocol to force a specific one.
@@ -343,8 +343,8 @@ class WindowsAzureStorageUtil {
 				return trailingslashit( $cname );
 			}
 		} else {
-			$blob_storage_host_name = WindowsAzureStorageUtil::getHostName();
-			$storage_account_name   = WindowsAzureStorageUtil::getAccountName();
+			$blob_storage_host_name = self::getHostName();
+			$storage_account_name   = self::getAccountName();
 
 			if ( 'devstoreaccount1' === $storage_account_name ) {
 				$url = "{$protocol}{$blob_storage_host_name}/{$azure_storage_account_name}";
