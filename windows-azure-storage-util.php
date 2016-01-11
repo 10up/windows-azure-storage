@@ -340,11 +340,11 @@ class WindowsAzureStorageUtil {
 			} else {
 				// Use cloud storage
 				if ( $appendContainer ) {
-					return 'http://' . $azure_storage_account_name
+					return 'https://' . $azure_storage_account_name
 					       . '.' . $blobStorageHostName
 					       . '/' . $default_azure_storage_account_container_name;
 				} else {
-					return 'http://' . $azure_storage_account_name
+					return 'https://' . $azure_storage_account_name
 					       . '.' . $blobStorageHostName;
 				}
 			}
