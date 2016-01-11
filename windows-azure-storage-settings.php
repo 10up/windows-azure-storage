@@ -333,7 +333,7 @@ function show_windows_azure_storage_settings( $mode ) {
 							</td>
 						</tr>
 					</table>
-					</dv>
+					</div>
 			</td>
 		</tr>
 		<tr valign="top">
