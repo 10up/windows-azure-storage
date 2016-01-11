@@ -335,7 +335,7 @@ class WindowsAzureStorageUtil {
 		}
 
 		// Get CNAME if defined
-		$cname = WindowsAzureStorageUtil::getCNAME();
+		$cname = self::getCNAME();
 		if ( ! ( empty( $cname ) ) ) {
 			if ( $append_container ) {
 				return "{$cname}/{$default_azure_storage_account_container_name}";
