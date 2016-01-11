@@ -52,7 +52,7 @@ use WindowsAzure\Blob\Models\CreateBlobOptions;
 use WindowsAzure\Blob\Models\CreateContainerOptions;
 use WindowsAzure\Blob\Models\PublicAccessType;
 use WindowsAzure\Common\Internal\IServiceFilter;
-use windowsazure\common\internal\resources;
+use windowsazure\common\Internal\Resources;
 use WindowsAzure\Common\ServiceException;
 use WindowsAzure\Common\ServicesBuilder;
 
@@ -346,7 +346,7 @@ class WindowsAzureStorageUtil {
 			$blob_storage_host_name = self::getHostName();
 			$storage_account_name   = self::getAccountName();
 
-			if ( 'devstoreaccount1' === $storage_account_name ) {
+			if ( Resources::DEV_STORE_NAME === $storage_account_name ) {
 				$url = "{$protocol}{$blob_storage_host_name}/{$azure_storage_account_name}";
 				// Use development storage
 				if ( $append_container ) {
