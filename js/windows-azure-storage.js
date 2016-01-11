@@ -57,7 +57,7 @@ function onUpload_ContainerSelectionChanged() {
 function insertImageTag( imgURL, containsSignature ) {
 	var imageFullURL = imgURL;
 	var imageTag = '';
-	if ( 'true' === containsSignature ) {
+	if ( containsSignature ) {
 		var st = imageFullURL.indexOf( '?st=' );
 		if ( - 1 !== st ) {
 			imgURL = imageFullURL.substr( 0, st );

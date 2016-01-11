@@ -305,7 +305,7 @@ function windows_azure_storage_dialog_browse_tab() {
 							echo '<p style="margin: 10px;">Note: Click on the image to insert image URL into the blog!</p><br/>';
 							foreach ( $blobs as $blob ) {
 								$url               = WindowsAzureStorageUtil::getStorageUrlPrefix( false ) . "/$selected_container_name/" . $blob->getName();
-								$containsSignature = "false";
+								$containsSignature = false;
 								$fileExt           = substr( strrchr( $blob->getName(), '.' ), 1 );
 								switch ( strtolower( $fileExt ) ) {
 									case "jpg":
@@ -315,12 +315,12 @@ function windows_azure_storage_dialog_browse_tab() {
 									case "png":
 									case "tiff":
 										echo "<img style='margin: 10px;' src=\"$url\" width=\"32\" height=\"32\"";
-										echo "onmouseover=\"this.height = 50;this.width = 50; this.style.border = '3px solid yellow';\" onmouseout=\"this.height = 32;this.width = 32; this.style.border = '0px solid black'\" onclick=\"return insertImageTag('$url', '$containsSignature');\"/>";
+										echo "onmouseover=\"this.height = 50;this.width = 50; this.style.border = '3px solid yellow';\" onmouseout=\"this.height = 32;this.width = 32; this.style.border = '0px solid black'\" onclick=\"return insertImageTag('$url', $containsSignature);\"/>";
 										break;
 
 									default:
 										echo "<a style='margin: 10px;' href=\"$url\"";
-										echo "onclick=\"return insertImageTag('$url', '$containsSignature');\">" . $blob->getName() . "<a/>";
+										echo "onclick=\"return insertImageTag('$url', $containsSignature);\">" . $blob->getName() . "<a/>";
 										break;
 								}
 								$deleteLink = 'media-upload.php?post_id=0&tab=browse&deleteBlob=' . urlencode( $blob->getName() ) . '&selected_container=' . urlencode( $selected_container_name );
