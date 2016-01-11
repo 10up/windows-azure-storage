@@ -314,7 +314,7 @@ class WindowsAzureStorageUtil {
 	 * @since 2.3.0 Switched to 'https' for all Azure URLs.
 	 *
 	 * @param bool $append_container Optional. Whether to append the container name to the URL. Default true.
-	 * @return string The base blob URL for an account.
+	 * @return string|WP_Error The base blob URL for an account, or an error if one can't be found/created.
 	 */
 	public static function get_storage_url_base( $append_container = true ) {
 		$azure_storage_account_name                   = self::getAccountName();
@@ -362,11 +362,21 @@ class WindowsAzureStorageUtil {
 					$blob_storage_host_name,
 					$append_container ? $default_azure_storage_account_container_name : ''
 				);
-				}
-
-				return trailingslashit( $url );
 			}
 		}
+
+		if ( ! isset( $url ) || empty( $url ) ) {
+			return new WP_Error(
+				__( 'No Azure URL', 'windows-azure-storage' ),
+				__( 'A valid Azure Storage URL could not be found for this account.', 'windows-azure-storage' ),
+				array(
+					'name'      => $azure_storage_account_name,
+					'container' => $default_azure_storage_account_container_name,
+				)
+			);
+		}
+
+		return trailingslashit( $url );
 	}
 
 	/**
