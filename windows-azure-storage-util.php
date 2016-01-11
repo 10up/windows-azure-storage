@@ -304,11 +304,17 @@ class WindowsAzureStorageUtil {
 	}
 
 	/**
-	 * Get prefix for the blob URL
+	 * Get the base URL for the blob.
 	 *
-	 * @param boolean $appendContainer Wheather to append container name at the end
+	 * The base URL can be a CNAME domain or Azure one, with or without the container
+	 * name appended. This will generate the correct base URL for an asset after running
+	 * through a set of conditional checks.
 	 *
-	 * @return string Prefix for the blob URL
+	 * @since Unknown
+	 * @since 2.3.0 Switched to 'https' for all Azure URLs.
+	 *
+	 * @param bool $appendContainer Optional. Whether to append container name at the end. Default true.
+	 * @return string The base blob URL for an account.
 	 */
 	public static function getStorageUrlPrefix( $appendContainer = true ) {
 		$azure_storage_account_name = WindowsAzureStorageUtil::getAccountName();
