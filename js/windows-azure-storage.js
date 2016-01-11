@@ -14,7 +14,7 @@ function createContainer( url ) {
 function onContainerSelectionChanged( show ) {
 	var htmlForm = document.getElementsByName( 'SettingsForm' )[0];
 	var divCreateContainer = document.getElementById( 'divCreateContainer' );
-	if ( htmlForm.elements['default_azure_storage_account_container_name'].value === windowsAzureStorageSettings.l10n.newContainer ) {
+	if ( htmlForm.elements['default_azure_storage_account_container_name'].value === '<Create New Container>' ) {
 		divCreateContainer.style.display = 'block';
 		htmlForm.elements['submitButton'].disabled = true;
 
@@ -31,7 +31,7 @@ function onContainerSelectionChanged( show ) {
 
 function onUpload_ContainerSelectionChanged() {
 	var htmlForm = document.getElementsByName( 'UploadNewFileForm' )[0];
-	if ( htmlForm.elements['selected_container'].value === windowsAzureStorageSettings.l10n.newContainer ) {
+	if ( htmlForm.elements['selected_container'].value === '<Create New Container>' ) {
 		htmlForm.elements['uploadFileTag'].disabled = true;
 		htmlForm.elements['uploadFileTag'].style.background = 'gray';
 		htmlForm.elements['uploadFileName'].disabled = true;
@@ -47,8 +47,8 @@ function onUpload_ContainerSelectionChanged() {
 		htmlForm.elements['uploadFileName'].style.background = 'white';
 		htmlForm.elements['createContainer'].style.visibility = 'hidden';
 		document.getElementById( 'lblNewContainer' ).style.display = 'none';
-		htmlForm.elements['action'].value = windowsAzureStorageSettings.l10n.upload;
-		htmlForm.elements['submit'].value = windowsAzureStorageSettings.l10n.upload;
+		htmlForm.elements['action'].value = 'Upload';
+		htmlForm.elements['submit'].value = 'Upload';
 	}
 }
 

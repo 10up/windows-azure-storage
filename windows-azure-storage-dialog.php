@@ -57,10 +57,7 @@ function windows_azure_storage_dialog_scripts( $hook_suffix ) {
 
 	wp_enqueue_script( 'windows-azure-storage', MSFT_AZURE_PLUGIN_URL . 'js/windows-azure-storage.js', array(), MSFT_AZURE_PLUGIN_VERSION );
 	wp_localize_script( 'windows-azure-storage', 'windowsAzureStorageSettings', array(
-		'l10n' => array(
-			'newContainer' => __( 'Create New Container', 'windows-azure-storage' ),
-			'upload'       => __( 'Upload', 'windows-azure-storage' ),
-		),
+		'l10n' => array(),
 	) );
 
 	wp_enqueue_style( 'windows-azure-storage-style', MSFT_AZURE_PLUGIN_URL . 'css/windows-azure-storage.css', array(), MSFT_AZURE_PLUGIN_VERSION );
