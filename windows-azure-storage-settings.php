@@ -51,37 +51,6 @@ use WindowsAzure\Blob\Models\PublicAccessType;
  */
 function windows_azure_storage_plugin_options_page() {
 	?>
-	<script type="text/javascript">
-		function createContainer( url ) {
-			var htmlForm = document.getElementsByName( "SettingsForm" )[0];
-			var action = document.getElementsByName( "action" )[0];
-			if ( typeof action !== "undefined" ) {
-				action.name = 'action2';
-			}
-
-			htmlForm.action = url;
-			htmlForm.submit();
-		}
-
-		function onContainerSelectionChanged( show ) {
-			var htmlForm = document.getElementsByName( "SettingsForm" )[0];
-			var divCreateContainer = document.getElementById( "divCreateContainer" );
-			if ( htmlForm.elements["default_azure_storage_account_container_name"].value === "<Create New Container>" ) {
-				divCreateContainer.style.display = "block";
-				htmlForm.elements["submitButton"].disabled = true;
-
-			} else {
-				if ( show ) {
-					divCreateContainer.style.display = "block";
-				} else {
-					divCreateContainer.style.display = "none";
-				}
-
-				htmlForm.elements["submitButton"].disabled = false;
-			}
-		}
-
-	</script>
 	<div class="wrap">
 		<h2>
 			<img src="../wp-content/plugins/windows-azure-storage/images/WindowsAzure.jpg"
