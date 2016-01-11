@@ -57,15 +57,15 @@ function onUpload_ContainerSelectionChanged() {
 function insertImageTag( imgURL, containsSignature ) {
 	var imageFullURL = imgURL;
 	var imageTag = '';
-	if ( containsSignature == 'true' ) {
+	if ( 'true' === containsSignature ) {
 		var st = imageFullURL.indexOf( '?st=' );
-		if ( st != - 1 ) {
+		if ( - 1 !== st ) {
 			imgURL = imageFullURL.substr( 0, st );
 		}
 	}
 
 	var dot = imgURL.lastIndexOf( '.' );
-	if ( dot == - 1 ) {
+	if ( - 1 === dot ) {
 		imageTag = '<a href="' + imgURL + '">' + imgURL + '</a> ';
 	}
 	else {
@@ -88,9 +88,9 @@ function insertImageTag( imgURL, containsSignature ) {
 
 	var win = window.dialogArguments || opener || parent || top;
 
-	if ( typeof win.send_to_editor == 'function' ) {
+	if ( typeof win.send_to_editor === 'function' ) {
 		win.send_to_editor( imageTag );
-		if ( typeof win.tb_remove == 'function' ) {
+		if ( typeof win.tb_remove === 'function' ) {
 			win.tb_remove();
 		}
 
@@ -98,7 +98,7 @@ function insertImageTag( imgURL, containsSignature ) {
 	}
 
 	tinyMCE = win.tinyMCE;
-	if ( typeof tinyMCE != 'undefined' && tinyMCE.getInstanceById( 'content' ) ) {
+	if ( typeof tinyMCE !== 'undefined' && tinyMCE.getInstanceById( 'content' ) ) {
 		tinyMCE.selectedInstance.getWin().focus();
 		tinyMCE.execCommand( 'mceInsertContent', false, imageTag );
 	}
