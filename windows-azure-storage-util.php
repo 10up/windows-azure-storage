@@ -317,8 +317,22 @@ class WindowsAzureStorageUtil {
 	 * @return string The base blob URL for an account.
 	 */
 	public static function get_storage_url_base( $append_container = true ) {
-		$azure_storage_account_name = WindowsAzureStorageUtil::getAccountName();
+		$azure_storage_account_name                   = WindowsAzureStorageUtil::getAccountName();
 		$default_azure_storage_account_container_name = WindowsAzureStorageUtil::getDefaultContainer();
+
+		/**
+		 * Filter the blob URL protocol to force a specific one.
+		 *
+		 * @since 2.3.0
+		 *
+		 * @param string $protocol Optional. Default 'https://', also allow 'http://' and '//'.
+		 */
+		$protocol = apply_filters( 'windows_azure_storage_blob_protocol', 'https://' );
+
+		// Whitelist the protocols and fall back to secure if necessary.
+		if ( ! in_array( $protocol, array( 'https://', 'http://', '//' ) ) ) {
+			$protocol = 'https://';
+		}
 
 		// Get CNAME if defined
 		$cname = WindowsAzureStorageUtil::getCNAME();
@@ -330,22 +344,24 @@ class WindowsAzureStorageUtil {
 			}
 		} else {
 			$blob_storage_host_name = WindowsAzureStorageUtil::getHostName();
-			$storage_account_name  = WindowsAzureStorageUtil::getAccountName();
+			$storage_account_name   = WindowsAzureStorageUtil::getAccountName();
 
 			if ( 'devstoreaccount1' === $storage_account_name ) {
+				$url = "{$protocol}{$blob_storage_host_name}/{$azure_storage_account_name}";
 				// Use development storage
 				if ( $append_container ) {
-					return "http://{$blob_storage_host_name}/{$azure_storage_account_name}/{$default_azure_storage_account_container_name}";
-				} else {
-					return "http://{$blob_storage_host_name}/{$azure_storage_account_name}";
+					$url .= "/{$default_azure_storage_account_container_name}";
 				}
+
+				return $url;
 			} else {
 				// Use cloud storage
+				$url = "{$protocol}{$azure_storage_account_name}.{$blob_storage_host_name}";
 				if ( $append_container ) {
-					return "https://{$azure_storage_account_name}.{$blob_storage_host_name}/{$default_azure_storage_account_container_name}";
-				} else {
-					return "https://{$azure_storage_account_name}.{$blob_storage_host_name}";
+					$url .= "/{$default_azure_storage_account_container_name}";
 				}
+
+				return $url;
 			}
 		}
 	}
