@@ -20,7 +20,6 @@
     "jQuery": false,
     "JSON": false,
     "wp": false,
-    "tinymce": false,
-    "windowsAzureStorageSettings": false
+    "tinymce": false
   }
 }

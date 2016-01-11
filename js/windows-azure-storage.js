@@ -1,3 +1,4 @@
+/* global windowsAzureStorageSettings:false */
 function onUpload_ContainerSelectionChanged()
 {
     var htmlForm = document.getElementsByName("UploadNewFileForm")[0];
