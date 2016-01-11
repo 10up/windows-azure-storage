@@ -56,10 +56,16 @@
  */
 
 $msft_was_plugin_path = plugin_dir_path( __FILE__ );
+/* Azure SDK relies on some PEAR dependencies, but doesn't load them itself.
+ * We have to add the PEAR files to the path for the Azure SDK to see them.
+ */
+$path = dirname( __FILE__ ) . '/library/dependencies';
+set_include_path( get_include_path() . PATH_SEPARATOR . $path );
+
 require_once $msft_was_plugin_path . 'library/WindowsAzure/WindowsAzure.php';
-require_once $msft_was_plug_path . 'windows-azure-storage-settings.php';
-require_once $msft_was_plug_path . 'windows-azure-storage-dialog.php';
-require_once $msft_was_plug_path . 'windows-azure-storage-util.php';
+require_once $msft_was_plugin_path . 'windows-azure-storage-settings.php';
+require_once $msft_was_plugin_path . 'windows-azure-storage-dialog.php';
+require_once $msft_was_plugin_path . 'windows-azure-storage-util.php';
 
 // import namepaces required for consuming Azure Blob Storage
 use WindowsAzure\Blob\BlobService;
