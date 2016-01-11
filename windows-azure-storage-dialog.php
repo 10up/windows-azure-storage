@@ -59,7 +59,7 @@ function windows_azure_storage_dialog_scripts( $hook_suffix ) {
 	wp_localize_script( 'windows-azure-storage', 'windowsAzureStorageSettings', array(
 		'l10n' => array(
 			'newContainer' => __( 'Create New Container', 'windows-azure-storage' ),
-			'upload' => __( 'Upload', 'windows-azure-storage' ),
+			'upload'       => __( 'Upload', 'windows-azure-storage' ),
 		),
 	) );
 
