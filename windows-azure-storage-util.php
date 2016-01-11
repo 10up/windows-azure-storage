@@ -312,14 +312,13 @@ class WindowsAzureStorageUtil {
 	 */
 	public static function getStorageUrlPrefix( $appendContainer = true ) {
 		$azure_storage_account_name = WindowsAzureStorageUtil::getAccountName();
-		$default_azure_storage_account_container_name
-		                            = WindowsAzureStorageUtil::getDefaultContainer();
+		$default_azure_storage_account_container_name = WindowsAzureStorageUtil::getDefaultContainer();
 
 		// Get CNAME if defined
 		$cname = WindowsAzureStorageUtil::getCNAME();
 		if ( ! ( empty( $cname ) ) ) {
 			if ( $appendContainer ) {
-				return $cname . "/" . $default_azure_storage_account_container_name;
+				return "{$cname}/{$default_azure_storage_account_container_name}";
 			} else {
 				return $cname;
 			}
@@ -330,22 +329,16 @@ class WindowsAzureStorageUtil {
 			if ( $storageAccountName == 'devstoreaccount1' ) {
 				// Use development storage
 				if ( $appendContainer ) {
-					return 'http://' . $blobStorageHostName
-					       . '/' . $azure_storage_account_name
-					       . '/' . $default_azure_storage_account_container_name;
+					return "http://{$blobStorageHostName}/{$azure_storage_account_name}/{$default_azure_storage_account_container_name}";
 				} else {
-					return 'http://' . $blobStorageHostName
-					       . '/' . $azure_storage_account_name;
+					return "http://{$blobStorageHostName}/{$azure_storage_account_name}";
 				}
 			} else {
 				// Use cloud storage
 				if ( $appendContainer ) {
-					return 'https://' . $azure_storage_account_name
-					       . '.' . $blobStorageHostName
-					       . '/' . $default_azure_storage_account_container_name;
+					return "https://{$azure_storage_account_name}.{$blobStorageHostName}/{$default_azure_storage_account_container_name}";
 				} else {
-					return 'https://' . $azure_storage_account_name
-					       . '.' . $blobStorageHostName;
+					return "https://{$azure_storage_account_name}.{$blobStorageHostName}";
 				}
 			}
 		}
