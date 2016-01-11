@@ -337,28 +337,31 @@ class WindowsAzureStorageUtil {
 		// Get CNAME if defined
 		$cname = self::getCNAME();
 		if ( ! ( empty( $cname ) ) ) {
-			if ( $append_container ) {
-				return trailingslashit( "{$cname}/{$default_azure_storage_account_container_name}" );
-			} else {
-				return trailingslashit( $cname );
-			}
+			$url = sprintf( '%1$s/%2$s/%3$s',
+				$cname,
+				$default_azure_storage_account_container_name,
+				$append_container ? $default_azure_storage_account_container_name : ''
+			);
 		} else {
 			$blob_storage_host_name = self::getHostName();
 			$storage_account_name   = self::getAccountName();
 
 			if ( Resources::DEV_STORE_NAME === $storage_account_name ) {
-				$url = "{$protocol}{$blob_storage_host_name}/{$azure_storage_account_name}";
 				// Use development storage
-				if ( $append_container ) {
-					$url .= "/{$default_azure_storage_account_container_name}";
-				}
-
-				return trailingslashit( $url );
+				$url = sprintf( '%1$s%2%s/%3$s/%4$s',
+					$protocol,
+					$blob_storage_host_name,
+					$azure_storage_account_name,
+					$append_container ? $default_azure_storage_account_container_name : ''
+				);
 			} else {
 				// Use cloud storage
-				$url = "{$protocol}{$azure_storage_account_name}.{$blob_storage_host_name}";
-				if ( $append_container ) {
-					$url .= "/{$default_azure_storage_account_container_name}";
+				$url = sprintf( '%1$s%2$s.%3$s/%4$s',
+					$protocol,
+					$azure_storage_account_name,
+					$blob_storage_host_name,
+					$append_container ? $default_azure_storage_account_container_name : ''
+				);
 				}
 
 				return trailingslashit( $url );
