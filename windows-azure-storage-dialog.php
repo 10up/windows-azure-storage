@@ -188,7 +188,7 @@ function windows_azure_storage_dialog_browse_tab() {
 									}
 								}
 
-								$searchResult[] = WindowsAzureStorageUtil::getStorageUrlPrefix( false ) . "/" . $container->getName() . "/" . $blob->getName();
+								$searchResult[] = WindowsAzureStorageUtil::get_storage_url_base( false ) . "/" . $container->getName() . "/" . $blob->getName();
 							}
 						}
 					} else {
@@ -219,7 +219,7 @@ function windows_azure_storage_dialog_browse_tab() {
 								}
 							}
 
-							$searchResult[] = WindowsAzureStorageUtil::getStorageUrlPrefix( false ) . "/$searchContainer/" . $blob->getName();
+							$searchResult[] = WindowsAzureStorageUtil::get_storage_url_base( false ) . "/$searchContainer/" . $blob->getName();
 						}
 					}
 
@@ -294,7 +294,7 @@ function windows_azure_storage_dialog_browse_tab() {
 						} else {
 							echo '<p style="margin: 10px;">Note: Click on the image to insert image URL into the blog!</p><br/>';
 							foreach ( $blobs as $blob ) {
-								$url               = WindowsAzureStorageUtil::getStorageUrlPrefix( false ) . "/$selected_container_name/" . $blob->getName();
+								$url               = WindowsAzureStorageUtil::get_storage_url_base( false ) . "/$selected_container_name/" . $blob->getName();
 								$containsSignature = "false";
 								$fileExt           = substr( strrchr( $blob->getName(), '.' ), 1 );
 								switch ( strtolower( $fileExt ) ) {

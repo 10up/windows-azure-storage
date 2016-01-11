@@ -316,7 +316,7 @@ class WindowsAzureStorageUtil {
 	 * @param bool $append_container Optional. Whether to append the container name to the URL. Default true.
 	 * @return string The base blob URL for an account.
 	 */
-	public static function getStorageUrlPrefix( $append_container = true ) {
+	public static function get_storage_url_base( $append_container = true ) {
 		$azure_storage_account_name = WindowsAzureStorageUtil::getAccountName();
 		$default_azure_storage_account_container_name = WindowsAzureStorageUtil::getDefaultContainer();
 
