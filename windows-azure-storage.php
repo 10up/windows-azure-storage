@@ -620,7 +620,7 @@ function upload_tab() {
 function windows_azure_storage_media_buttons_context( $context ) {
 	global $post_ID, $temp_ID;
 
-	$image_btn   = "../wp-content/plugins/windows-azure-storage/images/WindowsAzure.jpg";
+	$image_btn   = plugin_dir_url( __FILE__ ) . 'images/WindowsAzure.jpg';
 	$image_title = 'Windows Azure Storage';
 
 	$uploading_iframe_ID     = (int) ( 0 == $post_ID ? $temp_ID : $post_ID );
