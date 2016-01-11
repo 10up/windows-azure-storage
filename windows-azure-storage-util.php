@@ -326,7 +326,7 @@ class WindowsAzureStorageUtil {
 			$blobStorageHostName = WindowsAzureStorageUtil::getHostName();
 			$storageAccountName  = WindowsAzureStorageUtil::getAccountName();
 
-			if ( $storageAccountName == 'devstoreaccount1' ) {
+			if ( 'devstoreaccount1' === $storageAccountName ) {
 				// Use development storage
 				if ( $appendContainer ) {
 					return "http://{$blobStorageHostName}/{$azure_storage_account_name}/{$default_azure_storage_account_container_name}";
