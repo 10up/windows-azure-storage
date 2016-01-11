@@ -1,4 +1,4 @@
-/* global windowsAzureStorageSettings:false */
+/* global windowsAzureStorageSettings:false, tinyMCE:true */
 function onUpload_ContainerSelectionChanged() {
 	var htmlForm = document.getElementsByName( 'UploadNewFileForm' )[0];
 	if ( htmlForm.elements['selected_container'].value === windowsAzureStorageSettings.l10n.newContainer ) {
