@@ -338,9 +338,9 @@ class WindowsAzureStorageUtil {
 		$cname = self::getCNAME();
 		if ( ! ( empty( $cname ) ) ) {
 			if ( $append_container ) {
-				return "{$cname}/{$default_azure_storage_account_container_name}";
+				return trailingslashit( "{$cname}/{$default_azure_storage_account_container_name}" );
 			} else {
-				return $cname;
+				return trailingslashit( $cname );
 			}
 		} else {
 			$blob_storage_host_name = WindowsAzureStorageUtil::getHostName();
@@ -353,7 +353,7 @@ class WindowsAzureStorageUtil {
 					$url .= "/{$default_azure_storage_account_container_name}";
 				}
 
-				return $url;
+				return trailingslashit( $url );
 			} else {
 				// Use cloud storage
 				$url = "{$protocol}{$azure_storage_account_name}.{$blob_storage_host_name}";
@@ -361,7 +361,7 @@ class WindowsAzureStorageUtil {
 					$url .= "/{$default_azure_storage_account_container_name}";
 				}
 
-				return $url;
+				return trailingslashit( $url );
 			}
 		}
 	}
