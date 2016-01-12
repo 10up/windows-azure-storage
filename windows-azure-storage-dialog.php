@@ -53,7 +53,12 @@
 function windows_azure_storage_dialog_scripts( $hook_suffix ) {
 	// TODO split into 'settings' and 'editor' and enqueue separately
 	wp_enqueue_script( 'windows-azure-storage', MSFT_AZURE_PLUGIN_URL . 'js/windows-azure-storage.js', array(), MSFT_AZURE_PLUGIN_VERSION );
-	wp_localize_script( 'windows-azure-storage', 'windowsAzureStorageSettings', array( 'l10n' => array(), ) );
+	wp_localize_script( 'windows-azure-storage', 'windowsAzureStorageSettings', array(
+		'l10n' => array(
+			'upload' => _x( 'Upload', 'verb', 'windows-azure-storage' ),
+			'create' => _x( 'Create', 'verb', 'windows-azure-storage' ),
+		),
+	) );
 
 	wp_enqueue_script( 'windows-azure-storage', MSFT_AZURE_PLUGIN_URL . 'js/windows-azure-storage.js', array(), MSFT_AZURE_PLUGIN_VERSION );
 
@@ -590,7 +595,7 @@ function windows_azure_storage_dialog_upload_tab() {
 
 				<input type='hidden' name='action' value='Upload' />
 				<p class="submit">
-					<input type="submit" class="button-primary" id="submit" value="Upload" />
+					<input type="submit" class="button-primary" id="submit" value="<?php esc_attr_e( 'Upload', 'windows-azure-storage' ); ?>" />
 				</p>
 			</form>
 		</div>

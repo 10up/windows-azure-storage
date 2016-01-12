@@ -39,7 +39,7 @@ function onUpload_ContainerSelectionChanged() {
 		htmlForm.elements['createContainer'].style.visibility = 'visible';
 		document.getElementById( 'lblNewContainer' ).style.display = 'block';
 		htmlForm.elements['action'].value = 'Create';
-		htmlForm.elements['submit'].value = 'Create';
+		htmlForm.elements['submit'].value = windowsAzureStorageSettings.l10n.create;
 	} else {
 		htmlForm.elements['uploadFileTag'].disabled = false;
 		htmlForm.elements['uploadFileTag'].style.background = 'white';
@@ -48,7 +48,7 @@ function onUpload_ContainerSelectionChanged() {
 		htmlForm.elements['createContainer'].style.visibility = 'hidden';
 		document.getElementById( 'lblNewContainer' ).style.display = 'none';
 		htmlForm.elements['action'].value = 'Upload';
-		htmlForm.elements['submit'].value = 'Upload';
+		htmlForm.elements['submit'].value = windowsAzureStorageSettings.l10n.upload;
 	}
 }
 

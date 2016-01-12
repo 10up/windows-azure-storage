@@ -298,7 +298,7 @@ function show_windows_azure_storage_settings( $mode ) {
 							</td>
 							<td>
 								<input type="text" name="newcontainer" title="Name of the new container to create" value="<?php echo $newContainerName; ?>" />
-								<input type="button" class="button-primary" value="<?php _e( 'Create' ); ?>" <?php echo "onclick=\"createContainer('" . esc_url( $_SERVER['REQUEST_URI'] ) . "')\"" ?>/>
+								<input type="button" class="button-primary" value="<?php esc_attr_e( 'Create', 'windows-azure-storage' ); ?>" <?php echo "onclick=\"createContainer('" . esc_url( $_SERVER['REQUEST_URI'] ) . "')\"" ?>/>
 							</td>
 						</tr>
 					</table>
