@@ -348,23 +348,34 @@ function show_windows_azure_storage_settings( $mode ) {
 				echo esc_attr( WindowsAzureStorageUtil::getCNAME() ); ?>" />
 				<p class="field-description">
 					<?php
-					_e(
+					$notice = __(
 						'Note: Use this option if you would like to display image URLs belonging to your domain like <samp>http://MyDomain.com/</samp> instead of <samp>http://YourAccountName.blob.core.windows.net/</samp>.',
 						'windows-azure-storage'
 					);
+					echo wp_kses( $notice, array( 'samp' => array() ) );
 					?></p>
 				<div id="cname-notice">
 					<?php if ( is_ssl() ) : ?>
 						<h4><?php echo esc_html_x( 'Notice', 'verb', 'windows-azure-storage' ); ?></h4>
-						<p><?php printf(
+						<p><?php
+							$notice = sprintf(
+							/* translators: 1: link URL should not be translated, 2: link title is safe for translation  */
 								__(
-									'Windows Azure Blob Storage <a href="%s">does not currently support SSL certificates for custom domain names</a>. As
-WordPress is currently configured to serve content over HTTPS, it\'s recommended that you use the default Azure storage
+									'Windows Azure Storage <a href="%1$s" title="%2$s">does not currently support SSL certificates for custom domain
+names</a>. As WordPress is currently configured to serve content over HTTPS, it\'s recommended that you use the default Azure storage
 endpoint to avoid mixed-content warnings for your visitors.',
 									'windows-azure-storage'
 								),
-								'https://feedback.azure.com/forums/217298-storage/suggestions/3007732-make-it-possible-to-use-ssl-on-blob-storage-using'
-							); ?></p>
+								'https://feedback.azure.com/forums/217298-storage/suggestions/3007732-make-it-possible-to-use-ssl-on-blob-storage-using',
+								esc_html__( 'How can we improve Azure Storage? on Azure Forums', 'windows-azure-storage' )
+							);
+							echo wp_kses( $notice, array(
+								'a' => array(
+									'href'  => array(),
+									'title' => array(),
+								),
+							) );
+							?></p>
 					<?php else : ?>
 						<p><?php printf(
 								__(
