@@ -377,14 +377,24 @@ endpoint to avoid mixed-content warnings for your visitors.',
 							) );
 							?></p>
 					<?php else : ?>
-						<p><?php printf(
+						<p><?php
+							$notice = sprintf(
+								/* translators: the abbreviation "DNS" should remain, but the title can be translated */
 								__(
 									'This CNAME must start with <samp>http://</samp> and the administrator will have to update <abbr title="%s">DNS</abbr>
  entries accordingly.',
 									'windows-azure-storage'
 								),
-								'Domain Name System'
-							); ?></p>
+								_x( 'Domain Name System', 'The proper name of the Internet name resolution system',
+									'windows-azure-storage' )
+							);
+							echo wp_kses( $notice, array(
+								'samp' => array(),
+								'abbr' => array(
+									'title' => array(),
+								),
+							) );
+							?></p>
 					<?php endif; ?>
 				</div>
 			</td>
