@@ -283,7 +283,7 @@ function show_windows_azure_storage_settings( $mode ) {
 							<?php
 						}
 						?>
-						<option value="<Create New Container>">&lt;Create New Container&gt;</option>
+						<option value="__newContainer__">&mdash;&thinsp;<?php esc_html_e( 'Create New Container', 'windows-azure-storage' ); ?>&thinsp;&mdash;</option>
 						<?php
 					}
 					?>

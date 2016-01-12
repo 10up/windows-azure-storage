@@ -14,7 +14,7 @@ function createContainer( url ) {
 function onContainerSelectionChanged( show ) {
 	var htmlForm = document.getElementsByName( 'SettingsForm' )[0];
 	var divCreateContainer = document.getElementById( 'divCreateContainer' );
-	if ( htmlForm.elements['default_azure_storage_account_container_name'].value === '<Create New Container>' ) {
+	if ( htmlForm.elements['default_azure_storage_account_container_name'].value === '__newContainer__' ) {
 		divCreateContainer.style.display = 'block';
 		htmlForm.elements['submitButton'].disabled = true;
 
@@ -31,7 +31,7 @@ function onContainerSelectionChanged( show ) {
 
 function onUpload_ContainerSelectionChanged() {
 	var htmlForm = document.getElementsByName( 'UploadNewFileForm' )[0];
-	if ( htmlForm.elements['selected_container'].value === '<Create New Container>' ) {
+	if ( htmlForm.elements['selected_container'].value === '__newContainer__' ) {
 		htmlForm.elements['uploadFileTag'].disabled = true;
 		htmlForm.elements['uploadFileTag'].style.background = 'gray';
 		htmlForm.elements['uploadFileName'].disabled = true;

@@ -554,8 +554,7 @@ function windows_azure_storage_dialog_upload_tab() {
 										<?php
 									}
 									?>
-									<option value="<Create New Container>">&lt;Create New Container&gt;</option>
-									<?php
+									<option value="__newContainer__">&mdash;&thinsp;<?php esc_html_e( 'Create New Container', 'windows-azure-storage' ); ?>&thinsp;&mdash;</option>                                    <?php
 								} catch ( Exception $ex ) {
 									// Ignore exception as account keys are not yet set
 
