@@ -425,7 +425,7 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $postID ) {
 			return $data;
 		}
 
-		$url = WindowsAzureStorageUtil::getStorageUrlPrefix()
+		$url = WindowsAzureStorageUtil::get_storage_url_base()
 		       . "/" . $relativeFileName;
 
 		// Set new url in returned data
@@ -532,7 +532,7 @@ function windows_azure_storage_wp_handle_upload_prefilter( $file ) {
  */
 function windows_azure_storage_wp_handle_upload( $uploads ) {
 	$wp_upload_dir  = wp_upload_dir();
-	$uploads['url'] = WindowsAzureStorageUtil::getStorageUrlPrefix()
+	$uploads['url'] = WindowsAzureStorageUtil::get_storage_url_base()
 	                  . $wp_upload_dir['subdir'] . "/" . basename( $uploads['file'] );
 
 	return $uploads;
@@ -549,7 +549,7 @@ function windows_azure_storage_wp_handle_upload( $uploads ) {
 function getUpdatedUploadUrl( $url ) {
 	$wp_upload_dir      = wp_upload_dir();
 	$upload_dir_url     = $wp_upload_dir['baseurl'];
-	$storage_url_prefix = WindowsAzureStorageUtil::getStorageUrlPrefix();
+	$storage_url_prefix = WindowsAzureStorageUtil::get_storage_url_base();
 
 	return str_replace( $upload_dir_url, $storage_url_prefix, $url );
 }

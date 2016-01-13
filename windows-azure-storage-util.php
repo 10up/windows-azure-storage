@@ -52,7 +52,7 @@ use WindowsAzure\Blob\Models\CreateBlobOptions;
 use WindowsAzure\Blob\Models\CreateContainerOptions;
 use WindowsAzure\Blob\Models\PublicAccessType;
 use WindowsAzure\Common\Internal\IServiceFilter;
-use windowsazure\common\internal\resources;
+use windowsazure\common\Internal\Resources;
 use WindowsAzure\Common\ServiceException;
 use WindowsAzure\Common\ServicesBuilder;
 
@@ -304,51 +304,79 @@ class WindowsAzureStorageUtil {
 	}
 
 	/**
-	 * Get prefix for the blob URL
+	 * Get the base URL for the blob.
 	 *
-	 * @param boolean $appendContainer Wheather to append container name at the end
+	 * The base URL can be a CNAME domain or Azure one, with or without the container
+	 * name appended. This will generate the correct base URL for an asset after running
+	 * through a set of conditional checks.
 	 *
-	 * @return string Prefix for the blob URL
+	 * @since Unknown
+	 * @since 2.3.0 Switched to 'https' for all Azure URLs.
+	 *
+	 * @param bool $append_container Optional. Whether to append the container name to the URL. Default true.
+	 * @return string|WP_Error The base blob URL for an account, or an error if one can't be found/created.
 	 */
-	public static function getStorageUrlPrefix( $appendContainer = true ) {
-		$azure_storage_account_name = WindowsAzureStorageUtil::getAccountName();
-		$default_azure_storage_account_container_name
-		                            = WindowsAzureStorageUtil::getDefaultContainer();
+	public static function get_storage_url_base( $append_container = true ) {
+		$azure_storage_account_name                   = self::getAccountName();
+		$default_azure_storage_account_container_name = self::getDefaultContainer();
+
+		/**
+		 * Filter the blob URL protocol to force a specific one.
+		 *
+		 * @since 2.3.0
+		 *
+		 * @param string $protocol Optional. Default 'https://', also allow 'http://' and '//'.
+		 */
+		$protocol = apply_filters( 'windows_azure_storage_blob_protocol', 'https://' );
+
+		// Whitelist the protocols and fall back to secure if necessary.
+		if ( ! in_array( $protocol, array( 'https://', 'http://', '//' ) ) ) {
+			$protocol = 'https://';
+		}
 
 		// Get CNAME if defined
-		$cname = WindowsAzureStorageUtil::getCNAME();
+		$cname = self::getCNAME();
 		if ( ! ( empty( $cname ) ) ) {
-			if ( $appendContainer ) {
-				return $cname . "/" . $default_azure_storage_account_container_name;
-			} else {
-				return $cname;
-			}
+			$url = sprintf( '%1$s/%2$s/%3$s',
+				$cname,
+				$default_azure_storage_account_container_name,
+				$append_container ? $default_azure_storage_account_container_name : ''
+			);
 		} else {
-			$blobStorageHostName = WindowsAzureStorageUtil::getHostName();
-			$storageAccountName  = WindowsAzureStorageUtil::getAccountName();
+			$blob_storage_host_name = self::getHostName();
+			$storage_account_name   = self::getAccountName();
 
-			if ( $storageAccountName == 'devstoreaccount1' ) {
+			if ( Resources::DEV_STORE_NAME === $storage_account_name ) {
 				// Use development storage
-				if ( $appendContainer ) {
-					return 'http://' . $blobStorageHostName
-					       . '/' . $azure_storage_account_name
-					       . '/' . $default_azure_storage_account_container_name;
-				} else {
-					return 'http://' . $blobStorageHostName
-					       . '/' . $azure_storage_account_name;
-				}
+				$url = sprintf( '%1$s%2%s/%3$s/%4$s',
+					$protocol,
+					$blob_storage_host_name,
+					$azure_storage_account_name,
+					$append_container ? $default_azure_storage_account_container_name : ''
+				);
 			} else {
 				// Use cloud storage
-				if ( $appendContainer ) {
-					return 'http://' . $azure_storage_account_name
-					       . '.' . $blobStorageHostName
-					       . '/' . $default_azure_storage_account_container_name;
-				} else {
-					return 'http://' . $azure_storage_account_name
-					       . '.' . $blobStorageHostName;
-				}
+				$url = sprintf( '%1$s%2$s.%3$s/%4$s',
+					$protocol,
+					$azure_storage_account_name,
+					$blob_storage_host_name,
+					$append_container ? $default_azure_storage_account_container_name : ''
+				);
 			}
 		}
+
+		if ( ! isset( $url ) || empty( $url ) ) {
+			return new WP_Error(
+				__( 'No Azure URL', 'windows-azure-storage' ),
+				__( 'A valid Azure Storage URL could not be found for this account.', 'windows-azure-storage' ),
+				array(
+					'name'      => $azure_storage_account_name,
+					'container' => $default_azure_storage_account_container_name,
+				)
+			);
+		}
+
+		return trailingslashit( $url );
 	}
 
 	/**
