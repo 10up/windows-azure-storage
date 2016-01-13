@@ -38,7 +38,7 @@ function onUpload_ContainerSelectionChanged() {
 		htmlForm.elements['uploadFileName'].style.background = 'gray';
 		htmlForm.elements['createContainer'].style.visibility = 'visible';
 		document.getElementById( 'lblNewContainer' ).style.display = 'block';
-		htmlForm.elements['action'].value = 'Create';
+		htmlForm.elements['action'].value = 'create';
 		htmlForm.elements['submit'].value = windowsAzureStorageSettings.l10n.create;
 	} else {
 		htmlForm.elements['uploadFileTag'].disabled = false;

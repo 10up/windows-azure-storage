@@ -525,7 +525,7 @@ function windows_azure_storage_dialog_upload_tab() {
 					}
 				}
 			}
-		} else if ( ( ! empty( $_POST['action'] ) ) && ( $_POST["action"] == "Create" ) ) {
+		} else if ( ( ! empty( $_POST['action'] ) ) && ( 'create' === $_POST['action'] ) ) {
 			if ( ! empty( $_POST["createContainer"] ) ) {
 				try {
 					WindowsAzureStorageUtil::createPublicContainer( $_POST["createContainer"] );
