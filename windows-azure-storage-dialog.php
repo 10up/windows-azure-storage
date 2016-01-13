@@ -244,6 +244,7 @@ function windows_azure_storage_dialog_browse_tab() {
 		?>
 		<form name="SelectContainerForm" style="margin: 10px;" method="post" action="<?php
 		echo esc_attr( $_SERVER['REQUEST_URI'] ); ?>">
+			<?php wp_nonce_field( 'windows-azure-storage-select-container' . get_the_ID() ); ?>
 			<table style="margin: 10px; border-width: 2px;border-color: black;">
 				<tr>
 					<td><b>Container Name:</b></td>
@@ -330,6 +331,7 @@ function windows_azure_storage_dialog_browse_tab() {
 			?>
 			<form name="DeleteAllBlobsForm" style="margin: 20px;" method="post" action=""<?php
 			echo esc_attr( $_SERVER['REQUEST_URI'] ); ?>">
+			<?php wp_nonce_field( 'windows-azure-storage-delete-all-blobs' . get_the_ID() ); ?>
 			<input type='hidden' name='DeleteAllBlobs' value='true' />
 			<input type='hidden' name='selected_container' value='<?php
 			echo esc_attr( $selected_container_name ); ?>' />
@@ -377,6 +379,7 @@ function windows_azure_storage_dialog_search_tab() {
 		<div id="search-form">
 			<form style="margin: 10px;" method="post" action="<?php
 			echo esc_attr( $browseUrl ); ?>">
+				<?php wp_nonce_field( 'windows-azure-storage-search' . get_the_ID() ); ?>
 				<table class="form-table">
 					<tr valign="top">
 						<th scope="row">
@@ -525,6 +528,7 @@ function windows_azure_storage_dialog_upload_tab() {
 		<div id="upload-form">
 			<form name="UploadNewFileForm" style="margin: 10px;" method="post" enctype="multipart/form-data" action="<?php
 			echo esc_attr( $_SERVER['REQUEST_URI'] ); ?>">
+				<?php wp_nonce_field( 'windows-azure-storage-upload' . get_the_ID() ); ?>
 				<table class="form-table">
 					<tr valign="top">
 						<th scope="row">
