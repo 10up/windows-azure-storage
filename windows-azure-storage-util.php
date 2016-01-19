@@ -480,9 +480,8 @@ class WindowsAzureStorageUtil {
 				$numberOfBlocks = ceil( filesize( $localFileName ) / self::MAX_BLOB_TRANSFER_SIZE );
 
 				// Generate block id's
-				/** @var WindowsAzure\Blob\Models\BlockList $blocks */
 				$blocks = array();
-				
+
 				for ( $i = 0; $i < $numberOfBlocks; $i ++ ) {
 					/** @var WindowsAzure\Blob\Models\Block */
 					$block = new Block();
