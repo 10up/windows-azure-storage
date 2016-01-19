@@ -489,18 +489,17 @@ class WindowsAzureStorageUtil {
 					$block->setBlockId( self::_generateBlockId( $i ) );
 					$block->setType( BlobBlockType::LATEST_TYPE );
 
-					$blocks[ $i ] = $block;
-					unset( $block );
-				}
-
-				// Upload blocks
-				for ( $i = 0; $i < $numberOfBlocks; $i ++ ) {
 					// Seek position in file
 					fseek( $handle, $i * self::MAX_BLOB_TRANSFER_SIZE );
 					// Read contents
 					$fileContents = fread( $handle, self::MAX_BLOB_TRANSFER_SIZE );
 					// Put block
-					$blobRestProxy->createBlobBlock( $containerName, $blobName, $blocks[ $i ]->getBlockId(), $fileContents );
+					$blobRestProxy->createBlobBlock( $containerName, $blobName, $block->getBlockId(), $fileContents );
+
+					// Save it for later
+					$block[ $i ] = $block;
+					unset( $block );
+
 					// Dispose file contents
 					$fileContents = null;
 					unset( $fileContents );
