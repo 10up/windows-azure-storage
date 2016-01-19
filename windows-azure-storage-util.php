@@ -463,7 +463,7 @@ class WindowsAzureStorageUtil {
 		// Open file
 		$handle = fopen( $localFileName, 'r' );
 		if ( $handle === false ) {
-			throw new Exception( 'Could not open the local file ' . localFileName );
+			throw new Exception( 'Could not open the local file ' . $localFileName );
 		}
 
 		$blobRestProxy = WindowsAzureStorageUtil::getStorageClient();
