@@ -50,6 +50,7 @@ use WindowsAzure\Blob\Models\Block;
 use WindowsAzure\Blob\Models\CommitBlobBlocksOptions;
 use WindowsAzure\Blob\Models\CreateBlobOptions;
 use WindowsAzure\Blob\Models\CreateContainerOptions;
+use WindowsAzure\Blob\Models\ListContainersOptions;
 use WindowsAzure\Blob\Models\PublicAccessType;
 use WindowsAzure\Common\Internal\IServiceFilter;
 use windowsazure\common\Internal\Resources;
@@ -191,7 +192,7 @@ class WindowsAzureStorageUtil {
 	 *
 	 * @param string $proxyPassword Http proxy password
 	 *
-	 * @return BlobRestProxy Blob storage client
+	 * @return WindowsAzure\Blob\BlobRestProxy Blob storage client
 	 */
 	public static function getStorageClient(
 		$accountName = null, $accountKey = null,
@@ -261,21 +262,18 @@ class WindowsAzureStorageUtil {
 	/**
 	 * Check if a blob exists
 	 *
+	 * @since Unknown
+	 * @since 2.3.0 Wrapper for blob_exists_in_container().
+	 * @see   WindowsAzureStorageUtil::blob_exists_in_container()
+	 *
 	 * @param string $containerName Name of the parent container
-	 *
 	 * @param string $blobName      Name of the blob to be checked
-	 *
 	 * @return boolean
 	 */
 	public static function blobExists( $containerName, $blobName ) {
-		try {
-			$blobRestProxy = WindowsAzureStorageUtil::getStorageClient();
-			$blobRestProxy->getBlobMetadata( $containerName, $blobName );
-		} catch ( ServiceException $e ) {
-			return false;
-		}
+		_deprecated_function( __FUNCTION__, '2.3.0', 'WindowsAzureStorageUtil::blob_exists_in_container()' );
 
-		return true;
+		return self::blob_exists_in_container( $blobName, $containerName );
 	}
 
 	/**
