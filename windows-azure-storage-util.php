@@ -523,6 +523,85 @@ class WindowsAzureStorageUtil {
 	}
 
 	/**
+	 * Verify if a blob exists in the Storage container.
+	 *
+	 * @since 2.3.0
+	 *
+	 * @param string $blob_name      The blob to check.
+	 * @param string $container_name Optional. The container to check. Defaults to default container in settings.
+	 * @return bool|WP_Error True if blob exists, false if not; WP_Error if container doesn't exist.
+	 */
+	public static function blob_exists_in_container( $blob_name, $container_name = '' ) {
+		/** @var WindowsAzure\Blob\BlobRestProxy $client */
+		$client      = self::getStorageClient();
+		$blob_exists = false;
+
+		if ( empty( $container_name ) ) {
+			$container_name = self::getDefaultContainer();
+		}
+
+		if ( ! self::container_exists_in_storage( $container_name ) ) {
+			return new WP_Error( __( 'invalid_container', 'windows-azure-storage' ),
+				__( 'The container specified does not exist in this account.', 'windows-azure-storage' ),
+				array(
+					'container' => $container_name,
+					'blob'      => $blob_name,
+				)
+			);
+		}
+
+		//TODO: Use cached blob list if it exists.
+
+		$blobs = $client->listBlobs( $container_name );
+
+		//TODO: Cache blobs list.
+
+		/** @var WindowsAzure\Blob\Models\Blob $blob */
+		foreach ( $blobs as $blob ) {
+			if ( $blob->getName() === $blob_name ) {
+				$blob_exists = true;
+				break;
+			}
+		}
+
+		return $blob_exists;
+	}
+
+	/**
+	 * Check if a container exists in the current account.
+	 *
+	 * @since 2.3.0
+	 * @link  https://goo.gl/6XsKAJ Official SDK example for checking containers.
+	 *
+	 * @param string $container_name The container name to check.
+	 * @return bool True if the container exists in the account, false if not.
+	 */
+	public static function container_exists_in_storage( $container_name ) {
+		/** @var WindowsAzure\Blob\BlobRestProxy $client */
+		$client           = self::getStorageClient();
+		$container_exists = false;
+
+		$options = new ListContainersOptions();
+		$options->setPrefix( $container_name );
+
+		//TODO: check cache for containers list and use it if present.
+		$result     = $client->listContainers( $options );
+		$containers = $result->getContainers();
+
+		//TODO: Cache the containers list.
+
+		/** @var WindowsAzure\Blob\Models\Container $container */
+		foreach ( $containers as $container ) {
+			if ( $container->getName() === $container_name ) {
+				$container_exists = true;
+				break;
+			}
+		}
+
+		return $container_exists;
+	}
+
+	/**
 	 * Create signature
 	 *
 	 * @param string  $accountName     Account name for Windows Azure
