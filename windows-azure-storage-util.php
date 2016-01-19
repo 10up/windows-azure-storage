@@ -466,6 +466,7 @@ class WindowsAzureStorageUtil {
 			throw new Exception( 'Could not open the local file ' . $localFileName );
 		}
 
+		/** @var \WindowsAzure\Blob\BlobRestProxy $blobRestProxy */
 		$blobRestProxy = WindowsAzureStorageUtil::getStorageClient();
 		try {
 			if ( filesize( $localFileName ) < self::MAX_BLOB_SIZE ) {
@@ -479,11 +480,18 @@ class WindowsAzureStorageUtil {
 				$numberOfBlocks = ceil( filesize( $localFileName ) / self::MAX_BLOB_TRANSFER_SIZE );
 
 				// Generate block id's
+				/** @var WindowsAzure\Blob\Models\BlockList $blocks */
 				$blocks = array();
+				
 				for ( $i = 0; $i < $numberOfBlocks; $i ++ ) {
-					$blocks[ $i ] = new Block();
-					$blocks[ $i ]->setBlockId( self::_generateBlockId( $i ) );
-					$blocks[ $i ]->setType( BlobBlockType::LATEST_TYPE );
+					/** @var WindowsAzure\Blob\Models\Block */
+					$block = new Block();
+
+					$block->setBlockId( self::_generateBlockId( $i ) );
+					$block->setType( BlobBlockType::LATEST_TYPE );
+
+					$blocks[ $i ] = $block;
+					unset( $block );
 				}
 
 				// Upload blocks
