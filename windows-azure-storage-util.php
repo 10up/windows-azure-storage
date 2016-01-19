@@ -435,29 +435,28 @@ class WindowsAzureStorageUtil {
 	}
 
 	/**
-	 * Upload the given file to an azure storage container as a block blob.
-	 * Block blobs let us upload large blobs efficiently. Block blobs are comprised of blocks,
-	 * each of which is identified by a block ID. This allows create (or modify) a block blob
-	 * by writing a set of blocks and committing them by their block IDs.
-	 * If we are writing a block blob that is no more than 64 MB in size, you can upload it
-	 * in its entirety with a single write operation.
+	 * Upload the given file to an Azure Storage container as a block blob.
+	 *
+	 * Block blobs are comprised of blocks, each of which is identified by a block ID.
+	 * This allows creation or modification of a block blob by writing a set of blocks
+	 * and committing them by their block IDs, resulting in an overall efficient upload.
+	 *
+	 * If writing a block blob that is no more than 64MB in size, upload it
+	 * in its entirety with a single write operation. Otherwise, chunk the blob into discrete
+	 * blocks and upload each of them, then send the list of blocks.
+	 *
 	 * When you upload a block to a blob in your storage account, it is associated with the
 	 * specified block blob, but it does  not become part of the blob until you commit a list
 	 * of blocks that includes the new block's ID.
 	 *
-	 * @param string $containerName   Container name
+	 * @param string $containerName   The container to add the blob to.
+	 * @param string $blobName        The name of the blob to upload.
+	 * @param string $localFileName   The full path to local file to be uploaded.
+	 * @param string $blobContentType Optional. Content type of the blob.
+	 * @param array  $metadata        Optional. Metadata to describe the blob.
 	 *
-	 * @param string $blobName        Blob name
-	 *
-	 * @param string $localFileName   Path to local file to be uploaded
-	 *
-	 * @param string $blobContentType Content type of the blob
-	 *
-	 * @param array  $metadata        Array of metadata
-	 *
-	 * @return void
-	 *
-	 * @throws ServiceException
+	 * @throws \Exception|ServiceException Exception if local file can't be read;
+	 *                                     ServiceException if response code is incorrect.
 	 */
 	public static function putBlockBlob( $containerName, $blobName, $localFileName, $blobContentType = null, $metadata = array() ) {
 		$copyBlobResult = null;
