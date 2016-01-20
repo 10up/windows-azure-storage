@@ -550,12 +550,13 @@ class WindowsAzureStorageUtil {
 
 		//TODO: Use cached blob list if it exists.
 
+		/** @var WindowsAzure\Blob\Models\ListBlobsResult $blobs */
 		$blobs = $client->listBlobs( $container_name );
 
 		//TODO: Cache blobs list.
 
 		/** @var WindowsAzure\Blob\Models\Blob $blob */
-		foreach ( $blobs as $blob ) {
+		foreach ( $blobs->getBlobs() as $blob ) {
 			if ( $blob->getName() === $blob_name ) {
 				$blob_exists = true;
 				break;
