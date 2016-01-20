@@ -529,7 +529,7 @@ class WindowsAzureStorageUtil {
 							);
 						}
 					} catch ( Exception $ex ) {
-						$ex->getMessage();
+						echo '<p class="notice">' . esc_html( $ex->getMessage() ) . '</p>';
 					}
 				}
 			}
