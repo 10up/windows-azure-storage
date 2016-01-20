@@ -522,7 +522,7 @@ class WindowsAzureStorageUtil {
 						} else {
 							throw new Exception(
 								sprintf(
-									__( 'Blob %1$2 not uploaded to container %2$2. Try again.', 'windows-azure-storage' ),
+									__( 'The blob %1$2 was not uploaded to container %2$2. Please try again.', 'windows-azure-storage' ),
 									$blobName,
 									$containerName
 								)
