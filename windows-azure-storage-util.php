@@ -495,7 +495,7 @@ class WindowsAzureStorageUtil {
 					$blobRestProxy->createBlobBlock( $containerName, $blobName, $block->getBlockId(), $fileContents );
 
 					// Save it for later
-					$block[ $i ] = $block;
+					$blocks[ $i ] = $block;
 					unset( $block );
 
 					// Dispose file contents
