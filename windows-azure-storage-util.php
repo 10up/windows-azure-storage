@@ -441,7 +441,8 @@ class WindowsAzureStorageUtil {
 	 *
 	 * If writing a block blob that is no more than 64MB in size, upload it
 	 * in its entirety with a single write operation. Otherwise, chunk the blob into discrete
-	 * blocks and upload each of them, then send the list of blocks.
+	 * blocks and upload each of them, then commit the blob ID to signal to Azure that they
+	 * should be combined into a blob. Files over 64MB are then deleted from temporary local storage.
 	 *
 	 * When you upload a block to a blob in your storage account, it is associated with the
 	 * specified block blob, but it does  not become part of the blob until you commit a list
@@ -458,6 +459,7 @@ class WindowsAzureStorageUtil {
 	 */
 	public static function putBlockBlob( $containerName, $blobName, $localFileName, $blobContentType = null, $metadata = array() ) {
 		$copyBlobResult = null;
+		$is_large_file = false;
 		// Open file
 		$handle = fopen( $localFileName, 'r' );
 		if ( $handle === false ) {
@@ -474,6 +476,7 @@ class WindowsAzureStorageUtil {
 				$blobRestProxy->createBlockBlob( $containerName, $blobName, $handle, $createBlobOptions );
 				fclose( $handle );
 			} else {
+				$is_large_file = true;
 				// Determine number of page blocks
 				$numberOfBlocks = ceil( filesize( $localFileName ) / self::MAX_BLOB_TRANSFER_SIZE );
 
@@ -496,11 +499,6 @@ class WindowsAzureStorageUtil {
 
 					// Save it for later
 					$blocks[ $i ] = $block;
-					unset( $block );
-
-					// Dispose file contents
-					$fileContents = null;
-					unset( $fileContents );
 				}
 
 				// Close file
@@ -511,6 +509,29 @@ class WindowsAzureStorageUtil {
 				$commitBlockBlobOptions->setMetadata( $metadata );
 				// Commit the block list
 				$blobRestProxy->commitBlobBlocks( $containerName, $blobName, $blocks, $commitBlockBlobOptions );
+
+				if ( $is_large_file ) {
+					// Delete large temp files when we're done
+					try {
+						//TODO: add option to keep this file if so desired
+						if ( self::blob_exists_in_container( $blobName, $containerName ) ) {
+							wp_delete_file( $localFileName );
+							// Dispose file contents
+							$fileContents = null;
+							unset( $fileContents );
+						} else {
+							throw new Exception(
+								sprintf(
+									__( 'Blob %1$2 not uploaded to container %2$2. Try again.', 'windows-azure-storage' ),
+									$blobName,
+									$containerName
+								)
+							);
+						}
+					} catch ( Exception $ex ) {
+						$ex->getMessage();
+					}
+				}
 			}
 		} catch ( ServiceException $exception ) {
 			if ( ! $handle ) {
