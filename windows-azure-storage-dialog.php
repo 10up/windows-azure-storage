@@ -637,9 +637,14 @@ function deleteBlob( $containerName, $blobName ) {
 			WindowsAzureStorageUtil::deleteBlob( $containerName, $blobName );
 		}
 	} catch ( Exception $e ) {
-		echo '<p style="margin: 10px; color: red;">'
-		     . 'Error in deleting blob $blobName from container $containerName : '
-		     . esc_html( $e->getMessage() ) . "</p><br/>";
+		/* translators: 1: blob (file) name, 2: container name, 3: error message */
+		$message = sprintf(
+			__( 'Error in deleting blob %1$s from container %2$s: %3$s', 'windows-azure-storage' ),
+			$blobName,
+			$containerName,
+			$e->getMessage()
+		);
+		echo '<p class="warning">' . esc_html( $message ) . '</p>';
 	}
 }
 
