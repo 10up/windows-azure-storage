@@ -50,9 +50,10 @@ use WindowsAzure\Blob\Models\Block;
 use WindowsAzure\Blob\Models\CommitBlobBlocksOptions;
 use WindowsAzure\Blob\Models\CreateBlobOptions;
 use WindowsAzure\Blob\Models\CreateContainerOptions;
+use WindowsAzure\Blob\Models\ListContainersOptions;
 use WindowsAzure\Blob\Models\PublicAccessType;
 use WindowsAzure\Common\Internal\IServiceFilter;
-use windowsazure\common\internal\resources;
+use windowsazure\common\Internal\Resources;
 use WindowsAzure\Common\ServiceException;
 use WindowsAzure\Common\ServicesBuilder;
 
@@ -191,7 +192,7 @@ class WindowsAzureStorageUtil {
 	 *
 	 * @param string $proxyPassword Http proxy password
 	 *
-	 * @return BlobRestProxy Blob storage client
+	 * @return WindowsAzure\Blob\BlobRestProxy Blob storage client
 	 */
 	public static function getStorageClient(
 		$accountName = null, $accountKey = null,
@@ -261,21 +262,18 @@ class WindowsAzureStorageUtil {
 	/**
 	 * Check if a blob exists
 	 *
+	 * @since Unknown
+	 * @since 2.3.0 Wrapper for blob_exists_in_container().
+	 * @see   WindowsAzureStorageUtil::blob_exists_in_container()
+	 *
 	 * @param string $containerName Name of the parent container
-	 *
 	 * @param string $blobName      Name of the blob to be checked
-	 *
 	 * @return boolean
 	 */
 	public static function blobExists( $containerName, $blobName ) {
-		try {
-			$blobRestProxy = WindowsAzureStorageUtil::getStorageClient();
-			$blobRestProxy->getBlobMetadata( $containerName, $blobName );
-		} catch ( ServiceException $e ) {
-			return false;
-		}
+		_deprecated_function( __FUNCTION__, '2.3.0', 'WindowsAzureStorageUtil::blob_exists_in_container()' );
 
-		return true;
+		return self::blob_exists_in_container( $blobName, $containerName );
 	}
 
 	/**
@@ -304,51 +302,79 @@ class WindowsAzureStorageUtil {
 	}
 
 	/**
-	 * Get prefix for the blob URL
+	 * Get the base URL for the blob.
 	 *
-	 * @param boolean $appendContainer Wheather to append container name at the end
+	 * The base URL can be a CNAME domain or Azure one, with or without the container
+	 * name appended. This will generate the correct base URL for an asset after running
+	 * through a set of conditional checks.
 	 *
-	 * @return string Prefix for the blob URL
+	 * @since Unknown
+	 * @since 2.3.0 Switched to 'https' for all Azure URLs.
+	 *
+	 * @param bool $append_container Optional. Whether to append the container name to the URL. Default true.
+	 * @return string|WP_Error The base blob URL for an account, or an error if one can't be found/created.
 	 */
-	public static function getStorageUrlPrefix( $appendContainer = true ) {
-		$azure_storage_account_name = WindowsAzureStorageUtil::getAccountName();
-		$default_azure_storage_account_container_name
-		                            = WindowsAzureStorageUtil::getDefaultContainer();
+	public static function get_storage_url_base( $append_container = true ) {
+		$azure_storage_account_name                   = self::getAccountName();
+		$default_azure_storage_account_container_name = self::getDefaultContainer();
+
+		/**
+		 * Filter the blob URL protocol to force a specific one.
+		 *
+		 * @since 2.3.0
+		 *
+		 * @param string $protocol Optional. Default 'https://', also allow 'http://' and '//'.
+		 */
+		$protocol = apply_filters( 'windows_azure_storage_blob_protocol', 'https://' );
+
+		// Whitelist the protocols and fall back to secure if necessary.
+		if ( ! in_array( $protocol, array( 'https://', 'http://', '//' ) ) ) {
+			$protocol = 'https://';
+		}
 
 		// Get CNAME if defined
-		$cname = WindowsAzureStorageUtil::getCNAME();
+		$cname = self::getCNAME();
 		if ( ! ( empty( $cname ) ) ) {
-			if ( $appendContainer ) {
-				return $cname . "/" . $default_azure_storage_account_container_name;
-			} else {
-				return $cname;
-			}
+			$url = sprintf( '%1$s/%2$s/%3$s',
+				$cname,
+				$default_azure_storage_account_container_name,
+				$append_container ? $default_azure_storage_account_container_name : ''
+			);
 		} else {
-			$blobStorageHostName = WindowsAzureStorageUtil::getHostName();
-			$storageAccountName  = WindowsAzureStorageUtil::getAccountName();
+			$blob_storage_host_name = self::getHostName();
+			$storage_account_name   = self::getAccountName();
 
-			if ( $storageAccountName == 'devstoreaccount1' ) {
+			if ( Resources::DEV_STORE_NAME === $storage_account_name ) {
 				// Use development storage
-				if ( $appendContainer ) {
-					return 'http://' . $blobStorageHostName
-					       . '/' . $azure_storage_account_name
-					       . '/' . $default_azure_storage_account_container_name;
-				} else {
-					return 'http://' . $blobStorageHostName
-					       . '/' . $azure_storage_account_name;
-				}
+				$url = sprintf( '%1$s%2%s/%3$s/%4$s',
+					$protocol,
+					$blob_storage_host_name,
+					$azure_storage_account_name,
+					$append_container ? $default_azure_storage_account_container_name : ''
+				);
 			} else {
 				// Use cloud storage
-				if ( $appendContainer ) {
-					return 'http://' . $azure_storage_account_name
-					       . '.' . $blobStorageHostName
-					       . '/' . $default_azure_storage_account_container_name;
-				} else {
-					return 'http://' . $azure_storage_account_name
-					       . '.' . $blobStorageHostName;
-				}
+				$url = sprintf( '%1$s%2$s.%3$s/%4$s',
+					$protocol,
+					$azure_storage_account_name,
+					$blob_storage_host_name,
+					$append_container ? $default_azure_storage_account_container_name : ''
+				);
 			}
 		}
+
+		if ( ! isset( $url ) || empty( $url ) ) {
+			return new WP_Error(
+				__( 'No Azure URL', 'windows-azure-storage' ),
+				__( 'A valid Azure Storage URL could not be found for this account.', 'windows-azure-storage' ),
+				array(
+					'name'      => $azure_storage_account_name,
+					'container' => $default_azure_storage_account_container_name,
+				)
+			);
+		}
+
+		return trailingslashit( $url );
 	}
 
 	/**
@@ -407,38 +433,40 @@ class WindowsAzureStorageUtil {
 	}
 
 	/**
-	 * Upload the given file to an azure storage container as a block blob.
-	 * Block blobs let us upload large blobs efficiently. Block blobs are comprised of blocks,
-	 * each of which is identified by a block ID. This allows create (or modify) a block blob
-	 * by writing a set of blocks and committing them by their block IDs.
-	 * If we are writing a block blob that is no more than 64 MB in size, you can upload it
-	 * in its entirety with a single write operation.
+	 * Upload the given file to an Azure Storage container as a block blob.
+	 *
+	 * Block blobs are comprised of blocks, each of which is identified by a block ID.
+	 * This allows creation or modification of a block blob by writing a set of blocks
+	 * and committing them by their block IDs, resulting in an overall efficient upload.
+	 *
+	 * If writing a block blob that is no more than 64MB in size, upload it
+	 * in its entirety with a single write operation. Otherwise, chunk the blob into discrete
+	 * blocks and upload each of them, then commit the blob ID to signal to Azure that they
+	 * should be combined into a blob. Files over 64MB are then deleted from temporary local storage.
+	 *
 	 * When you upload a block to a blob in your storage account, it is associated with the
 	 * specified block blob, but it does  not become part of the blob until you commit a list
 	 * of blocks that includes the new block's ID.
 	 *
-	 * @param string $containerName   Container name
+	 * @param string $containerName   The container to add the blob to.
+	 * @param string $blobName        The name of the blob to upload.
+	 * @param string $localFileName   The full path to local file to be uploaded.
+	 * @param string $blobContentType Optional. Content type of the blob.
+	 * @param array  $metadata        Optional. Metadata to describe the blob.
 	 *
-	 * @param string $blobName        Blob name
-	 *
-	 * @param string $localFileName   Path to local file to be uploaded
-	 *
-	 * @param string $blobContentType Content type of the blob
-	 *
-	 * @param array  $metadata        Array of metadata
-	 *
-	 * @return void
-	 *
-	 * @throws ServiceException
+	 * @throws \Exception|ServiceException Exception if local file can't be read;
+	 *                                     ServiceException if response code is incorrect.
 	 */
 	public static function putBlockBlob( $containerName, $blobName, $localFileName, $blobContentType = null, $metadata = array() ) {
 		$copyBlobResult = null;
+		$is_large_file = false;
 		// Open file
 		$handle = fopen( $localFileName, 'r' );
 		if ( $handle === false ) {
-			throw new Exception( 'Could not open the local file ' . localFileName );
+			throw new Exception( 'Could not open the local file ' . $localFileName );
 		}
 
+		/** @var \WindowsAzure\Blob\BlobRestProxy $blobRestProxy */
 		$blobRestProxy = WindowsAzureStorageUtil::getStorageClient();
 		try {
 			if ( filesize( $localFileName ) < self::MAX_BLOB_SIZE ) {
@@ -448,28 +476,29 @@ class WindowsAzureStorageUtil {
 				$blobRestProxy->createBlockBlob( $containerName, $blobName, $handle, $createBlobOptions );
 				fclose( $handle );
 			} else {
+				$is_large_file = true;
 				// Determine number of page blocks
 				$numberOfBlocks = ceil( filesize( $localFileName ) / self::MAX_BLOB_TRANSFER_SIZE );
 
 				// Generate block id's
 				$blocks = array();
-				for ( $i = 0; $i < $numberOfBlocks; $i ++ ) {
-					$blocks[ $i ] = new Block();
-					$blocks[ $i ]->setBlockId( self::_generateBlockId( $i ) );
-					$blocks[ $i ]->setType( BlobBlockType::LATEST_TYPE );
-				}
 
-				// Upload blocks
 				for ( $i = 0; $i < $numberOfBlocks; $i ++ ) {
+					/** @var WindowsAzure\Blob\Models\Block */
+					$block = new Block();
+
+					$block->setBlockId( self::_generateBlockId( $i ) );
+					$block->setType( BlobBlockType::LATEST_TYPE );
+
 					// Seek position in file
 					fseek( $handle, $i * self::MAX_BLOB_TRANSFER_SIZE );
 					// Read contents
 					$fileContents = fread( $handle, self::MAX_BLOB_TRANSFER_SIZE );
 					// Put block
-					$blobRestProxy->createBlobBlock( $containerName, $blobName, $blocks[ $i ]->getBlockId(), $fileContents );
-					// Dispose file contents
-					$fileContents = null;
-					unset( $fileContents );
+					$blobRestProxy->createBlobBlock( $containerName, $blobName, $block->getBlockId(), $fileContents );
+
+					// Save it for later
+					$blocks[ $i ] = $block;
 				}
 
 				// Close file
@@ -480,6 +509,29 @@ class WindowsAzureStorageUtil {
 				$commitBlockBlobOptions->setMetadata( $metadata );
 				// Commit the block list
 				$blobRestProxy->commitBlobBlocks( $containerName, $blobName, $blocks, $commitBlockBlobOptions );
+
+				if ( $is_large_file ) {
+					// Delete large temp files when we're done
+					try {
+						//TODO: add option to keep this file if so desired
+						if ( self::blob_exists_in_container( $blobName, $containerName ) ) {
+							wp_delete_file( $localFileName );
+							// Dispose file contents
+							$fileContents = null;
+							unset( $fileContents );
+						} else {
+							throw new Exception(
+								sprintf(
+									__( 'The blob %1$2 was not uploaded to container %2$2. Please try again.', 'windows-azure-storage' ),
+									$blobName,
+									$containerName
+								)
+							);
+						}
+					} catch ( Exception $ex ) {
+						echo '<p class="notice">' . esc_html( $ex->getMessage() ) . '</p>';
+					}
+				}
 			}
 		} catch ( ServiceException $exception ) {
 			if ( ! $handle ) {
@@ -487,6 +539,86 @@ class WindowsAzureStorageUtil {
 			}
 			throw $exception;
 		}
+	}
+
+	/**
+	 * Verify if a blob exists in the Storage container.
+	 *
+	 * @since 2.3.0
+	 *
+	 * @param string $blob_name      The blob to check.
+	 * @param string $container_name Optional. The container to check. Defaults to default container in settings.
+	 * @return bool|WP_Error True if blob exists, false if not; WP_Error if container doesn't exist.
+	 */
+	public static function blob_exists_in_container( $blob_name, $container_name = '' ) {
+		/** @var WindowsAzure\Blob\BlobRestProxy $client */
+		$client      = self::getStorageClient();
+		$blob_exists = false;
+
+		if ( empty( $container_name ) ) {
+			$container_name = self::getDefaultContainer();
+		}
+
+		if ( ! self::container_exists_in_storage( $container_name ) ) {
+			return new WP_Error( __( 'invalid_container', 'windows-azure-storage' ),
+				__( 'The container specified does not exist in this account.', 'windows-azure-storage' ),
+				array(
+					'container' => $container_name,
+					'blob'      => $blob_name,
+				)
+			);
+		}
+
+		//TODO: Use cached blob list if it exists.
+
+		/** @var WindowsAzure\Blob\Models\ListBlobsResult $blobs */
+		$blobs = $client->listBlobs( $container_name );
+
+		//TODO: Cache blobs list.
+
+		/** @var WindowsAzure\Blob\Models\Blob $blob */
+		foreach ( $blobs->getBlobs() as $blob ) {
+			if ( $blob->getName() === $blob_name ) {
+				$blob_exists = true;
+				break;
+			}
+		}
+
+		return $blob_exists;
+	}
+
+	/**
+	 * Check if a container exists in the current account.
+	 *
+	 * @since 2.3.0
+	 * @link  https://goo.gl/6XsKAJ Official SDK example for checking containers.
+	 *
+	 * @param string $container_name The container name to check.
+	 * @return bool True if the container exists in the account, false if not.
+	 */
+	public static function container_exists_in_storage( $container_name ) {
+		/** @var WindowsAzure\Blob\BlobRestProxy $client */
+		$client           = self::getStorageClient();
+		$container_exists = false;
+
+		$options = new ListContainersOptions();
+		$options->setPrefix( $container_name );
+
+		//TODO: check cache for containers list and use it if present.
+		$result     = $client->listContainers( $options );
+		$containers = $result->getContainers();
+
+		//TODO: Cache the containers list.
+
+		/** @var WindowsAzure\Blob\Models\Container $container */
+		foreach ( $containers as $container ) {
+			if ( $container->getName() === $container_name ) {
+				$container_exists = true;
+				break;
+			}
+		}
+
+		return $container_exists;
 	}
 
 	/**

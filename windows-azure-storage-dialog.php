@@ -43,20 +43,29 @@
  */
 
 /**
- * Setup javascripts and css needed by the Windows Azure Storage popup dialog
+ * Enqueue JavaScript and CSS needed by the settings page dialog.
  *
- * @return void
+ * @internal Callback for 'admin_enqueue_scripts'.
+ * @since 2.3.0 Moved to a callback for 'admin_enqueue_scripts' instead of 'admin_print_scripts'.
+ *
+ * @param string $hook_suffix The hook of the current admin page.
  */
-function windows_azure_storage_dialog_scripts() {
-	?>
-	<script type="text/javascript"
-	        src="../wp-content/plugins/windows-azure-storage/js/windows-azure-storage.js">
-	</script>
-	<link rel="stylesheet"
-	      href="../wp-content/plugins/windows-azure-storage/styles/styles.css"
-	      type="text/css" />
-	<?php
+function windows_azure_storage_dialog_scripts( $hook_suffix ) {
+	// TODO split into 'settings' and 'editor' and enqueue separately
+	wp_enqueue_script( 'windows-azure-storage', MSFT_AZURE_PLUGIN_URL . 'js/windows-azure-storage.js', array(), MSFT_AZURE_PLUGIN_VERSION );
+	wp_localize_script( 'windows-azure-storage', 'windowsAzureStorageSettings', array(
+		'l10n' => array(
+			'upload' => _x( 'Upload', 'verb', 'windows-azure-storage' ),
+			'create' => _x( 'Create', 'verb', 'windows-azure-storage' ),
+		),
+	) );
+
+	wp_enqueue_script( 'windows-azure-storage', MSFT_AZURE_PLUGIN_URL . 'js/windows-azure-storage.js', array(), MSFT_AZURE_PLUGIN_VERSION );
+
+	wp_enqueue_style( 'windows-azure-storage-style', MSFT_AZURE_PLUGIN_URL . 'css/windows-azure-storage.css', array(), MSFT_AZURE_PLUGIN_VERSION );
 }
+
+add_action( 'admin_enqueue_scripts', 'windows_azure_storage_dialog_scripts' );
 
 /**
  * Add browse, search and upload tab to the array needed by wordpress hook
@@ -188,7 +197,11 @@ function windows_azure_storage_dialog_browse_tab() {
 									}
 								}
 
-								$searchResult[] = WindowsAzureStorageUtil::getStorageUrlPrefix( false ) . "/" . $container->getName() . "/" . $blob->getName();
+								$searchResult[] = sprintf( '%1$s/%2$s/%3$s',
+									untrailingslashit( WindowsAzureStorageUtil::get_storage_url_base( false ) ),
+									$container->getName(),
+									$blob->getName()
+								);
 							}
 						}
 					} else {
@@ -219,7 +232,10 @@ function windows_azure_storage_dialog_browse_tab() {
 								}
 							}
 
-							$searchResult[] = WindowsAzureStorageUtil::getStorageUrlPrefix( false ) . "/$searchContainer/" . $blob->getName();
+							$searchResult[] = sprintf( '%1$s/%2$s/%3$s',
+								untrailingslashit( WindowsAzureStorageUtil::get_storage_url_base( false ) ),
+								$searchContainer,
+								$blob->getName() );
 						}
 					}
 
@@ -295,8 +311,11 @@ function windows_azure_storage_dialog_browse_tab() {
 						} else {
 							echo '<p style="margin: 10px;">Note: Click on the image to insert image URL into the blog!</p><br/>';
 							foreach ( $blobs as $blob ) {
-								$url               = WindowsAzureStorageUtil::getStorageUrlPrefix( false ) . "/$selected_container_name/" . $blob->getName();
-								$containsSignature = "false";
+								$url = sprintf( '%1$s/%2$s/%3$s',
+									untrailingslashit( WindowsAzureStorageUtil::get_storage_url_base( false ) ),
+									$selected_container_name,
+									$blob->getName()
+								);
 								$fileExt           = substr( strrchr( $blob->getName(), '.' ), 1 );
 								switch ( strtolower( $fileExt ) ) {
 									case "jpg":
@@ -306,12 +325,12 @@ function windows_azure_storage_dialog_browse_tab() {
 									case "png":
 									case "tiff":
 										echo "<img style='margin: 10px;' src=\"$url\" width=\"32\" height=\"32\"";
-										echo "onmouseover=\"this.height = 50;this.width = 50; this.style.border = '3px solid yellow';\" onmouseout=\"this.height = 32;this.width = 32; this.style.border = '0px solid black'\" onclick=\"return insertImageTag('$url', '$containsSignature');\"/>";
+										echo "onmouseover=\"this.height = 50;this.width = 50; this.style.border = '3px solid yellow';\" onmouseout=\"this.height = 32;this.width = 32; this.style.border = '0px solid black'\" onclick=\"return insertImageTag('$url', false);\"/>";
 										break;
 
 									default:
 										echo "<a style='margin: 10px;' href=\"$url\"";
-										echo "onclick=\"return insertImageTag('$url', '$containsSignature');\">" . $blob->getName() . "<a/>";
+										echo "onclick=\"return insertImageTag('$url', false\">" . $blob->getName() . "<a/>";
 										break;
 								}
 								$deleteLink = 'media-upload.php?post_id=0&tab=browse&deleteBlob=' . urlencode( $blob->getName() ) . '&selected_container=' . urlencode( $selected_container_name );
@@ -489,7 +508,7 @@ function windows_azure_storage_dialog_upload_tab() {
 		}
 
 		// Handle file upload
-		if ( ( ! empty( $_POST['action'] ) ) && ( $_POST["action"] == "Upload" ) ) {
+		if ( ( ! empty( $_POST['action'] ) ) && ( 'upload' === $_POST['action'] ) ) {
 			if ( $_FILES["uploadFileName"]["error"] == 0 ) {
 				if ( ! file_exists( $_FILES['uploadFileName']['tmp_name'] ) ) {
 					echo "<p>Uploaded file " . esc_html( $_FILES['uploadFileName']['tmp_name'] ) . " does not exist</p><br/>";
@@ -509,7 +528,7 @@ function windows_azure_storage_dialog_upload_tab() {
 					}
 				}
 			}
-		} else if ( ( ! empty( $_POST['action'] ) ) && ( $_POST["action"] == "Create" ) ) {
+		} else if ( ( ! empty( $_POST['action'] ) ) && ( 'create' === $_POST['action'] ) ) {
 			if ( ! empty( $_POST["createContainer"] ) ) {
 				try {
 					WindowsAzureStorageUtil::createPublicContainer( $_POST["createContainer"] );
@@ -551,8 +570,7 @@ function windows_azure_storage_dialog_upload_tab() {
 										<?php
 									}
 									?>
-									<option value="<Create New Container>">&lt;Create New Container&gt;</option>
-									<?php
+									<option value="__newContainer__">&mdash;&thinsp;<?php esc_html_e( 'Create New Container', 'windows-azure-storage' ); ?>&thinsp;&mdash;</option>                                    <?php
 								} catch ( Exception $ex ) {
 									// Ignore exception as account keys are not yet set
 
@@ -591,7 +609,7 @@ function windows_azure_storage_dialog_upload_tab() {
 
 				<input type='hidden' name='action' value='Upload' />
 				<p class="submit">
-					<input type="submit" class="button-primary" id="submit" value="Upload" />
+					<input type="submit" class="button-primary" id="submit" value="<?php esc_attr_e( 'Upload', 'windows-azure-storage' ); ?>" />
 				</p>
 			</form>
 		</div>
@@ -623,9 +641,14 @@ function deleteBlob( $containerName, $blobName ) {
 			WindowsAzureStorageUtil::deleteBlob( $containerName, $blobName );
 		}
 	} catch ( Exception $e ) {
-		echo '<p style="margin: 10px; color: red;">'
-		     . 'Error in deleting blob $blobName from container $containerName : '
-		     . esc_html( $e->getMessage() ) . "</p><br/>";
+		/* translators: 1: blob (file) name, 2: container name, 3: error message */
+		$message = sprintf(
+			__( 'Error in deleting blob %1$s from container %2$s: %3$s', 'windows-azure-storage' ),
+			$blobName,
+			$containerName,
+			$e->getMessage()
+		);
+		echo '<p class="warning">' . esc_html( $message ) . '</p>';
 	}
 }
 

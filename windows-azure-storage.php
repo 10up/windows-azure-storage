@@ -55,11 +55,20 @@
  * https://github.com/windowsazure/azure-sdk-for-php/
  */
 
-$msft_was_plugin_path = plugin_dir_path( __FILE__ );
-require_once $msft_was_plugin_path . 'library/WindowsAzure/WindowsAzure.php';
-require_once $msft_was_plug_path . 'windows-azure-storage-settings.php';
-require_once $msft_was_plug_path . 'windows-azure-storage-dialog.php';
-require_once $msft_was_plug_path . 'windows-azure-storage-util.php';
+define( 'MSFT_AZURE_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
+define( 'MSFT_AZURE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+define( 'MSFT_AZURE_PLUGIN_VERSION', '2.2.0' );
+
+/* Azure SDK relies on some PEAR dependencies, but doesn't load them itself.
+ * We have to add the PEAR files to the path for the Azure SDK to see them.
+ */
+$path = MSFT_AZURE_PLUGIN_PATH . 'library/dependencies';
+set_include_path( get_include_path() . PATH_SEPARATOR . $path );
+
+require_once MSFT_AZURE_PLUGIN_PATH . 'library/WindowsAzure/WindowsAzure.php';
+require_once MSFT_AZURE_PLUGIN_PATH . 'windows-azure-storage-settings.php';
+require_once MSFT_AZURE_PLUGIN_PATH . 'windows-azure-storage-dialog.php';
+require_once MSFT_AZURE_PLUGIN_PATH . 'windows-azure-storage-util.php';
 
 // import namepaces required for consuming Azure Blob Storage
 use WindowsAzure\Blob\BlobService;
@@ -416,8 +425,10 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $postID ) {
 			return $data;
 		}
 
-		$url = WindowsAzureStorageUtil::getStorageUrlPrefix()
-		       . "/" . $relativeFileName;
+		$url = sprintf( '%1$s/%2$s',
+			untrailingslashit( WindowsAzureStorageUtil::get_storage_url_base() ),
+			$relativeFileName
+		);
 
 		// Set new url in returned data
 		$data['url'] = $url;
@@ -523,8 +534,11 @@ function windows_azure_storage_wp_handle_upload_prefilter( $file ) {
  */
 function windows_azure_storage_wp_handle_upload( $uploads ) {
 	$wp_upload_dir  = wp_upload_dir();
-	$uploads['url'] = WindowsAzureStorageUtil::getStorageUrlPrefix()
-	                  . $wp_upload_dir['subdir'] . "/" . basename( $uploads['file'] );
+	$uploads['url'] = sprintf( '%1$s/%2$s/%3$s',
+		untrailingslashit( WindowsAzureStorageUtil::get_storage_url_base() ),
+		$wp_upload_dir['subdir'],
+		basename( $uploads['file'] )
+	);
 
 	return $uploads;
 }
@@ -540,7 +554,7 @@ function windows_azure_storage_wp_handle_upload( $uploads ) {
 function getUpdatedUploadUrl( $url ) {
 	$wp_upload_dir      = wp_upload_dir();
 	$upload_dir_url     = $wp_upload_dir['baseurl'];
-	$storage_url_prefix = WindowsAzureStorageUtil::getStorageUrlPrefix();
+	$storage_url_prefix = WindowsAzureStorageUtil::get_storage_url_base();
 
 	return str_replace( $upload_dir_url, $storage_url_prefix, $url );
 }
@@ -579,7 +593,7 @@ function windows_azure_storage_delete_attachment( $postID ) {
  * @return void
  */
 function browse_tab() {
-	add_action( 'admin_print_scripts', 'windows_azure_storage_dialog_scripts' );
+	add_action( 'admin_enqueue_scripts', 'windows_azure_storage_dialog_scripts' );
 	wp_enqueue_style( 'media' );
 	wp_iframe( 'windows_azure_storage_dialog_browse_tab' );
 }
@@ -590,7 +604,7 @@ function browse_tab() {
  * @return void
  */
 function search_tab() {
-	add_action( 'admin_print_scripts', 'windows_azure_storage_dialog_scripts' );
+	add_action( 'admin_enqueue_scripts', 'windows_azure_storage_dialog_scripts' );
 	wp_enqueue_style( 'media' );
 	wp_iframe( 'windows_azure_storage_dialog_search_tab' );
 }
@@ -601,7 +615,7 @@ function search_tab() {
  * @return void
  */
 function upload_tab() {
-	add_action( 'admin_print_scripts', 'windows_azure_storage_dialog_scripts' );
+	add_action( 'admin_enqueue_scripts', 'windows_azure_storage_dialog_scripts' );
 	wp_enqueue_style( 'media' );
 	wp_iframe( 'windows_azure_storage_dialog_upload_tab' );
 }
