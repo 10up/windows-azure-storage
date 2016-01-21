@@ -646,7 +646,7 @@ function windows_azure_storage_dialog_upload_tab() {
 function deleteBlob( $containerName, $blobName ) {
 	try {
 		if ( WindowsAzureStorageUtil::blobExists( $containerName, $blobName ) ) {
-			remove_query_arg( 'deleteBlob', $_SERVER['REQUEST_URI'] );
+			remove_query_arg( 'delete_blob', $_SERVER['REQUEST_URI'] );
 			WindowsAzureStorageUtil::deleteBlob( $containerName, $blobName );
 		}
 	} catch ( Exception $e ) {
