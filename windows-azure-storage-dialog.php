@@ -124,7 +124,7 @@ function windows_azure_storage_dialog_browse_tab() {
 		}
 
 		// Check if blob has to be deleted
-		if ( ! empty( $_GET['deleteBlob'] ) ) {
+		if ( ! empty( $_GET['delete_blob'] ) && check_admin_referer( 'delete_blob_' . $post_id, 'delete_blob' ) ) {
 			deleteBlob(
 				$selected_container_name,
 				sanitize_text_field( $_GET['deleteBlob'] )
