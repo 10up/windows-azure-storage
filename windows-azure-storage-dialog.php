@@ -332,8 +332,29 @@ function windows_azure_storage_dialog_browse_tab() {
 										echo "onclick=\"return insertImageTag('$url', false\">" . $blob->getName() . "<a/>";
 										break;
 								}
-								$deleteLink = 'media-upload.php?post_id=0&tab=browse&deleteBlob=' . urlencode( $blob->getName() ) . '&selected_container=' . urlencode( $selected_container_name );
-								echo "<a style='color: red;' href=\"" . esc_url( $deleteLink ) . "\">x</a> ";
+								// Generate an absolute URL used for deleting files
+								$media_upload_url = get_admin_url( null, 'media-upload.php' );
+								$delete_blob_url  = add_query_arg( array(
+									'post_id'            => $post_id,
+									'tab'                => 'browse', // default tab
+									'filename'           => $blob->getName(),
+									'selected_container' => $selected_container_name,
+								), $media_upload_url );
+								$delete_blob_url  = wp_nonce_url( $delete_blob_url, 'delete_blob_' . $post_id, 'delete_blob' );
+								/* translators: 1: URL, 2: link description, 3: link text */
+								$delete_blob_element = sprintf(
+									'<a class="delete-blob" href="%1$s" role="button" title="%2$s" aria-label="%2$s">%3$s</a>',
+									esc_url( $delete_blob_url ),
+									/* translators: %s is the blob/file name */
+									sprintf(
+										esc_attr__(
+											'Delete %s from this container.', 'windows-azure-storage'
+										),
+										$blob->getName()
+									),
+									esc_html( 'x' )
+								);
+								echo $delete_blob_element;
 							}
 						}
 					} catch ( Exception $e ) {
