@@ -309,6 +309,7 @@ function windows_azure_storage_dialog_browse_tab() {
 							echo "<p style='margin: 10px;'>No items in container '$selected_container_name'.</p>";
 						} else {
 							echo '<p style="margin: 10px;">Note: Click on the image to insert image URL into the blog!</p><br/>';
+							/** @var WindowsAzure\Blob\Models\Blob $blob */
 							foreach ( $blobs as $blob ) {
 								$url = sprintf( '%1$s/%2$s/%3$s',
 									untrailingslashit( WindowsAzureStorageUtil::get_storage_url_base( false ) ),
