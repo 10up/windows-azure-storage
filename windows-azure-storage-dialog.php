@@ -96,18 +96,12 @@ function windows_azure_storage_dialog_browse_tab() {
 	media_upload_header();
 
 	$azure_storage_account_name = WindowsAzureStorageUtil::getAccountName();
-	$azure_storage_account_primary_access_key
-	                            = WindowsAzureStorageUtil::getAccountKey();
+	$azure_storage_account_primary_access_key = WindowsAzureStorageUtil::getAccountKey();
+	$default_azure_storage_account_container_name = WindowsAzureStorageUtil::getDefaultContainer();
 
-	$default_azure_storage_account_container_name
-		= WindowsAzureStorageUtil::getDefaultContainer();
-	if ( empty( $azure_storage_account_name )
-	     || empty( $azure_storage_account_primary_access_key )
-	) {
-		echo '<h3 style="margin: 10px;">'
-		     . 'Azure Storage Account not yet configured</h3>';
-		echo '<p style="margin: 10px;">'
-		     . 'Please configure the account in Windows Azure Settings Tab.</p>';
+	if ( empty( $azure_storage_account_name ) || empty( $azure_storage_account_primary_access_key ) ) {
+		echo '<h3 style="margin: 10px;">Azure Storage Account not yet configured</h3>';
+		echo '<p style="margin: 10px;">Please configure the account in Windows Azure Settings Tab.</p>';
 	} else {
 		$storageClient = WindowsAzureStorageUtil::getStorageClient();
 		// Set selected container. If none, then use default container
@@ -147,12 +141,11 @@ function windows_azure_storage_dialog_browse_tab() {
 				$fileTypeFilter  = sanitize_text_field( $_POST["searchFileType"] );
 				$searchContainer = sanitize_text_field( $_POST["searchContainer"] );
 
-				if ( empty( $fileTagFilter )
-				     && empty( $fileNameFilter )
-				     && empty( $fileTypeFilter )
+				if ( empty( $fileTagFilter ) &&
+				     empty( $fileNameFilter ) &&
+				     empty( $fileTypeFilter )
 				) {
-					echo '<p style="margin: 10px;">'
-					     . 'Search criteria not specified.</p><br/>';
+					echo '<p style="margin: 10px;">Search criteria not specified.</p><br/>';
 				} else {
 					$criteria = array();
 					if ( ! empty( $fileNameFilter ) ) {
@@ -165,7 +158,7 @@ function windows_azure_storage_dialog_browse_tab() {
 						$criteria[] = "tag like '" . $fileTagFilter . "'";
 					}
 
-					$searchResult = Array();
+					$searchResult = array();
 					if ( $searchContainer == "ALL_CONTAINERS" ) {
 						$criteria[]          = "in 'all containers'";
 						$listContainerResult = $storageClient->listContainers();
@@ -181,9 +174,7 @@ function windows_azure_storage_dialog_browse_tab() {
 
 								// TODO This is a temporary fix (replacing space with %20) will be removed once fixed in the core
 								$blobName              = str_replace( " ", "%20", $blob->getName() );
-								$getBlobMetadataResult = $storageClient->getBlobMetadata(
-									$container->getName(), $blobName
-								);
+								$getBlobMetadataResult = $storageClient->getBlobMetadata( $container->getName(), $blobName );
 								$metadata              = $getBlobMetadataResult->getMetadata();
 
 								if ( ! empty( $fileTypeFilter ) ) {
@@ -258,8 +249,7 @@ function windows_azure_storage_dialog_browse_tab() {
 		}
 		$first_container_name = "";
 		?>
-		<form name="SelectContainerForm" style="margin: 10px;" method="post" action="<?php
-		echo esc_attr( $_SERVER['REQUEST_URI'] ); ?>">
+		<form name="SelectContainerForm" style="margin: 10px;" method="post" action="<?php echo esc_attr( $_SERVER['REQUEST_URI'] ); ?>">
 			<?php wp_nonce_field( 'windows-azure-storage-select-container' . get_the_ID() ); ?>
 			<table style="margin: 10px; border-width: 2px;border-color: black;">
 				<tr>
@@ -275,8 +265,7 @@ function windows_azure_storage_dialog_browse_tab() {
 										$first_container_name = $container->getName();
 									}
 									?>
-									<option value="<?php
-									echo esc_attr( $container->getName() ); ?>"
+									<option value="<?php echo esc_attr( $container->getName() ); ?>"
 										<?php echo( $container->getName() == $selected_container_name ? 'selected="selected"' : '' ) ?> >
 										<?php echo esc_html( $container->getName() ); ?>
 									</option>
@@ -284,7 +273,6 @@ function windows_azure_storage_dialog_browse_tab() {
 								}
 							} catch ( Exception $ex ) {
 								// Ignore exception as account keys are not yet set
-
 							}
 							?>
 						</select>
@@ -316,7 +304,7 @@ function windows_azure_storage_dialog_browse_tab() {
 									$selected_container_name,
 									$blob->getName()
 								);
-								$fileExt           = substr( strrchr( $blob->getName(), '.' ), 1 );
+								$fileExt = substr( strrchr( $blob->getName(), '.' ), 1 );
 								switch ( strtolower( $fileExt ) ) {
 									case "jpg":
 									case "jpeg":
@@ -345,18 +333,15 @@ function windows_azure_storage_dialog_browse_tab() {
 			</tr>
 		</table>
 
-		<?php
-		if ( ! empty( $blobs ) ) {
-			?>
+		<?php if ( ! empty( $blobs ) ) : ?>
 			<form name="DeleteAllBlobsForm" style="margin: 20px;" method="post" action="<?php echo esc_attr( $_SERVER['REQUEST_URI'] ); ?>">
-			<?php wp_nonce_field( 'windows-azure-storage-delete-all-blobs' . get_the_ID() ); ?>
-			<input type='hidden' name='DeleteAllBlobs' value='true' />
-			<input type='hidden' name='selected_container' value='<?php
-			echo esc_attr( $selected_container_name ); ?>' />
-			<u onMouseOver="style.cursor='hand'" onclick='document.DeleteAllBlobsForm.submit()' style="color: red;">Delete All Files</u>
+				<?php wp_nonce_field( 'windows-azure-storage-delete-all-blobs' . get_the_ID() ); ?>
+				<input type='hidden' name='DeleteAllBlobs' value='true' />
+				<input type='hidden' name='selected_container' value='<?php echo esc_attr( $selected_container_name ); ?>' />
+				<u onMouseOver="style.cursor='hand'" onclick='document.DeleteAllBlobsForm.submit()' style="color: red;">Delete All Files</u>
 			</form>
-			<?php
-		}
+		<?php endif; ?>
+		<?php
 	}
 }
 
@@ -395,8 +380,7 @@ function windows_azure_storage_dialog_search_tab() {
 		?>
 		<h3 style="margin: 10px;">Search Files</h3>
 		<div id="search-form">
-			<form style="margin: 10px;" method="post" action="<?php
-			echo esc_attr( $browseUrl ); ?>">
+			<form style="margin: 10px;" method="post" action="<?php echo esc_attr( $browseUrl ); ?>">
 				<?php wp_nonce_field( 'windows-azure-storage-search' . get_the_ID() ); ?>
 				<table class="form-table">
 					<tr valign="top">
@@ -438,8 +422,7 @@ function windows_azure_storage_dialog_search_tab() {
 									$listContainerResult = $storageClient->listContainers();
 									foreach ( $listContainerResult->getContainers() as $container ) {
 										?>
-										<option value="<?php
-										echo esc_attr( $container->getName() ); ?>"
+										<option value="<?php echo esc_attr( $container->getName() ); ?>"
 											<?php
 											echo( $container->getName() == $selected_container_name ? 'selected="selected"' : '' ) ?> ><?php
 											echo esc_html( $container->getName() ); ?>
@@ -450,7 +433,6 @@ function windows_azure_storage_dialog_search_tab() {
 									echo '<option value="ALL_CONTAINERS">All Containers</option>';
 								} catch ( Exception $ex ) {
 									// Ignore exception as account keys are not yet set
-
 								}
 								?>
 							</select>
@@ -544,8 +526,7 @@ function windows_azure_storage_dialog_upload_tab() {
 		?>
 		<h3 style="margin: 10px;">Upload New File</h3>
 		<div id="upload-form">
-			<form name="UploadNewFileForm" style="margin: 10px;" method="post" enctype="multipart/form-data" action="<?php
-			echo esc_attr( $_SERVER['REQUEST_URI'] ); ?>">
+			<form name="UploadNewFileForm" style="margin: 10px;" method="post" enctype="multipart/form-data" action="<?php echo esc_attr( $_SERVER['REQUEST_URI'] ); ?>">
 				<?php wp_nonce_field( 'windows-azure-storage-upload' . get_the_ID() ); ?>
 				<table class="form-table">
 					<tr valign="top">
@@ -558,7 +539,7 @@ function windows_azure_storage_dialog_upload_tab() {
 								try {
 									$storageClient       = WindowsAzureStorageUtil::getStorageClient();
 									$listContainerResult = $storageClient->listContainers();
-									foreach ( $listContainerResult->getContainers() as $container ) {
+									foreach ( $listContainerResult->getContainers() as $container ) :
 										if ( empty( $selected_container_name ) ) {
 											$selected_container_name = $container->getName();
 										}
@@ -566,13 +547,11 @@ function windows_azure_storage_dialog_upload_tab() {
 										<option value="<?php echo esc_attr( $container->getName() ); ?>"
 											<?php echo( $container->getName() == $selected_container_name ? 'selected="selected"' : '' ) ?> >
 											<?php echo esc_html( $container->getName() ); ?></option>
-										<?php
-									}
-									?>
-									<option value="__newContainer__">&mdash;&thinsp;<?php esc_html_e( 'Create New Container', 'windows-azure-storage' ); ?>&thinsp;&mdash;</option>                                    <?php
+									<?php endforeach; ?>
+									<option value="__newContainer__">&mdash;&thinsp;<?php esc_html_e( 'Create New Container', 'windows-azure-storage' ); ?>&thinsp;&mdash;</option>
+									<?php
 								} catch ( Exception $ex ) {
 									// Ignore exception as account keys are not yet set
-
 								}
 								?>
 							</select>
@@ -618,8 +597,7 @@ function windows_azure_storage_dialog_upload_tab() {
 		<?php
 		if ( ! empty( $uploadMessage ) ) {
 			$color = $uploadSuccess ? 'green' : 'red';
-			echo '<p style="margin: 10px; color: ' . esc_attr( $color ) . ';">'
-			     . esc_html( $uploadMessage ) . "</p><br/>";
+			echo '<p style="margin: 10px; color: ' . esc_attr( $color ) . ';">' . esc_html( $uploadMessage ) . "</p><br/>";
 		}
 	}
 }
