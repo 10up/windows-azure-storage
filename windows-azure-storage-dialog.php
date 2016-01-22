@@ -364,7 +364,7 @@ function windows_azure_storage_dialog_browse_tab() {
 										),
 										$blob->getName()
 									),
-									esc_html( 'x' )
+									'x' // TODO maybe make this customizable via L10N?
 								);
 								echo $delete_blob_element;
 							}
