@@ -139,6 +139,9 @@ function windows_azure_storage_dialog_browse_tab() {
 			isset ( $_POST['delete_all_blobs'] ) &&
 			check_admin_referer( 'delete_all_blobs_' . $post_id, 'delete_all_blobs_nonce' )
 		) {
+			if ( ! WindowsAzureStorageUtil::check_action_permissions( 'delete_all_blobs' ) ) {
+				echo '<div class="error" role="alert"><p>' . esc_html__( 'You do not have permission to delete all the files from this container.', 'windows-azure-storage' ) . '</p></div>';
+			} else {
 			// Get list of blobs in specified container
 			$listBlobResult = $storageClient->listBlobs( $selected_container_name );
 			// Delete each blob in specified container
@@ -149,6 +152,7 @@ function windows_azure_storage_dialog_browse_tab() {
 			echo '<p style="margin: 10px; color: red;">'
 			     . 'Deleted all files in Windows Azure Storage Container "'
 			     . esc_html( $selected_container_name ) . '"</p><br/>';
+		}
 		}
 
 		// Handle file search
