@@ -68,22 +68,21 @@ function windows_azure_storage_dialog_scripts( $hook_suffix ) {
 add_action( 'admin_enqueue_scripts', 'windows_azure_storage_dialog_scripts' );
 
 /**
- * Add Azure-specific tabs to the Media Uploader.
+ * Add Azure Storage tabs to the legacy media loader.
  *
- * @since    Unknown
+ * @since    1.0.0
  * @since    2.3.0 Updated with callback parameters.
  * @internal Callback for 'media_upload_tabs' filter.
  *
- * @param array $tabs The default media uploader tabs.
+ * @param array $tabs The default legacy media uploader tabs.
  * @return array $tabs The filtered array with only our tabs.
  */
 function windows_azure_storage_dialog_add_tab( $tabs ) {
-	unset( $tabs ); // zero it out so only ours remain
-	$tabs['browse'] = __( 'Browse', 'windows-azure-storage' );
-	$tabs['search'] = __( 'Search', 'windows-azure-storage' );
-	$tabs['upload'] = __( 'Upload', 'windows-azure-storage' );
-
-	return $tabs;
+	return array(
+		'browse' => __( 'Browse', 'windows-azure-storage' ),
+		'search' => __( 'Search', 'windows-azure-storage' ),
+		'upload' => __( 'Upload', 'windows-azure-storage' ),
+	);
 }
 
 /**
