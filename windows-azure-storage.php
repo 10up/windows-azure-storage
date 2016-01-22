@@ -82,20 +82,20 @@ add_action( 'admin_menu', 'windows_azure_storage_plugin_menu' );
 add_filter( 'media_buttons_context', 'windows_azure_storage_media_buttons_context' );
 
 /**
- * Define and return tabs for Windows Azure Storage Dialog.
+ * Add tabs to the editor's media loader.
+ *
+ * @since Unknown
+ * @internal Callback for 'media_upload_tabs'.
  *
  * @param array $tabs Array of existing tabs.
- *
  * @return array Returns array of new tabs
  */
 function azure_storage_media_menu( $tabs ) {
-	$newtab = array(
-		'browse' => __( 'Browse', 'storagebrowse' ),
-		'search' => __( 'Search', 'storagesearch' ),
-		'upload' => __( 'Upload', 'storageupload' ),
-	);
+	$tabs['browse'] = __( 'Browse Azure Storage', 'windows-azure-storage' );
+	$tabs['search'] = __( 'Search Azure Storage', 'windows-azure-storage' );
+	$tabs['upload'] = __( 'Upload to Azure Storage', 'windows-azure-storage' );
 
-	return array_merge( $tabs, $newtab );
+	return $tabs;
 }
 
 // Hook for adding tabs
