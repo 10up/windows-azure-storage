@@ -42,6 +42,8 @@
  * @link      http://www.microsoft.com
  */
 
+define( 'MSFT_AZURE_PLUGIN_MEDIA_URL', get_admin_url( get_current_blog_id(), 'media-upload.php' ) );
+
 /**
  * Enqueue JavaScript and CSS needed by the settings page dialog.
  *
