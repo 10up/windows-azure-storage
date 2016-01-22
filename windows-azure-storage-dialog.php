@@ -92,6 +92,7 @@ function windows_azure_storage_dialog_add_tab( $tabs ) {
  */
 function windows_azure_storage_dialog_browse_tab() {
 	// remove all registerd filters for the tabs
+	//TODO: switch to remove_all_filters('media_upload_tabs') and only call it once
 	unset( $GLOBALS['wp_filter']['media_upload_tabs'] );
 
 	// register our filter for the tabs
@@ -327,6 +328,7 @@ function windows_azure_storage_dialog_browse_tab() {
 									$selected_container_name,
 									$blob->getName()
 								);
+								// TODO switch to wp_check_filetype_and_ext()
 								$fileExt = substr( strrchr( $blob->getName(), '.' ), 1 );
 								switch ( strtolower( $fileExt ) ) {
 									case "jpg":
