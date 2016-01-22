@@ -349,13 +349,12 @@ function windows_azure_storage_dialog_browse_tab() {
 										break;
 								}
 								// Generate an absolute URL used for deleting files
-								$media_upload_url = get_admin_url( null, 'media-upload.php' );
 								$delete_blob_url  = add_query_arg( array(
 									'post_id'            => $post_id,
 									'tab'                => 'browse', // default tab
 									'filename'           => $blob->getName(),
 									'selected_container' => $selected_container_name,
-								), $media_upload_url );
+								), MSFT_AZURE_PLUGIN_MEDIA_URL );
 								$delete_blob_url  = wp_nonce_url( $delete_blob_url, 'delete_blob_' . $post_id, 'delete_blob' );
 								/* translators: 1: URL, 2: link description, 3: link text */
 								$delete_blob_element = sprintf(
