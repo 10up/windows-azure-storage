@@ -371,10 +371,10 @@ function windows_azure_storage_dialog_browse_tab() {
 		</table>
 
 		<?php if ( ! empty( $blobs ) ) : ?>
-			<form name="DeleteAllBlobsForm" style="margin: 20px;" method="post" action="<?php echo esc_attr( $_SERVER['REQUEST_URI'] ); ?>">
+			<form name="DeleteAllBlobsForm" method="POST" action="<?php echo esc_attr( $_SERVER['REQUEST_URI'] ); ?>">
 				<?php wp_nonce_field( 'delete_all_blobs_' . $post_id, 'delete_all_blobs' ); ?>
 				<input type='hidden' name='selected_container' value='<?php echo esc_attr( $selected_container_name ); ?>' />
-				<?php submit_button( __('Delete All Files', 'windows-azure-storage'), 'delete', 'DeleteAllBlobs', true ); ?>
+				<?php submit_button( __( 'Delete All Files', 'windows-azure-storage' ), 'delete', 'DeleteAllBlobs', true ); ?>
 			</form>
 		<?php endif; ?>
 		<?php
