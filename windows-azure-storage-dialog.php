@@ -388,7 +388,12 @@ function windows_azure_storage_dialog_browse_tab() {
 			WindowsAzureStorageUtil::check_action_permissions( 'delete_all_blobs' )
 		) :
 			?>
-			<form name="DeleteAllBlobsForm" method="POST" action="<?php echo esc_attr( $_SERVER['REQUEST_URI'] ); ?>">
+			<form name="DeleteAllBlobsForm" method="POST" action="<?php
+			$action = add_query_arg( array(
+				'post_id' => $post_id,
+				'tab'     => 'browse',
+			), MSFT_AZURE_PLUGIN_MEDIA_URL );
+			echo esc_attr( $action ); ?>">
 				<?php wp_nonce_field( 'delete_all_blobs_' . $post_id, 'delete_all_blobs_nonce' ); ?>
 				<input type='hidden' name='selected_container' value='<?php echo esc_attr( $selected_container_name ); ?>' />
 				<?php
