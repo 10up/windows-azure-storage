@@ -459,7 +459,7 @@ class WindowsAzureStorageUtil {
 	 */
 	public static function putBlockBlob( $containerName, $blobName, $localFileName, $blobContentType = null, $metadata = array() ) {
 		$copyBlobResult = null;
-		$is_large_file = false;
+		$is_large_file  = false;
 		// Open file
 		$handle = fopen( $localFileName, 'r' );
 		if ( $handle === false ) {
@@ -786,4 +786,44 @@ class WindowsAzureStorageProxyFilter implements IServiceFilter {
 	public function handleResponse( $request, $response ) {
 		return $response;
 	}
+
+	/**
+	 * Check if the user can take the specified action for Azure Storage.
+	 *
+	 * @since 2.3.0
+	 * @see   user_can()
+	 *
+	 * @param string     $action Optional. The plugin's action to check. Default 'browse'.
+	 *                           Allowed actions are: 'browse', 'insert', 'create_container',
+	 *                           'delete_single_blob', 'delete_all_blobs', and 'change_settings'.
+	 * @param int|object $user   Optiona. User ID or object. Default is current user ID.
+	 * @return bool Whether the action is permitted by the user.
+	 */
+	public static function check_action_permissions( $action = 'browse', $user = null ) {
+		if ( is_null( $user ) ) {
+			$user = get_current_user_id();
+		}
+
+		/** @var array $action_map Maps our actions to user capabilities. */
+		$action_map = array(
+			'browse'             => 'upload_files',
+			'insert'             => 'upload_files',
+			'create_container'   => 'edit_files',
+			'delete_single_blob' => 'delete_others_posts',
+			'delete_all_blobs'   => 'edit_files',
+			'change_settings'    => 'activate_plugins',
+		);
+
+		// Whitelist our actions.
+		if ( ! array_key_exists( $action, $action_map ) ) {
+			return false;
+		}
+
+		if ( user_can( $user, $action_map[ $action ] ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
 }
