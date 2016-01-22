@@ -374,7 +374,18 @@ function windows_azure_storage_dialog_browse_tab() {
 			<form name="DeleteAllBlobsForm" method="POST" action="<?php echo esc_attr( $_SERVER['REQUEST_URI'] ); ?>">
 				<?php wp_nonce_field( 'delete_all_blobs_' . $post_id, 'delete_all_blobs' ); ?>
 				<input type='hidden' name='selected_container' value='<?php echo esc_attr( $selected_container_name ); ?>' />
-				<?php submit_button( __( 'Delete All Files', 'windows-azure-storage' ), 'delete', 'DeleteAllBlobs', true ); ?>
+				<?php
+				submit_button(
+					__( 'Delete All Files', 'windows-azure-storage' ),
+					'delete',
+					'DeleteAllBlobs',
+					true,
+					array(
+						'aria-label' => __( 'Delete all blobs from this container.', 'windows-azure-storage' ),
+						'id'         => 'was-delete-all-blobs',
+						'role'       => 'button',
+					) );
+				?>
 			</form>
 		<?php endif; ?>
 		<?php
