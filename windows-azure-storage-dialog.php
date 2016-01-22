@@ -330,7 +330,7 @@ function windows_azure_storage_dialog_browse_tab() {
 
 									default:
 										echo "<a style='margin: 10px;' href=\"$url\"";
-										echo "onclick=\"return insertImageTag('$url', false\">" . $blob->getName() . "<a/>";
+										echo "onclick=\"return insertImageTag('$url', false\">" . $blob->getName() . "</a>";
 										break;
 								}
 								// Generate an absolute URL used for deleting files
