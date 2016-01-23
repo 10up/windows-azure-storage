@@ -160,7 +160,16 @@ function windows_azure_storage_dialog_browse_tab() {
 			check_admin_referer( 'delete_all_blobs_' . $post_id, 'delete_all_blobs_nonce' )
 		) {
 			if ( ! WindowsAzureStorageUtil::check_action_permissions( 'delete_all_blobs' ) ) {
-				echo '<div class="error" role="alert"><p>' . esc_html__( 'You do not have permission to delete all the files from this container.', 'windows-azure-storage' ) . '</p></div>';
+				?>
+				<div class="notice notice-error is-dismissible" role="banner">
+					<p role="alert">
+						<?php esc_html_e( 'Sorry, these files could not be deleted.', 'windows-azure-storage' ); ?>
+					</p>
+					<p role="status">
+						<?php esc_html_e( 'You do not have permission to delete files from this container.', 'windows-azure-storage' ); ?>
+					</p>
+				</div>
+				<?php
 			} else {
 			// Get list of blobs in specified container
 			$listBlobResult = $storageClient->listBlobs( $selected_container_name );
