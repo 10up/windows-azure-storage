@@ -188,6 +188,13 @@ function windows_azure_storage_dialog_browse_tab() {
 		// Handle file search
 		if ( isset( $_POST['action'] ) && 'search_azure_storage' === $_POST['action'] ) {
 			try {
+				if ( false === check_admin_referer( 'search_' . $post_id, 'search_nonce' ) ) {
+					throw new Exception( __(
+						'The security check failed. Please try again, or contact the site administrator for assistance.',
+						'windows-azure-storage'
+					) );
+				}
+
 				$fileTagFilter   = sanitize_text_field( $_POST["searchFileTag"] );
 				$fileNameFilter  = sanitize_text_field( $_POST["searchFileName"] );
 				$fileTypeFilter  = sanitize_text_field( $_POST["searchFileType"] );
