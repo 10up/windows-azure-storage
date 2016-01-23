@@ -544,10 +544,20 @@ function windows_azure_storage_dialog_search_tab() {
 					</tr>
 				</table>
 
-				<input type='hidden' name='action' value='Search' />
-				<p class="submit">
-					<input type="submit" class="button-primary" value="Search" />
-				</p>
+				<input type="hidden" name="action" value="search_azure_storage" />
+				<?php
+				submit_button(
+					esc_attr_x( 'Search', 'verb', 'windows-azure-storage' ),
+					'primary search',
+					'submit',
+					true,
+					array(
+						'aria-label' => __( 'Search this container.', 'windows-azure-storage' ),
+						'id'         => 'windows-azure-storage-search',
+						'role'       => 'button',
+					)
+				);
+				?>
 			</form>
 		</div>
 		<hr />
