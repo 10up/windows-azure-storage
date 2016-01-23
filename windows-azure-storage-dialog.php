@@ -131,12 +131,29 @@ function windows_azure_storage_dialog_browse_tab() {
 		}
 
 		// Check if blob has to be deleted
-		if ( ! empty( $_GET['delete_blob'] ) && check_admin_referer( 'delete_blob_' . $post_id, 'delete_blob' ) ) {
-			deleteBlob(
-				$selected_container_name,
+		if ( isset( $_GET['delete_blob'] ) && check_admin_referer( 'delete_blob_' . $post_id, 'delete_blob' ) ) {
+			if ( ! WindowsAzureStorageUtil::check_action_permissions( 'delete_blob' ) ) {
+				//TODO: extract notices into a function that can be customized
+				?>
+				<div class="notice notice-error is-dismissible" role="banner">
+					<p role="alert">
+						<?php
+						/* translators: %s is the file name */
+						printf(
+							esc_html__( 'Sorry, "%s" could not be deleted.', 'windows-azure-storage' ),
 				sanitize_text_field( $_GET['filename'] )
 			);
+						?>
+					</p>
+					<p role="status">
+						<?php esc_html_e( 'You do not have permission to delete files from this container.', 'windows-azure-storage' ); ?>
+					</p>
+				</div>
+				<?php
+			} else {
+				deleteBlob( $selected_container_name, sanitize_text_field( $_GET['filename'] ) );
 		}
+		} // delete_blob
 
 		if (
 			isset ( $_POST['delete_all_blobs'] ) &&
