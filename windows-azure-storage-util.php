@@ -720,12 +720,12 @@ class WindowsAzureStorageUtil {
 
 		/** @var array $action_map Maps our actions to user capabilities. */
 		$action_map = array(
-			'browse'             => 'upload_files',
-			'insert'             => 'upload_files',
-			'create_container'   => 'edit_files',
-			'delete_single_blob' => 'delete_others_posts',
-			'delete_all_blobs'   => 'edit_files',
-			'change_settings'    => 'activate_plugins',
+			'browse'           => 'upload_files',
+			'insert'           => 'upload_files',
+			'create_container' => 'edit_files',
+			'delete_blob'      => 'delete_others_posts',
+			'delete_all_blobs' => 'edit_files',
+			'change_settings'  => 'activate_plugins',
 		);
 
 		// Whitelist our actions.
