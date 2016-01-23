@@ -102,7 +102,7 @@ function windows_azure_storage_dialog_browse_tab() {
 
 	media_upload_header();
 
-	/*
+	/**
 	 * The post ID of the originating editor page.
 	 *
 	 * Passed via $_GET from the post being edited when the iframe is loaded.
@@ -462,6 +462,17 @@ function windows_azure_storage_dialog_search_tab() {
 	add_filter( "media_upload_tabs", "windows_azure_storage_dialog_add_tab" );
 
 	media_upload_header();
+
+	/**
+	 * The post ID of the originating editor page.
+	 *
+	 * Passed via $_GET from the post being edited when the iframe is loaded.
+	 * If iframe is accessed outside an originating editor, this will be 0 and
+	 * nonces will fail. :)
+	 *
+	 * @var int $post_id
+	 */
+	$post_id = isset( $_GET['post_id'] ) ? (int) $_GET['post_id'] : 0;
 
 	$azure_storage_account_name                   = WindowsAzureStorageUtil::getAccountName();
 	$azure_storage_account_primary_access_key     = WindowsAzureStorageUtil::getAccountKey();
