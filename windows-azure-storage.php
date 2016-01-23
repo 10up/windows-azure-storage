@@ -82,13 +82,13 @@ add_action( 'admin_menu', 'windows_azure_storage_plugin_menu' );
 add_filter( 'media_buttons_context', 'windows_azure_storage_media_buttons_context' );
 
 /**
- * Add tabs to the editor's media loader.
+ * Add Azure-specific tabs to the editor's media loader.
  *
  * @since Unknown
  * @internal Callback for 'media_upload_tabs'.
  *
  * @param array $tabs Array of existing tabs.
- * @return array Returns array of new tabs
+ * @return array Filtered array of tabs with our additions.
  */
 function azure_storage_media_menu( $tabs ) {
 	$tabs['browse'] = __( 'Browse Azure Storage', 'windows-azure-storage' );
