@@ -155,6 +155,7 @@ function windows_azure_storage_dialog_browse_tab() {
 		}
 		} // delete_blob
 
+		// Check if all blobs are to be deleted
 		if (
 			isset ( $_POST['delete_all_blobs'] ) &&
 			check_admin_referer( 'delete_all_blobs_' . $post_id, 'delete_all_blobs_nonce' )
