@@ -491,11 +491,15 @@ function windows_azure_storage_dialog_search_tab() {
 		if ( ! empty( $_GET['selected_container'] ) ) {
 			$selected_container_name = sanitize_text_field( $_GET['selected_container'] );
 		}
-		$browseUrl = str_replace( 'search', 'browse', sanitize_text_field( $_SERVER['REQUEST_URI'] ) );
 		?>
 		<h3 style="margin: 10px;">Search Files</h3>
 		<div id="search-form">
-			<form style="margin: 10px;" method="post" action="<?php echo esc_attr( $browseUrl ); ?>">
+			<form role="search" method="POST" action="<?php
+			$action = add_query_arg( array(
+				'post_id' => $post_id,
+				'tab'     => 'browse',
+			), MSFT_AZURE_PLUGIN_MEDIA_URL );
+			echo esc_attr( $action ); ?>">
 				<?php wp_nonce_field( 'windows-azure-storage-search' . get_the_ID() ); ?>
 				<table class="form-table">
 					<tr valign="top">
