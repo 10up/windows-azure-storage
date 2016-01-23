@@ -520,7 +520,7 @@ function windows_azure_storage_dialog_search_tab() {
 				'tab'     => 'browse',
 			), MSFT_AZURE_PLUGIN_MEDIA_URL );
 			echo esc_attr( $action ); ?>">
-				<?php wp_nonce_field( 'windows-azure-storage-search' . get_the_ID() ); ?>
+				<?php wp_nonce_field( 'search_' . $post_id, 'search_nonce' ); ?>
 				<table class="form-table">
 					<tr valign="top">
 						<th scope="row">
