@@ -301,8 +301,8 @@ function windows_azure_storage_dialog_browse_tab() {
 		$first_container_name = "";
 		?>
 		<form name="SelectContainerForm" style="margin: 10px;" method="post" action="<?php echo esc_attr( $_SERVER['REQUEST_URI'] ); ?>">
-			<table style="margin: 10px; border-width: 2px;border-color: black;">
 			<?php wp_nonce_field( 'browse_select_container_' . $post_id, 'browse_select_container_nonce' ); ?>
+			<table>
 				<tr>
 					<th>
 						<label for="selected_container">
