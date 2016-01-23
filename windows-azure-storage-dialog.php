@@ -384,7 +384,7 @@ function windows_azure_storage_dialog_browse_tab() {
 								$delete_blob_url  = wp_nonce_url( $delete_blob_url, 'delete_blob_' . $post_id, 'delete_blob' );
 								/* translators: 1: URL, 2: link description, 3: link text */
 								$delete_blob_element = sprintf(
-									'<a class="delete-blob" href="%1$s" role="button" title="%2$s" aria-label="%2$s">%3$s</a>',
+										'<a class="delete-permanently" href="%1$s" role="button" title="%2$s" aria-label="%2$s">%3$s</a>',
 									esc_url( $delete_blob_url ),
 									/* translators: %s is the blob/file name */
 									sprintf(
