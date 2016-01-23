@@ -332,7 +332,7 @@ function windows_azure_storage_dialog_browse_tab() {
 			</table>
 		</form>
 
-		<table style="margin: 10px; border-width: 2px;border-color: black;">
+		<table id="media-items">
 			<tr>
 				<td>
 					<?php
