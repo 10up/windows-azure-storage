@@ -310,7 +310,9 @@ function windows_azure_storage_dialog_browse_tab() {
 						</label>
 					</th>
 					<td>
-						<select name="selected_container" title="Stoarge container to be used for storing media files" onChange="document.SelectContainerForm.submit()">
+						<select name="selected_container" id="selected_container"
+						        title="<?php esc_attr_e( 'Container to use for storing media files.', 'windows-azure-storage' ); ?>"
+						        onchange="<?php echo esc_js( 'this.disabled = true; this.form.submit();' ); ?>">
 							<?php
 							try {
 								$storageClient       = WindowsAzureStorageUtil::getStorageClient();
