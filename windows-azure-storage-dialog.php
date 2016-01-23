@@ -48,7 +48,7 @@ define( 'MSFT_AZURE_PLUGIN_MEDIA_URL', get_admin_url( get_current_blog_id(), 'me
  * Enqueue JavaScript and CSS needed by the settings page dialog.
  *
  * @internal Callback for 'admin_enqueue_scripts'.
- * @since 2.3.0 Moved to a callback for 'admin_enqueue_scripts' instead of 'admin_print_scripts'.
+ * @since    2.3.0 Moved to a callback for 'admin_enqueue_scripts' instead of 'admin_print_scripts'.
  *
  * @param string $hook_suffix The hook of the current admin page.
  */
@@ -113,8 +113,8 @@ function windows_azure_storage_dialog_browse_tab() {
 	 */
 	$post_id = isset( $_GET['post_id'] ) ? (int) $_GET['post_id'] : 0;
 
-	$azure_storage_account_name = WindowsAzureStorageUtil::getAccountName();
-	$azure_storage_account_primary_access_key = WindowsAzureStorageUtil::getAccountKey();
+	$azure_storage_account_name                   = WindowsAzureStorageUtil::getAccountName();
+	$azure_storage_account_primary_access_key     = WindowsAzureStorageUtil::getAccountKey();
 	$default_azure_storage_account_container_name = WindowsAzureStorageUtil::getDefaultContainer();
 
 	if ( empty( $azure_storage_account_name ) || empty( $azure_storage_account_primary_access_key ) ) {
@@ -141,8 +141,8 @@ function windows_azure_storage_dialog_browse_tab() {
 						/* translators: %s is the file name */
 						printf(
 							esc_html__( 'Sorry, "%s" could not be deleted.', 'windows-azure-storage' ),
-				sanitize_text_field( $_GET['filename'] )
-			);
+							sanitize_text_field( $_GET['filename'] )
+						);
 						?>
 					</p>
 					<p role="status">
@@ -152,7 +152,7 @@ function windows_azure_storage_dialog_browse_tab() {
 				<?php
 			} else {
 				deleteBlob( $selected_container_name, sanitize_text_field( $_GET['filename'] ) );
-		}
+			}
 		} // delete_blob
 
 		// Check if all blobs are to be deleted
@@ -172,17 +172,17 @@ function windows_azure_storage_dialog_browse_tab() {
 				</div>
 				<?php
 			} else {
-			// Get list of blobs in specified container
-			$listBlobResult = $storageClient->listBlobs( $selected_container_name );
-			// Delete each blob in specified container
-			foreach ( $listBlobResult->getBlobs() as $blob ) {
-				deleteBlob( $selected_container_name, $blob->getName() );
-			}
+				// Get list of blobs in specified container
+				$listBlobResult = $storageClient->listBlobs( $selected_container_name );
+				// Delete each blob in specified container
+				foreach ( $listBlobResult->getBlobs() as $blob ) {
+					deleteBlob( $selected_container_name, $blob->getName() );
+				}
 
-			echo '<p style="margin: 10px; color: red;">'
-			     . 'Deleted all files in Windows Azure Storage Container "'
-			     . esc_html( $selected_container_name ) . '"</p><br/>';
-		}
+				echo '<p style="margin: 10px; color: red;">'
+				     . 'Deleted all files in Windows Azure Storage Container "'
+				     . esc_html( $selected_container_name ) . '"</p><br/>';
+			}
 		}
 
 		// Handle file search
@@ -381,28 +381,30 @@ function windows_azure_storage_dialog_browse_tab() {
 										echo "onclick=\"return insertImageTag('$url', false\">" . $blob->getName() . "</a>";
 										break;
 								}
-								// Generate an absolute URL used for deleting files
-								$delete_blob_url  = add_query_arg( array(
-									'post_id'            => $post_id,
-									'tab'                => 'browse', // default tab
-									'filename'           => $blob->getName(),
-									'selected_container' => $selected_container_name,
-								), MSFT_AZURE_PLUGIN_MEDIA_URL );
-								$delete_blob_url  = wp_nonce_url( $delete_blob_url, 'delete_blob_' . $post_id, 'delete_blob' );
-								/* translators: 1: URL, 2: link description, 3: link text */
-								$delete_blob_element = sprintf(
+								if( WindowsAzureStorageUtil::check_action_permissions( 'delete_blob' ) ) {
+									// Generate an absolute URL used for deleting files
+									$delete_blob_url = add_query_arg( array(
+										'post_id'            => $post_id,
+										'tab'                => 'browse', // default tab
+										'filename'           => $blob->getName(),
+										'selected_container' => $selected_container_name,
+									), MSFT_AZURE_PLUGIN_MEDIA_URL );
+									$delete_blob_url = wp_nonce_url( $delete_blob_url, 'delete_blob_' . $post_id, 'delete_blob' );
+									/* translators: 1: URL, 2: link description, 3: link text */
+									$delete_blob_element = sprintf(
 										'<a class="delete-permanently" href="%1$s" role="button" title="%2$s" aria-label="%2$s">%3$s</a>',
-									esc_url( $delete_blob_url ),
-									/* translators: %s is the blob/file name */
-									sprintf(
-										esc_attr__(
-											'Delete %s from this container.', 'windows-azure-storage'
+										esc_url( $delete_blob_url ),
+										/* translators: %s is the blob/file name */
+										sprintf(
+											esc_attr__(
+												'Delete %s from this container.', 'windows-azure-storage'
+											),
+											$blob->getName()
 										),
-										$blob->getName()
-									),
-									'x' // TODO maybe make this customizable via L10N?
-								);
-								echo $delete_blob_element;
+										'x' // TODO maybe make this customizable via L10N?
+									);
+									echo $delete_blob_element;
+								}
 							}
 						}
 					} catch ( Exception $e ) {
