@@ -186,7 +186,7 @@ function windows_azure_storage_dialog_browse_tab() {
 		}
 
 		// Handle file search
-		if ( ( ! empty( $_POST['action'] ) ) && ( $_POST["action"] == "Search" ) ) {
+		if ( isset( $_POST['action'] ) && ( 'search_azure_storage' === $_POST['action'] ) ) {
 			try {
 				$fileTagFilter   = sanitize_text_field( $_POST["searchFileTag"] );
 				$fileNameFilter  = sanitize_text_field( $_POST["searchFileName"] );
