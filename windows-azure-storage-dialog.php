@@ -304,7 +304,11 @@ function windows_azure_storage_dialog_browse_tab() {
 			<table style="margin: 10px; border-width: 2px;border-color: black;">
 			<?php wp_nonce_field( 'browse_select_container_' . $post_id, 'browse_select_container_nonce' ); ?>
 				<tr>
-					<td><b>Container Name:</b></td>
+					<th>
+						<label for="selected_container">
+							<?php esc_html_e( 'Container Name:', 'windows-azure-storage' ); ?>
+						</label>
+					</th>
 					<td>
 						<select name="selected_container" title="Stoarge container to be used for storing media files" onChange="document.SelectContainerForm.submit()">
 							<?php
