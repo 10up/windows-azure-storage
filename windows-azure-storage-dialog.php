@@ -653,7 +653,6 @@ function windows_azure_storage_dialog_upload_tab() {
 
 		if ( empty( $selected_container_name ) ) {
 			echo '<p style="margin: 10px; color: red;">Default Azure Storage Container name is not yet configured. Please configure it in the Windows Azure Settings Tab.</p>';
-			$selected_container_name = $first_container_name;
 		}
 
 		// Handle file upload
