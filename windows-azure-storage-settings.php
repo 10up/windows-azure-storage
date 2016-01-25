@@ -89,11 +89,8 @@ function windows_azure_storage_plugin_options_page() {
 						<?php
 						settings_fields( 'windows-azure-storage-settings-group' );
 						show_windows_azure_storage_settings( 'admin' );
+						submit_button( __('Save Changes', 'windows-azure-storage'), 'submit primary', 'submitButton', true );
 						?>
-						<p class="submit">
-							<input type="submit" name="submitButton" class="button-primary"
-							       value="<?php _e( 'Save Changes' ); ?>" />
-						</p>
 					</form>
 				</td>
 			</tr>
