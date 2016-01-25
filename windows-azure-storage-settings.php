@@ -291,6 +291,7 @@ function show_windows_azure_storage_settings( $mode ) {
 					?>
 				</select>
 			</td>
+			<?php if ( WindowsAzureStorageUtil::check_action_permissions( 'create_container' ) ) : ?>
 			<td>
 				<div id="divCreateContainer" name="divCreateContainer" style="display:none;">
 					<table style="border:1px solid black;">
@@ -306,12 +307,11 @@ function show_windows_azure_storage_settings( $mode ) {
 					</table>
 					</div>
 			</td>
+			<?php endif; ?>
 		</tr>
-		<?php if( WindowsAzureStorageUtil::check_action_permissions( 'create_container' ) ) : ?>
 		<tr valign="top">
 			<td colspan="3" WIDTH="300" align="center"><?php echo esc_html( $message ); ?></td>
 		</tr>
-		<?php endif; ?>
 		<tr valign="top">
 			<th scope="row">
 				<label for="cname" title="Use CNAME insted of Windows Azure Blob URL">CNAME</label>
