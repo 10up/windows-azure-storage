@@ -84,7 +84,7 @@ add_filter( 'media_buttons_context', 'windows_azure_storage_media_buttons_contex
 /**
  * Add Azure-specific tabs to the editor's media loader.
  *
- * @since Unknown
+ * @since    Unknown
  * @internal Callback for 'media_upload_tabs'.
  *
  * @param array $tabs Array of existing tabs.
@@ -100,6 +100,7 @@ function azure_storage_media_menu( $tabs ) {
 
 // Hook for adding tabs
 add_filter( 'media_upload_tabs', 'azure_storage_media_menu' );
+//TODO: Set 'Browse Azure Storage' as the default tab in the new media loader.
 
 // Add callback for three tabs in the Windows Azure Storage Dialog
 add_action( "media_upload_browse", "browse_tab" );
@@ -673,13 +674,13 @@ function windows_azure_storage_media_buttons_context( $context ) {
  */
 function windows_azure_storage_plugin_menu() {
 	if ( WindowsAzureStorageUtil::check_action_permissions( 'change_settings' ) ) {
-	add_options_page(
-		'Windows Azure Storage Plugin Settings',
-		'Windows Azure',
-		'manage_options',
-		'b5506889-50de-42db-bf63-e9f248ca94e9',
-		'windows_azure_storage_plugin_options_page'
-	);
+		add_options_page(
+			'Windows Azure Storage Plugin Settings',
+			'Windows Azure',
+			'manage_options',
+			'b5506889-50de-42db-bf63-e9f248ca94e9',
+			'windows_azure_storage_plugin_options_page'
+		);
 	}
 
 	// Call register settings function

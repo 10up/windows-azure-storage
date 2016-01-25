@@ -401,7 +401,7 @@ function windows_azure_storage_dialog_browse_tab() {
 										echo "onclick=\"return insertImageTag('$url', false\">" . $blob->getName() . "</a>";
 										break;
 								}
-								if( WindowsAzureStorageUtil::check_action_permissions( 'delete_blob' ) ) {
+								if ( WindowsAzureStorageUtil::check_action_permissions( 'delete_blob' ) ) {
 									// Generate an absolute URL used for deleting files
 									$delete_blob_url = add_query_arg( array(
 										'post_id'            => $post_id,
@@ -744,6 +744,7 @@ function windows_azure_storage_dialog_upload_tab() {
 			onUpload_ContainerSelectionChanged();
 		</script>
 		<?php
+		//TODO: Use WP classes and markup to create notices
 		if ( ! empty( $uploadMessage ) ) {
 			$color = $uploadSuccess ? 'green' : 'red';
 			echo '<p style="margin: 10px; color: ' . esc_attr( $color ) . ';">' . esc_html( $uploadMessage ) . "</p><br/>";

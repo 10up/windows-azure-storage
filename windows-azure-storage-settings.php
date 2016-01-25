@@ -50,6 +50,7 @@ use WindowsAzure\Blob\Models\PublicAccessType;
  * @return void
  */
 function windows_azure_storage_plugin_options_page() {
+	//TODO implement with the Settings API
 	?>
 	<div class="wrap">
 		<h2>
@@ -89,7 +90,7 @@ function windows_azure_storage_plugin_options_page() {
 						<?php
 						settings_fields( 'windows-azure-storage-settings-group' );
 						show_windows_azure_storage_settings( 'admin' );
-						submit_button( __('Save Changes', 'windows-azure-storage'), 'submit primary', 'submitButton', true );
+						submit_button( __( 'Save Changes', 'windows-azure-storage' ), 'submit primary', 'submitButton', true );
 						?>
 					</form>
 				</td>
@@ -284,10 +285,10 @@ function show_windows_azure_storage_settings( $mode ) {
 							<?php
 						}
 						if ( WindowsAzureStorageUtil::check_action_permissions( 'create_container' ) ) {
-						?>
-						<option value="__newContainer__">&mdash;&thinsp;<?php esc_html_e( 'Create New Container', 'windows-azure-storage' ); ?>&thinsp;&mdash;</option>
-						<?php
-					}
+							?>
+							<option value="__newContainer__">&mdash;&thinsp;<?php esc_html_e( 'Create New Container', 'windows-azure-storage' ); ?>&thinsp;&mdash;</option>
+							<?php
+						}
 					}
 					?>
 				</select>
@@ -295,21 +296,21 @@ function show_windows_azure_storage_settings( $mode ) {
 			<?php if ( WindowsAzureStorageUtil::check_action_permissions( 'create_container' ) ) :
 				wp_nonce_field( 'create_container', 'create_new_container_settings' );
 				?>
-			<td>
-				<div id="divCreateContainer" name="divCreateContainer" style="display:none;">
-					<table style="border:1px solid black;">
-						<tr>
-							<td>
-								<label for="newcontainer" title="Name of the new container to create">Create New Container: </label>
-							</td>
-							<td>
-								<input type="text" name="newcontainer" title="Name of the new container to create" value="<?php echo $newContainerName; ?>" />
-								<input type="button" class="button-primary" value="<?php esc_attr_e( 'Create', 'windows-azure-storage' ); ?>" <?php echo "onclick=\"createContainer('" . esc_url( $_SERVER['REQUEST_URI'] ) . "')\"" ?>/>
-							</td>
-						</tr>
-					</table>
+				<td>
+					<div id="divCreateContainer" name="divCreateContainer" style="display:none;">
+						<table style="border:1px solid black;">
+							<tr>
+								<td>
+									<label for="newcontainer" title="Name of the new container to create">Create New Container: </label>
+								</td>
+								<td>
+									<input type="text" name="newcontainer" title="Name of the new container to create" value="<?php echo $newContainerName; ?>" />
+									<input type="button" class="button-primary" value="<?php esc_attr_e( 'Create', 'windows-azure-storage' ); ?>" <?php echo "onclick=\"createContainer('" . esc_url( $_SERVER['REQUEST_URI'] ) . "')\"" ?>/>
+								</td>
+							</tr>
+						</table>
 					</div>
-			</td>
+				</td>
 			<?php endif; ?>
 		</tr>
 		<tr valign="top">
@@ -355,7 +356,7 @@ endpoint to avoid mixed-content warnings for your visitors.',
 					<?php else : ?>
 						<p><?php
 							$notice = sprintf(
-								/* translators: the abbreviation "DNS" should remain, but the title can be translated */
+							/* translators: the abbreviation "DNS" should remain, but the title can be translated */
 								__(
 									'This CNAME must start with <samp>http://</samp> and the administrator will have to update <abbr title="%s">DNS</abbr>
  entries accordingly.',
