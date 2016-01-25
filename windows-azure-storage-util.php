@@ -708,9 +708,9 @@ class WindowsAzureStorageUtil {
 	 * @see   user_can()
 	 *
 	 * @param string     $action Optional. The plugin's action to check. Default 'browse'.
-	 *                           Allowed actions are: 'browse', 'insert', 'create_container',
+	 *                           Allowed actions are: 'browse', 'insert', 'upload', 'create_container',
 	 *                           'delete_single_blob', 'delete_all_blobs', and 'change_settings'.
-	 * @param int|object $user   Optiona. User ID or object. Default is current user ID.
+	 * @param int|object $user   Optional. User ID or object. Default is current user ID.
 	 * @return bool Whether the action is permitted by the user.
 	 */
 	public static function check_action_permissions( $action = 'browse', $user = null ) {
@@ -722,6 +722,7 @@ class WindowsAzureStorageUtil {
 		$action_map = array(
 			'browse'           => 'upload_files',
 			'insert'           => 'upload_files',
+			'upload'           => 'upload_files',
 			'create_container' => 'edit_files',
 			'delete_blob'      => 'delete_others_posts',
 			'delete_all_blobs' => 'edit_files',
