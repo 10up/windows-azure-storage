@@ -126,6 +126,8 @@ function windows_azure_storage_plugin_register_settings() {
  * @return string The message to displayed
  */
 function createContainerIfRequired( &$success ) {
+	//TODO: remove HTML from returned message string
+	//TODO: return message type ('error', 'warning', 'success') with message
 	$success = true;
 	if ( array_key_exists( "newcontainer", $_POST ) &&
 	     WindowsAzureStorageUtil::check_action_permissions( 'create_container' ) &&
@@ -314,7 +316,7 @@ function show_windows_azure_storage_settings( $mode ) {
 			<?php endif; ?>
 		</tr>
 		<tr valign="top">
-			<td colspan="3" WIDTH="300" align="center"><?php echo esc_html( $message ); ?></td>
+			<td colspan="3" WIDTH="300" align="center"><?php echo wp_kses_post( $message ); ?></td>
 		</tr>
 		<tr valign="top">
 			<th scope="row">
