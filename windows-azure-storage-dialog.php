@@ -316,7 +316,7 @@ function windows_azure_storage_dialog_browse_tab() {
 				</div>
 				<?php
 				// If this exception is thrown, don't continue loading media.
-				die();
+				return;
 			}
 		}
 		$first_container_name = "";
