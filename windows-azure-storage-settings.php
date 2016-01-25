@@ -127,7 +127,8 @@ function windows_azure_storage_plugin_register_settings() {
 function createContainerIfRequired( &$success ) {
 	$success = true;
 	if ( array_key_exists( "newcontainer", $_POST ) &&
-	     WindowsAzureStorageUtil::check_action_permissions( 'create_container' )
+	     WindowsAzureStorageUtil::check_action_permissions( 'create_container' ) &&
+	     check_admin_referer( 'create_container', 'create_new_container_settings' )
 	) {
 		if ( ! empty( $_POST["newcontainer"] ) ) {
 			if ( empty( $_POST["azure_storage_account_name"] ) || empty( $_POST["azure_storage_account_primary_access_key"] ) ) {
@@ -291,7 +292,9 @@ function show_windows_azure_storage_settings( $mode ) {
 					?>
 				</select>
 			</td>
-			<?php if ( WindowsAzureStorageUtil::check_action_permissions( 'create_container' ) ) : ?>
+			<?php if ( WindowsAzureStorageUtil::check_action_permissions( 'create_container' ) ) :
+				wp_nonce_field( 'create_container', 'create_new_container_settings' );
+				?>
 			<td>
 				<div id="divCreateContainer" name="divCreateContainer" style="display:none;">
 					<table style="border:1px solid black;">
