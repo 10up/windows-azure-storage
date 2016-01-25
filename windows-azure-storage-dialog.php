@@ -292,9 +292,9 @@ function windows_azure_storage_dialog_browse_tab() {
 					echo '<h3 style="margin: 10px;">Search Result</h3>';
 
 					if ( empty( $searchResult ) ) {
-						echo '<p style="margin: 10px;">No file found matching specified criteria (' . implode( ', ', $criteria ) . ')</p><br/>';
+						echo '<p style="margin: 10px;">No file found matching specified criteria (' . implode( ', ', esc_html( $criteria ) ) . ')</p><br/>';
 					} else {
-						echo '<p style="margin: 10px;">Found ' . count( $searchResult ) . ' file(s) matching specified criteria (' . implode( ', ', $criteria ) . ')</p><br/>';
+						echo '<p style="margin: 10px;">Found ' . absint( count( $searchResult ) ) . ' file(s) matching specified criteria (' . implode( ', ', $criteria ) . ')</p><br/>';
 						foreach ( $searchResult as $url ) {
 							echo "<img style='margin: 10px;' src=\"$url\" width=\"32\" height=\"32\"";
 							echo "onmouseover=\"this.height = 50;this.width = 50; this.style.border = '3px solid yellow';\" onmouseout=\"this.height = 32;this.width = 32; this.style.border = '0px solid black'\" onclick=\"return insertImageTag('$url');\" /> ";
@@ -683,7 +683,6 @@ function windows_azure_storage_dialog_upload_tab() {
 		} else if ( ! empty( $_POST['action'] ) && 'create' === sanitize_text_field( $_POST['action'] ) ) {
 			if ( ! empty( $_POST["createContainer"] ) ) {
 				try {
-					WindowsAzureStorageUtil::createPublicContainer( $_POST["createContainer"] );
 					if ( false === check_admin_referer( 'upload_create_container_' . $post_id,
 							'upload_create_container_nonce'
 						) ||
@@ -693,10 +692,11 @@ function windows_azure_storage_dialog_upload_tab() {
 						account. Please contact your site administrator for assistance.',
 							'windows-azure-storage' ) );
 					}
+					WindowsAzureStorageUtil::createPublicContainer( sanitize_text_field( $_POST["createContainer"] ) );
 					$uploadMessage = "The container '" . $_POST["createContainer"] . "' successfully created";
 				} catch ( Exception $e ) {
 					$uploadSuccess = false;
-					$uploadMessage = "Container creation failed', Error: " . $e->getMessage();
+					$uploadMessage = "Container creation failed: " . esc_html( $e->getMessage() );
 				}
 			} else {
 				$uploadSuccess = false;
