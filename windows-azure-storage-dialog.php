@@ -666,6 +666,11 @@ function windows_azure_storage_dialog_upload_tab() {
 					}
 
 					try {
+						if ( ! check_admin_referer( 'upload_blob_' . get_the_ID(), 'upload_blob_nonce' ) ||
+						     WindowsAzureStorageUtil::check_action_permissions( 'upload' )
+						) {
+							throw new Exception( __( 'Nonce check failed. Please try again, or contact your site administrator for assistance.', 'windows-azure-storage' ) );
+						}
 						$blobName = WindowsAzureStorageUtil::uniqueBlobName( $selected_container_name, $_FILES['uploadFileName']['name'] );
 						WindowsAzureStorageUtil::putBlockBlob( $selected_container_name, $blobName, $_FILES['uploadFileName']['tmp_name'], null, $metaData );
 						$uploadMessage = "Successfully uploaded file '" . $blobName . "' to the container '" . $selected_container_name . "'.";
