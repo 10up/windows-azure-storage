@@ -441,13 +441,12 @@ function windows_azure_storage_dialog_browse_tab() {
 			! empty( $blobs ) &&
 			WindowsAzureStorageUtil::check_action_permissions( 'delete_all_blobs' )
 		) :
-			?>
-			<form name="DeleteAllBlobsForm" method="POST" action="<?php
-			$action = add_query_arg( array(
+			$form_action_url = add_query_arg( array(
 				'post_id' => $post_id,
 				'tab'     => 'browse',
 			), MSFT_AZURE_PLUGIN_MEDIA_URL );
-			echo esc_attr( $action ); ?>">
+			?>
+			<form name="DeleteAllBlobsForm" method="POST" action="<?php echo esc_url( $form_action_url ); ?>">
 				<?php wp_nonce_field( 'delete_all_blobs_' . $post_id, 'delete_all_blobs_nonce' ); ?>
 				<input type='hidden' name='selected_container' value='<?php echo esc_attr( $selected_container_name ); ?>' />
 				<?php
@@ -511,15 +510,14 @@ function windows_azure_storage_dialog_search_tab() {
 		if ( ! empty( $_GET['selected_container'] ) ) {
 			$selected_container_name = sanitize_text_field( $_GET['selected_container'] );
 		}
+		$form_action_url = add_query_arg( array(
+			'post_id' => $post_id,
+			'tab'     => 'browse',
+		), MSFT_AZURE_PLUGIN_MEDIA_URL );
 		?>
 		<h3 style="margin: 10px;">Search Files</h3>
 		<div id="search-form">
-			<form role="search" method="POST" action="<?php
-			$action = add_query_arg( array(
-				'post_id' => $post_id,
-				'tab'     => 'browse',
-			), MSFT_AZURE_PLUGIN_MEDIA_URL );
-			echo esc_attr( $action ); ?>">
+			<form role="search" method="POST" action="<?php echo esc_url( $form_action_url ); ?>">
 				<?php wp_nonce_field( 'search_' . $post_id, 'search_nonce' ); ?>
 				<table class="form-table">
 					<tr valign="top">
