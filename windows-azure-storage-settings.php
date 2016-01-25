@@ -126,7 +126,9 @@ function windows_azure_storage_plugin_register_settings() {
  */
 function createContainerIfRequired( &$success ) {
 	$success = true;
-	if ( array_key_exists( "newcontainer", $_POST ) ) {
+	if ( array_key_exists( "newcontainer", $_POST ) &&
+	     WindowsAzureStorageUtil::check_action_permissions( 'create_container' )
+	) {
 		if ( ! empty( $_POST["newcontainer"] ) ) {
 			if ( empty( $_POST["azure_storage_account_name"] ) || empty( $_POST["azure_storage_account_primary_access_key"] ) ) {
 				$success = false;
@@ -279,9 +281,11 @@ function show_windows_azure_storage_settings( $mode ) {
 							</option>
 							<?php
 						}
+						if( ! WindowsAzureStorageUtil::check_action_permissions( 'create_container' ) ) {
 						?>
 						<option value="__newContainer__">&mdash;&thinsp;<?php esc_html_e( 'Create New Container', 'windows-azure-storage' ); ?>&thinsp;&mdash;</option>
 						<?php
+					}
 					}
 					?>
 				</select>
@@ -302,9 +306,11 @@ function show_windows_azure_storage_settings( $mode ) {
 					</div>
 			</td>
 		</tr>
+		<?php if( WindowsAzureStorageUtil::check_action_permissions( 'create_container' ) ) : ?>
 		<tr valign="top">
 			<td colspan="3" WIDTH="300" align="center"><?php echo esc_html( $message ); ?></td>
 		</tr>
+		<?php endif; ?>
 		<tr valign="top">
 			<th scope="row">
 				<label for="cname" title="Use CNAME insted of Windows Azure Blob URL">CNAME</label>
