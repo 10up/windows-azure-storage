@@ -320,8 +320,15 @@ function windows_azure_storage_dialog_browse_tab() {
 			}
 		}
 		$first_container_name = "";
+		$form_action_url      = add_query_arg(
+			array(
+				'post_id' => $post_id,
+				'tab'     => 'browse',
+			),
+			MSFT_AZURE_PLUGIN_MEDIA_URL
+		);
 		?>
-		<form name="SelectContainerForm" style="margin: 10px;" method="post" action="<?php echo esc_attr( $_SERVER['REQUEST_URI'] ); ?>">
+		<form name="SelectContainerForm" style="margin: 10px;" method="post" action="<?php echo esc_url( $form_action_url ); ?>">
 			<?php wp_nonce_field( 'browse_select_container_' . $post_id, 'browse_select_container_nonce' ); ?>
 			<table>
 				<tr>
@@ -670,10 +677,17 @@ function windows_azure_storage_dialog_upload_tab() {
 				$uploadMessage = "Please specify container name";
 			}
 		}
+		$form_action_url = add_query_arg(
+			array(
+				'post_id' => $post_id,
+				'tab'     => 'upload',
+			),
+			MSFT_AZURE_PLUGIN_MEDIA_URL
+		);
 		?>
 		<h3 style="margin: 10px;">Upload New File</h3>
 		<div id="upload-form">
-			<form name="UploadNewFileForm" style="margin: 10px;" method="post" enctype="multipart/form-data" action="<?php echo esc_attr( $_SERVER['REQUEST_URI'] ); ?>">
+			<form name="UploadNewFileForm" style="margin: 10px;" method="post" enctype="multipart/form-data" action="<?php echo esc_url( $form_action_url ); ?>">
 				<?php wp_nonce_field( 'windows-azure-storage-upload' . get_the_ID() ); ?>
 				<table class="form-table">
 					<tr valign="top">
