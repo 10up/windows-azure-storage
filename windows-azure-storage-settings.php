@@ -138,15 +138,16 @@ function createContainerIfRequired( &$success ) {
 
 			try {
 				$storageClient = WindowsAzureStorageUtil::getStorageClient(
-					$_POST["azure_storage_account_name"],
-					$_POST["azure_storage_account_primary_access_key"],
-					$_POST["http_proxy_host"],
-					$_POST["http_proxy_port"],
-					$_POST["http_proxy_username"],
-					$_POST["http_proxy_password"] );
-				WindowsAzureStorageUtil::createPublicContainer( $_POST["newcontainer"], $storageClient );
+					sanitize_text_field( $_POST["azure_storage_account_name"] ),
+					sanitize_text_field( $_POST["azure_storage_account_primary_access_key"] ),
+					sanitize_text_field( $_POST["http_proxy_host"] ),
+					absint( $_POST["http_proxy_port"] ),
+					sanitize_text_field( $_POST["http_proxy_username"] ),
+					sanitize_text_field( $_POST["http_proxy_password"] )
+				);
+				WindowsAzureStorageUtil::createPublicContainer( sanitize_text_field( $_POST['newcontainer'] ), $storageClient );
 
-				return '<FONT COLOR="green">The container \'' . $_POST["newcontainer"] . '\' successfully created <br/>' .
+				return '<FONT COLOR="green">The container \'' . sanitize_text_field( $_POST["newcontainer"] ) . '\' successfully created <br/>' .
 				       'To use this container as default container, select it from the above drop down and click \'Save Changes\'</FONT>';
 			} catch ( Exception $e ) {
 				$success = false;
