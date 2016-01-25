@@ -672,6 +672,7 @@ function windows_azure_storage_media_buttons_context( $context ) {
  * @return void
  */
 function windows_azure_storage_plugin_menu() {
+	if ( WindowsAzureStorageUtil::check_action_permissions( 'change_settings' ) ) {
 	add_options_page(
 		'Windows Azure Storage Plugin Settings',
 		'Windows Azure',
@@ -679,6 +680,7 @@ function windows_azure_storage_plugin_menu() {
 		'b5506889-50de-42db-bf63-e9f248ca94e9',
 		'windows_azure_storage_plugin_options_page'
 	);
+	}
 
 	// Call register settings function
 	add_action( 'admin_init', 'windows_azure_storage_plugin_register_settings' );
