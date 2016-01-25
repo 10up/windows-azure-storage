@@ -304,7 +304,7 @@ function windows_azure_storage_dialog_browse_tab() {
 				}
 			} catch ( Exception $e ) {
 				?>
-				<div class="notice notice-error is-dismissible" role="banner">
+				<div class="notice notice-error" role="banner">
 					<p role="alert">
 						<?php
 						esc_html_e( 'Sorry, but there was a problem searching the container.', 'windows-azure-storage' );
