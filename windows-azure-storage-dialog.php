@@ -301,6 +301,8 @@ function windows_azure_storage_dialog_browse_tab() {
 						}
 					}
 					echo "<hr/>";
+
+					return;
 				}
 			} catch ( Exception $e ) {
 				?>
