@@ -684,6 +684,15 @@ function windows_azure_storage_dialog_upload_tab() {
 			if ( ! empty( $_POST["createContainer"] ) ) {
 				try {
 					WindowsAzureStorageUtil::createPublicContainer( $_POST["createContainer"] );
+					if ( false === check_admin_referer( 'upload_create_container_' . $post_id,
+							'upload_create_container_nonce'
+						) ||
+					     false === WindowsAzureStorageUtil::check_action_permissions( 'create_container' )
+					) {
+						throw new Exception( __( 'Sorry, you do not have permission to create containers for this
+						account. Please contact your site administrator for assistance.',
+							'windows-azure-storage' ) );
+					}
 					$uploadMessage = "The container '" . $_POST["createContainer"] . "' successfully created";
 				} catch ( Exception $e ) {
 					$uploadSuccess = false;
@@ -705,7 +714,7 @@ function windows_azure_storage_dialog_upload_tab() {
 		<h3 style="margin: 10px;">Upload New File</h3>
 		<div id="upload-form">
 			<form name="UploadNewFileForm" style="margin: 10px;" method="post" enctype="multipart/form-data" action="<?php echo esc_url( $form_action_url ); ?>">
-				<?php wp_nonce_field( 'windows-azure-storage-upload' . get_the_ID() ); ?>
+				<?php wp_nonce_field( 'upload_blob_' . get_the_ID(), 'upload_blob_nonce' ); ?>
 				<table class="form-table">
 					<tr valign="top">
 						<th scope="row">
@@ -763,7 +772,8 @@ function windows_azure_storage_dialog_upload_tab() {
 					</tr>
 				</table>
 
-				<input type='hidden' name='action' value='Upload' />
+				<input type='hidden' name='action' value='upload' />
+				<?php wp_nonce_field( 'upload_create_container_' . $post_id, 'upload_create_container_nonce' ); ?>
 				<p class="submit">
 					<input type="submit" class="button-primary" id="submit" value="<?php esc_attr_e( 'Upload', 'windows-azure-storage' ); ?>" />
 				</p>
