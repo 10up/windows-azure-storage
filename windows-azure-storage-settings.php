@@ -282,7 +282,7 @@ function show_windows_azure_storage_settings( $mode ) {
 							</option>
 							<?php
 						}
-						if( ! WindowsAzureStorageUtil::check_action_permissions( 'create_container' ) ) {
+						if ( WindowsAzureStorageUtil::check_action_permissions( 'create_container' ) ) {
 						?>
 						<option value="__newContainer__">&mdash;&thinsp;<?php esc_html_e( 'Create New Container', 'windows-azure-storage' ); ?>&thinsp;&mdash;</option>
 						<?php
