@@ -131,7 +131,7 @@ function createContainerIfRequired( &$success ) {
 	$success = true;
 	if ( array_key_exists( "newcontainer", $_POST ) &&
 	     WindowsAzureStorageUtil::check_action_permissions( 'create_container' ) &&
-	     check_admin_referer( 'create_container', 'create_new_container_settings' )
+		check_admin_referer( 'create_container', 'create_new_container_settings' )
 	) {
 		if ( ! empty( $_POST["newcontainer"] ) ) {
 			if ( empty( $_POST["azure_storage_account_name"] ) || empty( $_POST["azure_storage_account_primary_access_key"] ) ) {
@@ -188,28 +188,33 @@ function show_windows_azure_storage_settings( $mode ) {
 	$newContainerName   = null;
 	// Use the account settings in the $_POST if this page load is
 	// a result of container creation operation.
-	if ( array_key_exists( "azure_storage_account_name", $_POST ) ) {
-		$storageAccountName = sanitize_text_field( $_POST["azure_storage_account_name"] );
-	}
+	if (
+		wp_verify_nonce( $_REQUEST['_wpnonce'], 'windows-azure-storage-settings-group-options' ) &&
+		isset( $_POST['action2'] ) && 'update' === $_POST['action2']
+	) {
+		if ( array_key_exists( "azure_storage_account_name", $_POST ) ) {
+			$storageAccountName = sanitize_text_field( $_POST["azure_storage_account_name"] );
+		}
 
-	if ( array_key_exists( "azure_storage_account_primary_access_key", $_POST ) ) {
-		$storageAccountKey = sanitize_text_field( $_POST["azure_storage_account_primary_access_key"] );
-	}
+		if ( array_key_exists( "azure_storage_account_primary_access_key", $_POST ) ) {
+			$storageAccountKey = sanitize_text_field( $_POST["azure_storage_account_primary_access_key"] );
+		}
 
-	if ( array_key_exists( "http_proxy_host", $_POST ) ) {
-		$httpProxyHost = sanitize_text_field( $_POST["http_proxy_host"] );
-	}
+		if ( array_key_exists( "http_proxy_host", $_POST ) ) {
+			$httpProxyHost = sanitize_text_field( $_POST["http_proxy_host"] );
+		}
 
-	if ( array_key_exists( "http_proxy_port", $_POST ) ) {
-		$httpProxyPort = sanitize_text_field( $_POST["http_proxy_port"] );
-	}
+		if ( array_key_exists( "http_proxy_port", $_POST ) ) {
+			$httpProxyPort = sanitize_text_field( $_POST["http_proxy_port"] );
+		}
 
-	if ( array_key_exists( "http_proxy_username", $_POST ) ) {
-		$httpProxyUserName = sanitize_text_field( $_POST["http_proxy_username"] );
-	}
+		if ( array_key_exists( "http_proxy_username", $_POST ) ) {
+			$httpProxyUserName = sanitize_text_field( $_POST["http_proxy_username"] );
+		}
 
-	if ( array_key_exists( "http_proxy_password", $_POST ) ) {
-		$httpProxyPassword = sanitize_text_field( $_POST["http_proxy_password"] );
+		if ( array_key_exists( "http_proxy_password", $_POST ) ) {
+			$httpProxyPassword = sanitize_text_field( $_POST["http_proxy_password"] );
+		}
 	}
 
 	// We need to show the container name if the request for
