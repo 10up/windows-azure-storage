@@ -43,8 +43,6 @@
  */
 
 // import namepaces required for consuming Azure Blob Storage
-use WindowsAzure\Blob\BlobService;
-use WindowsAzure\Blob\BlobSettings;
 use WindowsAzure\Blob\Models\BlobBlockType;
 use WindowsAzure\Blob\Models\Block;
 use WindowsAzure\Blob\Models\CommitBlobBlocksOptions;

@@ -70,11 +70,6 @@ require_once MSFT_AZURE_PLUGIN_PATH . 'windows-azure-storage-settings.php';
 require_once MSFT_AZURE_PLUGIN_PATH . 'windows-azure-storage-dialog.php';
 require_once MSFT_AZURE_PLUGIN_PATH . 'windows-azure-storage-util.php';
 
-// import namepaces required for consuming Azure Blob Storage
-use WindowsAzure\Blob\BlobService;
-use WindowsAzure\Blob\BlobSettings;
-
-
 // Check prerequisite for plugin
 register_activation_hook( __FILE__, 'check_prerequisite' );
 
