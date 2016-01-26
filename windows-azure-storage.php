@@ -152,6 +152,7 @@ add_action( 'delete_attachment', 'windows_azure_storage_delete_attachment' );
  * @return void
  */
 function check_prerequisite() {
+	//TODO more robust activation checks. http://pento.net/2014/02/18/dont-let-your-plugin-be-activated-on-incompatible-sites/
 	$windowsAzureFilePath = WP_PLUGIN_DIR . "/windows-azure-storage/library/WindowsAzure/WindowsAzure.php";
 	if ( ( true === file_exists( $windowsAzureFilePath ) ) && ( true === is_readable( $windowsAzureFilePath ) ) ) {
 		return;
@@ -161,16 +162,27 @@ function check_prerequisite() {
 	$message = '<p style="color: red"><a href="https://github.com/windowsazure/azure-sdk-for-php/">'
 	           . 'Windows Azure SDK for PHP</a> is not found. '
 	           . 'Please download and copy the Windows Azure SDK for PHP to library directory and dependencies to '
-	           . 'to dependencies directory </p>';
+	           . 'the dependencies directory.</p>';
 
 	if ( function_exists( 'deactivate_plugins' ) ) {
-		deactivate_plugins( __FILE__ );
+		deactivate_plugins( plugin_basename( __FILE__ ) );
 	} else {
-		$message = $message . '<p style="color: red"><strong>'
-		           . 'Please deactivate this plugin Immediately</strong></p>';
+		$message .= '<p style="color: red"><strong>Please deactivate this plugin Immediately</strong></p>';
 	}
 
-	die( $message );
+	$message = wp_kses( $message, array(
+			'a'      => array(
+				'href'  => array(),
+				'title' => array(),
+			),
+			'p'      => array(
+				'style' => array(),
+			),
+			'strong' => array(),
+		)
+	);
+
+	exit( $message ); //XSS okay
 }
 
 /**
@@ -620,8 +632,8 @@ function upload_tab() {
 /**
  * Hook for adding new toolbar button in edit post page.
  *
- * @since 1.0.0
- * @since 2.3.0 Rewrote internals to only create a single element.
+ * @since    1.0.0
+ * @since    2.3.0 Rewrote internals to only create a single element.
  * @internal Callback for 'media_buttons_context' filter.
  *
  * @param string $context Media buttons context.
