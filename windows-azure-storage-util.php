@@ -83,7 +83,7 @@ class WindowsAzureStorageUtil {
 	 */
 	public static function getHostName() {
 		$storageAccountName = WindowsAzureStorageUtil::getAccountName();
-		if ( $storageAccountName == 'devstoreaccount1' ) {
+		if ( 'devstoreaccount1' === $storageAccountName ) {
 			// Use development storage
 			$hostName = Resources::EMULATOR_BLOB_URI;
 		} else {
@@ -92,7 +92,7 @@ class WindowsAzureStorageUtil {
 		}
 
 		// Remove http/https from the beginning
-		if ( substr( $hostName, 0, 4 ) == "http" ) {
+		if ( 'http' === substr( $hostName, 0, 4 ) ) {
 			$parts    = parse_url( $hostName );
 			$hostName = $parts["host"];
 			if ( ! empty( $parts["port"] ) ) {
@@ -215,7 +215,7 @@ class WindowsAzureStorageUtil {
 		}
 
 		$azureServiceConnectionString = null;
-		if ( $storageAccountName == 'devstoreaccount1' ) {
+		if ( 'devstoreaccount1' === $storageAccountName ) {
 			// Use development storage
 			$azureServiceConnectionString = "UseDevelopmentStorage=true";
 		} else {
@@ -386,11 +386,11 @@ class WindowsAzureStorageUtil {
 	public static function uniqueBlobName( $container, $blobName ) {
 		$info = pathinfo( $blobName );
 
-		$uploadSubDir = ( $info['dirname'] == '.' ) ? '' : $info['dirname'];
+		$uploadSubDir = ( '.' === $info['dirname'] ) ? '' : $info['dirname'];
 		$filename     = sanitize_file_name( $info['basename'] );
 
 		// sanitized blob name
-		$blobName = ( $uploadSubDir == '' ) ? $filename : $uploadSubDir . '/' . $filename;
+		$blobName = ( '' === $uploadSubDir ) ? $filename : $uploadSubDir . '/' . $filename;
 
 		$newInfo = pathinfo( $blobName );
 		$ext     = ! empty( $newInfo['extension'] ) ? '.' . $newInfo['extension'] : '';
@@ -401,7 +401,7 @@ class WindowsAzureStorageUtil {
 		if ( $ext && strtolower( $ext ) != $ext ) {
 			$ext2      = strtolower( $ext );
 			$filename2 = preg_replace( '|' . preg_quote( $ext ) . '$|', $ext2, $filename );
-			$blobName2 = ( $uploadSubDir == '' ) ? $filename2 : $uploadSubDir . '/' . $filename2;
+			$blobName2 = ( '' === $uploadSubDir ) ? $filename2 : $uploadSubDir . '/' . $filename2;
 
 			// check for both lower and upper case extension or image sub-sizes may be overwritten
 			while ( WindowsAzureStorageUtil::blobExists( $container, $blobName )
@@ -410,21 +410,21 @@ class WindowsAzureStorageUtil {
 				$filename   = str_replace( "$number$ext", "$new_number$ext", $filename );
 				$filename2  = str_replace( "$number$ext2", "$new_number$ext2", $filename2 );
 				$number     = $new_number;
-				$blobName   = ( $uploadSubDir == '' ) ? $filename : $uploadSubDir . '/' . $filename;
-				$blobName2  = ( $uploadSubDir == '' ) ? $filename2 : $uploadSubDir . '/' . $filename2;
+				$blobName   = ( '' === $uploadSubDir ) ? $filename : $uploadSubDir . '/' . $filename;
+				$blobName2  = ( '' === $uploadSubDir ) ? $filename2 : $uploadSubDir . '/' . $filename2;
 			}
 
 			return $blobName2;
 		}
 
 		while ( WindowsAzureStorageUtil::blobExists( $container, $blobName ) ) {
-			if ( '' == "$number$ext" ) {
+			if ( '' === "$number$ext" ) {
 				$filename = $filename . ++ $number . $ext;
 			} else {
 				$filename = str_replace( "$number$ext", ++ $number . $ext, $filename );
 			}
 
-			$blobName = ( $uploadSubDir == '' ) ? $filename : $uploadSubDir . '/' . $filename;
+			$blobName = ( '' === $uploadSubDir ) ? $filename : $uploadSubDir . '/' . $filename;
 		}
 
 		return $blobName;

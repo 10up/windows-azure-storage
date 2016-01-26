@@ -217,7 +217,7 @@ function windows_azure_storage_dialog_browse_tab() {
 					}
 
 					$searchResult = array();
-					if ( $searchContainer == "ALL_CONTAINERS" ) {
+					if ( 'ALL_CONTAINERS' === $searchContainer ) {
 						$criteria[]          = "in 'all containers'";
 						$listContainerResult = $storageClient->listContainers();
 						foreach ( $listContainerResult->getContainers() as $container ) {
@@ -352,7 +352,7 @@ function windows_azure_storage_dialog_browse_tab() {
 									}
 									?>
 									<option value="<?php echo esc_attr( $container->getName() ); ?>"
-										<?php echo( $container->getName() == $selected_container_name ? 'selected="selected"' : '' ) ?> >
+										<?php echo( $container->getName() === $selected_container_name ? 'selected="selected"' : '' ) ?> >
 										<?php echo esc_html( $container->getName() ); ?>
 									</option>
 									<?php
@@ -569,7 +569,7 @@ function windows_azure_storage_dialog_search_tab() {
 										?>
 										<option value="<?php echo esc_attr( $container->getName() ); ?>"
 											<?php
-											echo( $container->getName() == $selected_container_name ? 'selected="selected"' : '' ) ?> ><?php
+											echo( $container->getName() === $selected_container_name ? 'selected="selected"' : '' ) ?> ><?php
 											echo esc_html( $container->getName() ); ?>
 										</option>
 										<?php
@@ -732,7 +732,7 @@ function windows_azure_storage_dialog_upload_tab() {
 										}
 										?>
 										<option value="<?php echo esc_attr( $container->getName() ); ?>"
-											<?php echo( $container->getName() == $selected_container_name ? 'selected="selected"' : '' ) ?> >
+											<?php echo( $container->getName() === $selected_container_name ? 'selected="selected"' : '' ) ?> >
 											<?php echo esc_html( $container->getName() ); ?></option>
 									<?php endforeach; ?>
 									<option value="__newContainer__">&mdash;&thinsp;<?php esc_html_e( 'Create New Container', 'windows-azure-storage' ); ?>&thinsp;&mdash;</option>

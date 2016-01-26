@@ -237,7 +237,7 @@ function show_windows_azure_storage_settings( $mode ) {
 			if ( ! empty( $defaultContainer ) ) {
 				$getContainerAclResult = $storageClient->getContainerAcl( $defaultContainer );
 				$containerAcl          = $getContainerAclResult->getContainerAcl();
-				if ( $containerAcl->getPublicAccess() == PublicAccessType::NONE ) {
+				if ( $containerAcl->getPublicAccess() === PublicAccessType::NONE ) {
 					$privateContainerWarning = "<p style=\"margin: 10px; color: red;\">Warning: The container '$defaultContainer' you set as default is a private container. Plugin supports only public container, please set a public container as default</p>";
 				}
 			}
@@ -281,7 +281,7 @@ function show_windows_azure_storage_settings( $mode ) {
 						foreach ( $ContainerResult->getContainers() as $container ) {
 							?>
 							<option value="<?php echo esc_attr( $container->getName() ); ?>"
-								<?php echo( $container->getName() == $defaultContainer ? 'selected="selected"' : '' ) ?> >
+								<?php echo( $container->getName() === $defaultContainer ? 'selected="selected"' : '' ) ?> >
 								<?php echo esc_html( $container->getName() ); ?>
 							</option>
 							<?php

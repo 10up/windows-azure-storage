@@ -104,7 +104,7 @@ add_action( "media_upload_search", "search_tab" );
 add_action( "media_upload_upload", "upload_tab" );
 
 // Hooks for handling default file uploads
-if ( get_option( 'azure_storage_use_for_default_upload' ) == 1 ) {
+if ( 1 === get_option( 'azure_storage_use_for_default_upload' ) ) {
 	add_filter(
 		'wp_update_attachment_metadata',
 		'windows_azure_storage_wp_update_attachment_metadata',
@@ -153,7 +153,7 @@ add_action( 'delete_attachment', 'windows_azure_storage_delete_attachment' );
  */
 function check_prerequisite() {
 	$windowsAzureFilePath = WP_PLUGIN_DIR . "/windows-azure-storage/library/WindowsAzure/WindowsAzure.php";
-	if ( ( file_exists( $windowsAzureFilePath ) === true ) && ( is_readable( $windowsAzureFilePath ) === true ) ) {
+	if ( ( true === file_exists( $windowsAzureFilePath ) ) && ( true === is_readable( $windowsAzureFilePath ) ) ) {
 		return;
 	}
 
@@ -233,7 +233,7 @@ function windows_azure_storage_newMediaObject( $args ) {
 		return new IXR_Error( 500, $upload_err );
 	}
 
-	if ( ! empty( $data['overwrite'] ) && ( $data['overwrite'] == true ) ) {
+	if ( ! empty( $data['overwrite'] ) && ( true === $data['overwrite'] ) ) {
 		// Get postmeta info on the object.
 		$old_file = $wpdb->get_row(
 			$wpdb->prepare( "
@@ -267,12 +267,12 @@ function windows_azure_storage_newMediaObject( $args ) {
 	$container = WindowsAzureStorageUtil::getDefaultContainer();
 
 	$uploadDir = wp_upload_dir();
-	if ( $uploadDir['subdir'][0] == "/" ) {
+	if ( '/' === $uploadDir['subdir'][0] ) {
 		$uploadDir['subdir'] = substr( $uploadDir['subdir'], 1 );
 	}
 
 	// Prepare blob name
-	$blobName = ( $uploadDir['subdir'] == "" ) ? $name : $uploadDir['subdir'] . "/" . $name;
+	$blobName = ( '' === $uploadDir['subdir'] ) ? $name : $uploadDir['subdir'] . '/' . $name;
 
 	$blobName = WindowsAzureStorageUtil::uniqueBlobName( $container, $blobName );
 
@@ -385,12 +385,12 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $postID ) {
 	if ( empty( $data ) || empty( $data['file'] ) ) {
 		// Get upload directory
 		$uploadDir = wp_upload_dir();
-		if ( $uploadDir['subdir']{0} == "/" ) {
+		if ( '/' === $uploadDir['subdir']{0} ) {
 			$uploadDir['subdir'] = substr( $uploadDir['subdir'], 1 );
 		}
 
 		// Prepare blob name
-		$relativeFileName = ( $uploadDir['subdir'] == "" ) ?
+		$relativeFileName = ( '' === $uploadDir['subdir'] ) ?
 			basename( $uploadFileName ) :
 			$uploadDir['subdir'] . "/" . basename( $uploadFileName );
 	} else {
@@ -441,7 +441,7 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $postID ) {
 
 				// Move only if file exists. Some theme may use same file name for multiple sizes
 				if ( file_exists( $sizeFileName ) ) {
-					$blobName = ( $file_upload_dir == "" ) ? $size["file"] : $file_upload_dir . "/" . $size["file"];
+					$blobName = ( '' === $file_upload_dir ) ? $size['file'] : $file_upload_dir . '/' . $size['file'];
 					WindowsAzureStorageUtil::putBlockBlob(
 						$default_azure_storage_account_container_name,
 						$blobName,
@@ -508,12 +508,12 @@ function windows_azure_storage_wp_handle_upload_prefilter( $file ) {
 	$container = WindowsAzureStorageUtil::getDefaultContainer();
 
 	$uploadDir = wp_upload_dir();
-	if ( $uploadDir['subdir'][0] == "/" ) {
+	if ( '/' === $uploadDir['subdir'][0] ) {
 		$uploadDir['subdir'] = substr( $uploadDir['subdir'], 1 );
 	}
 
 	// Prepare blob name
-	$blobName = ( $uploadDir['subdir'] == "" ) ? $file['name'] : $uploadDir['subdir'] . "/" . $file['name'];
+	$blobName = ( '' === $uploadDir['subdir'] ) ? $file['name'] : $uploadDir['subdir'] . '/' . $file['name'];
 
 	$blobName = WindowsAzureStorageUtil::uniqueBlobName( $container, $blobName );
 
@@ -630,7 +630,7 @@ function windows_azure_storage_media_buttons_context( $context ) {
 	$image_btn   = plugin_dir_url( __FILE__ ) . 'images/WindowsAzure.jpg';
 	$image_title = 'Windows Azure Storage';
 
-	$uploading_iframe_ID     = (int) ( 0 == $post_ID ? $temp_ID : $post_ID );
+	$uploading_iframe_ID     = (int) ( 0 === $post_ID ? $temp_ID : $post_ID );
 	$media_upload_iframe_src = "media-upload.php?post_id=$uploading_iframe_ID";
 
 	$browse_iframe_src          = apply_filters(
