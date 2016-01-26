@@ -618,49 +618,43 @@ function upload_tab() {
 }
 
 /**
- * Hook for adding new toolbar button in edit post page
+ * Hook for adding new toolbar button in edit post page.
  *
- * @param string $context context for edit page
+ * @since 1.0.0
+ * @since 2.3.0 Rewrote internals to only create a single element.
+ * @internal Callback for 'media_buttons_context' filter.
  *
- * @return string updated context
+ * @param string $context Media buttons context.
+ * @return string Media buttons context with our button appended.
  */
 function windows_azure_storage_media_buttons_context( $context ) {
 	global $post_ID, $temp_ID;
 
-	$image_btn   = plugin_dir_url( __FILE__ ) . 'images/WindowsAzure.jpg';
-	$image_title = 'Windows Azure Storage';
+	$uploading_iframe_ID = (int) ( 0 === $post_ID ? $temp_ID : $post_ID );
 
-	$uploading_iframe_ID     = (int) ( 0 === $post_ID ? $temp_ID : $post_ID );
-	$media_upload_iframe_src = "media-upload.php?post_id=$uploading_iframe_ID";
-
-	$browse_iframe_src          = apply_filters(
-		'browse_iframe_src',
-		"$media_upload_iframe_src&amp;tab=browse"
-	);
-	$search_iframe_src          = apply_filters(
-		'browse_iframe_src',
-		"$media_upload_iframe_src&amp;tab=search"
-	);
-	$upload_iframe_src          = apply_filters(
-		'browse_iframe_src',
-		"$media_upload_iframe_src&amp;tab=upload"
-	);
-	$createcontainer_iframe_src = apply_filters(
-		'browse_iframe_src',
-		"$media_upload_iframe_src&amp;tab=createcontainer"
+	$browse_iframe_src = apply_filters( 'browse_iframe_src',
+		add_query_arg(
+			array(
+				'tab'       => 'browse', // 'browse', 'search', or 'upload'
+				'post_id'   => $uploading_iframe_ID,
+				'TB_iframe' => 'true',
+				'height'    => 500,
+				'width'     => 640,
+			),
+			MSFT_AZURE_PLUGIN_MEDIA_URL
+		)
 	);
 
-	$out = ' <a href="' . $media_upload_iframe_src .
-	       '&tab=WindowsAzureStorageTab&TB_iframe=true&height=500&width=640"' .
-	       'class="thickbox" title="' . $image_title . '"><img src="' . $image_btn
-	       . '" width="20" Height="20" alt="' . $image_title . '" /></a>';
+	$azure_image_button_element = sprintf(
+		'<a id="windows-azure-storage-media-button" role="button" href="%1$s" class="thickbox button" data-editor="content"
+title="%2$s"><img src="%3$s" alt="%2$s" role="img" class="windows-azure-storage-media-icon" />%4$s</a>',
+		esc_url( $browse_iframe_src ),
+		esc_attr__( 'Windows Azure Storage', 'windows-azure-storage' ),
+		esc_url( MSFT_AZURE_PLUGIN_URL . 'images/WindowsAzure.jpg' ),
+		esc_html__( 'Add Media From Azure', 'windows-azure-storage' )
+	);
 
-	$out = ' <a href="' . $browse_iframe_src
-	       . '&TB_iframe=true&height=500&width=640" class="thickbox" title="'
-	       . $image_title . '"><img src="' . $image_btn
-	       . '" width="20" Height="20" alt="' . $image_title . '" /></a>';
-
-	return $context . $out;
+	return $context . $azure_image_button_element;
 }
 
 /**
