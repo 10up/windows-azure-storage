@@ -204,8 +204,8 @@ function show_windows_azure_storage_settings( $mode ) {
 		$httpProxyPort = sanitize_text_field( $_POST["http_proxy_port"] );
 	}
 
-	if ( array_key_exists( "http_proxy_host", $_POST ) ) {
-		$httpProxyUserName = sanitize_text_field( $_POST["http_proxy_host"] );
+	if ( array_key_exists( "http_proxy_username", $_POST ) ) {
+		$httpProxyUserName = sanitize_text_field( $_POST["http_proxy_username"] );
 	}
 
 	if ( array_key_exists( "http_proxy_password", $_POST ) ) {
