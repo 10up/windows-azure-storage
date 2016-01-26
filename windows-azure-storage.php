@@ -57,6 +57,7 @@
 
 define( 'MSFT_AZURE_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'MSFT_AZURE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+define( 'MSFT_AZURE_PLUGIN_MEDIA_URL', get_admin_url( get_current_blog_id(), 'media-upload.php' ) );
 define( 'MSFT_AZURE_PLUGIN_VERSION', '2.2.0' );
 
 /* Azure SDK relies on some PEAR dependencies, but doesn't load them itself.
