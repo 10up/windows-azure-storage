@@ -54,7 +54,7 @@ function windows_azure_storage_plugin_options_page() {
 	?>
 	<div class="wrap">
 		<h2>
-			<img src="<?php echo esc_url( plugin_dir_url( __FILE__ ) . 'images/WindowsAzure.jpg' ); ?>"
+			<img src="<?php echo esc_url( MSFT_AZURE_PLUGIN_URL . 'images/WindowsAzure.jpg' ); ?>"
 			     width="32" height="32" />Windows Azure Storage for WordPress</h2>
 
 		This WordPress plugin allows you to use Windows Azure Storage Service to
