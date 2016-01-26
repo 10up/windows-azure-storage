@@ -443,7 +443,7 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $postID ) {
 		$data['url'] = $url;
 
 		// Handle thumbnail and medium size files
-		$thumbnails = Array();
+		$thumbnails = array();
 		if ( ! empty( $data["sizes"] ) ) {
 			$file_upload_dir = substr( $relativeFileName, 0, strripos( $relativeFileName, "/" ) );
 
