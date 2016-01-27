@@ -243,7 +243,14 @@ function show_windows_azure_storage_settings( $mode ) {
 				$getContainerAclResult = $storageClient->getContainerAcl( $defaultContainer );
 				$containerAcl          = $getContainerAclResult->getContainerAcl();
 				if ( $containerAcl->getPublicAccess() === PublicAccessType::NONE ) {
-					$privateContainerWarning = "<p style=\"margin: 10px; color: red;\">Warning: The container '$defaultContainer' you set as default is a private container. Plugin supports only public container, please set a public container as default</p>";
+					$privateContainerWarning = sprintf(
+						__(
+							'<p style="margin: 10px; color: red;">Warning: The container "%1$s" is set to "private" and cannot be used. Please
+choose a public container as the default, or set the "%1$s" container to "public" in your Azure Storage settings.</p>',
+							'windows-azure-storage'
+						),
+						$defaultContainer
+					);
 				}
 			}
 		}
