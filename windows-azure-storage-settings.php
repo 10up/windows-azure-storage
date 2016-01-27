@@ -274,8 +274,7 @@ function show_windows_azure_storage_settings( $mode ) {
 				<label for="azure_storage_account_primary_access_key" title="Windows Azure Storage Account Primary Access Key">Primary Access Key</label>
 			</th>
 			<td>
-				<input type="text" name="azure_storage_account_primary_access_key" title="Windows Azure Storage Account Primary Access Key" value="<?php
-				echo esc_attr( $storageAccountKey ); ?>" />
+				<input type="text" name="azure_storage_account_primary_access_key" title="Windows Azure Storage Account Primary Access Key" value="<?php echo esc_attr( $storageAccountKey ); ?>" />
 			</td>
 			<td></td>
 		</tr>
