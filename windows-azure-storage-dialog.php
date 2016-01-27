@@ -293,7 +293,7 @@ function windows_azure_storage_dialog_browse_tab() {
 					if ( empty( $searchResult ) ) {
 						echo '<p style="margin: 10px;">No file found matching specified criteria (' . implode( ', ', esc_html( $criteria ) ) . ')</p><br/>';
 					} else {
-						echo '<p style="margin: 10px;">Found ' . count( $searchResult ) . ' file(s) matching specified criteria (' . implode( ', ', $criteria ) . ')</p><br/>';
+						echo '<p style="margin: 10px;">Found ' . count( $searchResult ) . ' file(s) matching specified criteria (' . implode( ', ', esc_html( $criteria ) ) . ')</p><br/>';
 						foreach ( $searchResult as $url ) {
 							echo "<img style='margin: 10px;' src=\"$url\" width=\"32\" height=\"32\"";
 							echo "onmouseover=\"this.height = 50;this.width = 50; this.style.border = '3px solid yellow';\" onmouseout=\"this.height = 32;this.width = 32; this.style.border = '0px solid black'\" onclick=\"return insertImageTag('$url');\" /> ";
