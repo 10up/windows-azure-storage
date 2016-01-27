@@ -419,19 +419,18 @@ function windows_azure_storage_dialog_browse_tab() {
 									), MSFT_AZURE_PLUGIN_MEDIA_URL );
 									$delete_blob_url = wp_nonce_url( $delete_blob_url, 'delete_blob_' . $post_id, 'delete_blob' );
 									/* translators: 1: URL, 2: link description, 3: link text */
-									$delete_blob_element = sprintf(
+									printf(
 										'<a class="delete-permanently" href="%1$s" role="button" title="%2$s" aria-label="%2$s">%3$s</a>',
 										esc_url( $delete_blob_url ),
 										/* translators: %s is the blob/file name */
 										sprintf(
 											esc_attr__(
-												'Delete %s from this container.', 'windows-azure-storage'
+												'Delete "%s" from this container.', 'windows-azure-storage'
 											),
-											$blob->getName()
+											esc_html( $blob->getName() )
 										),
 										'x' // TODO maybe make this customizable via L10N?
 									);
-									echo $delete_blob_element;
 								}
 							}
 						}
