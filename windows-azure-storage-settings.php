@@ -185,6 +185,7 @@ function show_windows_azure_storage_settings( $mode ) {
 	$httpProxyPort      = WindowsAzureStorageUtil::getHttpProxyPort();
 	$httpProxyUserName  = WindowsAzureStorageUtil::getHttpProxyUserName();
 	$httpProxyPassword  = WindowsAzureStorageUtil::getHttpProxyPassword();
+	$defaultContainer   = WindowsAzureStorageUtil::getDefaultContainer();
 	$newContainerName   = null;
 	// Use the account settings in the $_POST if this page load is
 	// a result of container creation operation.
@@ -234,7 +235,6 @@ function show_windows_azure_storage_settings( $mode ) {
 			$httpProxyPassword
 		);
 		$ContainerResult         = $storageClient->listContainers();
-		$defaultContainer        = WindowsAzureStorageUtil::getDefaultContainer();
 		$privateContainerWarning = null;
 		if ( ! empty( $defaultContainer ) ) {
 			$getContainerAclResult = $storageClient->getContainerAcl( $defaultContainer );
