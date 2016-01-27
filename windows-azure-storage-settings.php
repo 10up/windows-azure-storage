@@ -290,7 +290,7 @@ function show_windows_azure_storage_settings( $mode ) {
 						foreach ( $ContainerResult->getContainers() as $container ) {
 							?>
 							<option value="<?php echo esc_attr( $container->getName() ); ?>"
-								<?php echo( $container->getName() === $defaultContainer ? 'selected="selected"' : '' ) ?> >
+								<?php selected( $container->getName(), $defaultContainer ); ?>>
 								<?php echo esc_html( $container->getName() ); ?>
 							</option>
 							<?php
