@@ -447,7 +447,7 @@ endpoint to avoid mixed-content warnings for your visitors.',
 		</tr>
 	</table>
 	<?php
-	if ( empty( $ContainerResult ) || ! $containerCreationStatus || count( $ContainerResult->getContainers() ) === 0 ) {
+	if ( empty( $ContainerResult ) || ! $containerCreationStatus || 0 === count( $ContainerResult->getContainers() ) ) {
 		// 1. If $containerResult object is null means the storage account is not yet set
 		// show the create container div
 		?>
