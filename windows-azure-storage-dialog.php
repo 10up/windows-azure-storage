@@ -369,7 +369,8 @@ function windows_azure_storage_dialog_browse_tab() {
 									<?php
 								}
 							} catch ( Exception $ex ) {
-								// Ignore exception as account keys are not yet set
+								// Fires if account keys are not yet set
+								error_log( $ex->getMessage(), E_USER_WARNING );
 							}
 							?>
 						</select>
@@ -601,7 +602,8 @@ function windows_azure_storage_dialog_search_tab() {
 
 									echo '<option value="ALL_CONTAINERS">All Containers</option>';
 								} catch ( Exception $ex ) {
-									// Ignore exception as account keys are not yet set
+									// Fires if account keys are not yet set
+									error_log( $ex->getMessage(), E_USER_WARNING );
 								}
 								?>
 							</select>
@@ -762,7 +764,8 @@ function windows_azure_storage_dialog_upload_tab() {
 									<option value="__newContainer__">&mdash;&thinsp;<?php esc_html_e( 'Create New Container', 'windows-azure-storage' ); ?>&thinsp;&mdash;</option>
 									<?php
 								} catch ( Exception $ex ) {
-									// Ignore exception as account keys are not yet set
+									// Fires if account keys are not yet set.
+									error_log( $ex->getMessage(), E_USER_WARNING );
 								}
 								?>
 							</select>
