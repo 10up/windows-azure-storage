@@ -295,8 +295,19 @@ function windows_azure_storage_dialog_browse_tab() {
 					} else {
 						echo '<p style="margin: 10px;">Found ' . count( $searchResult ) . ' file(s) matching specified criteria (' . implode( ', ', esc_html( $criteria ) ) . ')</p><br/>';
 						foreach ( $searchResult as $url ) {
-							echo "<img style='margin: 10px;' src=\"$url\" width=\"32\" height=\"32\"";
-							echo "onmouseover=\"this.height = 50;this.width = 50; this.style.border = '3px solid yellow';\" onmouseout=\"this.height = 32;this.width = 32; this.style.border = '0px solid black'\" onclick=\"return insertImageTag('$url');\" /> ";
+							//TODO: remove inline JS and CSS
+							$style          = 'margin: 10px;';
+							$onmouseover_js = 'this.height=50; this.width=50; this.style.border="3px solid yellow";';
+							$onmouseout_js  = 'this.height=32; this.width=32; this.style.border="0 solid black";';
+							$onclick_js     = 'return insertImageTag("%s");';
+							printf(
+								'<img src="%1$s" style="%2$s" width="32" height="32" onmouseover="%3$s" onmouseout="%4$s" onclick="%5$s" />',
+								esc_url( $url ),
+								esc_attr( $style ),
+								esc_js( $onmouseover_js ),
+								esc_js( $onmouseout_js ),
+								esc_js( sprintf( $onclick_js, esc_url( $url ) ) )
+							);
 						}
 					}
 					echo "<hr/>";
@@ -393,6 +404,12 @@ function windows_azure_storage_dialog_browse_tab() {
 								);
 								// TODO switch to wp_check_filetype_and_ext()
 								$fileExt = substr( strrchr( $blob->getName(), '.' ), 1 );
+
+								//TODO: remove inline JS and CSS
+								$style          = 'margin: 10px;';
+								$onmouseover_js = 'this.height=50; this.width=50; this.style.border="3px solid yellow";';
+								$onmouseout_js  = 'this.height=32; this.width=32; this.style.border="0 solid black";';
+								$onclick_js     = 'return insertImageTag( "%s", false );';
 								switch ( strtolower( $fileExt ) ) {
 									case "jpg":
 									case "jpeg":
@@ -400,13 +417,22 @@ function windows_azure_storage_dialog_browse_tab() {
 									case "bmp":
 									case "png":
 									case "tiff":
-										echo "<img style='margin: 10px;' src=\"$url\" width=\"32\" height=\"32\"";
-										echo "onmouseover=\"this.height = 50;this.width = 50; this.style.border = '3px solid yellow';\" onmouseout=\"this.height = 32;this.width = 32; this.style.border = '0px solid black'\" onclick=\"return insertImageTag('$url', false);\"/>";
+										printf(
+											'<img src="%1$s" style="%2$s" width="32" height="32" onmouseover="%3$s" onmouseout="%4$s" onclick="%5$s" />',
+											esc_url( $url ),
+											esc_attr( $style ),
+											esc_js( $onmouseover_js ),
+											esc_js( $onmouseout_js ),
+											esc_js( sprintf( $onclick_js, esc_url( $url ) ) )
+										);
 										break;
-
 									default:
-										echo "<a style='margin: 10px;' href=\"$url\"";
-										echo "onclick=\"return insertImageTag('$url', false\">" . $blob->getName() . "</a>";
+										printf( '<a href="%1$s" style="%2$s" onclick="%3$s">%4$s</a>',
+											esc_url( $url ),
+											esc_attr( $style ),
+											esc_js( sprintf( $onclick_js, esc_url( $url ) ) ),
+											esc_html( $blob->getName() )
+										);
 										break;
 								}
 								if ( WindowsAzureStorageUtil::check_action_permissions( 'delete_blob' ) ) {
