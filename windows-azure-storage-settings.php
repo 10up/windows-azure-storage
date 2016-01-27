@@ -284,7 +284,7 @@ function show_windows_azure_storage_settings( $mode ) {
 				<label for="storage_container_name" title="Default container to be used for storing media files">Default Storage Container</label>
 			</th>
 			<td WIDTH="80px">
-				<select name="default_azure_storage_account_container_name" title="Default container to be used for storing media files" onChange="onContainerSelectionChanged(false)">
+				<select name="default_azure_storage_account_container_name" title="Default container to be used for storing media files" onChange="<?php echo esc_js( 'onContainerSelectionChanged( false );' ); ?>">
 					<?php
 					if ( ! empty( $ContainerResult ) && ( count( $ContainerResult->getContainers() ) > 0 ) ) {
 						foreach ( $ContainerResult->getContainers() as $container ) {
@@ -316,7 +316,7 @@ function show_windows_azure_storage_settings( $mode ) {
 								</td>
 								<td>
 									<input type="text" name="newcontainer" title="Name of the new container to create" value="<?php echo $newContainerName; ?>" />
-									<input type="button" class="button-primary" value="<?php esc_attr_e( 'Create', 'windows-azure-storage' ); ?>" <?php echo "onclick=\"createContainer('" . esc_url( $_SERVER['REQUEST_URI'] ) . "')\"" ?>/>
+									<input type="button" class="button-primary" value="<?php esc_attr_e( 'Create', 'windows-azure-storage' ); ?>" onclick="<?php echo esc_js( sprintf( 'createContainer("%s");', esc_url( $_SERVER['REQUEST_URI'] ) ) ); ?>" />
 								</td>
 							</tr>
 						</table>
