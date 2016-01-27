@@ -785,7 +785,10 @@ function windows_azure_storage_dialog_upload_tab() {
 		//TODO: Use WP classes and markup to create notices
 		if ( ! empty( $uploadMessage ) ) {
 			$color = $uploadSuccess ? 'green' : 'red';
-			echo '<p style="margin: 10px; color: ' . esc_attr( $color ) . ';">' . esc_html( $uploadMessage ) . "</p><br/>";
+			printf( '<p style="margin: 10px; color: %1$s;">%2$s</p>',
+				esc_attr( $color ),
+				wp_kses_post( $uploadMessage )
+			);
 		}
 	}
 }
