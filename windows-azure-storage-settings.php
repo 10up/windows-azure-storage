@@ -241,21 +241,26 @@ function show_windows_azure_storage_settings( $mode ) {
 				$getContainerAclResult = $storageClient->getContainerAcl( $defaultContainer );
 				$containerAcl          = $getContainerAclResult->getContainerAcl();
 				if ( $containerAcl->getPublicAccess() === PublicAccessType::NONE ) {
+					/* translators: %s is the container name and is used twice */
 					$privateContainerWarning = sprintf(
 						__(
-							'<p style="margin: 10px; color: red;">Warning: The container "%1$s" is set to "private" and cannot be used. Please
-choose a public container as the default, or set the "%1$s" container to "public" in your Azure Storage settings.</p>',
+							'Warning: The container "%1$s" is set to "private" and cannot be used.' .
+							'Please choose a public container as the default, or set the "%1$s" container to ' .
+							'"public" in your Azure Storage settings.',
 							'windows-azure-storage'
 						),
 						$defaultContainer
 					);
 				}
 			}
+			if ( ! is_null( $privateContainerWarning ) ) {
+				printf( '<p style="margin: 10px; color: red;">%s</p>', esc_html( $privateContainerWarning ) );
+			}
 		}
 	} catch ( Exception $ex ) {
 		// Ignore exception as account keys are not yet set
+
 	}
-	echo $privateContainerWarning;
 	?>
 	<table class="form-table" border="0">
 		<tr valign="top">
