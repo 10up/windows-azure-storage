@@ -225,9 +225,7 @@ function show_windows_azure_storage_settings( $mode ) {
 
 	$ContainerResult = null;
 	try {
-		if ( ! empty( $storageAccountName )
-		     && ! empty( $storageAccountKey )
-		) {
+		if ( ! empty( $storageAccountName ) && ! empty( $storageAccountKey ) ) {
 			$storageClient           = WindowsAzureStorageUtil::getStorageClient(
 				$storageAccountName,
 				$storageAccountKey,
