@@ -129,9 +129,9 @@ function createContainerIfRequired( &$success ) {
 	//TODO: remove HTML from returned message string
 	//TODO: return message type ('error', 'warning', 'success') with message
 	$success = true;
-	if ( array_key_exists( "newcontainer", $_POST ) &&
+	if ( isset( $_POST['newcontainer'] ) &&
 	     WindowsAzureStorageUtil::check_action_permissions( 'create_container' ) &&
-		check_admin_referer( 'create_container', 'create_new_container_settings' )
+	     check_admin_referer( 'create_container', 'create_new_container_settings' )
 	) {
 		if ( ! empty( $_POST["newcontainer"] ) ) {
 			if ( empty( $_POST["azure_storage_account_name"] ) || empty( $_POST["azure_storage_account_primary_access_key"] ) ) {
