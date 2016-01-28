@@ -550,11 +550,17 @@ function windows_azure_storage_dialog_search_tab() {
 	} else {
 		$storageClient = WindowsAzureStorageUtil::getStorageClient();
 		// Set selected container. If none, then use default container
+		//TODO: find out when this would ever get passed this way.
+		//QUESTION: 'selected_container' or 'searchContainer'? Copy/pasta?
 		$selected_container_name = $default_azure_storage_account_container_name;
-		if ( ! empty( $_POST['selected_container'] ) ) {
+		if ( ! empty( $_POST['selected_container'] ) &&
+		     check_admin_referer( 'search_' . $post_id, 'search_nonce' )
+		) {
 			$selected_container_name = sanitize_text_field( $_POST['selected_container'] );
 		}
-		if ( ! empty( $_GET['selected_container'] ) ) {
+		if ( ! empty( $_GET['selected_container'] ) &&
+		     check_admin_referer( 'search_' . $post_id, 'search_nonce' )
+		) {
 			$selected_container_name = sanitize_text_field( $_GET['selected_container'] );
 		}
 		$form_action_url = add_query_arg( array(
