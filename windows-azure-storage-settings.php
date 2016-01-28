@@ -443,8 +443,7 @@ endpoint to avoid mixed-content warnings for your visitors.',
 			</th>
 			<td colspan="2">
 				<input type="checkbox" name="azure_storage_use_for_default_upload" title="Use Windows Azure Storage for default upload" value="1" id="azure_storage_use_for_default_upload"
-					<?php
-					echo( get_option( 'azure_storage_use_for_default_upload' ) ? 'checked="checked" ' : '' ); ?> />
+					<?php checked( get_option( 'azure_storage_use_for_default_upload' ) ); ?> />
 				<label for="wp-uploads"> Use Windows Azure Storage when uploading via WordPress' upload tab.</label>
 				<br />
 				<small>Note: Uncheck this to revert back to using your own web host for storage at anytime.</small>
