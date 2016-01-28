@@ -140,7 +140,7 @@ function windows_azure_storage_dialog_browse_tab() {
 						/* translators: %s is the file name */
 						printf(
 							esc_html__( 'Sorry, "%s" could not be deleted.', 'windows-azure-storage' ),
-							sanitize_text_field( $_GET['filename'] )
+							esc_html( sanitize_text_field( $_GET['filename'] ) )
 						);
 						?>
 					</p>
