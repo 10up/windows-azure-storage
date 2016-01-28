@@ -337,8 +337,7 @@ function show_windows_azure_storage_settings( $mode ) {
 				<label for="cname" title="Use CNAME insted of Windows Azure Blob URL">CNAME</label>
 			</th>
 			<td colspan="2">
-				<input type="text" name="cname" title="Use CNAME insted of Windows Azure Blob URL" value="<?php
-				echo esc_attr( WindowsAzureStorageUtil::getCNAME() ); ?>" />
+				<input type="url" name="cname" title="Use CNAME insted of Windows Azure Blob URL" value="<?php echo esc_attr( WindowsAzureStorageUtil::getCNAME() ); ?>" />
 				<p class="field-description">
 					<?php
 					$notice = __(
