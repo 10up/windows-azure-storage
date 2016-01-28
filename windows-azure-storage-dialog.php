@@ -300,7 +300,7 @@ function windows_azure_storage_dialog_browse_tab() {
 					if ( empty( $searchResult ) ) {
 						echo '<p style="margin: 10px;">No file found matching specified criteria (' . implode( ', ', esc_html( $criteria ) ) . ')</p><br/>';
 					} else {
-						echo '<p style="margin: 10px;">Found ' . esc_html( count( $searchResult ) ). ' file(s) matching specified criteria (' . implode( ', ', esc_html( $criteria ) ) . ')</p><br/>';
+						echo '<p style="margin: 10px;">Found ' . esc_html( count( $searchResult ) ) . ' file(s) matching specified criteria (' . implode( ', ', esc_html( $criteria ) ) . ')</p><br/>';
 						foreach ( $searchResult as $url ) {
 							//TODO: remove inline JS and CSS
 							$style          = 'margin: 10px;';
@@ -344,7 +344,7 @@ function windows_azure_storage_dialog_browse_tab() {
 				'post_id' => $post_id,
 				'tab'     => 'browse',
 			),
-			MSFT_AZURE_PLUGIN_MEDIA_URL
+			MSFT_AZURE_PLUGIN_LEGACY_MEDIA_URL
 		);
 		?>
 		<form name="SelectContainerForm" style="margin: 10px;" method="post" action="<?php echo esc_url( $form_action_url ); ?>">
@@ -456,7 +456,7 @@ function windows_azure_storage_dialog_browse_tab() {
 										'tab'                => 'browse', // default tab
 										'filename'           => $blob->getName(),
 										'selected_container' => $selected_container_name,
-									), MSFT_AZURE_PLUGIN_MEDIA_URL );
+									), MSFT_AZURE_PLUGIN_LEGACY_MEDIA_URL );
 									$delete_blob_url = wp_nonce_url( $delete_blob_url, 'delete_blob_' . $post_id, 'delete_blob' );
 									/* translators: 1: URL, 2: link description, 3: link text */
 									printf(
@@ -491,7 +491,7 @@ function windows_azure_storage_dialog_browse_tab() {
 			$form_action_url = add_query_arg( array(
 				'post_id' => $post_id,
 				'tab'     => 'browse',
-			), MSFT_AZURE_PLUGIN_MEDIA_URL );
+			), MSFT_AZURE_PLUGIN_LEGACY_MEDIA_URL );
 			?>
 			<form name="DeleteAllBlobsForm" method="POST" action="<?php echo esc_url( $form_action_url ); ?>">
 				<?php wp_nonce_field( 'delete_all_blobs_' . $post_id, 'delete_all_blobs_nonce' ); ?>
@@ -566,7 +566,7 @@ function windows_azure_storage_dialog_search_tab() {
 		$form_action_url = add_query_arg( array(
 			'post_id' => $post_id,
 			'tab'     => 'browse',
-		), MSFT_AZURE_PLUGIN_MEDIA_URL );
+		), MSFT_AZURE_PLUGIN_LEGACY_MEDIA_URL );
 		?>
 		<h3 style="margin: 10px;">Search Files</h3>
 		<div id="search-form">
@@ -754,7 +754,7 @@ function windows_azure_storage_dialog_upload_tab() {
 				'post_id' => $post_id,
 				'tab'     => 'upload',
 			),
-			MSFT_AZURE_PLUGIN_MEDIA_URL
+			MSFT_AZURE_PLUGIN_LEGACY_MEDIA_URL
 		);
 		?>
 		<h3 style="margin: 10px;">Upload New File</h3>
