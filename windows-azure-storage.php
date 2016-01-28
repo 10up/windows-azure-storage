@@ -58,7 +58,7 @@
 define( 'MSFT_AZURE_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'MSFT_AZURE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'MSFT_AZURE_PLUGIN_LEGACY_MEDIA_URL', get_admin_url( get_current_blog_id(), 'media-upload.php' ) );
-define( 'MSFT_AZURE_PLUGIN_VERSION', '2.2.0' );
+define( 'MSFT_AZURE_PLUGIN_VERSION', '3.0.0-beta' );
 
 /* Azure SDK relies on some PEAR dependencies, but doesn't load them itself.
  * We have to add the PEAR files to the path for the Azure SDK to see them.
@@ -637,7 +637,7 @@ function upload_tab() {
  * Hook for adding new toolbar button in edit post page.
  *
  * @since    1.0.0
- * @since    2.3.0 Rewrote internals to only create a single element.
+ * @since    3.0.0 Rewrote internals to only create a single element.
  * @internal Callback for 'media_buttons_context' filter.
  *
  * @param string $context Media buttons context.
@@ -696,7 +696,7 @@ function windows_azure_storage_plugin_menu() {
 /**
  * Filter the image source URLs to point 'srcset' to Azure Storage blobs.
  *
- * @since    2.3.0
+ * @since    3.0.0
  * @internal Callback for 'wp_calculate_image_srcset' filter.
  * @see      wp_calculate_image_srcset()
  * @link     http://projectnami.org/fix-for-azure-storage-plugin-and-wp-4-4/

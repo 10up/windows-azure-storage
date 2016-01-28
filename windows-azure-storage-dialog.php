@@ -47,7 +47,7 @@
  * Enqueue JavaScript and CSS needed by the settings page dialog.
  *
  * @internal Callback for 'admin_enqueue_scripts'.
- * @since    2.3.0 Moved to a callback for 'admin_enqueue_scripts' instead of 'admin_print_scripts'.
+ * @since    3.0.0 Moved to a callback for 'admin_enqueue_scripts' instead of 'admin_print_scripts'.
  *
  * @param string $hook_suffix The hook of the current admin page.
  */
@@ -72,7 +72,7 @@ add_action( 'admin_enqueue_scripts', 'windows_azure_storage_dialog_scripts' );
  * Add Azure Storage tabs to the legacy media loader.
  *
  * @since    1.0.0
- * @since    2.3.0 Updated with callback parameters.
+ * @since    3.0.0 Updated with callback parameters.
  * @internal Callback for 'media_upload_tabs' filter.
  *
  * @param array $tabs The default legacy media uploader tabs.

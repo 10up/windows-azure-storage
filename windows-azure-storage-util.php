@@ -261,7 +261,7 @@ class WindowsAzureStorageUtil {
 	 * Check if a blob exists
 	 *
 	 * @since Unknown
-	 * @since 2.3.0 Wrapper for blob_exists_in_container().
+	 * @since 3.0.0 Wrapper for blob_exists_in_container().
 	 * @see   WindowsAzureStorageUtil::blob_exists_in_container()
 	 *
 	 * @param string $containerName Name of the parent container
@@ -269,7 +269,7 @@ class WindowsAzureStorageUtil {
 	 * @return boolean
 	 */
 	public static function blobExists( $containerName, $blobName ) {
-		_deprecated_function( __FUNCTION__, '2.3.0', 'WindowsAzureStorageUtil::blob_exists_in_container()' );
+		_deprecated_function( __FUNCTION__, '3.0.0', 'WindowsAzureStorageUtil::blob_exists_in_container()' );
 
 		return self::blob_exists_in_container( $blobName, $containerName );
 	}
@@ -307,7 +307,7 @@ class WindowsAzureStorageUtil {
 	 * through a set of conditional checks.
 	 *
 	 * @since Unknown
-	 * @since 2.3.0 Switched to 'https' for all Azure URLs.
+	 * @since 3.0.0 Switched to 'https' for all Azure URLs.
 	 *
 	 * @param bool $append_container Optional. Whether to append the container name to the URL. Default true.
 	 * @return string|WP_Error The base blob URL for an account, or an error if one can't be found/created.
@@ -319,7 +319,7 @@ class WindowsAzureStorageUtil {
 		/**
 		 * Filter the blob URL protocol to force a specific one.
 		 *
-		 * @since 2.3.0
+		 * @since 3.0.0
 		 *
 		 * @param string $protocol Optional. Default 'https://', also allow 'http://' and '//'.
 		 */
@@ -541,7 +541,7 @@ class WindowsAzureStorageUtil {
 	/**
 	 * Verify if a blob exists in the Storage container.
 	 *
-	 * @since 2.3.0
+	 * @since 3.0.0
 	 *
 	 * @param string $blob_name      The blob to check.
 	 * @param string $container_name Optional. The container to check. Defaults to default container in settings.
@@ -587,7 +587,7 @@ class WindowsAzureStorageUtil {
 	/**
 	 * Check if a container exists in the current account.
 	 *
-	 * @since 2.3.0
+	 * @since 3.0.0
 	 * @link  https://goo.gl/6XsKAJ Official SDK example for checking containers.
 	 *
 	 * @param string $container_name The container name to check.
@@ -701,7 +701,7 @@ class WindowsAzureStorageUtil {
 	/**
 	 * Check if the user can take the specified action for Azure Storage.
 	 *
-	 * @since 2.3.0
+	 * @since 3.0.0
 	 * @see   user_can()
 	 *
 	 * @param string     $action Optional. The plugin's action to check. Default 'browse'.
