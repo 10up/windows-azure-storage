@@ -333,9 +333,8 @@ class WindowsAzureStorageUtil {
 		// Get CNAME if defined
 		$cname = self::getCNAME();
 		if ( ! ( empty( $cname ) ) ) {
-			$url = sprintf( '%1$s/%2$s/%3$s',
+			$url = sprintf( '%1$s/%2$s',
 				$cname,
-				$default_azure_storage_account_container_name,
 				$append_container ? $default_azure_storage_account_container_name : ''
 			);
 		} else {
