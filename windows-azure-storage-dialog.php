@@ -392,8 +392,14 @@ function windows_azure_storage_dialog_browse_tab() {
 						// Get list of blobs in specified container
 						$listBlobResult = $storageClient->listBlobs( $selected_container_name );
 						$blobs          = $listBlobResult->getBlobs();
-						if ( empty( $blobs ) ) {
-							echo "<p style='margin: 10px;'>No items in container '$selected_container_name'.</p>";
+						if ( empty( $blobs ) ) { ?>
+							<p style="margin: 10px;"><?php
+								printf(
+									esc_html__( 'No items in container "%s".', 'windows-azure-storage' ),
+									esc_html( $selected_container_name )
+								); ?>
+							</p>
+							<?php
 						} else {
 							echo '<p style="margin: 10px;">Note: Click on the image to insert image URL into the blog!</p><br/>';
 							/** @var WindowsAzure\Blob\Models\Blob $blob */
