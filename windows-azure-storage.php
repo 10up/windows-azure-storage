@@ -145,6 +145,10 @@ add_filter(
 // Hook for handling deleting media files from standard WordpRess dialog
 add_action( 'delete_attachment', 'windows_azure_storage_delete_attachment' );
 
+// Filter the 'srcset' attribute in 'the_content' introduced in WP 4.4.
+if ( function_exists( 'wp_calculate_image_srcset' ) ) {
+	add_filter( 'wp_calculate_image_srcset', 'windows_azure_storage_wp_calculate_image_srcset', 9, 5 );
+}
 
 /**
  * Check prerequisite for the plugin and report error
@@ -687,4 +691,63 @@ function windows_azure_storage_plugin_menu() {
 
 	// Call register settings function
 	add_action( 'admin_init', 'windows_azure_storage_plugin_register_settings' );
+}
+
+/**
+ * Filter the image source URLs to point 'srcset' to Azure Storage blobs.
+ *
+ * @since    2.3.0
+ * @internal Callback for 'wp_calculate_image_srcset' filter.
+ * @see      wp_calculate_image_srcset()
+ * @link     http://projectnami.org/fix-for-azure-storage-plugin-and-wp-4-4/
+ *
+ * @param array  $sources       {
+ *                              One or more arrays of source data to include in the 'srcset'.
+ *
+ * @type array   $width         {
+ * @type string  $url           The URL of an image source.
+ * @type string  $descriptor    The descriptor type used in the image candidate string,
+ *                                    either 'w' or 'x'.
+ * @type int     $value         The source width if paired with a 'w' descriptor, or a
+ *                                    pixel density value if paired with an 'x' descriptor.
+ *      }
+ * }
+ * @param array  $size_array    Array of width and height values in pixels (in that order).
+ * @param string $image_src     The 'src' of the image.
+ * @param array  $image_meta    The image meta data as returned by 'wp_get_attachment_metadata()'.
+ * @param int    $attachment_id Image attachment ID or 0.
+ * @return array The filtered $sources array.
+ */
+function windows_azure_storage_wp_calculate_image_srcset( $sources, $size_array, $image_src, $image_meta, $attachment_id ) {
+	$media_info = get_post_meta( $attachment_id, 'windows_azure_storage_info', true );
+
+	// If a CNAME is configured, make sure only 'http' is used for the protocol.
+	$azure_cname       = WindowsAzureStorageUtil::getCNAME();
+	$esc_url_protocols = ! empty ( $azure_cname ) ? array( 'http' ) : null;
+
+	if ( ! empty( $media_info ) ) {
+		$base_url = trailingslashit( WindowsAzureStorageUtil::get_storage_url_base( false ) .
+		                             $media_info['container'] );
+
+		foreach ( $sources as &$source ) {
+			$img_filename = substr( $source['url'], strrpos( $source['url'], '/' ) + 1 );
+
+			if ( substr( $media_info['blob'], strrpos( $media_info['blob'], '/' ) + 1 ) === $img_filename ) {
+				$source['url'] = esc_url( $base_url . $media_info['blob'], $esc_url_protocols );
+			} else {
+				foreach ( $media_info['thumbnails'] as $thumbnail ) {
+					if ( substr( $thumbnail, strrpos( $thumbnail, '/' ) + 1 ) === $img_filename ) {
+						$source['url'] = esc_url( $base_url . $thumbnail, $esc_url_protocols );
+						break;
+					}
+
+				}
+
+			}
+
+		}
+
+	}
+
+	return $sources;
 }
