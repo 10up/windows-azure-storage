@@ -694,7 +694,7 @@ function windows_azure_storage_dialog_upload_tab() {
 		}
 
 		// Handle file upload
-		if ( ! empty( $_POST['action'] ) && 'upload' === $_POST['action'] ) {
+		if ( ! empty( $_POST['action'] ) && 'upload' === $_POST['action'] ) { // CSRF okay
 			if ( 0 === $_FILES["uploadFileName"]["error"] ) {
 				if ( ! file_exists( $_FILES['uploadFileName']['tmp_name'] ) ) {
 					echo "<p>Uploaded file " . esc_html( $_FILES['uploadFileName']['tmp_name'] ) . " does not exist</p><br/>";
