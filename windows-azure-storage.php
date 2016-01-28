@@ -1,29 +1,30 @@
 <?php
-/**
+/*
  * Plugin Name: Windows Azure Storage for WordPress
- *
- * Plugin URI: http://www.wordpress.org/extend/plugins/windows-azure-storage/
- *
- * Description: This WordPress plugin allows you to use Windows Azure Storage Service to host your media for your
- * WordPress powered blog.
- *
- * Version: 2.2
- *
- * Author: Microsoft Open Technologies, Inc.
- *
- * Author URI: http://www.microsoft.com/
- *
- * License: New BSD License (BSD)
- *
- * Copyright (c) Microsoft Open Technologies, Inc.
+ * Plugin URI: https://wordpress.org/plugins/windows-azure-storage/
+ * Description: Use the Windows Azure Storage service to host your website's media files.
+ * Version: 3.0.0-beta
+ * Author: 10up, Microsoft Open Technologies
+ * Author URI: http://10up.com/
+ * License: BSD 2-Clause
+ * License URI: http://www.opensource.org/licenses/bsd-license.php
+ */
+
+/*
+ * Copyright (c) 2009-2015, Microsoft Open Technologies, Inc.
+ * Copyright (c) 2016, 10up
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
- * Redistributions of source code must retain the above copyright notice, this list
- * of conditions and the following disclaimer.
- * Redistributions in binary form must reproduce the above copyright notice, this
- * list of conditions  and the following disclaimer in the documentation and/or
- * other materials provided with the distribution.
+ *
+ * * Redistributions of source code must retain the above copyright notice, this list
+ *   of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright notice, this
+ *   list of conditions  and the following disclaimer in the documentation and/or
+ *   other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A  PARTICULAR PURPOSE ARE
@@ -45,14 +46,13 @@
  * @link      http://www.microsoft.com
  */
 
-/**
- * 'Windows Azure SDK for PHP v<TODO>' and its dependencies are included
- * in the library directory, this will override 'Windows Azure SDK
- * for PHP' is already installed in the machine if USESDKINSTALLEDGLOBALLY
- * is not defined.
- * 'Windows Azure SDK for PHP' provide access to underlying Windows Azure
- * Blob Storage
- * https://github.com/windowsazure/azure-sdk-for-php/
+/*
+ * 'Windows Azure SDK for PHP v0.4.0' and its dependencies are included
+ * in the library directory. If another version of the SDK is installed
+ * and USESDKINSTALLEDGLOBALLY is defined, that version will be used instead.
+ * 'Windows Azure SDK for PHP' provides access to the Windows Azure
+ * Blob Storage service that this plugin enables for WordPress.
+ * See https://github.com/windowsazure/azure-sdk-for-php/ for updates to the SDK.
  */
 
 define( 'MSFT_AZURE_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
