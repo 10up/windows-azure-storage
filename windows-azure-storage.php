@@ -104,7 +104,7 @@ add_action( "media_upload_search", "search_tab" );
 add_action( "media_upload_upload", "upload_tab" );
 
 // Hooks for handling default file uploads
-if ( 1 === get_option( 'azure_storage_use_for_default_upload' ) ) {
+if ( boolval( get_option( 'azure_storage_use_for_default_upload' ) ) ) {
 	add_filter(
 		'wp_update_attachment_metadata',
 		'windows_azure_storage_wp_update_attachment_metadata',
