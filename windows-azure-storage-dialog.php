@@ -711,8 +711,9 @@ function windows_azure_storage_dialog_upload_tab() {
 					}
 
 					try {
-						if ( ! check_admin_referer( 'upload_blob_' . get_the_ID(), 'upload_blob_nonce' ) ||
-						     WindowsAzureStorageUtil::check_action_permissions( 'upload' )
+						if (
+							false === check_admin_referer( 'upload_blob_' . get_the_ID(), 'upload_blob_nonce' ) ||
+							false === WindowsAzureStorageUtil::check_action_permissions( 'upload' )
 						) {
 							throw new Exception( __( 'Nonce check failed. Please try again, or contact your site administrator for assistance.', 'windows-azure-storage' ) );
 						}
