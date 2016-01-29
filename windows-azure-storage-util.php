@@ -321,13 +321,19 @@ class WindowsAzureStorageUtil {
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param string $protocol Optional. Default 'https://', also allow 'http://' and '//'.
+		 * @param string $protocol Default 'https'; also allow 'http' and 'none' (for protocol-relative URLs).
 		 */
-		$protocol = apply_filters( 'windows_azure_storage_blob_protocol', 'https://' );
+		$protocol = apply_filters( 'windows_azure_storage_blob_protocol', 'https' );
 
 		// Whitelist the protocols and fall back to secure if necessary.
-		if ( ! in_array( $protocol, array( 'https://', 'http://', '//' ) ) ) {
-			$protocol = 'https://';
+		if ( ! in_array( $protocol, array( 'https', 'http', 'none' ) ) ) {
+			$protocol = 'https';
+		}
+
+		if ( 'none' === $protocol ) {
+			$protocol = '//';
+		} else {
+			$protocol .= '://';
 		}
 
 		// Get CNAME if defined
