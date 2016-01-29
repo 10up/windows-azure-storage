@@ -723,7 +723,7 @@ function windows_azure_storage_wp_calculate_image_srcset( $sources, $size_array,
 
 	// If a CNAME is configured, make sure only 'http' is used for the protocol.
 	$azure_cname       = WindowsAzureStorageUtil::getCNAME();
-	$esc_url_protocols = ! empty ( $azure_cname ) ? array( 'http' ) : null;
+	$esc_url_protocols = ! empty ( $azure_cname ) ? array( 'https', 'http', '//' ) : null;
 
 	if ( ! empty( $media_info ) ) {
 		$base_url = trailingslashit( WindowsAzureStorageUtil::get_storage_url_base( false ) .
