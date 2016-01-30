@@ -131,12 +131,15 @@ class WindowsAzureStorageUtil {
 	}
 
 	/**
-	 * Get CNAME to be used for blob URL instead of blob.windows.net
+	 * Get CNAME to be used for the base URL instead of the domain from Azure.
 	 *
-	 * @return string CNAME
+	 * @since 1.0.0
+	 * @since 3.0.0 Return a (maybe) filtered URL.
+	 *
+	 * @return string CNAME to use for media URLs.
 	 */
 	public static function getCNAME() {
-		return get_option( 'cname' );
+		return untrailingslashit( strtolower( self::_maybe_rewrite_cname( get_option( 'cname' ) ) ) );
 	}
 
 	/**
