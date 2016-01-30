@@ -408,11 +408,10 @@ function show_windows_azure_storage_settings( $mode ) {
 
 		<tr valign="top">
 			<th scope="row">
-				<label for="http_proxy_port" title="Use HTTP proxy port if web proxy server is configured">HTTP Proxy Port Name</label>
+				<label for="http_proxy_port" title="Use HTTP proxy port if web proxy server is configured">HTTP Proxy Port</label>
 			</th>
 			<td>
-				<input type="text" name="http_proxy_port" title="Use HTTP proxy port if web proxy server is configured" value="<?php
-				echo esc_attr( $httpProxyPort ); ?>" />
+				<input type="number" name="http_proxy_port" title="Use HTTP proxy port if web proxy server is configured" value="<?php echo esc_attr( $httpProxyPort ); ?>" />
 			</td>
 			<td></td>
 		</tr>
