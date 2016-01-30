@@ -334,10 +334,10 @@ function show_windows_azure_storage_settings( $mode ) {
 		</tr>
 		<tr valign="top">
 			<th scope="row">
-				<label for="cname" title="Use CNAME insted of Windows Azure Blob URL">CNAME</label>
+				<label for="cname" title="Use CNAME instead of Windows Azure Blob URL">CNAME</label>
 			</th>
 			<td colspan="2">
-				<input type="url" name="cname" title="Use CNAME insted of Windows Azure Blob URL" value="<?php echo esc_attr( WindowsAzureStorageUtil::getCNAME() ); ?>" />
+				<input type="url" name="cname" title="Use CNAME instead of Windows Azure Blob URL" value="<?php echo esc_attr( WindowsAzureStorageUtil::getCNAME() ); ?>" />
 				<p class="field-description">
 					<?php
 					$notice = __(
@@ -350,15 +350,18 @@ function show_windows_azure_storage_settings( $mode ) {
 					<?php if ( is_ssl() ) : ?>
 						<h4><?php echo esc_html_x( 'Notice', 'verb', 'windows-azure-storage' ); ?></h4>
 						<p><?php
+							//TODO: add a different notice if 'https' is set, regardless of is_ssl.
 							$notice = sprintf(
 							/* translators: 1: link URL should not be translated, 2: link title is safe for translation  */
 								__(
-									'Windows Azure Storage <a href="%1$s" title="%2$s">does not currently support SSL certificates for custom domain
-names</a>. As WordPress is currently configured to serve content over HTTPS, it\'s recommended that you use the default Azure storage
-endpoint to avoid mixed-content warnings for your visitors.',
+									'Windows Azure Storage <a href="%1$s" title="%2$s">does not currently support ' .
+									'SSL certificates for custom domain names</a>. ' .
+									'Since this WordPress site is configured to serve content over HTTPS, ' .
+									'it\'s recommended that you use the default Azure storage endpoint to avoid ' .
+									'mixed-content warnings for your visitors.',
 									'windows-azure-storage'
 								),
-								'https://feedback.azure.com/forums/217298-storage/suggestions/3007732-make-it-possible-to-use-ssl-on-blob-storage-using',
+								esc_url( 'https://feedback.azure.com/forums/217298-storage/suggestions/3007732-make-it-possible-to-use-ssl-on-blob-storage-using' ),
 								esc_html__( 'How can we improve Azure Storage? on Azure Forums', 'windows-azure-storage' )
 							);
 							echo wp_kses( $notice, array(
