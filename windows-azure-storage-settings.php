@@ -106,16 +106,16 @@ function windows_azure_storage_plugin_options_page() {
  * @return void
  */
 function windows_azure_storage_plugin_register_settings() {
-	register_setting( 'windows-azure-storage-settings-group', 'azure_storage_account_name' );
-	register_setting( 'windows-azure-storage-settings-group', 'azure_storage_account_primary_access_key' );
-	register_setting( 'windows-azure-storage-settings-group', 'default_azure_storage_account_container_name' );
-	register_setting( 'windows-azure-storage-settings-group', 'cname' );
-	register_setting( 'windows-azure-storage-settings-group', 'azure_storage_use_for_default_upload' );
-	register_setting( 'windows-azure-storage-settings-group', 'http_proxy_host' );
-	register_setting( 'windows-azure-storage-settings-group', 'http_proxy_port' );
-	register_setting( 'windows-azure-storage-settings-group', 'http_proxy_username' );
-	register_setting( 'windows-azure-storage-settings-group', 'http_proxy_password' );
-	register_setting( 'windows-azure-storage-settings-group', 'azure_storage_allow_per_user_settings' );
+	register_setting( 'windows-azure-storage-settings-group', 'azure_storage_account_name', 'sanitize_text_field' );
+	register_setting( 'windows-azure-storage-settings-group', 'azure_storage_account_primary_access_key', 'sanitize_text_field' );
+	register_setting( 'windows-azure-storage-settings-group', 'default_azure_storage_account_container_name', 'sanitize_text_field' );
+	register_setting( 'windows-azure-storage-settings-group', 'cname', 'esc_url_raw' );
+	register_setting( 'windows-azure-storage-settings-group', 'azure_storage_use_for_default_upload', 'wp_validate_boolean' );
+	register_setting( 'windows-azure-storage-settings-group', 'http_proxy_host', 'esc_url_raw' );
+	register_setting( 'windows-azure-storage-settings-group', 'http_proxy_port', 'absint' );
+	register_setting( 'windows-azure-storage-settings-group', 'http_proxy_username', 'sanitize_text_field' );
+	register_setting( 'windows-azure-storage-settings-group', 'http_proxy_password', 'sanitize_text_field' );
+	register_setting( 'windows-azure-storage-settings-group', 'azure_storage_allow_per_user_settings', 'wp_validate_boolean' );
 }
 
 /**
