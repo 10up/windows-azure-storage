@@ -300,6 +300,42 @@ class WindowsAzureStorageUtil {
 	}
 
 	/**
+	 * Modifies the CNAME protocol if needed.
+	 *
+	 * If the CNAME is configured different than what Azure supports or the current site's protocol,
+	 * this will modify it to match, based on the filter's value.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param string $cname The CNAME value set in the plugin options.
+	 * @return string The (maybe) new CNAME with the filtered protocol.
+	 */
+	private static function _maybe_rewrite_cname( $cname ) {
+		/**
+		 * Filter to allow 'https' as the CNAME protocol.
+		 *
+		 * Microsoft Azure does not support secure protocols for CNAMEs, which causes two problems:
+		 * 1. if a CNAME with http is used, it will result in mixed-content warnings;
+		 * 2. if a CNAME with https is used, it will result in invalid certificate warnings.
+		 * Either of these is likely to get a site blocked from viewing, depending on the browser settings.
+		 * We warn against using 'http' with a CNAME when 'is_ssl' is true because of mixed content, and
+		 * 'https' with a CNAME in general because of Azure's lack of support, but if you want to
+		 * force 'https' with your CNAME, this is the place to do it.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param bool $allow_cname_https Default false.
+		 */
+		$allow_cname_https = apply_filters( 'windows_azure_storage_allow_cname_https', false );
+
+		if ( 0 === strpos( $cname, 'https://' ) && false === $allow_cname_https ) {
+			$cname = str_replace( 'https://', 'http://', $cname );
+		}
+
+		return $cname;
+	}
+
+	/**
 	 * Get the base URL for the blob.
 	 *
 	 * The base URL can be a CNAME domain or Azure one, with or without the container
