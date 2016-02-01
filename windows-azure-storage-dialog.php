@@ -614,7 +614,7 @@ function windows_azure_storage_dialog_search_tab() {
 									foreach ( $listContainerResult->getContainers() as $container ) {
 										$container_name = $container->getName();
 										?>
-										<option value="<?php echo esc_attr( $container_name) ); ?>"
+										<option value="<?php echo esc_attr( $container_name ); ?>"
 											<?php selected( $container_name, $selected_container_name ); ?>>
 											<?php echo esc_html( $container_name ); ?>
 										</option>
