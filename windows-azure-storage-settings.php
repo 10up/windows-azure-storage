@@ -179,6 +179,7 @@ function show_windows_azure_storage_settings( $mode ) {
 	$containerCreationStatus = true;
 	$message                 = createContainerIfRequired( $containerCreationStatus );
 	// Storage Account Settings from db if already set
+	//TODO: check POST values first and use these for fallbacks
 	$storageAccountName = WindowsAzureStorageUtil::getAccountName();
 	$storageAccountKey  = WindowsAzureStorageUtil::getAccountKey();
 	$httpProxyHost      = WindowsAzureStorageUtil::getHttpProxyHost();
@@ -193,6 +194,7 @@ function show_windows_azure_storage_settings( $mode ) {
 		wp_verify_nonce( $_REQUEST['_wpnonce'], 'windows-azure-storage-settings-group-options' ) &&
 		isset( $_POST['action2'] ) && 'update' === $_POST['action2']
 	) {
+		//TODO sanitize and set from a loop instead of a bunch of if…then statements
 		if ( array_key_exists( "azure_storage_account_name", $_POST ) ) {
 			$storageAccountName = sanitize_text_field( $_POST["azure_storage_account_name"] );
 		}
@@ -227,6 +229,7 @@ function show_windows_azure_storage_settings( $mode ) {
 	$ContainerResult = null;
 	try {
 		if ( ! empty( $storageAccountName ) && ! empty( $storageAccountKey ) ) {
+			//TODO: store the connection string and use it instead of always generating the client connection this way
 			$storageClient           = WindowsAzureStorageUtil::getStorageClient(
 				$storageAccountName,
 				$storageAccountKey,
