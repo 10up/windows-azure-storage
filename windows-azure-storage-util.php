@@ -313,7 +313,7 @@ class WindowsAzureStorageUtil {
 	 * @param string $cname The CNAME value set in the plugin options.
 	 * @return string The (maybe) new CNAME with the filtered protocol.
 	 */
-	private static function _maybe_rewrite_cname( $cname ) {
+	protected static function _maybe_rewrite_cname( $cname ) {
 		/**
 		 * Filter to allow 'https' as the CNAME protocol.
 		 *
