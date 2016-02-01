@@ -612,10 +612,11 @@ function windows_azure_storage_dialog_search_tab() {
 									$listContainerResult = $storageClient->listContainers();
 									/** @var WindowsAzure\Blob\Models\Container $container */
 									foreach ( $listContainerResult->getContainers() as $container ) {
+										$container_name = $container->getName();
 										?>
-										<option value="<?php echo esc_attr( $container->getName() ); ?>"
-											<?php selected( $container->getName(), $selected_container_name ); ?>>
-											<?php echo esc_html( $container->getName() ); ?>
+										<option value="<?php echo esc_attr( $container_name) ); ?>"
+											<?php selected( $container_name, $selected_container_name ); ?>>
+											<?php echo esc_html( $container_name ); ?>
 										</option>
 										<?php
 									}
