@@ -548,7 +548,6 @@ function windows_azure_storage_dialog_search_tab() {
 		echo '<h3 style="margin: 10px;">Azure Storage Account not yet configured</h3>';
 		echo '<p style="margin: 10px;">Please configure the account in Windows Azure Settings Tab.</p>';
 	} else {
-		$storageClient = WindowsAzureStorageUtil::getStorageClient();
 		// Set selected container. If none, then use default container
 		//TODO: find out when this would ever get passed this way.
 		//QUESTION: 'selected_container' or 'searchContainer'? Copy/pasta?
