@@ -764,10 +764,12 @@ function windows_azure_storage_dialog_upload_tab() {
 										if ( empty( $selected_container_name ) ) {
 											$selected_container_name = $container->getName();
 										}
+										$container_name = $container->getName();
 										?>
-										<option value="<?php echo esc_attr( $container->getName() ); ?>"
-											<?php selected( $container->getName(), $selected_container_name ); ?>>
-											<?php echo esc_html( $container->getName() ); ?></option>
+										<option value="<?php echo esc_attr( $container_name ); ?>"
+											<?php selected( $container_name, $selected_container_name ); ?>>
+											<?php echo esc_html( $container_name ); ?>
+										</option>
 									<?php endforeach; ?>
 									<option value="__newContainer__">&mdash;&thinsp;<?php esc_html_e( 'Create New Container', 'windows-azure-storage' ); ?>&thinsp;&mdash;</option>
 									<?php
