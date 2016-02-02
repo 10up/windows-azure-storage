@@ -360,16 +360,16 @@ class WindowsAzureStorageUtil {
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param string $protocol Default 'https'; also allow 'http' and 'none' (for protocol-relative URLs).
+		 * @param string $protocol Default 'https'; also allow 'http' and 'relative' (for protocol-relative URLs).
 		 */
 		$protocol = apply_filters( 'windows_azure_storage_blob_protocol', 'https' );
 
 		// Whitelist the protocols and fall back to secure if necessary.
-		if ( ! in_array( $protocol, array( 'https', 'http', 'none' ) ) ) {
+		if ( ! in_array( $protocol, array( 'https', 'http', 'relative' ) ) ) {
 			$protocol = 'https';
 		}
 
-		if ( 'none' === $protocol ) {
+		if ( 'relative' === $protocol ) {
 			$protocol = '//';
 		} else {
 			$protocol .= '://';
