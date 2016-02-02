@@ -124,16 +124,12 @@ function windows_azure_storage_dialog_browse_tab() {
 		// Set selected container. If none, then use default container
 		$selected_container_name = $default_azure_storage_account_container_name;
 		//TODO: can we just check $_REQUEST here?
-		if (
-			! empty( $_POST['selected_container'] ) &&
-			check_admin_referer( 'browse_select_container_' . $post_id, 'browse_select_container_nonce' )
-		) {
+		if ( check_admin_referer( 'browse_select_container_' . $post_id, 'browse_select_container_nonce' ) ) {
+			if ( ! empty( $_POST['selected_container'] ) ) {
 			$selected_container_name = sanitize_text_field( $_POST['selected_container'] );
-		} else if (
-			! empty( $_GET['selected_container'] ) &&
-			check_admin_referer( 'browse_select_container_' . $post_id, 'browse_select_container_nonce' )
-		) {
+			} else if ( ! empty( $_GET['selected_container'] ) ) {
 			$selected_container_name = sanitize_text_field( $_GET['selected_container'] );
+		}
 		}
 
 		// Check if blob has to be deleted
