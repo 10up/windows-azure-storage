@@ -673,7 +673,6 @@ function windows_azure_storage_dialog_upload_tab() {
 		echo '<h3 style="margin: 10px;">Azure Storage Account not yet configured</h3>';
 		echo '<p style="margin: 10px;">Please configure the account in Windows Azure Settings Tab.</p>';
 	} else {
-		$storageClient = WindowsAzureStorageUtil::getStorageClient();
 		// Set selected container. If none, then use default container
 		$selected_container_name = $default_azure_storage_account_container_name;
 
