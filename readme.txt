@@ -1,12 +1,13 @@
 === Windows Azure Storage for WordPress ===
-Contributors: Microsoft Open Technologies
-Tags: Microsoft, Microsoft Open Technologies, Windows Azure, Windows Azure Storage, WordPress, Media Files, Upload
+Contributors: msopentech, 10up, morganestes, stevegrunwell
+Tags: Microsoft, Microsoft Open Technologies, Windows Azure, Windows Azure Storage, Media Files, Upload, CDN
 Requires at least: 2.8.0
-Tested up to: 3.9.1
-
+Tested up to: 4.4
 Stable tag: 2.2
+License: BSD 2-Clause
+License URI: http://www.opensource.org/licenses/bsd-license.php
 
-This WordPress plugin allows you to use Windows Azure Storage Service to host your media for your WordPress powered blog.
+Use the Windows Azure Storage service to host your website's media files.
 
 == Description ==
 
@@ -15,21 +16,24 @@ your media for your WordPress powered blog. Windows Azure Storage is an effectiv
 to scale storage of your site without having to go through the expense of setting up the 
 infrastructure for a content delivery.
 
-Please refer UserGuide.pdf for learning more about the plugin.
-
-For more details on Windows Azure Storage Services, please visit the 
-<a href="http://www.microsoft.com/azure/windowsazure.mspx">Windows Azure Platform web-site</a>.
-
-Related Links:
-*<a href="http://wordpress.org/extend/plugins/windows-azure-storage/" title="Windows Azure Storage for WordPress">Plugin Homepage</a>*
+For more details on Windows Azure Storage, please visit the <a href="https://azure.microsoft.com/en-us/services/storage/">Microsoft Azure website</a>.
 
 == Installation ==
-1. Extract the Windows Azure Storage Plugin windows-azure-storage.zip to the plugins directory of the WordPress installation. 
-e.g. if WordPress is installed in "/var/www/html/wordpress" directory, extract the windows-azure-storage.zip file into directory "/var/www/html/wordpress/wp-content/plugins".
-
-1. To activate the plugin, log in into the WordPress as administrator and navigate to list of plugins. Then check the associated checkbox for the plugin and click on "Activate" link.
+1. Upload the plugin files to the `/wp-content/plugins/windows-azure-storage` directory, or install the plugin through the WordPress plugins screen directly.
+1. Activate the plugin through the 'Plugins' screen in WordPress.
+1. Use the Settings->Windows Azure screen to configure the plugin.
 
 == Changelog ==
+
+= 3.0.0 =
+* Security: fixes a bug that could allow unauthorized deletion of remotely-stored media.
+* Security: validate, sanitize, and escape (allthethings).
+* Security: use `https://` URLs by default, and warn if an insecure CNAME is configured.
+* Security: introduce permissions checks for specific actions within the plugin.
+* L10N/I18N: Round 1 of preparing strings for translation.
+* UI: Editor button more closely matches the WordPress Admin UI.
+* Add `srcset` to images added through the Media Library when Azure is the default media handler. (Props @patricknami).
+
 = 2.2 =
 * Fixed network activation bug in WordPress multisite.
 * Fixed the issue with duplicate blob names in XML-RPC.
@@ -41,7 +45,7 @@ e.g. if WordPress is installed in "/var/www/html/wordpress" directory, extract t
 * Fixed the bug with year and month getting trimmed for file system images.
 
 = 2.0 =
-* Updated to use Windows Azure SDK for PHP from https://github.com/WindowsAzure/azure-sdk-for-php and fixed to work with Wordpress 3.4.1
+* Updated to use Windows Azure SDK for PHP from https://github.com/WindowsAzure/azure-sdk-for-php and fixed to work with WordPress 3.4.1
 
 = 1.9 =
 * Fixed case sensitivity error in file names on Linux
@@ -70,5 +74,8 @@ e.g. if WordPress is installed in "/var/www/html/wordpress" directory, extract t
 = 1.0 =
 * First release of Windows Azure Storage plugin for WordPress
 
-== License ==
-This code released under the terms of the New BSD License (BSD).
+== Upgrade Notice ==
+
+= 3.0.0 =
+This release features several security fixes and enhancements.
+It is highly recommended that all users upgrade immediately.
