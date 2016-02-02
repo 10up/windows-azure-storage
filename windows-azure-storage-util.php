@@ -365,7 +365,7 @@ class WindowsAzureStorageUtil {
 		$protocol = apply_filters( 'windows_azure_storage_blob_protocol', 'https' );
 
 		// Whitelist the protocols and fall back to secure if necessary.
-		if ( ! in_array( $protocol, array( 'https', 'http', 'relative' ) ) ) {
+		if ( ! in_array( $protocol, array( 'https', 'http', 'relative' ), true ) ) {
 			$protocol = 'https';
 		}
 
