@@ -594,8 +594,7 @@ class WindowsAzureStorageUtil {
 	 */
 	public static function blob_exists_in_container( $blob_name, $container_name = '' ) {
 		/** @var WindowsAzure\Blob\BlobRestProxy $client */
-		$client      = self::getStorageClient();
-		$blob_exists = false;
+		$client = self::getStorageClient();
 
 		if ( empty( $container_name ) ) {
 			$container_name = self::getDefaultContainer();
@@ -610,23 +609,17 @@ class WindowsAzureStorageUtil {
 				)
 			);
 		}
-
-		//TODO: Use cached blob list if it exists.
-
-		/** @var WindowsAzure\Blob\Models\ListBlobsResult $blobs */
-		$blobs = $client->listBlobs( $container_name );
-
-		//TODO: Cache blobs list.
-
-		/** @var WindowsAzure\Blob\Models\Blob $blob */
-		foreach ( $blobs->getBlobs() as $blob ) {
-			if ( $blob->getName() === $blob_name ) {
-				$blob_exists = true;
-				break;
+		$result = false;
+		try {
+			$blob_properties = $client->getBlobProperties( $container_name, $blob_name );
+			if ( $blob_properties instanceof \WindowsAzure\Blob\Models\GetBlobPropertiesResult ) {
+				$result = true;
 			}
+		} catch ( \Exception $exception ) {
+			error_log( $exception->getMessage(), E_USER_NOTICE );
 		}
 
-		return $blob_exists;
+		return $result;
 	}
 
 	/**
