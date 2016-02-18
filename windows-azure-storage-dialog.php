@@ -699,7 +699,7 @@ function windows_azure_storage_dialog_upload_tab() {
 
 					try {
 						if (
-							false === check_admin_referer( 'upload_blob_' . get_the_ID(), 'upload_blob_nonce' ) ||
+							false === check_admin_referer( 'upload_blob_' . $post_id, 'upload_blob_nonce' ) ||
 							false === WindowsAzureStorageUtil::check_action_permissions( 'upload' )
 						) {
 							throw new Exception( __( 'Nonce check failed. Please try again, or contact your site administrator for assistance.', 'windows-azure-storage' ) );
@@ -747,7 +747,7 @@ function windows_azure_storage_dialog_upload_tab() {
 		<h3 style="margin: 10px;">Upload New File</h3>
 		<div id="upload-form">
 			<form name="UploadNewFileForm" style="margin: 10px;" method="post" enctype="multipart/form-data" action="<?php echo esc_url( $form_action_url ); ?>">
-				<?php wp_nonce_field( 'upload_blob_' . get_the_ID(), 'upload_blob_nonce' ); ?>
+				<?php wp_nonce_field( 'upload_blob_' . $post_id, 'upload_blob_nonce' ); ?>
 				<table class="form-table">
 					<tr valign="top">
 						<th scope="row">
