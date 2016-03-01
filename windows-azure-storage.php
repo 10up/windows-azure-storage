@@ -157,7 +157,7 @@ if ( function_exists( 'wp_calculate_image_srcset' ) ) {
  */
 function check_prerequisite() {
 	//TODO more robust activation checks. http://pento.net/2014/02/18/dont-let-your-plugin-be-activated-on-incompatible-sites/
-	$windowsAzureFilePath = WP_PLUGIN_DIR . "/windows-azure-storage/library/WindowsAzure/WindowsAzure.php";
+	$windowsAzureFilePath = wp_normalize_path( WP_PLUGIN_DIR . '/windows-azure-storage/library/WindowsAzure/WindowsAzure.php' );
 	if ( ( true === file_exists( $windowsAzureFilePath ) ) && ( true === is_readable( $windowsAzureFilePath ) ) ) {
 		return;
 	}
