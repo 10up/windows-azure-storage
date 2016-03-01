@@ -1,9 +1,9 @@
 === Windows Azure Storage for WordPress ===
 Contributors: msopentech, 10up, morganestes, stevegrunwell
-Tags: Microsoft, Microsoft Open Technologies, Windows Azure, Windows Azure Storage, Media Files, Upload, CDN
+Tags: Microsoft, Microsoft Open Technologies, Windows Azure, Windows Azure Storage, Media Files, Upload, CDN, blob storage
 Requires at least: 2.8.0
 Tested up to: 4.4
-Stable tag: 3.0.0
+Stable tag: 3.0.1
 License: BSD 2-Clause
 License URI: http://www.opensource.org/licenses/bsd-license.php
 
@@ -24,6 +24,10 @@ For more details on Windows Azure Storage, please visit the <a href="https://azu
 1. Use the Settings->Windows Azure screen to configure the plugin.
 
 == Changelog ==
+
+= 3.0.1 =
+* Fix browsing and uploading caused by broken nonce checks.
+* Normalize the SDK path for activation checks.
 
 = 3.0.0 =
 * Security: fixes a bug that could allow unauthorized deletion of remotely-stored media.

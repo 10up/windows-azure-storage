@@ -3,7 +3,7 @@
  * Plugin Name: Windows Azure Storage for WordPress
  * Plugin URI: https://wordpress.org/plugins/windows-azure-storage/
  * Description: Use the Windows Azure Storage service to host your website's media files.
- * Version: 3.0.0
+ * Version: 3.0.1
  * Author: 10up, Microsoft Open Technologies
  * Author URI: http://10up.com/
  * License: BSD 2-Clause
@@ -58,7 +58,7 @@
 define( 'MSFT_AZURE_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'MSFT_AZURE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'MSFT_AZURE_PLUGIN_LEGACY_MEDIA_URL', get_admin_url( get_current_blog_id(), 'media-upload.php' ) );
-define( 'MSFT_AZURE_PLUGIN_VERSION', '3.0.1-dev' );
+define( 'MSFT_AZURE_PLUGIN_VERSION', '3.0.1' );
 
 /* Azure SDK relies on some PEAR dependencies, but doesn't load them itself.
  * We have to add the PEAR files to the path for the Azure SDK to see them.

@@ -1,5 +1,11 @@
 
-3.0.0-beta / 2016-01-28
+3.0.1 / 2016-03-01
+==================
+
+  * Fix upload nonce checks
+  * Media: fix the AYS checks on browse
+
+3.0.0 / 2016-01-28
 ==================
 
   * filter 'srcset' in WordPress 4.4
