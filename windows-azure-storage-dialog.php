@@ -4,7 +4,7 @@
  *
  * Shows popup dialog when clicked on the Windows Azure Toolbar
  *
- * Version: 3.0.0
+ * Version: 3.0.1
  *
  * Author: Microsoft Open Technologies, Inc.
  *
@@ -88,6 +88,9 @@ function windows_azure_storage_dialog_add_tab( $tabs ) {
 
 /**
  * Render Browse Tab in the Windows Azure Storage popup dialog
+ *
+ * @since 3.0.0 Add nonce checks and reformat HTML.
+ * @since 3.0.1 Fix nonce checks on initial browse.
  *
  * @return void
  */
