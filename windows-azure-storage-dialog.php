@@ -124,12 +124,16 @@ function windows_azure_storage_dialog_browse_tab() {
 		// Set selected container. If none, then use default container
 		$selected_container_name = $default_azure_storage_account_container_name;
 		//TODO: can we just check $_REQUEST here?
-		if ( check_admin_referer( 'browse_select_container_' . $post_id, 'browse_select_container_nonce' ) ) {
-			if ( ! empty( $_POST['selected_container'] ) ) {
+		if (
+			! empty( $_POST['selected_container'] ) &&
+			check_admin_referer( 'browse_select_container_' . $post_id, 'browse_select_container_nonce' )
+		) {
 			$selected_container_name = sanitize_text_field( $_POST['selected_container'] );
-			} else if ( ! empty( $_GET['selected_container'] ) ) {
+		} elseif (
+			! empty( $_GET['selected_container'] ) &&
+			check_admin_referer( 'browse_select_container_' . $post_id, 'browse_select_container_nonce' )
+		) {
 			$selected_container_name = sanitize_text_field( $_GET['selected_container'] );
-		}
 		}
 
 		// Check if blob has to be deleted
@@ -695,7 +699,7 @@ function windows_azure_storage_dialog_upload_tab() {
 
 					try {
 						if (
-							false === check_admin_referer( 'upload_blob_' . get_the_ID(), 'upload_blob_nonce' ) ||
+							false === check_admin_referer( 'upload_blob_' . $post_id, 'upload_blob_nonce' ) ||
 							false === WindowsAzureStorageUtil::check_action_permissions( 'upload' )
 						) {
 							throw new Exception( __( 'Nonce check failed. Please try again, or contact your site administrator for assistance.', 'windows-azure-storage' ) );
@@ -743,7 +747,7 @@ function windows_azure_storage_dialog_upload_tab() {
 		<h3 style="margin: 10px;">Upload New File</h3>
 		<div id="upload-form">
 			<form name="UploadNewFileForm" style="margin: 10px;" method="post" enctype="multipart/form-data" action="<?php echo esc_url( $form_action_url ); ?>">
-				<?php wp_nonce_field( 'upload_blob_' . get_the_ID(), 'upload_blob_nonce' ); ?>
+				<?php wp_nonce_field( 'upload_blob_' . $post_id, 'upload_blob_nonce' ); ?>
 				<table class="form-table">
 					<tr valign="top">
 						<th scope="row">
