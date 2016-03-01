@@ -83,3 +83,19 @@ For more details on Windows Azure Storage, please visit the <a href="https://azu
 = 3.0.0 =
 This release features several security fixes and enhancements.
 It is highly recommended that all users upgrade immediately.
+
+== Known Issues ==
+
+= Storage Account Versions =
+Storage accounts can be created via CLI, classic Azure portal, or the new Azure portal,
+with varying results.
+
+If a Storage account is created with the new Azure portal, authentication will fail,
+resulting in the inability to view/add containers or files. Creating a Storage account
+with the Azure CLI should allow the plugin to work with new Storage accounts.
+
+= Responsive Images in WordPress 4.4 =
+Images uploaded to the Azure Storage service will not automatically receive responsive versions.
+Images added through the WordPress Media Loader *should* get automatically converted to responsive
+images when inserted into a post or page.
+We are investigating options for full support of responsive images in the plugin.
