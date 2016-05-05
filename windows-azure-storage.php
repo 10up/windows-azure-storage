@@ -72,6 +72,7 @@ require_once MSFT_AZURE_PLUGIN_PATH . 'windows-azure-storage-settings.php';
 require_once MSFT_AZURE_PLUGIN_PATH . 'windows-azure-storage-dialog.php';
 require_once MSFT_AZURE_PLUGIN_PATH . 'windows-azure-storage-util.php';
 require_once MSFT_AZURE_PLUGIN_PATH . 'includes/class-windows-azure-rest-api-client.php';
+require_once MSFT_AZURE_PLUGIN_PATH . 'includes/class-windows-azure-list-containers-response.php';
 
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	require_once MSFT_AZURE_PLUGIN_PATH . 'bin/wp-cli.php';

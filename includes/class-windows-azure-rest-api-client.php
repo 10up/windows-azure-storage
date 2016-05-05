@@ -218,6 +218,38 @@ class Windows_Azure_Rest_Api_Client {
 	}
 
 	/**
+	 * List containers.
+	 *
+	 * @param string $prefix      List containers which names start with this prefix.
+	 * @param int    $max_results Max containers to return.
+	 * @param bool   $next_marker Next collection marker.
+	 *
+	 * @return Windows_Azure_List_Containers_Response|WP_Error
+	 */
+	public function list_containers( $prefix = '', $max_results = self::API_REQUEST_BULK_SIZE, $next_marker = false ) {
+		$query_args = array(
+			'comp'       => 'list',
+			'maxresults' => apply_filters( 'azure_blob_list_containers_max_results', $max_results )
+		);
+
+		if ( ! empty( $prefix ) ) {
+			$query_args['prefix'] = rawurlencode( $prefix );
+		}
+
+		if ( $next_marker ) {
+			$query_args['marker'] = $next_marker;
+		}
+
+		$result = $this->_send_request( 'GET', $query_args );
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		return new Windows_Azure_List_Containers_Response( $result, $this, $prefix, $max_results );
+	}
+
+	/**
 	 * Send REST request and return response.
 	 *
 	 * @param string       $method     HTTP verb.
