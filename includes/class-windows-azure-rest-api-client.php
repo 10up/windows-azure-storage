@@ -298,7 +298,7 @@ class Windows_Azure_Rest_Api_Client {
 			return $endpoint_url;
 		}
 
-		if ( null === $this->_account_name ) {
+		if ( empty( $this->_account_name ) ) {
 			return new WP_Error( -1, __( 'Storage account name not set.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
 		}
 
