@@ -87,10 +87,38 @@ class Windows_Azure_Rest_Api_Client {
 	const API_HEADER_MS_DATE = 'x-ms-date';
 
 	/**
+	 * Azure API blob public access header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_BLOB_PUBLIC_ACCESS = 'x-ms-blob-public-access';
+
+	/**
 	 * Azure API canonicalized
 	 * @const string
 	 */
 	const API_CANONICALIZED_HEADER_PREFIX = 'x-ms-';
+
+	/**
+	 * Container private access type.
+	 *
+	 * @const string
+	 */
+	const CONTAINER_VISIBILITY_PRIVATE = 'private';
+
+	/**
+	 * Container "container" access type (publicily browseable).
+	 *
+	 * @const string
+	 */
+	const CONTAINER_VISIBILITY_CONTAINER = 'container';
+
+	/**
+	 * Container "blob: access type (direct blob access only).
+	 *
+	 * @const string
+	 */
+	const CONTAINER_VISIBILITY_BLOB = 'blob';
 
 	/**
 	 * Azure Storage account name.
@@ -250,22 +278,56 @@ class Windows_Azure_Rest_Api_Client {
 	}
 
 	/**
+	 * Create new container.
+	 *
+	 * @param string $name       Container name.
+	 * @param string $visibility Container visibility.
+	 *
+	 * @return bool|WP_Error
+	 */
+	public function create_container( $name, $visibility = self::CONTAINER_VISIBILITY_BLOB ) {
+		$query_args = array(
+			'restype' => 'container',
+		);
+
+		$name = sanitize_title_with_dashes( $name );
+
+		$headers = array();
+
+		switch ( $visibility ) {
+			case self::CONTAINER_VISIBILITY_BLOB:
+			case self::CONTAINER_VISIBILITY_CONTAINER:
+				$headers[ self::API_HEADER_BLOB_PUBLIC_ACCESS ] = $visibility;
+				break;
+		}
+
+		$result = $this->_send_request( 'PUT', $query_args, $headers, '', $name );
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Send REST request and return response.
 	 *
 	 * @param string       $method     HTTP verb.
 	 * @param array        $query_args Request query args.
 	 * @param array        $headers    Request headers.
 	 * @param string|array $body       Request body.
+	 * @param string       $path       REST API endpoint path.
 	 *
 	 * @return array|WP_Error
 	 */
-	protected function _send_request( $method, array $query_args = array(), array $headers = array(), $body = '' ) {
+	protected function _send_request( $method, array $query_args = array(), array $headers = array(), $body = '', $path = '' ) {
 
 		$query_args = wp_parse_args( $query_args, array(
 			'timeout' => apply_filters( 'azure_blob_operation_timeout', self::API_REQUEST_TIMEOUT )
 		) );
 
-		$endpoint_url = $this->_build_api_endpoint_url();
+		$endpoint_url = $this->_build_api_endpoint_url( $path );
 
 		if ( is_wp_error( $endpoint_url ) ) {
 			return $endpoint_url;
@@ -321,9 +383,11 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Return Blob API endpoint URL.
 	 *
+	 * @param string $path URI path.
+	 *
 	 * @return string|WP_Error
 	 */
-	protected function _build_api_endpoint_url() {
+	protected function _build_api_endpoint_url( $path = '' ) {
 		static $endpoint_url;
 
 		if ( null !== $endpoint_url ) {
@@ -336,7 +400,7 @@ class Windows_Azure_Rest_Api_Client {
 
 		$endpoint_url = sprintf( self::API_BLOB_ENDPOINT, $this->_account_name );
 
-		return $endpoint_url;
+		return $endpoint_url . trim( $path );
 	}
 
 	/**
