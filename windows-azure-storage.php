@@ -58,7 +58,8 @@
 define( 'MSFT_AZURE_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'MSFT_AZURE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'MSFT_AZURE_PLUGIN_LEGACY_MEDIA_URL', get_admin_url( get_current_blog_id(), 'media-upload.php' ) );
-define( 'MSFT_AZURE_PLUGIN_VERSION', '3.0.1' );
+define( 'MSFT_AZURE_PLUGIN_VERSION', '4.0.0' );
+define( 'MSFT_AZURE_PLUGIN_DOMAIN_NAME', 'windows-azure-storage' );
 
 /* Azure SDK relies on some PEAR dependencies, but doesn't load them itself.
  * We have to add the PEAR files to the path for the Azure SDK to see them.
