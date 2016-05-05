@@ -1,3 +1,7 @@
+4.0.0 / 2016-05
+
+  * Replaced Azure SDK with independent library.
+  * Introduced filter `azure_blob_operation_timeout` which defines REST operation timeout.
 
 3.0.1 / 2016-03-01
 ==================

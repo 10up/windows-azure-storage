@@ -58,7 +58,8 @@
 define( 'MSFT_AZURE_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'MSFT_AZURE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'MSFT_AZURE_PLUGIN_LEGACY_MEDIA_URL', get_admin_url( get_current_blog_id(), 'media-upload.php' ) );
-define( 'MSFT_AZURE_PLUGIN_VERSION', '3.0.1' );
+define( 'MSFT_AZURE_PLUGIN_VERSION', '4.0.0' );
+define( 'MSFT_AZURE_PLUGIN_DOMAIN_NAME', 'windows-azure-storage' );
 
 /* Azure SDK relies on some PEAR dependencies, but doesn't load them itself.
  * We have to add the PEAR files to the path for the Azure SDK to see them.
@@ -70,6 +71,11 @@ require_once MSFT_AZURE_PLUGIN_PATH . 'library/WindowsAzure/WindowsAzure.php';
 require_once MSFT_AZURE_PLUGIN_PATH . 'windows-azure-storage-settings.php';
 require_once MSFT_AZURE_PLUGIN_PATH . 'windows-azure-storage-dialog.php';
 require_once MSFT_AZURE_PLUGIN_PATH . 'windows-azure-storage-util.php';
+require_once MSFT_AZURE_PLUGIN_PATH . 'includes/class-windows-azure-rest-api-client.php';
+
+if ( defined( 'WP_CLI' ) && WP_CLI ) {
+	require_once MSFT_AZURE_PLUGIN_PATH . 'bin/wp-cli.php';
+}
 
 // Check prerequisite for plugin
 register_activation_hook( __FILE__, 'check_prerequisite' );
