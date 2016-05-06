@@ -283,7 +283,7 @@ class Windows_Azure_Rest_Api_Client {
 	 * @param string $name       Container name.
 	 * @param string $visibility Container visibility.
 	 *
-	 * @return bool|WP_Error
+	 * @return string|WP_Error
 	 */
 	public function create_container( $name, $visibility = self::CONTAINER_VISIBILITY_BLOB ) {
 		$query_args = array(
@@ -307,7 +307,62 @@ class Windows_Azure_Rest_Api_Client {
 			return $result;
 		}
 
-		return true;
+		return $name;
+	}
+
+	/**
+	 * Get container properties.
+	 *
+	 * @param string $name Container name.
+	 *
+	 * @return array|WP_Error
+	 */
+	public function get_container_properties( $name ) {
+		$query_args = array(
+			'restype' => 'container',
+		);
+
+		$result = $this->_send_request( 'HEAD', $query_args, array(), '', $name );
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		$headers    = array( 'last-modified', 'etag', 'x-ms-lease-status', 'x-ms-lease-state', 'x-ms-lease-duration' );
+		$properties = array();
+
+		foreach ( $headers as $header ) {
+			$properties[ $header ] = wp_remote_retrieve_header( $result, $header );
+		}
+
+		return $properties;
+	}
+
+	/**
+	 * Get container ACL.
+	 *
+	 * @param string $name Container name.
+	 *
+	 * @return string|WP_Error
+	 */
+	public function get_container_acl( $name ) {
+		$query_args = array(
+			'restype' => 'container',
+			'comp'    => 'acl',
+		);
+
+		$result = $this->_send_request( 'HEAD', $query_args, array(), '', $name );
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		$acl_header = wp_remote_retrieve_header( $result, 'x-ms-blob-public-access' );
+		if ( empty( $acl_header ) ) {
+			$acl_header = self::CONTAINER_VISIBILITY_PRIVATE;
+		}
+
+		return $acl_header;
 	}
 
 	/**
@@ -366,18 +421,22 @@ class Windows_Azure_Rest_Api_Client {
 
 		$body = wp_remote_retrieve_body( $result );
 
-		if ( empty( $body ) || is_wp_error( $result ) ) {
+		if ( is_wp_error( $result ) ) {
 			return $result;
 		}
 
 		$response_code = (int) wp_remote_retrieve_response_code( $result );
-		if ( 200 !== $response_code ) {
+
+		if ( $response_code < 200 || $response_code > 299 ) {
 			return new WP_Error( $response_code, wp_remote_retrieve_response_message( $result ) );
 		}
 
 		$xml_structure = simplexml_load_string( $body );
-
-		return json_decode( wp_json_encode( $xml_structure ), true );
+		if ( ! empty( $body ) ) {
+			return json_decode( wp_json_encode( $xml_structure ), true );
+		} else {
+			return $result;
+		}
 	}
 
 	/**
