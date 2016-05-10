@@ -806,7 +806,6 @@ class Windows_Azure_Rest_Api_Client {
 
 		// overwrite blob type
 		$headers[ self::API_HEADER_BLOB_TYPE ] = self::APPEND_BLOB_TYPE;
-		$headers[self::API_HEADER_MS_BLOB_CONTENT_TYPE ] = 'image/jpeg';
 
 		$result = $this->_send_request( 'PUT', $query_args, $headers, '', $container . $remote_path );
 		if ( is_wp_error( $result ) ) {

@@ -117,7 +117,8 @@ class Windows_Azure_File_Contents_Provider {
 	/**
 	 * Windows_Azure_File_Contents_Provider constructor.
 	 *
-	 * @param string $file_path File path.
+	 * @param string $file_path  File path.
+	 * @param int    $chunk_size Chunk size.
 	 */
 	public function __construct( $file_path, $chunk_size = self::CHUNK_SIZE ) {
 		$this->_file_path     = $file_path;
