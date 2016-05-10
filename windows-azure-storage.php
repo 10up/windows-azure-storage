@@ -77,6 +77,7 @@ require_once MSFT_AZURE_PLUGIN_PATH . 'includes/class-windows-azure-list-contain
 require_once MSFT_AZURE_PLUGIN_PATH . 'includes/class-windows-azure-list-blobs-response.php';
 require_once MSFT_AZURE_PLUGIN_PATH . 'includes/class-windows-azure-config-provider.php';
 require_once MSFT_AZURE_PLUGIN_PATH . 'includes/class-windows-azure-filesystem-access-provider.php';
+require_once MSFT_AZURE_PLUGIN_PATH . 'includes/class-windows-azure-file-contents-provider.php';
 require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php';
 require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
 require_once MSFT_AZURE_PLUGIN_PATH . 'includes/class-windows-azure-wp-filesystem-direct.php';

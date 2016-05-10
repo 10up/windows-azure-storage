@@ -318,6 +318,13 @@ class Windows_Azure_Rest_Api_Client {
 	const CONTAINER_VISIBILITY_BLOB = 'blob';
 
 	/**
+	 * Azure API Append Blob type.
+	 *
+	 * @const string
+	 */
+	const APPEND_BLOB_TYPE = 'AppendBlob';
+
+	/**
 	 * Azure Storage account name.
 	 *
 	 * @var null|string
@@ -744,6 +751,110 @@ class Windows_Azure_Rest_Api_Client {
 		} else {
 			return $files;
 		}
+	}
+
+	// @formatter:off
+	/**
+	 * Put blobs on Azure Storage account.
+	 *
+	 * @param string $container Container name.
+	 * @param array  $files     File names structure. Should be sainitized before exporting. Expected:
+	 *                          {
+	 *                              $prefix_mask_1 => {
+	 *                                  $local_path_1_1 => $remote_path_1_1,
+	 *                                  $local_path_1_n => $remote_path_1_n
+	 *                              },
+	 *                              $prefix_mask_n => {
+	 *                                  $local_path_n_1 => $remote_path_n_1,
+	 *                                  $local_path_n_n => $remote_path_n_n
+	 *                              },
+	 *                          }
+	 *
+	 * @return array
+	 */
+	// @formatter:on
+	public function put_blobs( $container, array $files = array() ) {
+		if ( empty( $files ) ) {
+			return true;
+		}
+
+		$all_contents = array();
+		foreach ( $files as $group_contents ) {
+			$all_contents += $group_contents;
+		}
+
+		foreach ( $all_contents as $local_path => &$remote_path ) {
+			$remote_path = $this->put_blob( $container, $local_path, $remote_path );
+		}
+
+		return $all_contents;
+	}
+
+	/**
+	 * Put blob on Azure Storage account.
+	 *
+	 * @param string $container   Container name.
+	 * @param string $local_path  Local path.
+	 * @param string $remote_path Remote path.
+	 *
+	 * @return WP_Error
+	 */
+	public function put_blob( $container, $local_path, $remote_path ) {
+		$container  = trailingslashit( $container );
+		$query_args = array();
+		$headers    = apply_filters( 'azure_blob_put_blob_headers', array() );
+
+		// overwrite blob type
+		$headers[ self::API_HEADER_BLOB_TYPE ] = self::APPEND_BLOB_TYPE;
+		$headers[self::API_HEADER_MS_BLOB_CONTENT_TYPE ] = 'image/jpeg';
+
+		$result = $this->_send_request( 'PUT', $query_args, $headers, '', $container . $remote_path );
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		$contents_provider = new Windows_Azure_File_Contents_Provider( $local_path );
+		$is_valid          = $contents_provider->is_valid();
+		if ( is_wp_error( $is_valid ) || ! $is_valid ) {
+			return $is_valid;
+		}
+		do {
+			$chunk = $contents_provider->get_chunk();
+			if ( $chunk ) {
+				$result = $this->_append_blob( $container, $remote_path, $chunk );
+			}
+		} while ( false !== $chunk && true === $result );
+
+		$contents_provider->close();
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		return $this->_build_api_endpoint_url( $container . $remote_path );
+	}
+
+	/**
+	 * Append blob operation.
+	 *
+	 * @param string $container   Container.
+	 * @param string $remote_path Remote path.
+	 * @param string $content     Content to append.
+	 *
+	 * @return array|bool|WP_Error
+	 */
+	protected function _append_blob( $container, $remote_path, $content ) {
+		$container  = trailingslashit( $container );
+		$query_args = array(
+			'comp' => 'appendblock',
+		);
+		$headers    = apply_filters( 'azure_blob_append_blob_headers', array(), $container, $remote_path, $content, $this );
+		$result     = $this->_send_request( 'PUT', $query_args, $headers, $content, $container . $remote_path );
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		return true;
 	}
 
 	/**
