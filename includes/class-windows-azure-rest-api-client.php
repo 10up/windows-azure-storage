@@ -704,6 +704,48 @@ class Windows_Azure_Rest_Api_Client {
 		return true;
 	}
 
+	// @formatter:off
+	/**
+	 * Sanitize blobs names. Make sure their names are unique.
+	 *
+	 * @param string $container Container name.
+	 * @param array  $files     File names structure. Expected:
+	 *                          {
+	 *                              $prefix_mask_1 => {
+	 *                                  $local_path_1_1 => $remote_path_1_1,
+	 *                                  $local_path_1_n => $remote_path_1_n
+	 *                              },
+	 *                              $prefix_mask_n => {
+	 *                                  $local_path_n_1 => $remote_path_n_1,
+	 *                                  $local_path_n_n => $remote_path_n_n
+	 *                              },
+	 *                          }
+	 *
+	 * @return array
+	 */
+	// @formatter:on
+	public function sanitize_blobs_names( $container, array $files = array() ) {
+		if ( empty( $files ) ) {
+			return $files;
+		}
+		foreach ( $files as $prefix_group => &$group_contents ) {
+			$cycles = 0;
+			do {
+				$sanitized_group_contents = $this->_sanitize_remote_paths( $container, $prefix_group, $group_contents );
+				$was_sanitized            = $sanitized_group_contents !== $group_contents;
+				if ( $was_sanitized ) {
+					$group_contents = $sanitized_group_contents;
+				}
+				$cycles++;
+			} while ( $was_sanitized && 5 > $cycles );
+		}
+		if ( 5 === $cycles && $was_sanitized ) {
+			return new WP_Error( -100, __( 'Unable to safely sanitize blob names.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+		} else {
+			return $files;
+		}
+	}
+
 	/**
 	 * Send REST request and return response.
 	 *
@@ -856,7 +898,61 @@ class Windows_Azure_Rest_Api_Client {
 		return $canonicalized_resource;
 	}
 
-	protected function _sanitize_remote_path( $container, $remote_name ) {
+	/**
+	 * Sanitize remote paths. Check if given paths exist and append unique suffix when necessary.
+	 *
+	 * @param string $container      Container to check paths against.
+	 * @param string $prefix_group   Prefix check group.
+	 * @param string $group_contents Group contents.
+	 *
+	 * @return Windows_Azure_List_Containers_Response|WP_Error
+	 */
+	protected function _sanitize_remote_paths( $container, $prefix_group, $group_contents ) {
+		$remote_paths = array_flip( $group_contents );
+		$blobs        = $this->list_blobs( $container, $prefix_group );
 
+		if ( is_wp_error( $blobs ) ) {
+			return $blobs;
+		}
+
+		$needs_sanitization = array();
+		foreach ( $blobs as $blob ) {
+			if ( isset( $remote_paths[ $blob['Name'] ] ) ) {
+
+				$needs_sanitization[] = $blob['Name'];
+				unset( $remote_paths[ $blob['Name'] ] );
+
+				// quit early as $blob is an Iterator instance with lazy loading
+				if ( 0 === count( $remote_paths ) ) {
+					break;
+				}
+			}
+		}
+
+		if ( empty( $needs_sanitization ) ) {
+			return $group_contents;
+		}
+
+		$sanitized_names = array();
+		$remote_paths    = array_flip( $group_contents );
+
+		foreach ( $needs_sanitization as $item ) {
+			$info     = pathinfo( $item );
+			$new_name = isset( $info['dirname'] ) ? trailingslashit( $info['dirname'] ) : '';
+			$new_name .= $info['filename'] . '-' . uniqid( '', false );
+			$new_name .= isset( $info['extension'] ) ? '.' . $info['extension'] : '';
+			$sanitized_names[ $item ] = $new_name;
+		}
+
+		foreach ( $sanitized_names as $original_path => $fixed_path ) {
+			if ( ! isset( $remote_paths[ $original_path ] ) ) {
+				continue;
+			}
+
+			$index                    = $remote_paths[ $original_path ];
+			$group_contents[ $index ] = $fixed_path;
+		}
+
+		return $group_contents;
 	}
 }
