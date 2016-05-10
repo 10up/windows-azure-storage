@@ -42,6 +42,262 @@
  */
 class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 
+	/**
+	 * List containers.
+	 *
+	 * @param array $args       Command arguments.
+	 * @param array $assoc_args Command options.
+	 *
+	 * @return void
+	 *
+	 * ## OPTIONS
+	 *
+	 * [--prefix=<prefix>]
+	 * : List containers which names start with prefix.
+	 *
+	 * @subcommand containers-list
+	 *
+	 * ## EXAMPLE
+	 * wp windows-azure-storage containers-list --prefix=demo
+	 */
+	public function list_containers( $args, $assoc_args ) {
+		$assoc_args = wp_parse_args( $assoc_args, array(
+			'prefix' => '',
+		) );
+
+		$credentials = Windows_Azure_Config_Provider::get_account_credentials();
+		$client      = new Windows_Azure_Rest_Api_Client( $credentials['account_name'], $credentials['account_key'] );
+		$format_args = array(
+			'format' => 'table',
+			'fields' => array( 'Name' ),
+			'field'  => null
+		);
+
+		$table      = new \WP_CLI\Formatter( $format_args );
+		$containers = $client->list_containers( $assoc_args['prefix'] );
+
+		if ( is_wp_error( $containers ) ) {
+			return WP_CLI::error( $containers->get_error_message() );
+		}
+		$items = array();
+		foreach ( $containers as $container ) {
+			$items[] = $container;
+		}
+
+		if ( empty( $items ) ) {
+			return WP_CLI::warning( __( 'No containers found.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+		}
+
+		$table->display_items( $items );
+	}
+
+	/**
+	 * Create container.
+	 *
+	 * @param array $args       Command arguments.
+	 * @param array $assoc_args Command options.
+	 *
+	 * @return void
+	 *
+	 * ## OPTIONS
+	 *
+	 * <name>
+	 * : Container name.
+	 *
+	 * @subcommand container-create
+	 *
+	 * ## EXAMPLE
+	 * wp windows-azure-storage container-create testcontainer
+	 */
+	public function create_cointainer( $args, $assoc_args ) {
+		if ( empty( $args ) ) {
+			return WP_CLI::error( __( 'Container name must be set.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+		}
+
+		list( $name ) = $args;
+		$credentials = Windows_Azure_Config_Provider::get_account_credentials();
+		$client      = new Windows_Azure_Rest_Api_Client( $credentials['account_name'], $credentials['account_key'] );
+		$result      = $client->create_container( $name, Windows_Azure_Rest_Api_Client::CONTAINER_VISIBILITY_BLOB );
+
+		if ( is_wp_error( $result ) ) {
+			return WP_CLI::error( $result->get_error_message() );
+		}
+
+		WP_CLI::success(
+			sprintf(
+				__( 'Created container with name "%s"', MSFT_AZURE_PLUGIN_DOMAIN_NAME ),
+				$result
+			)
+		);
+	}
+
+	/**
+	 * Get container properties.
+	 *
+	 * @param array $args       Command arguments.
+	 * @param array $assoc_args Command options.
+	 *
+	 * @return void
+	 *
+	 * ## OPTIONS
+	 *
+	 * <name>
+	 * : Container name.
+	 *
+	 * @subcommand container-properties
+	 *
+	 * ## EXAMPLE
+	 * wp windows-azure-storage container-properties testcontainer
+	 */
+	public function get_container_properties( $args, $assoc_args ) {
+		if ( empty( $args ) ) {
+			return WP_CLI::error( __( 'Container name must be set.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+		}
+
+		list( $name ) = $args;
+		$credentials = Windows_Azure_Config_Provider::get_account_credentials();
+		$client      = new Windows_Azure_Rest_Api_Client( $credentials['account_name'], $credentials['account_key'] );
+		$result      = $client->get_container_properties( $name );
+
+		if ( is_wp_error( $result ) ) {
+			return WP_CLI::error( $result->get_error_message() );
+		}
+
+		$format_args = array(
+			'format' => 'table',
+			'fields' => array_keys( $result ),
+			'field'  => null
+		);
+
+		$table = new \WP_CLI\Formatter( $format_args );
+		$table->display_item( $result );
+	}
+
+	/**
+	 * Get container ACL.
+	 *
+	 * @param array $args       Command arguments.
+	 * @param array $assoc_args Command options.
+	 *
+	 * @return void
+	 *
+	 * ## OPTIONS
+	 *
+	 * <name>
+	 * : Container name.
+	 *
+	 * @subcommand container-acl
+	 *
+	 * ## EXAMPLE
+	 * wp windows-azure-storage container-acl testcontainer
+	 */
+	public function get_container_acl( $args, $assoc_args ) {
+		if ( empty( $args ) ) {
+			return WP_CLI::error( __( 'Container name must be set.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+		}
+
+		list( $name ) = $args;
+		$credentials = Windows_Azure_Config_Provider::get_account_credentials();
+		$client      = new Windows_Azure_Rest_Api_Client( $credentials['account_name'], $credentials['account_key'] );
+		$result      = $client->get_container_acl( $name );
+
+		if ( is_wp_error( $result ) ) {
+			return WP_CLI::error( $result->get_error_message() );
+		}
+
+		WP_CLI::success(
+			sprintf(
+				__( 'Container "%s" access policy set to: "%s"' ),
+				$name,
+				$result
+			)
+		);
+	}
+
+	/**
+	 * Delete blob from container.
+	 *
+	 * @param array $args       Command arguments.
+	 * @param array $assoc_args Command options.
+	 *
+	 * @return void
+	 *
+	 * ## OPTIONS
+	 *
+	 * <container>
+	 * : Container name.
+	 *
+	 * <path>
+	 * : Remote file path.
+	 *
+	 * @subcommand delete-blob
+	 *
+	 * ## EXAMPLE
+	 * wp windows-azure-storage delete-blob testcontainer image1.png
+	 */
+	public function delete_blob( $args, $assoc_args ) {
+		if ( empty( $args ) || count( $args ) < 2 ) {
+			return WP_CLI::error( __( 'Container and remote path must be set.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+		}
+
+		list( $container, $remote_path ) = $args;
+		$credentials = Windows_Azure_Config_Provider::get_account_credentials();
+		$client      = new Windows_Azure_Rest_Api_Client( $credentials['account_name'], $credentials['account_key'] );
+		$result      = $client->delete_blob( $container, $remote_path );
+
+		if ( is_wp_error( $result ) ) {
+			return WP_CLI::error( $result->get_error_message() );
+		}
+
+		WP_CLI::success(
+			'Blob has been deleted.'
+		);
+	}
+
+	/**
+	 * Get blob properties.
+	 *
+	 * @param array $args       Command arguments.
+	 * @param array $assoc_args Command options.
+	 *
+	 * @return void
+	 *
+	 * ## OPTIONS
+	 *
+	 * <container>
+	 * : Container name.
+	 *
+	 * <remote_path>
+	 * : Blob path.
+	 *
+	 * @subcommand blob-properties
+	 *
+	 * ## EXAMPLE
+	 * wp windows-azure-storage blob-properties testcontainer image1.png
+	 */
+	public function get_blob_properties( $args, $assoc_args ) {
+		if ( count( $args ) < 2 ) {
+			return WP_CLI::error( __( 'Container name and blob path must be set.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+		}
+
+		list( $container, $remote_path ) = $args;
+		$credentials = Windows_Azure_Config_Provider::get_account_credentials();
+		$client      = new Windows_Azure_Rest_Api_Client( $credentials['account_name'], $credentials['account_key'] );
+		$result      = $client->get_blob_properties( $container, $remote_path );
+
+		if ( is_wp_error( $result ) ) {
+			return WP_CLI::error( $result->get_error_message() );
+		}
+
+		$format_args = array(
+			'format' => 'table',
+			'fields' => array_keys( $result ),
+			'field'  => null
+		);
+
+		$table = new \WP_CLI\Formatter( $format_args );
+		$table->display_item( $result );
+	}
 }
 
 WP_CLI::add_command( 'windows-azure-storage', 'Windows_Azure_Storage_CLI' );

@@ -87,10 +87,242 @@ class Windows_Azure_Rest_Api_Client {
 	const API_HEADER_MS_DATE = 'x-ms-date';
 
 	/**
+	 * Azure API blob public access header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_BLOB_PUBLIC_ACCESS = 'x-ms-blob-public-access';
+
+	/**
 	 * Azure API canonicalized
+	 *
 	 * @const string
 	 */
 	const API_CANONICALIZED_HEADER_PREFIX = 'x-ms-';
+
+	/**
+	 * Last-Modified header.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_LAST_MODIFIED = 'last-modified';
+
+	/**
+	 * Azure API blob type header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_BLOB_TYPE = 'x-ms-blob-type';
+
+	/**
+	 * Azure API blob copy completion time header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_COPY_COMPLETION_TIME = 'x-ms-copy-completion-time';
+
+	/**
+	 * Azure API blob copy status description header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_COPY_STATUS_DESCRIPTION = 'x-ms-copy-status-description';
+
+	/**
+	 * Azure API blob copy id header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_COPY_ID = 'x-ms-copy-id';
+
+	/**
+	 * Azure API blob copy progress header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_COPY_PROGRESS = 'x-ms-copy-progress';
+
+	/**
+	 * Azure API blob copy source header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_COPY_SOURCE = 'x-ms-copy-source';
+
+	/**
+	 * Azure API blob copy status header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_COPY_STATUS = 'x-ms-copy-status';
+
+	/**
+	 * Azure API blob lease duration header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_LEASE_DURATION = 'x-ms-lease-duration';
+
+	/**
+	 * Azure API blob lease state header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_LEASE_STATE = 'x-ms-lease-state';
+
+	/**
+	 * Azure API blob lease status header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_LEASE_STATUS = 'x-ms-lease-status';
+
+	/**
+	 * Content-Length header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_CONTENT_LENGTH = 'content-length';
+
+	/**
+	 * Content-Type header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_CONTENT_TYPE = 'content-type';
+
+	/**
+	 * Etag header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_ETAG = 'etag';
+
+	/**
+	 * Content-MD5 header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_CONTENT_MD5 = 'content-md5';
+
+	/**
+	 * Content-Encoding header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_CONTENT_ENCODING = 'content-encoding';
+
+	/**
+	 * Content-Language header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_CONTENT_LANGUAGE = 'content-language';
+
+	/**
+	 * Content-Disposition header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_CONTENT_DISPOSITION = 'content-disposition';
+
+	/**
+	 * Cache-Control header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_CACHE_CONTROL = 'cache-control';
+
+	/**
+	 * Azure API blob sequence number header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_BLOB_SEQUENCE_NUMBER = 'x-ms-blob-sequence-number';
+
+	/**
+	 * Azure API blob commited block count header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_BLOB_COMMITED_BLOCK_COUNT = 'x-ms-blob-committed-block-count';
+
+	/**
+	 * Azure API blob cache control property header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_MS_BLOB_CACHE_CONTROL = 'x-ms-blob-cache-control';
+
+	/**
+	 * Azure API blob content type property header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_MS_BLOB_CONTENT_TYPE = 'x-ms-blob-content-type';
+
+	/**
+	 * Azure API blob content MD5 property header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_MS_BLOB_CONTENT_MD5 = 'x-ms-blob-content-md5';
+
+	/**
+	 * Azure API blob content encoding property header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_MS_BLOB_CONTENT_ENCODING = 'x-ms-blob-content-encoding';
+
+	/**
+	 * Azure API blob content language property header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_MS_BLOB_CONTENT_LANGUAGE = 'x-ms-blob-content-language';
+
+	/**
+	 * Azure API blob content disposition property header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_MS_BLOB_CONTENT_DISPOSITION = 'x-ms-blob-content-disposition';
+
+	/**
+	 * Accept-Ranges header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_ACCEPT_RANGES = 'accept-ranges';
+
+	/**
+	 * Container private access type.
+	 *
+	 * @const string
+	 */
+	const CONTAINER_VISIBILITY_PRIVATE = 'private';
+
+	/**
+	 * Container "container" access type (publicily browseable).
+	 *
+	 * @const string
+	 */
+	const CONTAINER_VISIBILITY_CONTAINER = 'container';
+
+	/**
+	 * Container "blob: access type (direct blob access only).
+	 *
+	 * @const string
+	 */
+	const CONTAINER_VISIBILITY_BLOB = 'blob';
+
+	/**
+	 * Azure API Append Blob type.
+	 *
+	 * @const string
+	 */
+	const APPEND_BLOB_TYPE = 'AppendBlob';
 
 	/**
 	 * Azure Storage account name.
@@ -218,22 +450,431 @@ class Windows_Azure_Rest_Api_Client {
 	}
 
 	/**
+	 * List containers.
+	 *
+	 * @param string $prefix      List containers which names start with this prefix.
+	 * @param int    $max_results Max containers to return.
+	 * @param bool   $next_marker Next collection marker.
+	 *
+	 * @return Windows_Azure_List_Containers_Response|WP_Error
+	 */
+	public function list_containers( $prefix = '', $max_results = self::API_REQUEST_BULK_SIZE, $next_marker = false ) {
+		$query_args = array(
+			'comp'       => 'list',
+			'maxresults' => apply_filters( 'azure_blob_list_containers_max_results', $max_results )
+		);
+
+		if ( ! empty( $prefix ) ) {
+			$query_args['prefix'] = rawurlencode( $prefix );
+		}
+
+		if ( $next_marker ) {
+			$query_args['marker'] = $next_marker;
+		}
+
+		$result = $this->_send_request( 'GET', $query_args );
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		return new Windows_Azure_List_Containers_Response( $result, $this, $prefix, $max_results );
+	}
+
+	/**
+	 * Create new container.
+	 *
+	 * @param string $name       Container name.
+	 * @param string $visibility Container visibility.
+	 *
+	 * @return string|WP_Error
+	 */
+	public function create_container( $name, $visibility = self::CONTAINER_VISIBILITY_BLOB ) {
+		$query_args = array(
+			'restype' => 'container',
+		);
+
+		$name = sanitize_title_with_dashes( $name );
+
+		$headers = array();
+
+		switch ( $visibility ) {
+			case self::CONTAINER_VISIBILITY_BLOB:
+			case self::CONTAINER_VISIBILITY_CONTAINER:
+				$headers[ self::API_HEADER_BLOB_PUBLIC_ACCESS ] = $visibility;
+				break;
+		}
+
+		$result = $this->_send_request( 'PUT', $query_args, $headers, '', $name );
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		return $name;
+	}
+
+	/**
+	 * Get container properties.
+	 *
+	 * @param string $name Container name.
+	 *
+	 * @return array|WP_Error
+	 */
+	public function get_container_properties( $name ) {
+		$query_args = array(
+			'restype' => 'container',
+		);
+
+		$result = $this->_send_request( 'HEAD', $query_args, array(), '', $name );
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		$headers    = array( self::API_HEADER_LAST_MODIFIED, 'etag', 'x-ms-lease-status', 'x-ms-lease-state', 'x-ms-lease-duration' );
+		$properties = array();
+
+		foreach ( $headers as $header ) {
+			$properties[ $header ] = wp_remote_retrieve_header( $result, $header );
+		}
+
+		return $properties;
+	}
+
+	/**
+	 * Get container ACL.
+	 *
+	 * @param string $name Container name.
+	 *
+	 * @return string|WP_Error
+	 */
+	public function get_container_acl( $name ) {
+		$query_args = array(
+			'restype' => 'container',
+			'comp'    => 'acl',
+		);
+
+		$result = $this->_send_request( 'HEAD', $query_args, array(), '', $name );
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		$acl_header = wp_remote_retrieve_header( $result, 'x-ms-blob-public-access' );
+		if ( empty( $acl_header ) ) {
+			$acl_header = self::CONTAINER_VISIBILITY_PRIVATE;
+		}
+
+		return $acl_header;
+	}
+
+	/**
+	 * List blobs in container.
+	 *
+	 * @param string $container   Container name.
+	 * @param string $prefix      List blobs which names start with this prefix.
+	 * @param int    $max_results Max blobs to return.
+	 * @param bool   $next_marker Next collection marker.
+	 *
+	 * @return Windows_Azure_List_Containers_Response|WP_Error
+	 */
+	public function list_blobs( $container, $prefix = '', $max_results = self::API_REQUEST_BULK_SIZE, $next_marker = false ) {
+		$query_args = array(
+			'comp'       => 'list',
+			'maxresults' => apply_filters( 'azure_blob_list_blobs_max_results', $max_results ),
+			'restype'    => 'container',
+		);
+
+		if ( ! empty( $prefix ) ) {
+			$query_args['prefix'] = rawurlencode( $prefix );
+		}
+
+		if ( $next_marker ) {
+			$query_args['marker'] = $next_marker;
+		}
+
+		$result = $this->_send_request( 'GET', $query_args, array(), '', $container );
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		return new Windows_Azure_List_Blobs_Response( $result, $this, $prefix, $max_results );
+	}
+
+	/**
+	 * Delete blob from container.
+	 *
+	 * @param string $container   Container name.
+	 * @param string $remote_path Remote blob path.
+	 *
+	 * @return bool|WP_Error
+	 */
+	public function delete_blob( $container, $remote_path ) {
+		$container = trailingslashit( $container );
+		$result    = $this->_send_request( 'DELETE', array(), array(), '', $container . $remote_path );
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Get blob properties.
+	 *
+	 * @param string $container   Container name.
+	 * @param string $remote_path Remote blob path.
+	 *
+	 * @return array|WP_Error
+	 */
+	public function get_blob_properties( $container, $remote_path ) {
+		$container = trailingslashit( $container );
+		$result    = $this->_send_request( 'HEAD', array(), array(), '', $container . $remote_path );
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		$headers    = array(
+			self::API_HEADER_LAST_MODIFIED,
+			self::API_HEADER_BLOB_TYPE,
+			self::API_HEADER_COPY_COMPLETION_TIME,
+			self::API_HEADER_COPY_STATUS_DESCRIPTION,
+			self::API_HEADER_COPY_ID,
+			self::API_HEADER_COPY_PROGRESS,
+			self::API_HEADER_COPY_SOURCE,
+			self::API_HEADER_COPY_STATUS,
+			self::API_HEADER_LEASE_DURATION,
+			self::API_HEADER_LEASE_STATE,
+			self::API_HEADER_LEASE_STATUS,
+			self::API_HEADER_CONTENT_LENGTH,
+			self::API_HEADER_CONTENT_TYPE,
+			self::API_HEADER_ETAG,
+			self::API_HEADER_CONTENT_MD5,
+			self::API_HEADER_CONTENT_ENCODING,
+			self::API_HEADER_CONTENT_LANGUAGE,
+			self::API_HEADER_CONTENT_DISPOSITION,
+			self::API_HEADER_CACHE_CONTROL,
+			self::API_HEADER_BLOB_SEQUENCE_NUMBER,
+			self::API_HEADER_ACCEPT_RANGES,
+			self::API_HEADER_BLOB_COMMITED_BLOCK_COUNT
+		);
+		$properties = array();
+
+		foreach ( $headers as $header ) {
+			$properties[ $header ] = wp_remote_retrieve_header( $result, $header );
+		}
+
+		return $properties;
+	}
+
+	/**
+	 * Put blob properties.
+	 *
+	 * @param string $container   Container name.
+	 * @param string $remote_path Remote blob path.
+	 * @param array  $properties  Array with properties.
+	 *
+	 * @return array|WP_Error
+	 */
+	public function put_blob_properties( $container, $remote_path, array $properties = array() ) {
+		$container  = trailingslashit( $container );
+		$query_args = array(
+			'comp' => 'properties',
+		);
+
+		$allowed_properties  = array(
+			self::API_HEADER_MS_BLOB_CACHE_CONTROL,
+			self::API_HEADER_MS_BLOB_CONTENT_TYPE,
+			self::API_HEADER_MS_BLOB_CONTENT_MD5,
+			self::API_HEADER_MS_BLOB_CONTENT_ENCODING,
+			self::API_HEADER_MS_BLOB_CONTENT_LANGUAGE,
+			self::API_HEADER_MS_BLOB_CONTENT_DISPOSITION
+		);
+		$filtered_properties = array();
+
+		foreach ( $allowed_properties as $allowed_property ) {
+			if ( isset( $properties[ $allowed_property ] ) ) {
+				$filtered_properties[ $allowed_property ] = $properties[ $allowed_property ];
+			}
+		}
+
+		$result = $this->_send_request( 'PUT', $query_args, $filtered_properties, '', $container . $remote_path );
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		return true;
+	}
+
+	// @formatter:off
+	/**
+	 * Sanitize blobs names. Make sure their names are unique.
+	 *
+	 * @param string $container Container name.
+	 * @param array  $files     File names structure. Expected:
+	 *                          {
+	 *                              $prefix_mask_1 => {
+	 *                                  $local_path_1_1 => $remote_path_1_1,
+	 *                                  $local_path_1_n => $remote_path_1_n
+	 *                              },
+	 *                              $prefix_mask_n => {
+	 *                                  $local_path_n_1 => $remote_path_n_1,
+	 *                                  $local_path_n_n => $remote_path_n_n
+	 *                              },
+	 *                          }
+	 *
+	 * @return array
+	 */
+	// @formatter:on
+	public function sanitize_blobs_names( $container, array $files = array() ) {
+		if ( empty( $files ) ) {
+			return $files;
+		}
+		foreach ( $files as $prefix_group => &$group_contents ) {
+			$cycles = 0;
+			do {
+				$sanitized_group_contents = $this->_sanitize_remote_paths( $container, $prefix_group, $group_contents );
+				$was_sanitized            = $sanitized_group_contents !== $group_contents;
+				if ( $was_sanitized ) {
+					$group_contents = $sanitized_group_contents;
+				}
+				$cycles++;
+			} while ( $was_sanitized && 5 > $cycles );
+		}
+		if ( 5 === $cycles && $was_sanitized ) {
+			return new WP_Error( -100, __( 'Unable to safely sanitize blob names.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+		} else {
+			return $files;
+		}
+	}
+
+	// @formatter:off
+	/**
+	 * Put blobs on Azure Storage account.
+	 *
+	 * @param string $container Container name.
+	 * @param array  $files     File names structure. Should be sainitized before exporting. Expected:
+	 *                          {
+	 *                              $prefix_mask_1 => {
+	 *                                  $local_path_1_1 => $remote_path_1_1,
+	 *                                  $local_path_1_n => $remote_path_1_n
+	 *                              },
+	 *                              $prefix_mask_n => {
+	 *                                  $local_path_n_1 => $remote_path_n_1,
+	 *                                  $local_path_n_n => $remote_path_n_n
+	 *                              },
+	 *                          }
+	 *
+	 * @return array
+	 */
+	// @formatter:on
+	public function put_blobs( $container, array $files = array() ) {
+		if ( empty( $files ) ) {
+			return true;
+		}
+
+		$all_contents = array();
+		foreach ( $files as $group_contents ) {
+			$all_contents += $group_contents;
+		}
+
+		foreach ( $all_contents as $local_path => &$remote_path ) {
+			$remote_path = $this->put_blob( $container, $local_path, $remote_path );
+		}
+
+		return $all_contents;
+	}
+
+	/**
+	 * Put blob on Azure Storage account.
+	 *
+	 * @param string $container   Container name.
+	 * @param string $local_path  Local path.
+	 * @param string $remote_path Remote path.
+	 *
+	 * @return WP_Error
+	 */
+	public function put_blob( $container, $local_path, $remote_path ) {
+		$container  = trailingslashit( $container );
+		$query_args = array();
+		$headers    = apply_filters( 'azure_blob_put_blob_headers', array() );
+
+		// overwrite blob type
+		$headers[ self::API_HEADER_BLOB_TYPE ] = self::APPEND_BLOB_TYPE;
+		$headers[self::API_HEADER_MS_BLOB_CONTENT_TYPE ] = 'image/jpeg';
+
+		$result = $this->_send_request( 'PUT', $query_args, $headers, '', $container . $remote_path );
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		$contents_provider = new Windows_Azure_File_Contents_Provider( $local_path );
+		$is_valid          = $contents_provider->is_valid();
+		if ( is_wp_error( $is_valid ) || ! $is_valid ) {
+			return $is_valid;
+		}
+		do {
+			$chunk = $contents_provider->get_chunk();
+			if ( $chunk ) {
+				$result = $this->_append_blob( $container, $remote_path, $chunk );
+			}
+		} while ( false !== $chunk && true === $result );
+
+		$contents_provider->close();
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		return $this->_build_api_endpoint_url( $container . $remote_path );
+	}
+
+	/**
+	 * Append blob operation.
+	 *
+	 * @param string $container   Container.
+	 * @param string $remote_path Remote path.
+	 * @param string $content     Content to append.
+	 *
+	 * @return array|bool|WP_Error
+	 */
+	protected function _append_blob( $container, $remote_path, $content ) {
+		$container  = trailingslashit( $container );
+		$query_args = array(
+			'comp' => 'appendblock',
+		);
+		$headers    = apply_filters( 'azure_blob_append_blob_headers', array(), $container, $remote_path, $content, $this );
+		$result     = $this->_send_request( 'PUT', $query_args, $headers, $content, $container . $remote_path );
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Send REST request and return response.
 	 *
 	 * @param string       $method     HTTP verb.
 	 * @param array        $query_args Request query args.
 	 * @param array        $headers    Request headers.
 	 * @param string|array $body       Request body.
+	 * @param string       $path       REST API endpoint path.
 	 *
 	 * @return array|WP_Error
 	 */
-	protected function _send_request( $method, array $query_args = array(), array $headers = array(), $body = '' ) {
+	protected function _send_request( $method, array $query_args = array(), array $headers = array(), $body = '', $path = '' ) {
 
 		$query_args = wp_parse_args( $query_args, array(
 			'timeout' => apply_filters( 'azure_blob_operation_timeout', self::API_REQUEST_TIMEOUT )
 		) );
 
-		$endpoint_url = $this->_build_api_endpoint_url();
+		$endpoint_url = $this->_build_api_endpoint_url( $path );
 
 		if ( is_wp_error( $endpoint_url ) ) {
 			return $endpoint_url;
@@ -272,39 +913,39 @@ class Windows_Azure_Rest_Api_Client {
 
 		$body = wp_remote_retrieve_body( $result );
 
-		if ( empty( $body ) || is_wp_error( $result ) ) {
+		if ( is_wp_error( $result ) ) {
 			return $result;
 		}
 
 		$response_code = (int) wp_remote_retrieve_response_code( $result );
-		if ( 200 !== $response_code ) {
+
+		if ( $response_code < 200 || $response_code > 299 ) {
 			return new WP_Error( $response_code, wp_remote_retrieve_response_message( $result ) );
 		}
 
 		$xml_structure = simplexml_load_string( $body );
-
-		return json_decode( wp_json_encode( $xml_structure ), true );
+		if ( ! empty( $body ) ) {
+			return json_decode( wp_json_encode( $xml_structure ), true );
+		} else {
+			return $result;
+		}
 	}
 
 	/**
 	 * Return Blob API endpoint URL.
 	 *
+	 * @param string $path URI path.
+	 *
 	 * @return string|WP_Error
 	 */
-	protected function _build_api_endpoint_url() {
-		static $endpoint_url;
-
-		if ( null !== $endpoint_url ) {
-			return $endpoint_url;
-		}
-
+	protected function _build_api_endpoint_url( $path = '' ) {
 		if ( empty( $this->_account_name ) ) {
 			return new WP_Error( -1, __( 'Storage account name not set.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
 		}
 
 		$endpoint_url = sprintf( self::API_BLOB_ENDPOINT, $this->_account_name );
 
-		return $endpoint_url;
+		return $endpoint_url . trim( $path );
 	}
 
 	/**
@@ -366,5 +1007,63 @@ class Windows_Azure_Rest_Api_Client {
 		}
 
 		return $canonicalized_resource;
+	}
+
+	/**
+	 * Sanitize remote paths. Check if given paths exist and append unique suffix when necessary.
+	 *
+	 * @param string $container      Container to check paths against.
+	 * @param string $prefix_group   Prefix check group.
+	 * @param string $group_contents Group contents.
+	 *
+	 * @return Windows_Azure_List_Containers_Response|WP_Error
+	 */
+	protected function _sanitize_remote_paths( $container, $prefix_group, $group_contents ) {
+		$remote_paths = array_flip( $group_contents );
+		$blobs        = $this->list_blobs( $container, $prefix_group );
+
+		if ( is_wp_error( $blobs ) ) {
+			return $blobs;
+		}
+
+		$needs_sanitization = array();
+		foreach ( $blobs as $blob ) {
+			if ( isset( $remote_paths[ $blob['Name'] ] ) ) {
+
+				$needs_sanitization[] = $blob['Name'];
+				unset( $remote_paths[ $blob['Name'] ] );
+
+				// quit early as $blob is an Iterator instance with lazy loading
+				if ( 0 === count( $remote_paths ) ) {
+					break;
+				}
+			}
+		}
+
+		if ( empty( $needs_sanitization ) ) {
+			return $group_contents;
+		}
+
+		$sanitized_names = array();
+		$remote_paths    = array_flip( $group_contents );
+
+		foreach ( $needs_sanitization as $item ) {
+			$info     = pathinfo( $item );
+			$new_name = isset( $info['dirname'] ) ? trailingslashit( $info['dirname'] ) : '';
+			$new_name .= $info['filename'] . '-' . uniqid( '', false );
+			$new_name .= isset( $info['extension'] ) ? '.' . $info['extension'] : '';
+			$sanitized_names[ $item ] = $new_name;
+		}
+
+		foreach ( $sanitized_names as $original_path => $fixed_path ) {
+			if ( ! isset( $remote_paths[ $original_path ] ) ) {
+				continue;
+			}
+
+			$index                    = $remote_paths[ $original_path ];
+			$group_contents[ $index ] = $fixed_path;
+		}
+
+		return $group_contents;
 	}
 }

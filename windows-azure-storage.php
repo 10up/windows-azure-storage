@@ -72,6 +72,15 @@ require_once MSFT_AZURE_PLUGIN_PATH . 'windows-azure-storage-settings.php';
 require_once MSFT_AZURE_PLUGIN_PATH . 'windows-azure-storage-dialog.php';
 require_once MSFT_AZURE_PLUGIN_PATH . 'windows-azure-storage-util.php';
 require_once MSFT_AZURE_PLUGIN_PATH . 'includes/class-windows-azure-rest-api-client.php';
+require_once MSFT_AZURE_PLUGIN_PATH . 'includes/class-windows-azure-generic-list-response.php';
+require_once MSFT_AZURE_PLUGIN_PATH . 'includes/class-windows-azure-list-containers-response.php';
+require_once MSFT_AZURE_PLUGIN_PATH . 'includes/class-windows-azure-list-blobs-response.php';
+require_once MSFT_AZURE_PLUGIN_PATH . 'includes/class-windows-azure-config-provider.php';
+require_once MSFT_AZURE_PLUGIN_PATH . 'includes/class-windows-azure-filesystem-access-provider.php';
+require_once MSFT_AZURE_PLUGIN_PATH . 'includes/class-windows-azure-file-contents-provider.php';
+require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php';
+require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
+require_once MSFT_AZURE_PLUGIN_PATH . 'includes/class-windows-azure-wp-filesystem-direct.php';
 
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	require_once MSFT_AZURE_PLUGIN_PATH . 'bin/wp-cli.php';
@@ -90,6 +99,7 @@ add_filter( 'media_buttons_context', 'windows_azure_storage_media_buttons_contex
  * @internal Callback for 'media_upload_tabs'.
  *
  * @param array $tabs Array of existing tabs.
+ *
  * @return array Filtered array of tabs with our additions.
  */
 function azure_storage_media_menu( $tabs ) {
@@ -647,6 +657,7 @@ function upload_tab() {
  * @internal Callback for 'media_buttons_context' filter.
  *
  * @param string $context Media buttons context.
+ *
  * @return string Media buttons context with our button appended.
  */
 function windows_azure_storage_media_buttons_context( $context ) {
@@ -718,10 +729,12 @@ function windows_azure_storage_plugin_menu() {
  *                                    pixel density value if paired with an 'x' descriptor.
  *      }
  * }
+ *
  * @param array  $size_array    Array of width and height values in pixels (in that order).
  * @param string $image_src     The 'src' of the image.
  * @param array  $image_meta    The image meta data as returned by 'wp_get_attachment_metadata()'.
  * @param int    $attachment_id Image attachment ID or 0.
+ *
  * @return array The filtered $sources array.
  */
 function windows_azure_storage_wp_calculate_image_srcset( $sources, $size_array, $image_src, $image_meta, $attachment_id ) {
