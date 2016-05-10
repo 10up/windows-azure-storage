@@ -1,9 +1,9 @@
 <?php
 
 /**
- * windows-azure-list-containers-response.php
+ * windows-azure-list-blobs-response.php
  *
- * Windows Azure Storage REST API list containers response.
+ * Windows Azure Storage REST API list blobs response.
  *
  * Version: 4.0.0
  *
@@ -42,8 +42,7 @@
  * @license   New BSD license, (http://www.opensource.org/licenses/bsd-license.php)
  * @link      http://www.microsoft.com
  */
-class Windows_Azure_List_Containers_Response extends Windows_Azure_Generic_List_Response {
-
+class Windows_Azure_List_Blobs_Response extends Windows_Azure_Generic_List_Response {
 	/**
 	 * Windows_Azure_List_Containers_Response constructor.
 	 *
@@ -55,13 +54,13 @@ class Windows_Azure_List_Containers_Response extends Windows_Azure_Generic_List_
 	public function __construct( array $rest_response, Windows_Azure_Rest_Api_Client $client, $prefix = '', $max_results = Windows_Azure_Rest_Api_Client::API_REQUEST_BULK_SIZE ) {
 		parent::__construct( $rest_response, $client, $prefix, $max_results );
 
-		if ( isset( $rest_response['Containers']['Container'] ) && ! empty( $rest_response['Containers']['Container'] ) ) {
-			if ( isset( $rest_response['Containers']['Container']['Name'] ) ) {
-				$single_container                           = $rest_response['Containers']['Container'];
-				$rest_response['Containers']['Container']   = array();
-				$rest_response['Containers']['Container'][] = $single_container;
+		if ( isset( $rest_response['Blobs']['Blob'] ) && ! empty( $rest_response['Blobs']['Blob'] ) ) {
+			if ( isset( $rest_response['Blobs']['Blob']['Name'] ) ) {
+				$blob                             = $rest_response['Blobs']['Blob'];
+				$rest_response['Blobs']['Blob']   = array();
+				$rest_response['Blobs']['Blob'][] = $blob;
 			}
-			foreach ( $rest_response['Containers']['Container'] as $container ) {
+			foreach ( $rest_response['Blobs']['Blob'] as $container ) {
 				$this->_items[] = $container;
 			}
 		}

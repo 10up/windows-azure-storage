@@ -95,9 +95,206 @@ class Windows_Azure_Rest_Api_Client {
 
 	/**
 	 * Azure API canonicalized
+	 *
 	 * @const string
 	 */
 	const API_CANONICALIZED_HEADER_PREFIX = 'x-ms-';
+
+	/**
+	 * Last-Modified header.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_LAST_MODIFIED = 'last-modified';
+
+	/**
+	 * Azure API blob type header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_BLOB_TYPE = 'x-ms-blob-type';
+
+	/**
+	 * Azure API blob copy completion time header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_COPY_COMPLETION_TIME = 'x-ms-copy-completion-time';
+
+	/**
+	 * Azure API blob copy status description header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_COPY_STATUS_DESCRIPTION = 'x-ms-copy-status-description';
+
+	/**
+	 * Azure API blob copy id header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_COPY_ID = 'x-ms-copy-id';
+
+	/**
+	 * Azure API blob copy progress header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_COPY_PROGRESS = 'x-ms-copy-progress';
+
+	/**
+	 * Azure API blob copy source header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_COPY_SOURCE = 'x-ms-copy-source';
+
+	/**
+	 * Azure API blob copy status header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_COPY_STATUS = 'x-ms-copy-status';
+
+	/**
+	 * Azure API blob lease duration header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_LEASE_DURATION = 'x-ms-lease-duration';
+
+	/**
+	 * Azure API blob lease state header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_LEASE_STATE = 'x-ms-lease-state';
+
+	/**
+	 * Azure API blob lease status header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_LEASE_STATUS = 'x-ms-lease-status';
+
+	/**
+	 * Content-Length header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_CONTENT_LENGTH = 'content-length';
+
+	/**
+	 * Content-Type header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_CONTENT_TYPE = 'content-type';
+
+	/**
+	 * Etag header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_ETAG = 'etag';
+
+	/**
+	 * Content-MD5 header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_CONTENT_MD5 = 'content-md5';
+
+	/**
+	 * Content-Encoding header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_CONTENT_ENCODING = 'content-encoding';
+
+	/**
+	 * Content-Language header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_CONTENT_LANGUAGE = 'content-language';
+
+	/**
+	 * Content-Disposition header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_CONTENT_DISPOSITION = 'content-disposition';
+
+	/**
+	 * Cache-Control header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_CACHE_CONTROL = 'cache-control';
+
+	/**
+	 * Azure API blob sequence number header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_BLOB_SEQUENCE_NUMBER = 'x-ms-blob-sequence-number';
+
+	/**
+	 * Azure API blob commited block count header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_BLOB_COMMITED_BLOCK_COUNT = 'x-ms-blob-committed-block-count';
+
+	/**
+	 * Azure API blob cache control property header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_MS_BLOB_CACHE_CONTROL = 'x-ms-blob-cache-control';
+
+	/**
+	 * Azure API blob content type property header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_MS_BLOB_CONTENT_TYPE = 'x-ms-blob-content-type';
+
+	/**
+	 * Azure API blob content MD5 property header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_MS_BLOB_CONTENT_MD5 = 'x-ms-blob-content-md5';
+
+	/**
+	 * Azure API blob content encoding property header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_MS_BLOB_CONTENT_ENCODING = 'x-ms-blob-content-encoding';
+
+	/**
+	 * Azure API blob content language property header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_MS_BLOB_CONTENT_LANGUAGE = 'x-ms-blob-content-language';
+
+	/**
+	 * Azure API blob content disposition property header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_MS_BLOB_CONTENT_DISPOSITION = 'x-ms-blob-content-disposition';
+
+	/**
+	 * Accept-Ranges header name.
+	 *
+	 * @const string
+	 */
+	const API_HEADER_ACCEPT_RANGES = 'accept-ranges';
 
 	/**
 	 * Container private access type.
@@ -328,7 +525,7 @@ class Windows_Azure_Rest_Api_Client {
 			return $result;
 		}
 
-		$headers    = array( 'last-modified', 'etag', 'x-ms-lease-status', 'x-ms-lease-state', 'x-ms-lease-duration' );
+		$headers    = array( self::API_HEADER_LAST_MODIFIED, 'etag', 'x-ms-lease-status', 'x-ms-lease-state', 'x-ms-lease-duration' );
 		$properties = array();
 
 		foreach ( $headers as $header ) {
@@ -363,6 +560,148 @@ class Windows_Azure_Rest_Api_Client {
 		}
 
 		return $acl_header;
+	}
+
+	/**
+	 * List blobs in container.
+	 *
+	 * @param string $container   Container name.
+	 * @param string $prefix      List blobs which names start with this prefix.
+	 * @param int    $max_results Max blobs to return.
+	 * @param bool   $next_marker Next collection marker.
+	 *
+	 * @return Windows_Azure_List_Containers_Response|WP_Error
+	 */
+	public function list_blobs( $container, $prefix = '', $max_results = self::API_REQUEST_BULK_SIZE, $next_marker = false ) {
+		$query_args = array(
+			'comp'       => 'list',
+			'maxresults' => apply_filters( 'azure_blob_list_blobs_max_results', $max_results ),
+			'restype'    => 'container',
+		);
+
+		if ( ! empty( $prefix ) ) {
+			$query_args['prefix'] = rawurlencode( $prefix );
+		}
+
+		if ( $next_marker ) {
+			$query_args['marker'] = $next_marker;
+		}
+
+		$result = $this->_send_request( 'GET', $query_args, array(), '', $container );
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		return new Windows_Azure_List_Blobs_Response( $result, $this, $prefix, $max_results );
+	}
+
+	/**
+	 * Delete blob from container.
+	 *
+	 * @param string $container   Container name.
+	 * @param string $remote_path Remote blob path.
+	 *
+	 * @return bool|WP_Error
+	 */
+	public function delete_blob( $container, $remote_path ) {
+		$container = trailingslashit( $container );
+		$result    = $this->_send_request( 'DELETE', array(), array(), '', $container . $remote_path );
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Get blob properties.
+	 *
+	 * @param string $container   Container name.
+	 * @param string $remote_path Remote blob path.
+	 *
+	 * @return array|WP_Error
+	 */
+	public function get_blob_properties( $container, $remote_path ) {
+		$container = trailingslashit( $container );
+		$result    = $this->_send_request( 'HEAD', array(), array(), '', $container . $remote_path );
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		$headers    = array(
+			self::API_HEADER_LAST_MODIFIED,
+			self::API_HEADER_BLOB_TYPE,
+			self::API_HEADER_COPY_COMPLETION_TIME,
+			self::API_HEADER_COPY_STATUS_DESCRIPTION,
+			self::API_HEADER_COPY_ID,
+			self::API_HEADER_COPY_PROGRESS,
+			self::API_HEADER_COPY_SOURCE,
+			self::API_HEADER_COPY_STATUS,
+			self::API_HEADER_LEASE_DURATION,
+			self::API_HEADER_LEASE_STATE,
+			self::API_HEADER_LEASE_STATUS,
+			self::API_HEADER_CONTENT_LENGTH,
+			self::API_HEADER_CONTENT_TYPE,
+			self::API_HEADER_ETAG,
+			self::API_HEADER_CONTENT_MD5,
+			self::API_HEADER_CONTENT_ENCODING,
+			self::API_HEADER_CONTENT_LANGUAGE,
+			self::API_HEADER_CONTENT_DISPOSITION,
+			self::API_HEADER_CACHE_CONTROL,
+			self::API_HEADER_BLOB_SEQUENCE_NUMBER,
+			self::API_HEADER_ACCEPT_RANGES,
+			self::API_HEADER_BLOB_COMMITED_BLOCK_COUNT
+		);
+		$properties = array();
+
+		foreach ( $headers as $header ) {
+			$properties[ $header ] = wp_remote_retrieve_header( $result, $header );
+		}
+
+		return $properties;
+	}
+
+	/**
+	 * Put blob properties.
+	 *
+	 * @param string $container   Container name.
+	 * @param string $remote_path Remote blob path.
+	 * @param array  $properties  Array with properties.
+	 *
+	 * @return array|WP_Error
+	 */
+	public function put_blob_properties( $container, $remote_path, array $properties = array() ) {
+		$container  = trailingslashit( $container );
+		$query_args = array(
+			'comp' => 'properties',
+		);
+
+		$allowed_properties  = array(
+			self::API_HEADER_MS_BLOB_CACHE_CONTROL,
+			self::API_HEADER_MS_BLOB_CONTENT_TYPE,
+			self::API_HEADER_MS_BLOB_CONTENT_MD5,
+			self::API_HEADER_MS_BLOB_CONTENT_ENCODING,
+			self::API_HEADER_MS_BLOB_CONTENT_LANGUAGE,
+			self::API_HEADER_MS_BLOB_CONTENT_DISPOSITION
+		);
+		$filtered_properties = array();
+
+		foreach ( $allowed_properties as $allowed_property ) {
+			if ( isset( $properties[ $allowed_property ] ) ) {
+				$filtered_properties[ $allowed_property ] = $properties[ $allowed_property ];
+			}
+		}
+
+		$result = $this->_send_request( 'PUT', $query_args, $filtered_properties, '', $container . $remote_path );
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		return true;
 	}
 
 	/**
@@ -447,12 +786,6 @@ class Windows_Azure_Rest_Api_Client {
 	 * @return string|WP_Error
 	 */
 	protected function _build_api_endpoint_url( $path = '' ) {
-		static $endpoint_url;
-
-		if ( null !== $endpoint_url ) {
-			return $endpoint_url;
-		}
-
 		if ( empty( $this->_account_name ) ) {
 			return new WP_Error( -1, __( 'Storage account name not set.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
 		}
@@ -521,5 +854,9 @@ class Windows_Azure_Rest_Api_Client {
 		}
 
 		return $canonicalized_resource;
+	}
+
+	protected function _sanitize_remote_path( $container, $remote_name ) {
+
 	}
 }

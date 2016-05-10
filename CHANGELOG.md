@@ -3,6 +3,7 @@
   * Replaced Azure SDK with independent library.
   * Introduced filter `azure_blob_operation_timeout` which defines REST operation timeout.
   * Introduced filter `azure_blob_list_containers_max_results` which defines max size of containers listing per one request.
+  * Introduced filter `azure_blob_list_blobs_max_results` which defines max size of blobs listing per one request. 
 
 3.0.1 / 2016-03-01
 ==================

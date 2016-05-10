@@ -1,9 +1,9 @@
 <?php
 
 /**
- * windows-azure-list-containers-response.php
+ * windows-azure-file-system-access-provider.php
  *
- * Windows Azure Storage REST API list containers response.
+ * Windows Azure Storage REST API client.
  *
  * Version: 4.0.0
  *
@@ -42,41 +42,27 @@
  * @license   New BSD license, (http://www.opensource.org/licenses/bsd-license.php)
  * @link      http://www.microsoft.com
  */
-class Windows_Azure_List_Containers_Response extends Windows_Azure_Generic_List_Response {
+class Windows_Azure_Filesystem_Access_Provider {
 
 	/**
-	 * Windows_Azure_List_Containers_Response constructor.
+	 * Return WordPress Filesystem access class.
 	 *
-	 * @param array                         $rest_response Rest response.
-	 * @param Windows_Azure_Rest_Api_Client $client        REST client.
-	 * @param string                        $prefix        Search prefix.
-	 * @param int                           $max_results   Max results per one request.
+	 * @return bool|WP_Filesystem_Base
 	 */
-	public function __construct( array $rest_response, Windows_Azure_Rest_Api_Client $client, $prefix = '', $max_results = Windows_Azure_Rest_Api_Client::API_REQUEST_BULK_SIZE ) {
-		parent::__construct( $rest_response, $client, $prefix, $max_results );
+	static public function get_provider() {
+		global $wp_filesystem;
+		static $filesystem_access;
 
-		if ( isset( $rest_response['Containers']['Container'] ) && ! empty( $rest_response['Containers']['Container'] ) ) {
-			if ( isset( $rest_response['Containers']['Container']['Name'] ) ) {
-				$single_container                           = $rest_response['Containers']['Container'];
-				$rest_response['Containers']['Container']   = array();
-				$rest_response['Containers']['Container'][] = $single_container;
+		if ( null === $filesystem_access ) {
+			if ( ! WP_Filesystem() ) {
+				return false;
 			}
-			foreach ( $rest_response['Containers']['Container'] as $container ) {
-				$this->_items[] = $container;
+			$filesystem_access = $wp_filesystem;
+			if ( 'direct' === get_filesystem_method() ) {
+				$filesystem_access = new Windows_Azure_WP_Filesystem_Direct( null );
 			}
 		}
-	}
 
-	/**
-	 * Lazy loading of containers.
-	 *
-	 * @param string $prefix      Search prefix.
-	 * @param int    $max_results Max API listing results.
-	 * @param string $next_marker Offset marker.
-	 *
-	 * @return null|Windows_Azure_List_Containers_Response
-	 */
-	protected function _list_items( $prefix, $max_results, $next_marker ) {
-		return $this->_rest_client->list_containers( $prefix, $max_results, $next_marker );
+		return $filesystem_access;
 	}
 }
