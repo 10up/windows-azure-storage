@@ -130,7 +130,7 @@ abstract class Windows_Azure_Generic_List_Response implements Iterator {
 	public function next() {
 		if ( ! empty( $this->_next_marker ) && ( $this->_position === count( $this->_items ) - 1 ) ) {
 			$lazy_loaded = $this->_list_items( $this->_prefix, $this->_max_results, $this->_next_marker );
-			if ( ! is_wp_error( $lazy_loaded ) && $lazy_loaded instanceof Windows_Azure_Generic_List_Response ) {
+			if ( $lazy_loaded instanceof Windows_Azure_Generic_List_Response ) {
 				$this->_items       = array_merge( $this->_items, $lazy_loaded->get_all() );
 				$this->_next_marker = $lazy_loaded->get_next_marker();
 				unset( $lazy_loaded );

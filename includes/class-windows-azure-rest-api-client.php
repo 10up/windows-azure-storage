@@ -814,7 +814,7 @@ class Windows_Azure_Rest_Api_Client {
 
 		$contents_provider = new Windows_Azure_File_Contents_Provider( $local_path );
 		$is_valid          = $contents_provider->is_valid();
-		if ( is_wp_error( $is_valid ) || ! $is_valid ) {
+		if ( ! $is_valid || is_wp_error( $is_valid ) ) {
 			return $is_valid;
 		}
 		do {
