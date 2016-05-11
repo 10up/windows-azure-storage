@@ -141,18 +141,14 @@ function createContainerIfRequired( &$success ) {
 			}
 
 			try {
-				$storageClient = WindowsAzureStorageUtil::getStorageClient(
-					sanitize_text_field( $_POST["azure_storage_account_name"] ),
-					sanitize_text_field( $_POST["azure_storage_account_primary_access_key"] ),
-					sanitize_text_field( $_POST["http_proxy_host"] ),
-					absint( $_POST["http_proxy_port"] ),
-					sanitize_text_field( $_POST["http_proxy_username"] ),
-					sanitize_text_field( $_POST["http_proxy_password"] )
-				);
-				WindowsAzureStorageUtil::createPublicContainer( sanitize_text_field( $_POST['newcontainer'] ), $storageClient );
+				$result = Windows_Azure_Helper::create_container( sanitize_text_field( $_POST['newcontainer'] ) );
 
-				return '<FONT COLOR="green">The container \'' . sanitize_text_field( $_POST["newcontainer"] ) . '\' successfully created <br/>' .
-				       'To use this container as default container, select it from the above drop down and click \'Save Changes\'</FONT>';
+				if ( ! is_wp_error( $result ) ) {
+					return '<FONT COLOR="green">The container \'' . esc_html( $result ) . '\' successfully created <br/>' .
+					       'To use this container as default container, select it from the above drop down and click \'Save Changes\'</FONT>';
+				} else {
+					return '<FONT COLOR="red">Container creation failed, Error: ' . $result->get_error_message() . '</FONT>';
+				}
 			} catch ( Exception $e ) {
 				$success = false;
 
@@ -176,93 +172,89 @@ function createContainerIfRequired( &$success ) {
  * @return void
  */
 function show_windows_azure_storage_settings( $mode ) {
-	$containerCreationStatus = true;
-	$message                 = createContainerIfRequired( $containerCreationStatus );
+	$container_creation_status = true;
+	$message                 = createContainerIfRequired( $container_creation_status );
 	// Storage Account Settings from db if already set
 	//TODO: check POST values first and use these for fallbacks
-	$storageAccountName = WindowsAzureStorageUtil::getAccountName();
-	$storageAccountKey  = WindowsAzureStorageUtil::getAccountKey();
-	$httpProxyHost      = WindowsAzureStorageUtil::getHttpProxyHost();
-	$httpProxyPort      = WindowsAzureStorageUtil::getHttpProxyPort();
-	$httpProxyUserName  = WindowsAzureStorageUtil::getHttpProxyUserName();
-	$httpProxyPassword  = WindowsAzureStorageUtil::getHttpProxyPassword();
-	$defaultContainer   = WindowsAzureStorageUtil::getDefaultContainer();
-	$newContainerName   = null;
+	$storage_account_name = Windows_Azure_Helper::get_account_name();
+	$storage_account_key  = Windows_Azure_Helper::get_account_key();
+	$http_proxy_host      = Windows_Azure_Helper::get_http_proxy_host();
+	$http_proxy_port      = Windows_Azure_Helper::get_http_proxy_port();
+	$http_proxy_username  = Windows_Azure_Helper::get_http_proxy_username();
+	$http_proxy_password  = Windows_Azure_Helper::get_http_proxy_password();
+	$default_container    = Windows_Azure_Helper::get_default_container();
+	$new_container_name   = null;
 	// Use the account settings in the $_POST if this page load is
 	// a result of container creation operation.
 	if (
+		isset( $_REQUEST['_wpnonce'] ) &&
 		wp_verify_nonce( $_REQUEST['_wpnonce'], 'windows-azure-storage-settings-group-options' ) &&
 		isset( $_POST['action2'] ) && 'update' === $_POST['action2']
 	) {
 		//TODO sanitize and set from a loop instead of a bunch of if…then statements
 		if ( array_key_exists( "azure_storage_account_name", $_POST ) ) {
-			$storageAccountName = sanitize_text_field( $_POST["azure_storage_account_name"] );
+			$storage_account_name = sanitize_text_field( $_POST["azure_storage_account_name"] );
 		}
 
 		if ( array_key_exists( "azure_storage_account_primary_access_key", $_POST ) ) {
-			$storageAccountKey = sanitize_text_field( $_POST["azure_storage_account_primary_access_key"] );
+			$storage_account_key = sanitize_text_field( $_POST["azure_storage_account_primary_access_key"] );
 		}
 
 		if ( array_key_exists( "http_proxy_host", $_POST ) ) {
-			$httpProxyHost = sanitize_text_field( $_POST["http_proxy_host"] );
+			$http_proxy_host = sanitize_text_field( $_POST["http_proxy_host"] );
 		}
 
 		if ( array_key_exists( "http_proxy_port", $_POST ) ) {
-			$httpProxyPort = absint( $_POST["http_proxy_port"] );
+			$http_proxy_port = absint( $_POST["http_proxy_port"] );
 		}
 
 		if ( array_key_exists( "http_proxy_username", $_POST ) ) {
-			$httpProxyUserName = sanitize_text_field( $_POST["http_proxy_username"] );
+			$http_proxy_username = sanitize_text_field( $_POST["http_proxy_username"] );
 		}
 
 		if ( array_key_exists( "http_proxy_password", $_POST ) ) {
-			$httpProxyPassword = sanitize_text_field( $_POST["http_proxy_password"] );
+			$http_proxy_password = sanitize_text_field( $_POST["http_proxy_password"] );
 		}
 	}
 
 	// We need to show the container name if the request for
 	// container creation fails.
-	if ( ! $containerCreationStatus ) {
-		$newContainerName = sanitize_text_field( $_POST["newcontainer"] );
+	if ( ! $container_creation_status ) {
+		$new_container_name = sanitize_text_field( $_POST["newcontainer"] );
 	}
 
-	$ContainerResult = null;
 	try {
-		if ( ! empty( $storageAccountName ) && ! empty( $storageAccountKey ) ) {
-			//TODO: store the connection string and use it instead of always generating the client connection this way
-			$storageClient           = WindowsAzureStorageUtil::getStorageClient(
-				$storageAccountName,
-				$storageAccountKey,
-				$httpProxyHost,
-				$httpProxyPort,
-				$httpProxyUserName,
-				$httpProxyPassword
-			);
-			$ContainerResult         = $storageClient->listContainers();
-			$privateContainerWarning = null;
-			if ( ! empty( $defaultContainer ) ) {
-				$getContainerAclResult = $storageClient->getContainerAcl( $defaultContainer );
-				$containerAcl          = $getContainerAclResult->getContainerAcl();
-				if ( $containerAcl->getPublicAccess() === PublicAccessType::NONE ) {
+		if ( ! empty( $storage_account_name ) && ! empty( $storage_account_key ) ) {
+			$containers_list         = Windows_Azure_Helper::list_containers();
+			$private_container_warning = null;
+			if ( ! empty( $default_container ) ) {
+				$container_acl_result = Windows_Azure_Helper::get_container_acl( $default_container );
+
+				if ( is_wp_error( $container_acl_result ) ) {
+
+					$private_container_warning = $container_acl_result->get_error_message();
+
+				} else if ( $container_acl_result === Windows_Azure_Rest_Api_Client::CONTAINER_VISIBILITY_PRIVATE ) {
 					/* translators: %s is the container name and is used twice */
-					$privateContainerWarning = sprintf(
+					$private_container_warning = sprintf(
 						__(
 							'Warning: The container "%1$s" is set to "private" and cannot be used.' .
 							'Please choose a public container as the default, or set the "%1$s" container to ' .
 							'"public" in your Azure Storage settings.',
-							'windows-azure-storage'
+							MSFT_AZURE_PLUGIN_DOMAIN_NAME
 						),
-						$defaultContainer
+						$default_container
 					);
 				}
 			}
-			if ( ! is_null( $privateContainerWarning ) ) {
-				printf( '<p style="margin: 10px; color: red;">%s</p>', esc_html( $privateContainerWarning ) );
+			if ( ! is_null( $private_container_warning ) ) {
+				printf( '<p style="margin: 10px; color: red;">%s</p>', esc_html( $private_container_warning ) );
 			}
 		}
 	} catch ( Exception $ex ) {
 		// Fires if account keys are not yet set
 		error_log( $ex->getMessage(), E_USER_WARNING );
+		printf( '<p style="margin: 10px; color: red;">%s</p>', esc_html( $ex->getMessage() ) );
 	}
 	?>
 	<table class="form-table" border="0">
@@ -272,7 +264,7 @@ function show_windows_azure_storage_settings( $mode ) {
 			</th>
 			<td>
 				<input type="text" name="azure_storage_account_name" title="Windows Azure Storage Account Name" value="<?php
-				echo esc_attr( $storageAccountName ); ?>" />
+				echo esc_attr( $storage_account_name ); ?>" />
 			</td>
 			<td></td>
 		</tr>
@@ -282,7 +274,7 @@ function show_windows_azure_storage_settings( $mode ) {
 				<label for="azure_storage_account_primary_access_key" title="Windows Azure Storage Account Primary Access Key">Primary Access Key</label>
 			</th>
 			<td>
-				<input type="text" name="azure_storage_account_primary_access_key" title="Windows Azure Storage Account Primary Access Key" value="<?php echo esc_attr( $storageAccountKey ); ?>" />
+				<input type="text" name="azure_storage_account_primary_access_key" title="Windows Azure Storage Account Primary Access Key" value="<?php echo esc_attr( $storage_account_key ); ?>" />
 			</td>
 			<td></td>
 		</tr>
@@ -294,12 +286,12 @@ function show_windows_azure_storage_settings( $mode ) {
 			<td WIDTH="80px">
 				<select name="default_azure_storage_account_container_name" title="Default container to be used for storing media files" onChange="<?php echo esc_js( 'onContainerSelectionChanged( false );' ); ?>">
 					<?php
-					if ( ! empty( $ContainerResult ) && ( count( $ContainerResult->getContainers() ) > 0 ) ) {
-						foreach ( $ContainerResult->getContainers() as $container ) {
+					if ( ! is_wp_error( $containers_list ) ) {
+						foreach ( $containers_list as $container ) {
 							?>
-							<option value="<?php echo esc_attr( $container->getName() ); ?>"
-								<?php selected( $container->getName(), $defaultContainer ); ?>>
-								<?php echo esc_html( $container->getName() ); ?>
+							<option value="<?php echo esc_attr( $container['Name'] ); ?>"
+								<?php selected( $container['Name'], $default_container ); ?>>
+								<?php echo esc_html( $container['Name'] ); ?>
 							</option>
 							<?php
 						}
@@ -323,7 +315,7 @@ function show_windows_azure_storage_settings( $mode ) {
 									<label for="newcontainer" title="Name of the new container to create">Create New Container: </label>
 								</td>
 								<td>
-									<input type="text" name="newcontainer" title="Name of the new container to create" value="<?php echo esc_attr( $newContainerName ); ?>" />
+									<input type="text" name="newcontainer" title="Name of the new container to create" value="<?php echo esc_attr( $new_container_name ); ?>" />
 									<input type="button" class="button-primary" value="<?php esc_attr_e( 'Create', 'windows-azure-storage' ); ?>" onclick="<?php echo esc_js( sprintf( 'createContainer("%s");', esc_url( $_SERVER['REQUEST_URI'] ) ) ); ?>" />
 								</td>
 							</tr>
@@ -404,7 +396,7 @@ function show_windows_azure_storage_settings( $mode ) {
 			</th>
 			<td>
 				<input type="text" name="http_proxy_host" title="Use HTTP proxy server host name if web proxy server is configured" value="<?php
-				echo esc_attr( $httpProxyHost ); ?>" />
+				echo esc_attr( $http_proxy_host ); ?>" />
 			</td>
 			<td></td>
 		</tr>
@@ -414,7 +406,7 @@ function show_windows_azure_storage_settings( $mode ) {
 				<label for="http_proxy_port" title="Use HTTP proxy port if web proxy server is configured">HTTP Proxy Port</label>
 			</th>
 			<td>
-				<input type="number" name="http_proxy_port" title="Use HTTP proxy port if web proxy server is configured" value="<?php echo esc_attr( $httpProxyPort ); ?>" />
+				<input type="number" name="http_proxy_port" title="Use HTTP proxy port if web proxy server is configured" value="<?php echo esc_attr( $http_proxy_port ); ?>" />
 			</td>
 			<td></td>
 		</tr>
@@ -425,7 +417,7 @@ function show_windows_azure_storage_settings( $mode ) {
 			</th>
 			<td>
 				<input type="text" name="http_proxy_username" title="Use HTTP proxy user name if credential is required to access web proxy server" value="<?php
-				echo esc_attr( $httpProxyUserName ); ?>" />
+				echo esc_attr( $http_proxy_username ); ?>" />
 			</td>
 			<td></td>
 		</tr>
@@ -436,7 +428,7 @@ function show_windows_azure_storage_settings( $mode ) {
 			</th>
 			<td>
 				<input type="text" name="http_proxy_password" title="Use HTTP proxy password if credential is required to access web proxy server" value="<?php
-				echo esc_attr( $httpProxyPassword ); ?>" />
+				echo esc_attr( $http_proxy_password ); ?>" />
 			</td>
 			<td></td>
 		</tr>
@@ -454,15 +446,10 @@ function show_windows_azure_storage_settings( $mode ) {
 			</td>
 		</tr>
 	</table>
-	<?php
-	if ( empty( $ContainerResult ) || ! $containerCreationStatus || 0 === count( $ContainerResult->getContainers() ) ) {
-		// 1. If $containerResult object is null means the storage account is not yet set
-		// show the create container div
-		?>
+	<?php if ( is_wp_error( $containers_list ) || ! $container_creation_status || 0 === iterator_count( $containers_list ) ) : ?>
 		<script type="text/javascript">
 			onContainerSelectionChanged( true );
 		</script>
 
-		<?php
-	}
+	<?php endif;
 }
