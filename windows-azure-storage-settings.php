@@ -247,6 +247,12 @@ function show_windows_azure_storage_settings( $mode ) {
 					);
 				}
 			}
+			if ( is_wp_error( $containers_list ) ) {
+				$private_container_warning .= sprintf(
+					__( 'Unable to fetch containers list. Reason: %s', MSFT_AZURE_PLUGIN_DOMAIN_NAME ),
+					$containers_list->get_error_message()
+				);
+			}
 			if ( ! is_null( $private_container_warning ) ) {
 				printf( '<p style="margin: 10px; color: red;">%s</p>', esc_html( $private_container_warning ) );
 			}
