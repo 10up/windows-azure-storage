@@ -47,7 +47,9 @@ class Windows_Azure_Config_Provider {
 	/**
 	 * Return account credentials.
 	 *
-	 * @return array
+	 * @since 4.0.0
+	 *
+	 * @return array Account credentials.
 	 */
 	static public function get_account_credentials() {
 		static $credentials;

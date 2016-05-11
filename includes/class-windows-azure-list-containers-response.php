@@ -41,19 +41,23 @@
  * @copyright Microsoft Open Technologies, Inc.
  * @license   New BSD license, (http://www.opensource.org/licenses/bsd-license.php)
  * @link      http://www.microsoft.com
+ * @since     4.0.0
  */
 class Windows_Azure_List_Containers_Response extends Windows_Azure_Generic_List_Response {
 
 	/**
 	 * Windows_Azure_List_Containers_Response constructor.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param array                         $rest_response Rest response.
 	 * @param Windows_Azure_Rest_Api_Client $client        REST client.
 	 * @param string                        $prefix        Search prefix.
 	 * @param int                           $max_results   Max results per one request.
+	 * @param string                        $path          Unused.
 	 */
-	public function __construct( array $rest_response, Windows_Azure_Rest_Api_Client $client, $prefix = '', $max_results = Windows_Azure_Rest_Api_Client::API_REQUEST_BULK_SIZE ) {
-		parent::__construct( $rest_response, $client, $prefix, $max_results );
+	public function __construct( array $rest_response, Windows_Azure_Rest_Api_Client $client, $prefix = '', $max_results = Windows_Azure_Rest_Api_Client::API_REQUEST_BULK_SIZE, $path = '' ) {
+		parent::__construct( $rest_response, $client, $prefix, $max_results, $path );
 
 		if ( isset( $rest_response['Containers']['Container'] ) && ! empty( $rest_response['Containers']['Container'] ) ) {
 			if ( isset( $rest_response['Containers']['Container']['Name'] ) ) {
@@ -70,11 +74,13 @@ class Windows_Azure_List_Containers_Response extends Windows_Azure_Generic_List_
 	/**
 	 * Lazy loading of containers.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param string $prefix      Search prefix.
 	 * @param int    $max_results Max API listing results.
 	 * @param string $next_marker Offset marker.
 	 *
-	 * @return null|Windows_Azure_List_Containers_Response
+	 * @return WP_Error|Windows_Azure_List_Containers_Response Containers list iterator class or WP_Error on failure.ł
 	 */
 	protected function _list_items( $prefix, $max_results, $next_marker ) {
 		return $this->_rest_client->list_containers( $prefix, $max_results, $next_marker );

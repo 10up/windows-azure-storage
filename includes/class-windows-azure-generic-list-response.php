@@ -41,11 +41,14 @@
  * @copyright Microsoft Open Technologies, Inc.
  * @license   New BSD license, (http://www.opensource.org/licenses/bsd-license.php)
  * @link      http://www.microsoft.com
+ * @since     4.0.0
  */
 abstract class Windows_Azure_Generic_List_Response implements Iterator {
 
 	/**
 	 * Current position.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @var int
 	 */
@@ -54,12 +57,16 @@ abstract class Windows_Azure_Generic_List_Response implements Iterator {
 	/**
 	 * List of containers.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @var array
 	 */
 	protected $_items;
 
 	/**
 	 * REST client.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @var Windows_Azure_Rest_Api_Client
 	 */
@@ -68,12 +75,16 @@ abstract class Windows_Azure_Generic_List_Response implements Iterator {
 	/**
 	 * Max containers results per one request.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @var int
 	 */
 	protected $_max_results;
 
 	/**
 	 * Next collection marker.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @var string
 	 */
@@ -82,24 +93,39 @@ abstract class Windows_Azure_Generic_List_Response implements Iterator {
 	/**
 	 * Search prefix.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @var string
 	 */
 	protected $_prefix;
 
 	/**
+	 * Generic path value.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @var string
+	 */
+	protected $_path;
+
+	/**
 	 * Windows_Azure_List_Containers_Response constructor.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @param array                         $rest_response Rest response.
 	 * @param Windows_Azure_Rest_Api_Client $client        REST client.
 	 * @param string                        $prefix        Search prefix.
 	 * @param int                           $max_results   Max results per one request.
+	 * @param string                        $path          Optional request path.
 	 */
-	public function __construct( array $rest_response, Windows_Azure_Rest_Api_Client $client, $prefix = '', $max_results = Windows_Azure_Rest_Api_Client::API_REQUEST_BULK_SIZE ) {
+	public function __construct( array $rest_response, Windows_Azure_Rest_Api_Client $client, $prefix = '', $max_results = Windows_Azure_Rest_Api_Client::API_REQUEST_BULK_SIZE, $path = '' ) {
 		$this->_position    = 0;
 		$this->_items       = array();
 		$this->_rest_client = $client;
 		$this->_max_results = $max_results;
 		$this->_prefix      = $prefix;
+		$this->_position    = $path;
 
 		if ( isset( $rest_response['NextMarker'] ) && ! empty( $rest_response['NextMarker'] ) ) {
 			$this->_next_marker = $rest_response['NextMarker'];
@@ -109,9 +135,10 @@ abstract class Windows_Azure_Generic_List_Response implements Iterator {
 
 	/**
 	 * Return the current element
-	 * @link  http://php.net/manual/en/iterator.current.php
+	 *
+	 * @since 4.0.0
+	 *
 	 * @return mixed Can return any type.
-	 * @since 5.0.0
 	 */
 	public function current() {
 		if ( ! isset( $this->_items[ $this->_position ] ) ) {
@@ -123,13 +150,14 @@ abstract class Windows_Azure_Generic_List_Response implements Iterator {
 
 	/**
 	 * Move forward to next element
-	 * @link  http://php.net/manual/en/iterator.next.php
-	 * @return void Any returned value is ignored.
-	 * @since 5.0.0
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return void
 	 */
 	public function next() {
 		if ( ! empty( $this->_next_marker ) && ( $this->_position === count( $this->_items ) - 1 ) ) {
-			$lazy_loaded = $this->_list_items( $this->_prefix, $this->_max_results, $this->_next_marker );
+			$lazy_loaded = $this->_list_items( $this->_prefix, $this->_max_results, $this->_next_marker, $this->_path );
 			if ( $lazy_loaded instanceof Windows_Azure_Generic_List_Response ) {
 				$this->_items       = array_merge( $this->_items, $lazy_loaded->get_all() );
 				$this->_next_marker = $lazy_loaded->get_next_marker();
@@ -141,9 +169,10 @@ abstract class Windows_Azure_Generic_List_Response implements Iterator {
 
 	/**
 	 * Return the key of the current element
-	 * @link  http://php.net/manual/en/iterator.key.php
+	 *
+	 * @since 4.0.0
+	 *
 	 * @return mixed scalar on success, or null on failure.
-	 * @since 5.0.0
 	 */
 	public function key() {
 		return $this->_position;
@@ -151,10 +180,10 @@ abstract class Windows_Azure_Generic_List_Response implements Iterator {
 
 	/**
 	 * Checks if current position is valid
-	 * @link  http://php.net/manual/en/iterator.valid.php
-	 * @return boolean The return value will be casted to boolean and then evaluated.
-	 * Returns true on success or false on failure.
-	 * @since 5.0.0
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return boolean The return value will be casted to boolean and then evaluated. Returns true on success or false on failure.
 	 */
 	public function valid() {
 		return isset( $this->_items[ $this->_position ] );
@@ -162,18 +191,21 @@ abstract class Windows_Azure_Generic_List_Response implements Iterator {
 
 	/**
 	 * Rewind the Iterator to the first element
-	 * @link  http://php.net/manual/en/iterator.rewind.php
-	 * @return void Any returned value is ignored.
-	 * @since 5.0.0
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return void
 	 */
 	public function rewind() {
 		$this->_position = 0;
 	}
 
 	/**
-	 * Return all containers.
+	 * Return all items.
 	 *
-	 * @return array
+	 * @since 4.0.0
+	 *
+	 * @return array Array containing all items.
 	 */
 	public function get_all() {
 		return $this->_items;
@@ -182,7 +214,9 @@ abstract class Windows_Azure_Generic_List_Response implements Iterator {
 	/**
 	 * Return next marker.
 	 *
-	 * @return null|string
+	 * @since 4.0.0
+	 *
+	 * @return null|string Next portion of data marker.
 	 */
 	public function get_next_marker() {
 		return $this->_next_marker;
@@ -191,13 +225,16 @@ abstract class Windows_Azure_Generic_List_Response implements Iterator {
 	/**
 	 * Empty stub for lazy loading of items.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param string $prefix      Search prefix.
 	 * @param int    $max_results Max API listing results.
 	 * @param string $next_marker Offset marker.
+	 * @param string $path        Optional request path.
 	 *
-	 * @return null|Windows_Azure_Generic_List_Response
+	 * @return null
 	 */
-	protected function _list_items( $prefix, $max_results, $next_marker ) {
+	protected function _list_items( $prefix, $max_results, $next_marker, $path ) {
 		return null;
 	}
 

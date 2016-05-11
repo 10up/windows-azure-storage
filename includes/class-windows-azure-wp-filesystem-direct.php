@@ -41,11 +41,14 @@
  * @copyright Microsoft Open Technologies, Inc.
  * @license   New BSD license, (http://www.opensource.org/licenses/bsd-license.php)
  * @link      http://www.microsoft.com
+ * @since     4.0.0
  */
 class Windows_Azure_WP_Filesystem_Direct extends WP_Filesystem_Direct {
 
 	/**
 	 * Whether this class supports stream reading from files.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @var bool
 	 */
@@ -54,9 +57,11 @@ class Windows_Azure_WP_Filesystem_Direct extends WP_Filesystem_Direct {
 	/**
 	 * Returns file handler.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param string $file File path.
 	 *
-	 * @return resource
+	 * @return resource File handler.
 	 */
 	public function get_handle( $file ) {
 		return fopen( $file, 'r+' );
@@ -64,6 +69,8 @@ class Windows_Azure_WP_Filesystem_Direct extends WP_Filesystem_Direct {
 
 	/**
 	 * Close file handle.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @param resource $handle File handle.
 	 *
@@ -76,10 +83,12 @@ class Windows_Azure_WP_Filesystem_Direct extends WP_Filesystem_Direct {
 	/**
 	 * Read chunk size from the file.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param resource $handle File handler.
 	 * @param int      $length Chunk size.
 	 *
-	 * @return string
+	 * @return string Chunk data.
 	 */
 	public function read_chunk( $handle, $length ) {
 		if ( feof( $handle ) ) {
@@ -91,6 +100,8 @@ class Windows_Azure_WP_Filesystem_Direct extends WP_Filesystem_Direct {
 
 	/**
 	 * Rewind file cursor to the beginning.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @param resource $handle File handler.
 	 *

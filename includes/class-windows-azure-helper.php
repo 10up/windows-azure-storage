@@ -41,6 +41,7 @@
  * @copyright Microsoft Open Technologies, Inc.
  * @license   New BSD license, (http://www.opensource.org/licenses/bsd-license.php)
  * @link      http://www.microsoft.com
+ * @since     4.0.0
  */
 class Windows_Azure_Helper {
 
@@ -124,11 +125,11 @@ class Windows_Azure_Helper {
 	/**
 	 * Return container ACL.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param string $container_name Container name.
 	 * @param string $account_name   Account name.
 	 * @param string $account_key    Account key.
-	 *
-	 * @since 4.0.0
 	 *
 	 * @return string|WP_Error API call result.
 	 */
@@ -143,10 +144,10 @@ class Windows_Azure_Helper {
 	/**
 	 * Return API credentials.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param string $account_name Account name.
 	 * @param string $account_key  Account key.
-	 *
-	 * @since 4.0.0
 	 *
 	 * @return array Account credentials array.
 	 */
@@ -165,11 +166,11 @@ class Windows_Azure_Helper {
 	/**
 	 * Return containers list.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param string $account_name Account name.
 	 * @param string $account_key  Account key.
 	 * @param bool   $refresh      Whether new API request should be made instead of using cached list.
-	 *
-	 * @since 4.0.0
 	 *
 	 * @return WP_Error|Windows_Azure_List_Containers_Response Containers iterator class or WP_Error on failure.
 	 */
@@ -189,11 +190,11 @@ class Windows_Azure_Helper {
 	/**
 	 * Create new container.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param string $container_name Container name.
 	 * @param string $account_name   Account name.
 	 * @param string $account_key    Account key.
-	 *
-	 * @since 4.0.0
 	 *
 	 * @return string|WP_Error Container name or WP_Error on failure.
 	 */
