@@ -41,11 +41,14 @@
  * @copyright Microsoft Open Technologies, Inc.
  * @license   New BSD license, (http://www.opensource.org/licenses/bsd-license.php)
  * @link      http://www.microsoft.com
+ * @since     4.0.0
  */
 class Windows_Azure_Rest_Api_Client {
 
 	/**
 	 * Azure API version.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @const string
 	 */
@@ -54,12 +57,16 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Blob API default request timeout.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @const int
 	 */
 	const API_REQUEST_TIMEOUT = 30;
 
 	/**
 	 * Blob API default bulk size for various operations.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @const int
 	 */
@@ -68,12 +75,16 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Blob API endpoint pattern.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @const string
 	 */
 	const API_BLOB_ENDPOINT = 'https://%s.blob.core.windows.net/';
 
 	/**
 	 * Azure API version header name.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @const string
 	 */
@@ -82,6 +93,8 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Azure API date header name.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @const string
 	 */
 	const API_HEADER_MS_DATE = 'x-ms-date';
@@ -89,12 +102,16 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Azure API blob public access header name.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @const string
 	 */
 	const API_HEADER_BLOB_PUBLIC_ACCESS = 'x-ms-blob-public-access';
 
 	/**
-	 * Azure API canonicalized
+	 * Azure API canonicalized.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @const string
 	 */
@@ -103,12 +120,16 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Last-Modified header.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @const string
 	 */
 	const API_HEADER_LAST_MODIFIED = 'last-modified';
 
 	/**
 	 * Azure API blob type header name.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @const string
 	 */
@@ -117,12 +138,16 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Azure API blob copy completion time header name.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @const string
 	 */
 	const API_HEADER_COPY_COMPLETION_TIME = 'x-ms-copy-completion-time';
 
 	/**
 	 * Azure API blob copy status description header name.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @const string
 	 */
@@ -131,12 +156,16 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Azure API blob copy id header name.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @const string
 	 */
 	const API_HEADER_COPY_ID = 'x-ms-copy-id';
 
 	/**
 	 * Azure API blob copy progress header name.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @const string
 	 */
@@ -145,12 +174,16 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Azure API blob copy source header name.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @const string
 	 */
 	const API_HEADER_COPY_SOURCE = 'x-ms-copy-source';
 
 	/**
 	 * Azure API blob copy status header name.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @const string
 	 */
@@ -159,12 +192,16 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Azure API blob lease duration header name.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @const string
 	 */
 	const API_HEADER_LEASE_DURATION = 'x-ms-lease-duration';
 
 	/**
 	 * Azure API blob lease state header name.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @const string
 	 */
@@ -173,12 +210,16 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Azure API blob lease status header name.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @const string
 	 */
 	const API_HEADER_LEASE_STATUS = 'x-ms-lease-status';
 
 	/**
 	 * Content-Length header name.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @const string
 	 */
@@ -187,12 +228,16 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Content-Type header name.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @const string
 	 */
 	const API_HEADER_CONTENT_TYPE = 'content-type';
 
 	/**
 	 * Etag header name.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @const string
 	 */
@@ -201,12 +246,16 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Content-MD5 header name.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @const string
 	 */
 	const API_HEADER_CONTENT_MD5 = 'content-md5';
 
 	/**
 	 * Content-Encoding header name.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @const string
 	 */
@@ -215,12 +264,16 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Content-Language header name.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @const string
 	 */
 	const API_HEADER_CONTENT_LANGUAGE = 'content-language';
 
 	/**
 	 * Content-Disposition header name.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @const string
 	 */
@@ -229,12 +282,16 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Cache-Control header name.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @const string
 	 */
 	const API_HEADER_CACHE_CONTROL = 'cache-control';
 
 	/**
 	 * Azure API blob sequence number header name.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @const string
 	 */
@@ -243,12 +300,16 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Azure API blob commited block count header name.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @const string
 	 */
 	const API_HEADER_BLOB_COMMITED_BLOCK_COUNT = 'x-ms-blob-committed-block-count';
 
 	/**
 	 * Azure API blob cache control property header name.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @const string
 	 */
@@ -257,12 +318,16 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Azure API blob content type property header name.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @const string
 	 */
 	const API_HEADER_MS_BLOB_CONTENT_TYPE = 'x-ms-blob-content-type';
 
 	/**
 	 * Azure API blob content MD5 property header name.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @const string
 	 */
@@ -271,12 +336,16 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Azure API blob content encoding property header name.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @const string
 	 */
 	const API_HEADER_MS_BLOB_CONTENT_ENCODING = 'x-ms-blob-content-encoding';
 
 	/**
 	 * Azure API blob content language property header name.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @const string
 	 */
@@ -285,12 +354,16 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Azure API blob content disposition property header name.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @const string
 	 */
 	const API_HEADER_MS_BLOB_CONTENT_DISPOSITION = 'x-ms-blob-content-disposition';
 
 	/**
 	 * Accept-Ranges header name.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @const string
 	 */
@@ -299,12 +372,16 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Container private access type.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @const string
 	 */
 	const CONTAINER_VISIBILITY_PRIVATE = 'private';
 
 	/**
 	 * Container "container" access type (publicily browseable).
+	 *
+	 * @since 4.0.0
 	 *
 	 * @const string
 	 */
@@ -313,12 +390,16 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Container "blob: access type (direct blob access only).
 	 *
+	 * @since 4.0.0
+	 *
 	 * @const string
 	 */
 	const CONTAINER_VISIBILITY_BLOB = 'blob';
 
 	/**
 	 * Azure API Append Blob type.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @const string
 	 */
@@ -327,12 +408,16 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Azure Storage account name.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @var null|string
 	 */
 	protected $_account_name;
 
 	/**
 	 * Azure Storage access key.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @var null|string
 	 */
@@ -341,6 +426,8 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * URL which is currently being requested.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @var null|string
 	 */
 	protected $_current_url;
@@ -348,12 +435,16 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * List of headers which should be included when computing request signature.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @var array
 	 */
 	protected $_signature_headers;
 
 	/**
 	 * Windows_Azure_Rest_Api_Client constructor.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @param string $account_name Optional storage account name.
 	 * @param string $access_key   Optional storage access key.
@@ -379,7 +470,9 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Get storage account name.
 	 *
-	 * @return null|string
+	 * @since 4.0.0
+	 *
+	 * @return null|string Account name.
 	 */
 	public function get_account_name() {
 		return $this->_account_name;
@@ -388,7 +481,11 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Set storage account name.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param null|string $account_name Storage account name.
+	 *
+	 * @return void
 	 */
 	public function set_account_name( $account_name ) {
 		$this->_account_name = sanitize_text_field( $account_name );
@@ -397,7 +494,9 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Get storage access key.
 	 *
-	 * @return null|string
+	 * @since 4.0.0
+	 *
+	 * @return null|string Access key.
 	 */
 	public function get_access_key() {
 		return $this->_access_key;
@@ -406,7 +505,11 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Set storage access key.
 	 *
-	 * @param null|string $access_key
+	 * @since 4.0.0
+	 *
+	 * @param null|string $access_key Storage access key.
+	 *
+	 * @return void
 	 */
 	public function set_access_key( $access_key ) {
 		$this->_access_key = $access_key;
@@ -415,10 +518,12 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Filter hook for http_request_args.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param array  $args Request arguments.
 	 * @param string $url  Request URL.
 	 *
-	 * @return array
+	 * @return array Modified request arguments.
 	 */
 	public function inject_authorization_header( array $args, $url ) {
 
@@ -452,11 +557,13 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * List containers.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param string $prefix      List containers which names start with this prefix.
 	 * @param int    $max_results Max containers to return.
 	 * @param bool   $next_marker Next collection marker.
 	 *
-	 * @return Windows_Azure_List_Containers_Response|WP_Error
+	 * @return Windows_Azure_List_Containers_Response|WP_Error List of containers of WP_Error on failure.
 	 */
 	public function list_containers( $prefix = '', $max_results = self::API_REQUEST_BULK_SIZE, $next_marker = false ) {
 		$query_args = array(
@@ -484,10 +591,12 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Create new container.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param string $name       Container name.
 	 * @param string $visibility Container visibility.
 	 *
-	 * @return string|WP_Error
+	 * @return string|WP_Error New container name or WP_Error on failure.
 	 */
 	public function create_container( $name, $visibility = self::CONTAINER_VISIBILITY_BLOB ) {
 		$query_args = array(
@@ -517,9 +626,11 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Get container properties.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param string $name Container name.
 	 *
-	 * @return array|WP_Error
+	 * @return array|WP_Error Container properties array of WP_Error on failure.
 	 */
 	public function get_container_properties( $name ) {
 		$query_args = array(
@@ -545,9 +656,11 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Get container ACL.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param string $name Container name.
 	 *
-	 * @return string|WP_Error
+	 * @return string|WP_Error Container ACL string or WP_Error on failure.
 	 */
 	public function get_container_acl( $name ) {
 		$query_args = array(
@@ -572,12 +685,14 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * List blobs in container.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param string $container   Container name.
 	 * @param string $prefix      List blobs which names start with this prefix.
 	 * @param int    $max_results Max blobs to return.
 	 * @param bool   $next_marker Next collection marker.
 	 *
-	 * @return Windows_Azure_List_Containers_Response|WP_Error
+	 * @return Windows_Azure_List_Blobs_Response|WP_Error Blobs list or WP_Error on failure.
 	 */
 	public function list_blobs( $container, $prefix = '', $max_results = self::API_REQUEST_BULK_SIZE, $next_marker = false ) {
 		$query_args = array(
@@ -600,16 +715,18 @@ class Windows_Azure_Rest_Api_Client {
 			return $result;
 		}
 
-		return new Windows_Azure_List_Blobs_Response( $result, $this, $prefix, $max_results );
+		return new Windows_Azure_List_Blobs_Response( $result, $this, $prefix, $max_results, $container );
 	}
 
 	/**
 	 * Delete blob from container.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param string $container   Container name.
 	 * @param string $remote_path Remote blob path.
 	 *
-	 * @return bool|WP_Error
+	 * @return bool|WP_Error True on success or WP_Error on failure.
 	 */
 	public function delete_blob( $container, $remote_path ) {
 		$container = trailingslashit( $container );
@@ -625,10 +742,12 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Get blob properties.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param string $container   Container name.
 	 * @param string $remote_path Remote blob path.
 	 *
-	 * @return array|WP_Error
+	 * @return array|WP_Error Blob properties array or WP_Error on failure.
 	 */
 	public function get_blob_properties( $container, $remote_path ) {
 		$container = trailingslashit( $container );
@@ -674,11 +793,13 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Put blob properties.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param string $container   Container name.
 	 * @param string $remote_path Remote blob path.
 	 * @param array  $properties  Array with properties.
 	 *
-	 * @return array|WP_Error
+	 * @return bool|WP_Error True on success or WP_Error on failure.
 	 */
 	public function put_blob_properties( $container, $remote_path, array $properties = array() ) {
 		$container  = trailingslashit( $container );
@@ -715,6 +836,8 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Sanitize blobs names. Make sure their names are unique.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param string $container Container name.
 	 * @param array  $files     File names structure. Expected:
 	 *                          {
@@ -728,7 +851,7 @@ class Windows_Azure_Rest_Api_Client {
 	 *                              },
 	 *                          }
 	 *
-	 * @return array
+	 * @return array|WP_Error Sanitized blobs names or WP_Error on failure.
 	 */
 	// @formatter:on
 	public function sanitize_blobs_names( $container, array $files = array() ) {
@@ -757,6 +880,8 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Put blobs on Azure Storage account.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param string $container Container name.
 	 * @param array  $files     File names structure. Should be sainitized before exporting. Expected:
 	 *                          {
@@ -770,7 +895,7 @@ class Windows_Azure_Rest_Api_Client {
 	 *                              },
 	 *                          }
 	 *
-	 * @return array
+	 * @return bool|array True if files collection is empty or array with blobs and put operation responses.
 	 */
 	// @formatter:on
 	public function put_blobs( $container, array $files = array() ) {
@@ -793,11 +918,13 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Put blob on Azure Storage account.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param string $container   Container name.
 	 * @param string $local_path  Local path.
 	 * @param string $remote_path Remote path.
 	 *
-	 * @return WP_Error
+	 * @return bool|string|WP_Error Newly put blob URI or WP_Error|false on failure.
 	 */
 	public function put_blob( $container, $local_path, $remote_path ) {
 		$container  = trailingslashit( $container );
@@ -836,11 +963,13 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Append blob operation.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param string $container   Container.
 	 * @param string $remote_path Remote path.
 	 * @param string $content     Content to append.
 	 *
-	 * @return array|bool|WP_Error
+	 * @return bool|WP_Error True on success or WP_Error on failure.
 	 */
 	protected function _append_blob( $container, $remote_path, $content ) {
 		$container  = trailingslashit( $container );
@@ -859,13 +988,15 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Send REST request and return response.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param string       $method     HTTP verb.
 	 * @param array        $query_args Request query args.
 	 * @param array        $headers    Request headers.
 	 * @param string|array $body       Request body.
 	 * @param string       $path       REST API endpoint path.
 	 *
-	 * @return array|WP_Error
+	 * @return array|WP_Error Response structure on success or WP_Error on failure.
 	 */
 	protected function _send_request( $method, array $query_args = array(), array $headers = array(), $body = '', $path = '' ) {
 
@@ -933,9 +1064,11 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Return Blob API endpoint URL.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param string $path URI path.
 	 *
-	 * @return string|WP_Error
+	 * @return string|WP_Error Endpoint URL or WP_Error on failure.
 	 */
 	protected function _build_api_endpoint_url( $path = '' ) {
 		if ( empty( $this->_account_name ) ) {
@@ -950,9 +1083,11 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Build canonicalized headers collection.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param array $headers Headers.
 	 *
-	 * @return array
+	 * @return array Canonicalized headers structure.
 	 */
 	protected function _build_canonicalized_headers( array $headers ) {
 		$normalized_headers    = array();
@@ -982,10 +1117,12 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Build canonicalized resource string.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param string $url          Endpoint URL.
 	 * @param string $account_name Storage account name.
 	 *
-	 * @return string
+	 * @return string Canonicalized resource string.
 	 */
 	protected function _build_canonicalized_resource( $url, $account_name ) {
 		/** @var $parsed_url array */
@@ -1011,11 +1148,13 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Sanitize remote paths. Check if given paths exist and append unique suffix when necessary.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param string $container      Container to check paths against.
 	 * @param string $prefix_group   Prefix check group.
-	 * @param string $group_contents Group contents.
+	 * @param array  $group_contents Group contents.
 	 *
-	 * @return Windows_Azure_List_Containers_Response|WP_Error
+	 * @return array|WP_Error Sanitized remote paths array or WP_Error on failure.
 	 */
 	protected function _sanitize_remote_paths( $container, $prefix_group, $group_contents ) {
 		$remote_paths = array_flip( $group_contents );

@@ -106,28 +106,37 @@ class WindowsAzureStorageUtil {
 	/**
 	 * Get Windows Azure Storage account name defined in plugin settings
 	 *
+	 * @deprecated 4.0 Use Windows_Azure_Helper::get_account_name()
+	 *
 	 * @return string Account Name
 	 */
 	public static function getAccountName() {
-		return get_option( 'azure_storage_account_name' );
+		_deprecated_function( __FUNCTION__, '4.0', __( 'Use Windows_Azure_Helper::get_account_name()', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+		return Windows_Azure_Helper::get_account_name();
 	}
 
 	/**
 	 * Get Windows Azure Storage account key defined in plugin settings
 	 *
+	 * @deprecated 4.0 Use Windows_Azure_Helper::get_account_key()
+	 *
 	 * @return string Account Key
 	 */
 	public static function getAccountKey() {
-		return get_option( 'azure_storage_account_primary_access_key' );
+		_deprecated_function( __FUNCTION__, '4.0', __( 'Use Windows_Azure_Helper::get_account_key()', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+		return Windows_Azure_Helper::get_account_key();
 	}
 
 	/**
 	 * Get default container name defined in plugin settings
 	 *
+	 * @deprecated 4.0 Use Windows_Azure_Helper::get_default_container()
+	 *
 	 * @return string Default container name
 	 */
 	public static function getDefaultContainer() {
-		return get_option( 'default_azure_storage_account_container_name' );
+		_deprecated_function( __FUNCTION__, '4.0', __( 'Use Windows_Azure_Helper::get_default_container()', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+		return Windows_Azure_Helper::get_default_container();
 	}
 
 	/**
@@ -145,37 +154,49 @@ class WindowsAzureStorageUtil {
 	/**
 	 * Get HTTP proxy host if the web server needs http proxy for internet
 	 *
+	 * @deprecated 4.0 Use Windows_Azure_Helper::get_http_proxy_host()
+	 *
 	 * @return string HTTP proxy host name
 	 */
 	public static function getHttpProxyHost() {
-		return get_option( 'http_proxy_host' );
+		_deprecated_function( __FUNCTION__, '4.0', __( 'Use Windows_Azure_Helper::get_http_proxy_host()', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+		return Windows_Azure_Helper::get_http_proxy_host();
 	}
 
 	/**
 	 * Get HTTP proxy port if the web server needs http proxy for internet
 	 *
+	 * @deprecated 4.0 Use Windows_Azure_Helper::get_http_proxy_port()
+	 *
 	 * @return string HTTP proxy port number
 	 */
 	public static function getHttpProxyPort() {
-		return get_option( 'http_proxy_port' );
+		_deprecated_function( __FUNCTION__, '4.0', __( 'Use Windows_Azure_Helper::get_http_proxy_port()', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+		return Windows_Azure_Helper::get_http_proxy_port();
 	}
 
 	/**
 	 * Get HTTP proxy user-name
 	 *
+	 * @deprecated 4.0 Use Windows_Azure_Helper::get_http_proxy_username()
+	 *
 	 * @return string HTTP proxy user-name
 	 */
 	public static function getHttpProxyUserName() {
-		return get_option( 'http_proxy_username' );
+		_deprecated_function( __FUNCTION__, '4.0', __( 'Use Windows_Azure_Helper::get_http_proxy_username()', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+		return Windows_Azure_Helper::get_http_proxy_username();
 	}
 
 	/**
 	 * Get HTTP proxy password
 	 *
+	 * @deprecated 4.0 Use Windows_Azure_Helper::get_http_proxy_password()
+	 *
 	 * @return string HTTP proxy password
 	 */
 	public static function getHttpProxyPassword() {
-		return get_option( 'http_proxy_password' );
+		_deprecated_function( __FUNCTION__, '4.0', __( 'Use Windows_Azure_Helper::get_http_proxy_password()', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+		return Windows_Azure_Helper::get_http_proxy_password();
 	}
 
 	/**

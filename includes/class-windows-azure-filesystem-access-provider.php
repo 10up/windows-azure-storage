@@ -41,13 +41,16 @@
  * @copyright Microsoft Open Technologies, Inc.
  * @license   New BSD license, (http://www.opensource.org/licenses/bsd-license.php)
  * @link      http://www.microsoft.com
+ * @since     4.0.0
  */
 class Windows_Azure_Filesystem_Access_Provider {
 
 	/**
 	 * Return WordPress Filesystem access class.
 	 *
-	 * @return bool|WP_Filesystem_Base
+	 * @since 4.0.0
+	 *
+	 * @return bool|WP_Filesystem_Base WP_Filesystem instance of false on failure.
 	 */
 	static public function get_provider() {
 		global $wp_filesystem;

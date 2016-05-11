@@ -41,11 +41,14 @@
  * @copyright Microsoft Open Technologies, Inc.
  * @license   New BSD license, (http://www.opensource.org/licenses/bsd-license.php)
  * @link      http://www.microsoft.com
+ * @since     4.0.0
  */
 class Windows_Azure_File_Contents_Provider {
 
 	/**
 	 * Chunk size.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @const int
 	 */
@@ -54,12 +57,16 @@ class Windows_Azure_File_Contents_Provider {
 	/**
 	 * Max Azure REST API request length.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @const int
 	 */
 	const MAX_CHUNK_SIZE = 4194304;
 
 	/**
 	 * File path.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @var string
 	 */
@@ -68,12 +75,16 @@ class Windows_Azure_File_Contents_Provider {
 	/**
 	 * Whether class file is a file and is readable.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @var bool
 	 */
 	protected $_is_valid;
 
 	/**
 	 * File system access.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @var bool|WP_Filesystem_Base
 	 */
@@ -82,12 +93,16 @@ class Windows_Azure_File_Contents_Provider {
 	/**
 	 * Chunk size.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @var int
 	 */
 	protected $_chunk_size;
 
 	/**
 	 * Current stream position.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @var int
 	 */
@@ -96,12 +111,16 @@ class Windows_Azure_File_Contents_Provider {
 	/**
 	 * File contents for non-stream providers.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @var string
 	 */
 	protected $_contents;
 
 	/**
 	 * File handle.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @var resource
 	 */
@@ -110,12 +129,16 @@ class Windows_Azure_File_Contents_Provider {
 	/**
 	 * Whether WP Filesystem can read from the stream or not.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @var bool
 	 */
 	protected $_stream_reader;
 
 	/**
 	 * Windows_Azure_File_Contents_Provider constructor.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @param string $file_path  File path.
 	 * @param int    $chunk_size Chunk size.
@@ -131,7 +154,9 @@ class Windows_Azure_File_Contents_Provider {
 	/**
 	 * Whether class file is valid.
 	 *
-	 * @return bool|WP_Error
+	 * @since 4.0.0
+	 *
+	 * @return bool|WP_Error Whether this class provides access to file or not.
 	 */
 	public function is_valid() {
 		if ( ! $this->_wp_filesystem ) {
@@ -148,6 +173,8 @@ class Windows_Azure_File_Contents_Provider {
 	/**
 	 * Rewind stream to the beginning.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @return void
 	 */
 	public function rewind() {
@@ -160,7 +187,9 @@ class Windows_Azure_File_Contents_Provider {
 	/**
 	 * Get chunk contents.
 	 *
-	 * @return string|bool
+	 * @since 4.0.0
+	 *
+	 * @return string|bool Chunk data or false if end of the stream.
 	 */
 	public function get_chunk() {
 		if ( 0 === $this->_position ) {
@@ -188,6 +217,8 @@ class Windows_Azure_File_Contents_Provider {
 
 	/**
 	 * Close stream handlers if possible.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @return void
 	 */
