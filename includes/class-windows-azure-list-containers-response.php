@@ -79,10 +79,11 @@ class Windows_Azure_List_Containers_Response extends Windows_Azure_Generic_List_
 	 * @param string $prefix      Search prefix.
 	 * @param int    $max_results Max API listing results.
 	 * @param string $next_marker Offset marker.
+	 * @param string $path        Optional path. Unused.
 	 *
-	 * @return WP_Error|Windows_Azure_List_Containers_Response Containers list iterator class or WP_Error on failure.ł
+	 * @return WP_Error|Windows_Azure_List_Containers_Response Containers list iterator class or WP_Error on failure.
 	 */
-	protected function _list_items( $prefix, $max_results, $next_marker ) {
+	protected function _list_items( $prefix, $max_results, $next_marker, $path ) {
 		return $this->_rest_client->list_containers( $prefix, $max_results, $next_marker );
 	}
 }
