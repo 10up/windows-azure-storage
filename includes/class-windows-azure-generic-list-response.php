@@ -125,7 +125,7 @@ abstract class Windows_Azure_Generic_List_Response implements Iterator {
 		$this->_rest_client = $client;
 		$this->_max_results = $max_results;
 		$this->_prefix      = $prefix;
-		$this->_position    = $path;
+		$this->_path        = $path;
 
 		if ( isset( $rest_response['NextMarker'] ) && ! empty( $rest_response['NextMarker'] ) ) {
 			$this->_next_marker = $rest_response['NextMarker'];
