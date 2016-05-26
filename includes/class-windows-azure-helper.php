@@ -204,4 +204,109 @@ class Windows_Azure_Helper {
 
 		return $rest_api_client->create_container( $container_name );
 	}
+
+	/**
+	 * Delete blob.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $container_name Container name.
+	 * @param string $file_path      Blob path.
+	 * @param string $account_name   Account name.
+	 * @param string $account_key    Account key.
+	 *
+	 * @return bool|WP_Error True on success or WP_Error on failure.
+	 */
+	static public function delete_blob( $container_name, $file_path, $account_name = '', $account_key = '' ) {
+		list( $account_name, $account_key ) = self::get_api_credentials( $account_name, $account_key );
+		$rest_api_client = new Windows_Azure_Rest_Api_Client( $account_name, $account_key );
+
+		return $rest_api_client->delete_blob( $container_name, $file_path );
+	}
+
+	/**
+	 * Return blobs list from given container.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $container    Container name.
+	 * @param string $account_name Account name.
+	 * @param string $account_key  Account key.
+	 * @param bool   $refresh      Whether new API request should be made instead of using cached list.
+	 *
+	 * @return WP_Error|Windows_Azure_List_Blobs_Response Blobs iterator class or WP_Error on failure.
+	 */
+	static public function list_blobs( $container, $account_name = '', $account_key = '', $refresh = false ) {
+		static $blobs_list;
+
+		if ( null === $blobs_list || $refresh ) {
+			list( $account_name, $account_key ) = self::get_api_credentials( $account_name, $account_key );
+			$rest_api_client = new Windows_Azure_Rest_Api_Client( $account_name, $account_key );
+
+			$containers_list = $rest_api_client->list_blobs( $container );
+		}
+
+		return $containers_list;
+	}
+
+	/**
+	 * Return blob properties.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $container_name Container name.
+	 * @param string $blob_name      Blob name.
+	 * @param string $account_name   Account name.
+	 * @param string $account_key    Account key.
+	 *
+	 * @return array|WP_Error API call result.
+	 */
+	static public function get_blob_properties( $container_name, $blob_name, $account_name = '', $account_key = '' ) {
+
+		list( $account_name, $account_key ) = self::get_api_credentials( $account_name, $account_key );
+		$rest_api_client = new Windows_Azure_Rest_Api_Client( $account_name, $account_key );
+
+		return $rest_api_client->get_blob_properties( $container_name, $blob_name );
+	}
+
+	/**
+	 * Put uploaded file into Azure storage.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $container_name Container name.
+	 * @param string $blob_name      Blob name.
+	 * @param string $local_path     Local path.
+	 * @param string $account_name   Account name.
+	 * @param string $account_key    Account key.
+	 *
+	 * @return bool|string|WP_Error False or WP_Error on failure URI on success.
+	 */
+	static public function put_uploaded_file_to_blob_storage( $container_name, $blob_name, $local_path, $account_name = '', $account_key = '' ) {
+		if ( ! file_exists( $local_path ) ) {
+			return new \WP_Error( -1, sprintf( __( 'Uploaded file %s does not exist.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) ), $blob_name );
+		}
+		list( $account_name, $account_key ) = self::get_api_credentials( $account_name, $account_key );
+		$rest_api_client      = new Windows_Azure_Rest_Api_Client( $account_name, $account_key );
+		$file_info            = array(
+			$blob_name => array(
+				$blob_name => $blob_name,
+			),
+		);
+		$sanizited_file_names = $rest_api_client->sanitize_blobs_names( $container_name, $file_info );
+		$remote_path          = $sanizited_file_names[ $blob_name ][ $blob_name ];
+
+		$result = $rest_api_client->put_blob( $container_name, $local_path, $remote_path, true );
+		if ( ! $result || is_wp_error( $result ) ) {
+			return $result;
+		}
+		$finfo     = finfo_open( FILEINFO_MIME_TYPE );
+		$mime_type = finfo_file( $finfo, $local_path );
+		finfo_close( $finfo );
+		$rest_api_client->put_blob_properties( $container_name, $remote_path, array(
+			Windows_Azure_Rest_Api_Client::API_HEADER_MS_BLOB_CONTENT_TYPE => $mime_type,
+		) );
+
+		return $result;
+	}
 }

@@ -223,6 +223,17 @@ abstract class Windows_Azure_Generic_List_Response implements Iterator {
 	}
 
 	/**
+	 * Whether collection is empty or not.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return bool True or false.
+	 */
+	public function is_empty() {
+		return 0 === count( $this->_items );
+	}
+
+	/**
 	 * Empty stub for lazy loading of items.
 	 *
 	 * @since 4.0.0

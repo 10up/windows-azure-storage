@@ -70,7 +70,7 @@ class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 		$format_args = array(
 			'format' => 'table',
 			'fields' => array( 'Name' ),
-			'field'  => null
+			'field'  => null,
 		);
 
 		$table      = new \WP_CLI\Formatter( $format_args );
@@ -166,7 +166,7 @@ class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 		$format_args = array(
 			'format' => 'table',
 			'fields' => array_keys( $result ),
-			'field'  => null
+			'field'  => null,
 		);
 
 		$table = new \WP_CLI\Formatter( $format_args );
@@ -292,11 +292,68 @@ class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 		$format_args = array(
 			'format' => 'table',
 			'fields' => array_keys( $result ),
-			'field'  => null
+			'field'  => null,
 		);
 
 		$table = new \WP_CLI\Formatter( $format_args );
 		$table->display_item( $result );
+	}
+
+	/**
+	 * List blobs in given container.
+	 *
+	 * @param array $args       Command arguments.
+	 * @param array $assoc_args Command options.
+	 *
+	 * @return void
+	 *
+	 * ## OPTIONS
+	 *
+	 * --container=<name>
+	 * : Container name.
+	 *
+	 * [--prefix=<prefix>]
+	 * : List containers which names start with prefix.
+	 *
+	 * @subcommand blobs-list
+	 *
+	 * ## EXAMPLE
+	 * wp windows-azure-storage blobs-list test-container --prefix=demo
+	 */
+	public function list_blobs( $args, $assoc_args ) {
+		$assoc_args = wp_parse_args( $assoc_args, array(
+			'prefix'    => '',
+			'container' => '',
+		) );
+
+		if ( empty( $assoc_args['container'] ) ) {
+			return WP_CLI::error( __( 'Container name amust be set.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+		}
+
+		$credentials = Windows_Azure_Config_Provider::get_account_credentials();
+		$client      = new Windows_Azure_Rest_Api_Client( $credentials['account_name'], $credentials['account_key'] );
+		$format_args = array(
+			'format' => 'table',
+			'fields' => [ 'Name' ],
+			'field'  => null,
+		);
+
+		$table = new \WP_CLI\Formatter( $format_args );
+		$blobs = $client->list_blobs( $assoc_args['container'], $assoc_args['prefix'] );
+
+		if ( is_wp_error( $blobs ) ) {
+			return WP_CLI::error( $blobs->get_error_message() );
+		}
+		$items = [ ];
+		foreach ( $blobs as $blob ) {
+			$items[] = $blob;
+		}
+
+		if ( empty( $items ) ) {
+			return WP_CLI::warning( __( 'No blobs found.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+		}
+
+		$table->display_items( $items );
 	}
 }
 

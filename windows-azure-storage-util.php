@@ -79,9 +79,12 @@ class WindowsAzureStorageUtil {
 	/**
 	 * Get Windows Azure Storage host name defined as per plugin settings
 	 *
+	 * @deprecated 4.0
+	 *
 	 * @return string host Name
 	 */
 	public static function getHostName() {
+		_deprecated_function( __FUNCTION__, '4.0', 'figure out something' );
 		$storageAccountName = WindowsAzureStorageUtil::getAccountName();
 		if ( 'devstoreaccount1' === $storageAccountName ) {
 			// Use development storage
@@ -111,7 +114,7 @@ class WindowsAzureStorageUtil {
 	 * @return string Account Name
 	 */
 	public static function getAccountName() {
-		_deprecated_function( __FUNCTION__, '4.0', __( 'Use Windows_Azure_Helper::get_account_name()', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+		_deprecated_function( __METHOD__, '4.0', __( 'Use Windows_Azure_Helper::get_account_name()', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
 		return Windows_Azure_Helper::get_account_name();
 	}
 
@@ -145,9 +148,12 @@ class WindowsAzureStorageUtil {
 	 * @since 1.0.0
 	 * @since 3.0.0 Return a (maybe) filtered URL.
 	 *
+	 * @deprecated 4.0
+	 *
 	 * @return string CNAME to use for media URLs.
 	 */
 	public static function getCNAME() {
+		_deprecated_function( __METHOD__, '4.0', 'figure out something' );
 		return untrailingslashit( strtolower( self::_maybe_rewrite_cname( get_option( 'cname' ) ) ) );
 	}
 
@@ -214,6 +220,8 @@ class WindowsAzureStorageUtil {
 	 *
 	 * @param string $proxyPassword Http proxy password
 	 *
+	 * @deprecated 4.0
+	 *
 	 * @return WindowsAzure\Blob\BlobRestProxy Blob storage client
 	 */
 	public static function getStorageClient(
@@ -221,6 +229,7 @@ class WindowsAzureStorageUtil {
 		$proxyHost = null, $proxyPort = null,
 		$proxyUserName = null, $proxyPassword = null
 	) {
+		_deprecated_function( __FUNCTION__, '4.0', 'figure out something' );
 		// Storage Account Settings from db
 		$storageAccountName = WindowsAzureStorageUtil::getAccountName();
 		$storageAccountKey  = WindowsAzureStorageUtil::getAccountKey();
@@ -272,9 +281,12 @@ class WindowsAzureStorageUtil {
 	 *
 	 * @param string $blobName      Name of the blob to be deleted
 	 *
+	 * @deprecated 4.0
+	 *
 	 * @return void
 	 */
 	public static function deleteBlob( $containerName, $blobName ) {
+		_deprecated_function( __FUNCTION__, '4.0', 'figure out something' );
 		$blobRestProxy = WindowsAzureStorageUtil::getStorageClient();
 		if ( self::blobExists( $containerName, $blobName ) ) {
 			$blobRestProxy->deleteBlob( $containerName, $blobName );
@@ -290,6 +302,9 @@ class WindowsAzureStorageUtil {
 	 *
 	 * @param string $containerName Name of the parent container
 	 * @param string $blobName      Name of the blob to be checked
+	 *
+	 * @deprecated 4.0
+	 *
 	 * @return boolean
 	 */
 	public static function blobExists( $containerName, $blobName ) {
@@ -305,9 +320,12 @@ class WindowsAzureStorageUtil {
 	 *
 	 * @param BlobRestProxy $storageClient Reference of storage client to use
 	 *
+	 * @deprecated 4.0
+	 *
 	 * @throws ServiceException
 	 */
 	public static function createPublicContainer( $containerName, $storageClient = null ) {
+		_deprecated_function( __FUNCTION__, '4.0', 'figure out something' );
 		$containerOptions = new CreateContainerOptions();
 		$containerOptions->setPublicAccess( PublicAccessType::CONTAINER_AND_BLOBS );
 		$blobRestProxy = $null;
@@ -332,9 +350,13 @@ class WindowsAzureStorageUtil {
 	 * @since 3.0.0
 	 *
 	 * @param string $cname The CNAME value set in the plugin options.
+	 *
+	 * @deprecated 4.0
+	 *
 	 * @return string The (maybe) new CNAME with the filtered protocol.
 	 */
 	protected static function _maybe_rewrite_cname( $cname ) {
+		_deprecated_function( __FUNCTION__, '4.0', 'figure out something' );
 		/**
 		 * Filter to allow 'https' as the CNAME protocol.
 		 *
@@ -370,9 +392,13 @@ class WindowsAzureStorageUtil {
 	 * @since 3.0.0 Switched to 'https' for all Azure URLs.
 	 *
 	 * @param bool $append_container Optional. Whether to append the container name to the URL. Default true.
+	 *
+	 * @deprecated 4.0
+	 *
 	 * @return string|WP_Error The base blob URL for an account, or an error if one can't be found/created.
 	 */
 	public static function get_storage_url_base( $append_container = true ) {
+		_deprecated_function( __FUNCTION__, '4.0', 'figure out something' );
 		$azure_storage_account_name                   = self::getAccountName();
 		$default_azure_storage_account_container_name = self::getDefaultContainer();
 
@@ -446,9 +472,12 @@ class WindowsAzureStorageUtil {
 	 * @param string $container The default Azure storage container
 	 * @param string $blobName  The blob name
 	 *
+	 * @deprecated 4.0
+	 *
 	 * @return string Unique blob name
 	 */
 	public static function uniqueBlobName( $container, $blobName ) {
+		_deprecated_function( __FUNCTION__, '4.0', 'figure out something' );
 		$info = pathinfo( $blobName );
 
 		$uploadSubDir = ( '.' === $info['dirname'] ) ? '' : $info['dirname'];
@@ -517,10 +546,13 @@ class WindowsAzureStorageUtil {
 	 * @param string $blobContentType Optional. Content type of the blob.
 	 * @param array  $metadata        Optional. Metadata to describe the blob.
 	 *
+	 * @deprecated 4.0
+	 *
 	 * @throws \Exception|ServiceException Exception if local file can't be read;
 	 *                                     ServiceException if response code is incorrect.
 	 */
 	public static function putBlockBlob( $containerName, $blobName, $localFileName, $blobContentType = null, $metadata = array() ) {
+		_deprecated_function( __FUNCTION__, '4.0', 'figure out something' );
 		$copyBlobResult = null;
 		$is_large_file  = false;
 		// Open file
@@ -611,9 +643,13 @@ class WindowsAzureStorageUtil {
 	 *
 	 * @param string $blob_name      The blob to check.
 	 * @param string $container_name Optional. The container to check. Defaults to default container in settings.
+	 *
+	 * @deprecated 4.0
+	 *
 	 * @return bool|WP_Error True if blob exists, false if not; WP_Error if container doesn't exist.
 	 */
 	public static function blob_exists_in_container( $blob_name, $container_name = '' ) {
+		_deprecated_function( __FUNCTION__, '4.0', 'figure out something' );
 		/** @var WindowsAzure\Blob\BlobRestProxy $client */
 		$client = self::getStorageClient();
 
@@ -650,9 +686,13 @@ class WindowsAzureStorageUtil {
 	 * @link  https://goo.gl/6XsKAJ Official SDK example for checking containers.
 	 *
 	 * @param string $container_name The container name to check.
+	 *
+	 * @deprecated 4.0
+	 *
 	 * @return bool True if the container exists in the account, false if not.
 	 */
 	public static function container_exists_in_storage( $container_name ) {
+		_deprecated_function( __FUNCTION__, '4.0', 'figure out something' );
 		/** @var WindowsAzure\Blob\BlobRestProxy $client */
 		$client           = self::getStorageClient();
 		$container_exists = false;
@@ -698,6 +738,8 @@ class WindowsAzureStorageUtil {
 	 *
 	 * @param string  $identifier      Signed identifier
 	 *
+	 * @deprecated 4.0
+	 *
 	 * @return string
 	 */
 	public static function createSharedAccessSignature(
@@ -711,6 +753,7 @@ class WindowsAzureStorageUtil {
 		$expiry = '',
 		$identifier = ''
 	) {
+		_deprecated_function( __FUNCTION__, '4.0', 'figure out something' );
 		$accountKey = base64_decode( $accountKey );
 		// Determine path
 		if ( $usePathStyleUri ) {
@@ -746,9 +789,12 @@ class WindowsAzureStorageUtil {
 	 *
 	 * @param int $part Block number
 	 *
+	 * @deprecated 4.0
+	 *
 	 * @return string Windows Azure Blob Storage block number
 	 */
 	protected static function _generateBlockId( $part = 0 ) {
+		_deprecated_function( __FUNCTION__, '4.0', 'figure out something' );
 		$returnValue = $part;
 		while ( strlen( $returnValue ) < 64 ) {
 			$returnValue = '0' . $returnValue;
@@ -767,9 +813,13 @@ class WindowsAzureStorageUtil {
 	 *                           Allowed actions are: 'browse', 'insert', 'upload', 'create_container',
 	 *                           'delete_single_blob', 'delete_all_blobs', and 'change_settings'.
 	 * @param int|object $user   Optional. User ID or object. Default is current user ID.
+	 *
+	 * @deprecated 4.0
+	 *
 	 * @return bool Whether the action is permitted by the user.
 	 */
 	public static function check_action_permissions( $action = 'browse', $user = null ) {
+		//_deprecated_function( __FUNCTION__, '4.0', 'figure out something' );
 		if ( is_null( $user ) ) {
 			$user = get_current_user_id();
 		}

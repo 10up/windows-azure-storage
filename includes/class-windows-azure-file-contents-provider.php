@@ -144,8 +144,12 @@ class Windows_Azure_File_Contents_Provider {
 	 * @param int    $chunk_size Chunk size.
 	 */
 	public function __construct( $file_path, $chunk_size = self::CHUNK_SIZE ) {
+		if ( null === $chunk_size ) {
+			$chunk_size = self::CHUNK_SIZE;
+		}
 		$this->_file_path     = $file_path;
-		$this->_wp_filesystem = Windows_Azure_Filesystem_Access_Provider::get_provider();
+		$force_direct_access  = is_resource( $file_path );
+		$this->_wp_filesystem = Windows_Azure_Filesystem_Access_Provider::get_provider( $force_direct_access );
 		$this->_chunk_size    = $chunk_size <= self::MAX_CHUNK_SIZE ? (int) $chunk_size : self::MAX_CHUNK_SIZE;
 		$this->_position      = 0;
 		$this->_stream_reader = $this->_wp_filesystem instanceof WP_Filesystem_Base && isset( $this->_wp_filesystem->support_stream_reading );

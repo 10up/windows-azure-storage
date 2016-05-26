@@ -50,9 +50,11 @@ class Windows_Azure_Filesystem_Access_Provider {
 	 *
 	 * @since 4.0.0
 	 *
+	 * @param bool $force_direct_access Whether to force direct file access or not.
+	 *
 	 * @return bool|WP_Filesystem_Base WP_Filesystem instance of false on failure.
 	 */
-	static public function get_provider() {
+	static public function get_provider( $force_direct_access= false ) {
 		global $wp_filesystem;
 		static $filesystem_access;
 
@@ -61,7 +63,7 @@ class Windows_Azure_Filesystem_Access_Provider {
 				return false;
 			}
 			$filesystem_access = $wp_filesystem;
-			if ( 'direct' === get_filesystem_method() ) {
+			if ( $force_direct_access || 'direct' === get_filesystem_method() ) {
 				$filesystem_access = new Windows_Azure_WP_Filesystem_Direct( null );
 			}
 		}
