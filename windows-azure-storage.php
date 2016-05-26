@@ -173,36 +173,6 @@ if ( function_exists( 'wp_calculate_image_srcset' ) ) {
  */
 function check_prerequisite() {
 	//TODO more robust activation checks. http://pento.net/2014/02/18/dont-let-your-plugin-be-activated-on-incompatible-sites/
-	$windowsAzureFilePath = wp_normalize_path( WP_PLUGIN_DIR . '/windows-azure-storage/library/WindowsAzure/WindowsAzure.php' );
-	if ( ( true === file_exists( $windowsAzureFilePath ) ) && ( true === is_readable( $windowsAzureFilePath ) ) ) {
-		return;
-	}
-
-	// Windows Azure SDK for PHP is not available
-	$message = '<p style="color: red"><a href="https://github.com/windowsazure/azure-sdk-for-php/">'
-	           . 'Windows Azure SDK for PHP</a> is not found. '
-	           . 'Please download and copy the Windows Azure SDK for PHP to library directory and dependencies to '
-	           . 'the dependencies directory.</p>';
-
-	if ( function_exists( 'deactivate_plugins' ) ) {
-		deactivate_plugins( plugin_basename( __FILE__ ) );
-	} else {
-		$message .= '<p style="color: red"><strong>Please deactivate this plugin Immediately</strong></p>';
-	}
-
-	$message = wp_kses( $message, array(
-			'a'      => array(
-				'href'  => array(),
-				'title' => array(),
-			),
-			'p'      => array(
-				'style' => array(),
-			),
-			'strong' => array(),
-		)
-	);
-
-	exit( $message ); //XSS okay
 }
 
 /**
