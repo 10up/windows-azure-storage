@@ -79,28 +79,13 @@ class WindowsAzureStorageUtil {
 	/**
 	 * Get Windows Azure Storage host name defined as per plugin settings
 	 *
+	 * @deprecated 4.0
+	 *
 	 * @return string host Name
 	 */
 	public static function getHostName() {
-		$storageAccountName = WindowsAzureStorageUtil::getAccountName();
-		if ( 'devstoreaccount1' === $storageAccountName ) {
-			// Use development storage
-			$hostName = Resources::EMULATOR_BLOB_URI;
-		} else {
-			// Use cloud storage
-			$hostName = Resources::BLOB_BASE_DNS_NAME;
-		}
-
-		// Remove http/https from the beginning
-		if ( 'http' === substr( $hostName, 0, 4 ) ) {
-			$parts    = parse_url( $hostName );
-			$hostName = $parts["host"];
-			if ( ! empty( $parts["port"] ) ) {
-				$hostName = $hostName . ":" . $parts["port"];
-			}
-		}
-
-		return $hostName;
+		_deprecated_function( __FUNCTION__, '4.0', 'Windows_Azure_Helper::get_hostname()' );
+		return \Windows_Azure_Helper::get_hostname();
 	}
 
 	/**
@@ -111,7 +96,7 @@ class WindowsAzureStorageUtil {
 	 * @return string Account Name
 	 */
 	public static function getAccountName() {
-		_deprecated_function( __FUNCTION__, '4.0', __( 'Use Windows_Azure_Helper::get_account_name()', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+		_deprecated_function( __METHOD__, '4.0', __( 'Windows_Azure_Helper::get_account_name()', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
 		return Windows_Azure_Helper::get_account_name();
 	}
 
@@ -123,7 +108,7 @@ class WindowsAzureStorageUtil {
 	 * @return string Account Key
 	 */
 	public static function getAccountKey() {
-		_deprecated_function( __FUNCTION__, '4.0', __( 'Use Windows_Azure_Helper::get_account_key()', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+		_deprecated_function( __FUNCTION__, '4.0', __( 'Windows_Azure_Helper::get_account_key()', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
 		return Windows_Azure_Helper::get_account_key();
 	}
 
@@ -135,7 +120,7 @@ class WindowsAzureStorageUtil {
 	 * @return string Default container name
 	 */
 	public static function getDefaultContainer() {
-		_deprecated_function( __FUNCTION__, '4.0', __( 'Use Windows_Azure_Helper::get_default_container()', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+		_deprecated_function( __FUNCTION__, '4.0', __( 'Windows_Azure_Helper::get_default_container()', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
 		return Windows_Azure_Helper::get_default_container();
 	}
 
@@ -145,10 +130,13 @@ class WindowsAzureStorageUtil {
 	 * @since 1.0.0
 	 * @since 3.0.0 Return a (maybe) filtered URL.
 	 *
+	 * @deprecated 4.0
+	 *
 	 * @return string CNAME to use for media URLs.
 	 */
 	public static function getCNAME() {
-		return untrailingslashit( strtolower( self::_maybe_rewrite_cname( get_option( 'cname' ) ) ) );
+		_deprecated_function( __METHOD__, '4.0', 'Windows_Azure_Helper::get_cname()' );
+		return \Windows_Azure_Helper::get_cname();
 	}
 
 	/**
@@ -159,7 +147,7 @@ class WindowsAzureStorageUtil {
 	 * @return string HTTP proxy host name
 	 */
 	public static function getHttpProxyHost() {
-		_deprecated_function( __FUNCTION__, '4.0', __( 'Use Windows_Azure_Helper::get_http_proxy_host()', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+		_deprecated_function( __FUNCTION__, '4.0', __( 'Windows_Azure_Helper::get_http_proxy_host()', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
 		return Windows_Azure_Helper::get_http_proxy_host();
 	}
 
@@ -171,7 +159,7 @@ class WindowsAzureStorageUtil {
 	 * @return string HTTP proxy port number
 	 */
 	public static function getHttpProxyPort() {
-		_deprecated_function( __FUNCTION__, '4.0', __( 'Use Windows_Azure_Helper::get_http_proxy_port()', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+		_deprecated_function( __FUNCTION__, '4.0', __( 'Windows_Azure_Helper::get_http_proxy_port()', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
 		return Windows_Azure_Helper::get_http_proxy_port();
 	}
 
@@ -183,7 +171,7 @@ class WindowsAzureStorageUtil {
 	 * @return string HTTP proxy user-name
 	 */
 	public static function getHttpProxyUserName() {
-		_deprecated_function( __FUNCTION__, '4.0', __( 'Use Windows_Azure_Helper::get_http_proxy_username()', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+		_deprecated_function( __FUNCTION__, '4.0', __( 'Windows_Azure_Helper::get_http_proxy_username()', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
 		return Windows_Azure_Helper::get_http_proxy_username();
 	}
 
@@ -195,7 +183,7 @@ class WindowsAzureStorageUtil {
 	 * @return string HTTP proxy password
 	 */
 	public static function getHttpProxyPassword() {
-		_deprecated_function( __FUNCTION__, '4.0', __( 'Use Windows_Azure_Helper::get_http_proxy_password()', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+		_deprecated_function( __FUNCTION__, '4.0', __( 'Windows_Azure_Helper::get_http_proxy_password()', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
 		return Windows_Azure_Helper::get_http_proxy_password();
 	}
 
@@ -214,6 +202,8 @@ class WindowsAzureStorageUtil {
 	 *
 	 * @param string $proxyPassword Http proxy password
 	 *
+	 * @deprecated 4.0
+	 *
 	 * @return WindowsAzure\Blob\BlobRestProxy Blob storage client
 	 */
 	public static function getStorageClient(
@@ -221,6 +211,7 @@ class WindowsAzureStorageUtil {
 		$proxyHost = null, $proxyPort = null,
 		$proxyUserName = null, $proxyPassword = null
 	) {
+		_deprecated_function( __FUNCTION__, '4.0', 'figure out something' );
 		// Storage Account Settings from db
 		$storageAccountName = WindowsAzureStorageUtil::getAccountName();
 		$storageAccountKey  = WindowsAzureStorageUtil::getAccountKey();
@@ -272,9 +263,12 @@ class WindowsAzureStorageUtil {
 	 *
 	 * @param string $blobName      Name of the blob to be deleted
 	 *
+	 * @deprecated 4.0
+	 *
 	 * @return void
 	 */
 	public static function deleteBlob( $containerName, $blobName ) {
+		_deprecated_function( __FUNCTION__, '4.0', 'figure out something' );
 		$blobRestProxy = WindowsAzureStorageUtil::getStorageClient();
 		if ( self::blobExists( $containerName, $blobName ) ) {
 			$blobRestProxy->deleteBlob( $containerName, $blobName );
@@ -290,6 +284,9 @@ class WindowsAzureStorageUtil {
 	 *
 	 * @param string $containerName Name of the parent container
 	 * @param string $blobName      Name of the blob to be checked
+	 *
+	 * @deprecated 4.0
+	 *
 	 * @return boolean
 	 */
 	public static function blobExists( $containerName, $blobName ) {
@@ -305,9 +302,12 @@ class WindowsAzureStorageUtil {
 	 *
 	 * @param BlobRestProxy $storageClient Reference of storage client to use
 	 *
+	 * @deprecated 4.0
+	 *
 	 * @throws ServiceException
 	 */
 	public static function createPublicContainer( $containerName, $storageClient = null ) {
+		_deprecated_function( __FUNCTION__, '4.0', 'figure out something' );
 		$containerOptions = new CreateContainerOptions();
 		$containerOptions->setPublicAccess( PublicAccessType::CONTAINER_AND_BLOBS );
 		$blobRestProxy = $null;
@@ -332,9 +332,13 @@ class WindowsAzureStorageUtil {
 	 * @since 3.0.0
 	 *
 	 * @param string $cname The CNAME value set in the plugin options.
+	 *
+	 * @deprecated 4.0
+	 *
 	 * @return string The (maybe) new CNAME with the filtered protocol.
 	 */
 	protected static function _maybe_rewrite_cname( $cname ) {
+		_deprecated_function( __FUNCTION__, '4.0' );
 		/**
 		 * Filter to allow 'https' as the CNAME protocol.
 		 *
@@ -370,11 +374,15 @@ class WindowsAzureStorageUtil {
 	 * @since 3.0.0 Switched to 'https' for all Azure URLs.
 	 *
 	 * @param bool $append_container Optional. Whether to append the container name to the URL. Default true.
+	 *
+	 * @deprecated 4.0
+	 *
 	 * @return string|WP_Error The base blob URL for an account, or an error if one can't be found/created.
 	 */
 	public static function get_storage_url_base( $append_container = true ) {
-		$azure_storage_account_name                   = self::getAccountName();
-		$default_azure_storage_account_container_name = self::getDefaultContainer();
+		//_deprecated_function( __FUNCTION__, '4.0', 'figure out something' );
+		$azure_storage_account_name                   = \Windows_Azure_Helper::get_account_name();
+		$default_azure_storage_account_container_name = \Windows_Azure_Helper::get_default_container();
 
 		/**
 		 * Filter the blob URL protocol to force a specific one.
@@ -397,17 +405,17 @@ class WindowsAzureStorageUtil {
 		}
 
 		// Get CNAME if defined
-		$cname = self::getCNAME();
+		$cname = \Windows_Azure_Helper::get_cname();
 		if ( ! ( empty( $cname ) ) ) {
 			$url = sprintf( '%1$s/%2$s',
 				$cname,
 				$append_container ? $default_azure_storage_account_container_name : ''
 			);
 		} else {
-			$blob_storage_host_name = self::getHostName();
-			$storage_account_name   = self::getAccountName();
+			$blob_storage_host_name = \Windows_Azure_Helper::get_hostname();
+			$storage_account_name   = \Windows_Azure_Helper::get_account_name();
 
-			if ( Resources::DEV_STORE_NAME === $storage_account_name ) {
+			if ( Windows_Azure_Helper::DEV_STORE_NAME === $storage_account_name ) {
 				// Use development storage
 				$url = sprintf( '%1$s%2%s/%3$s/%4$s',
 					$protocol,
@@ -446,53 +454,13 @@ class WindowsAzureStorageUtil {
 	 * @param string $container The default Azure storage container
 	 * @param string $blobName  The blob name
 	 *
+	 * @deprecated 4.0
+	 *
 	 * @return string Unique blob name
 	 */
 	public static function uniqueBlobName( $container, $blobName ) {
-		$info = pathinfo( $blobName );
-
-		$uploadSubDir = ( '.' === $info['dirname'] ) ? '' : $info['dirname'];
-		$filename     = sanitize_file_name( $info['basename'] );
-
-		// sanitized blob name
-		$blobName = ( '' === $uploadSubDir ) ? $filename : $uploadSubDir . '/' . $filename;
-
-		$newInfo = pathinfo( $blobName );
-		$ext     = ! empty( $newInfo['extension'] ) ? '.' . $newInfo['extension'] : '';
-
-		$number = '';
-
-		// change '.ext' to lower case
-		if ( $ext && strtolower( $ext ) != $ext ) {
-			$ext2      = strtolower( $ext );
-			$filename2 = preg_replace( '|' . preg_quote( $ext ) . '$|', $ext2, $filename );
-			$blobName2 = ( '' === $uploadSubDir ) ? $filename2 : $uploadSubDir . '/' . $filename2;
-
-			// check for both lower and upper case extension or image sub-sizes may be overwritten
-			while ( WindowsAzureStorageUtil::blobExists( $container, $blobName )
-			        || WindowsAzureStorageUtil::blobExists( $container, $blobName2 ) ) {
-				$new_number = $number + 1;
-				$filename   = str_replace( "$number$ext", "$new_number$ext", $filename );
-				$filename2  = str_replace( "$number$ext2", "$new_number$ext2", $filename2 );
-				$number     = $new_number;
-				$blobName   = ( '' === $uploadSubDir ) ? $filename : $uploadSubDir . '/' . $filename;
-				$blobName2  = ( '' === $uploadSubDir ) ? $filename2 : $uploadSubDir . '/' . $filename2;
-			}
-
-			return $blobName2;
-		}
-
-		while ( WindowsAzureStorageUtil::blobExists( $container, $blobName ) ) {
-			if ( '' === "$number$ext" ) {
-				$filename = $filename . ++ $number . $ext;
-			} else {
-				$filename = str_replace( "$number$ext", ++ $number . $ext, $filename );
-			}
-
-			$blobName = ( '' === $uploadSubDir ) ? $filename : $uploadSubDir . '/' . $filename;
-		}
-
-		return $blobName;
+		_deprecated_function( __FUNCTION__, '4.0', 'Windows_Azure_Helper::get_unique_blob_name()' );
+		return \Windows_Azure_Helper::get_unique_blob_name( $container, $blobName );
 	}
 
 	/**
@@ -517,91 +485,14 @@ class WindowsAzureStorageUtil {
 	 * @param string $blobContentType Optional. Content type of the blob.
 	 * @param array  $metadata        Optional. Metadata to describe the blob.
 	 *
+	 * @deprecated 4.0
+	 *
 	 * @throws \Exception|ServiceException Exception if local file can't be read;
 	 *                                     ServiceException if response code is incorrect.
 	 */
 	public static function putBlockBlob( $containerName, $blobName, $localFileName, $blobContentType = null, $metadata = array() ) {
-		$copyBlobResult = null;
-		$is_large_file  = false;
-		// Open file
-		$handle = fopen( $localFileName, 'r' );
-		if ( $handle === false ) {
-			throw new Exception( 'Could not open the local file ' . $localFileName );
-		}
-
-		/** @var \WindowsAzure\Blob\BlobRestProxy $blobRestProxy */
-		$blobRestProxy = WindowsAzureStorageUtil::getStorageClient();
-		try {
-			if ( filesize( $localFileName ) < self::MAX_BLOB_SIZE ) {
-				$createBlobOptions = new CreateBlobOptions();
-				$createBlobOptions->setBlobContentType( $blobContentType );
-				$createBlobOptions->setMetadata( $metadata );
-				$blobRestProxy->createBlockBlob( $containerName, $blobName, $handle, $createBlobOptions );
-				fclose( $handle );
-			} else {
-				$is_large_file = true;
-				// Determine number of page blocks
-				$numberOfBlocks = ceil( filesize( $localFileName ) / self::MAX_BLOB_TRANSFER_SIZE );
-
-				// Generate block id's
-				$blocks = array();
-
-				for ( $i = 0; $i < $numberOfBlocks; $i ++ ) {
-					/** @var WindowsAzure\Blob\Models\Block */
-					$block = new Block();
-
-					$block->setBlockId( self::_generateBlockId( $i ) );
-					$block->setType( BlobBlockType::LATEST_TYPE );
-
-					// Seek position in file
-					fseek( $handle, $i * self::MAX_BLOB_TRANSFER_SIZE );
-					// Read contents
-					$fileContents = fread( $handle, self::MAX_BLOB_TRANSFER_SIZE );
-					// Put block
-					$blobRestProxy->createBlobBlock( $containerName, $blobName, $block->getBlockId(), $fileContents );
-
-					// Save it for later
-					$blocks[ $i ] = $block;
-				}
-
-				// Close file
-				fclose( $handle );
-				// Set Block Blob's content type and metadata
-				$commitBlockBlobOptions = new CommitBlobBlocksOptions();
-				$commitBlockBlobOptions->setBlobContentType( $blobContentType );
-				$commitBlockBlobOptions->setMetadata( $metadata );
-				// Commit the block list
-				$blobRestProxy->commitBlobBlocks( $containerName, $blobName, $blocks, $commitBlockBlobOptions );
-
-				if ( $is_large_file ) {
-					// Delete large temp files when we're done
-					try {
-						//TODO: add option to keep this file if so desired
-						if ( self::blob_exists_in_container( $blobName, $containerName ) ) {
-							wp_delete_file( $localFileName );
-							// Dispose file contents
-							$fileContents = null;
-							unset( $fileContents );
-						} else {
-							throw new Exception(
-								sprintf(
-									__( 'The blob %1$2 was not uploaded to container %2$2. Please try again.', 'windows-azure-storage' ),
-									$blobName,
-									$containerName
-								)
-							);
-						}
-					} catch ( Exception $ex ) {
-						echo '<p class="notice">' . esc_html( $ex->getMessage() ) . '</p>';
-					}
-				}
-			}
-		} catch ( ServiceException $exception ) {
-			if ( ! $handle ) {
-				fclose( $handle );
-			}
-			throw $exception;
-		}
+		_deprecated_function( __FUNCTION__, '4.0', 'Windows_Azure_Helper::put_uploaded_file_to_blob_storage()' );
+		\Windows_Azure_Helper::put_uploaded_file_to_blob_storage( $containerName, $blobName, $localFileName );
 	}
 
 	/**
@@ -611,36 +502,16 @@ class WindowsAzureStorageUtil {
 	 *
 	 * @param string $blob_name      The blob to check.
 	 * @param string $container_name Optional. The container to check. Defaults to default container in settings.
+	 *
+	 * @deprecated 4.0
+	 *
 	 * @return bool|WP_Error True if blob exists, false if not; WP_Error if container doesn't exist.
 	 */
 	public static function blob_exists_in_container( $blob_name, $container_name = '' ) {
-		/** @var WindowsAzure\Blob\BlobRestProxy $client */
-		$client = self::getStorageClient();
+		_deprecated_function( __FUNCTION__, '4.0' );
+		$result = \Windows_Azure_Helper::get_blob_properties( $container_name, $blob_name );
 
-		if ( empty( $container_name ) ) {
-			$container_name = self::getDefaultContainer();
-		}
-
-		if ( ! self::container_exists_in_storage( $container_name ) ) {
-			return new WP_Error( __( 'invalid_container', 'windows-azure-storage' ),
-				__( 'The container specified does not exist in this account.', 'windows-azure-storage' ),
-				array(
-					'container' => $container_name,
-					'blob'      => $blob_name,
-				)
-			);
-		}
-		$result = false;
-		try {
-			$blob_properties = $client->getBlobProperties( $container_name, $blob_name );
-			if ( $blob_properties instanceof \WindowsAzure\Blob\Models\GetBlobPropertiesResult ) {
-				$result = true;
-			}
-		} catch ( \Exception $exception ) {
-			error_log( $exception->getMessage(), E_USER_NOTICE );
-		}
-
-		return $result;
+		return ! is_wp_error( $result );
 	}
 
 	/**
@@ -650,31 +521,16 @@ class WindowsAzureStorageUtil {
 	 * @link  https://goo.gl/6XsKAJ Official SDK example for checking containers.
 	 *
 	 * @param string $container_name The container name to check.
+	 *
+	 * @deprecated 4.0
+	 *
 	 * @return bool True if the container exists in the account, false if not.
 	 */
 	public static function container_exists_in_storage( $container_name ) {
-		/** @var WindowsAzure\Blob\BlobRestProxy $client */
-		$client           = self::getStorageClient();
-		$container_exists = false;
+		_deprecated_function( __FUNCTION__, '4.0', 'figure out something' );
+		$result = \Windows_Azure_Helper::get_container_acl( $container_name );
 
-		$options = new ListContainersOptions();
-		$options->setPrefix( $container_name );
-
-		//TODO: check cache for containers list and use it if present.
-		$result     = $client->listContainers( $options );
-		$containers = $result->getContainers();
-
-		//TODO: Cache the containers list.
-
-		/** @var WindowsAzure\Blob\Models\Container $container */
-		foreach ( $containers as $container ) {
-			if ( $container->getName() === $container_name ) {
-				$container_exists = true;
-				break;
-			}
-		}
-
-		return $container_exists;
+		return ! is_wp_error( $result );
 	}
 
 	/**
@@ -698,6 +554,8 @@ class WindowsAzureStorageUtil {
 	 *
 	 * @param string  $identifier      Signed identifier
 	 *
+	 * @deprecated 4.0
+	 *
 	 * @return string
 	 */
 	public static function createSharedAccessSignature(
@@ -711,6 +569,7 @@ class WindowsAzureStorageUtil {
 		$expiry = '',
 		$identifier = ''
 	) {
+		_deprecated_function( __FUNCTION__, '4.0' );
 		$accountKey = base64_decode( $accountKey );
 		// Determine path
 		if ( $usePathStyleUri ) {
@@ -746,9 +605,12 @@ class WindowsAzureStorageUtil {
 	 *
 	 * @param int $part Block number
 	 *
+	 * @deprecated 4.0
+	 *
 	 * @return string Windows Azure Blob Storage block number
 	 */
 	protected static function _generateBlockId( $part = 0 ) {
+		_deprecated_function( __FUNCTION__, '4.0' );
 		$returnValue = $part;
 		while ( strlen( $returnValue ) < 64 ) {
 			$returnValue = '0' . $returnValue;
@@ -767,6 +629,9 @@ class WindowsAzureStorageUtil {
 	 *                           Allowed actions are: 'browse', 'insert', 'upload', 'create_container',
 	 *                           'delete_single_blob', 'delete_all_blobs', and 'change_settings'.
 	 * @param int|object $user   Optional. User ID or object. Default is current user ID.
+	 *
+	 * @deprecated 4.0
+	 *
 	 * @return bool Whether the action is permitted by the user.
 	 */
 	public static function check_action_permissions( $action = 'browse', $user = null ) {
@@ -796,91 +661,4 @@ class WindowsAzureStorageUtil {
 
 		return false;
 	}
-}
-
-/**
- * Internal class used for redirecting request-response for Http proxy
- *
- * @category  WordPress_Plugin
- * @package   Windows_Azure_Storage_For_WordPress
- * @author    Microsoft Open Technologies, Inc. <msopentech@microsoft.com>
- * @copyright Microsoft Open Technologies, Inc.
- * @license   New BSD license, (http://www.opensource.org/licenses/bsd-license.php)
- * @link      http://www.microsoft.com
- */
-class WindowsAzureStorageProxyFilter implements IServiceFilter {
-	/**
-	 * Proxy host.
-	 */
-	protected $host;
-
-	/**
-	 * Proxy port.
-	 */
-	protected $port;
-
-	/**
-	 * Proxy username.
-	 */
-	protected $username;
-
-	/**
-	 * Proxy password.
-	 */
-	protected $password;
-
-	/**
-	 * Create a new instance of WindowsAzureStorageProxyFilter
-	 *
-	 * @param string $host     HTTP porxy host.
-	 *
-	 * @param string $port     HTTP proxy port.
-	 *
-	 * @param string $username HTTP proxy username.
-	 *
-	 * @param string $password HTTP proxy password.
-	 */
-	public function __construct( $host, $port, $username, $password ) {
-		$this->host     = $host;
-		$this->port     = $port;
-		$this->username = $username;
-		$this->password = $password;
-	}
-
-	/**
-	 * Hook to processes HTTP request before send.
-	 *
-	 * @param mix $request HTTP request object.
-	 *
-	 * @return mix processed HTTP request object.
-	 */
-	public function handleRequest( $request ) {
-		if ( $this->host ) {
-			$request->setConfig( 'proxy_host', $this->host );
-			if ( $this->port ) {
-				$request->setConfig( 'proxy_port', $this->port );
-				if ( $this->username ) {
-					$request->setConfig( 'proxy_user', $this->username );
-					if ( $this->password ) {
-						$request->setConfig( 'proxy_password', $this->password );
-					}
-				}
-			}
-		}
-
-		return $request;
-	}
-
-	/**
-	 * Hook to processes HTTP response after send.
-	 *
-	 * @param mix $request  HTTP request object.
-	 * @param mix $response HTTP response object.
-	 *
-	 * @return mix processed HTTP response object.
-	 */
-	public function handleResponse( $request, $response ) {
-		return $response;
-	}
-
 }

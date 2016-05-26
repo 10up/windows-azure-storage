@@ -920,13 +920,14 @@ class Windows_Azure_Rest_Api_Client {
 	 *
 	 * @since 4.0.0
 	 *
-	 * @param string $container   Container name.
-	 * @param string $local_path  Local path.
-	 * @param string $remote_path Remote path.
+	 * @param string $container                Container name.
+	 * @param string $local_path               Local path.
+	 * @param string $remote_path              Remote path.
+	 * @param bool   $force_direct_file_access Whether to force direct file access.
 	 *
 	 * @return bool|string|WP_Error Newly put blob URI or WP_Error|false on failure.
 	 */
-	public function put_blob( $container, $local_path, $remote_path ) {
+	public function put_blob( $container, $local_path, $remote_path, $force_direct_file_access = false ) {
 		$container  = trailingslashit( $container );
 		$query_args = array();
 		$headers    = apply_filters( 'azure_blob_put_blob_headers', array() );
@@ -939,7 +940,7 @@ class Windows_Azure_Rest_Api_Client {
 			return $result;
 		}
 
-		$contents_provider = new Windows_Azure_File_Contents_Provider( $local_path );
+		$contents_provider = new Windows_Azure_File_Contents_Provider( $local_path, null, $force_direct_file_access );
 		$is_valid          = $contents_provider->is_valid();
 		if ( ! $is_valid || is_wp_error( $is_valid ) ) {
 			return $is_valid;
@@ -1187,7 +1188,8 @@ class Windows_Azure_Rest_Api_Client {
 
 		foreach ( $needs_sanitization as $item ) {
 			$info     = pathinfo( $item );
-			$new_name = isset( $info['dirname'] ) ? trailingslashit( $info['dirname'] ) : '';
+			$dirname  = isset( $info['dirname'] ) ? ltrim( $info['dirname'], '.' ) : '';
+			$new_name = ! empty( $dirname ) ? trailingslashit( $dirname ) : '';
 			$new_name .= $info['filename'] . '-' . uniqid( '', false );
 			$new_name .= isset( $info['extension'] ) ? '.' . $info['extension'] : '';
 			$sanitized_names[ $item ] = $new_name;

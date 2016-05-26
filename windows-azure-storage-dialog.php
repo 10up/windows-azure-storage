@@ -115,24 +115,25 @@ function windows_azure_storage_dialog_browse_tab() {
 	 */
 	$post_id = isset( $_GET['post_id'] ) ? (int) $_GET['post_id'] : 0;
 
-	$azure_storage_account_name                   = WindowsAzureStorageUtil::getAccountName();
-	$azure_storage_account_primary_access_key     = WindowsAzureStorageUtil::getAccountKey();
-	$default_azure_storage_account_container_name = WindowsAzureStorageUtil::getDefaultContainer();
+	$azure_storage_account_name                   = Windows_Azure_Helper::get_account_name();
+	$azure_storage_account_primary_access_key     = Windows_Azure_Helper::get_account_key();
+	$default_azure_storage_account_container_name = Windows_Azure_Helper::get_default_container();
 
 	if ( empty( $azure_storage_account_name ) || empty( $azure_storage_account_primary_access_key ) ) {
 		echo '<h3 style="margin: 10px;">Azure Storage Account not yet configured</h3>';
 		echo '<p style="margin: 10px;">Please configure the account in Windows Azure Settings Tab.</p>';
 	} else {
-		$storageClient = WindowsAzureStorageUtil::getStorageClient();
 		// Set selected container. If none, then use default container
 		$selected_container_name = $default_azure_storage_account_container_name;
 		//TODO: can we just check $_REQUEST here?
 		if (
 			! empty( $_POST['selected_container'] ) &&
+			! isset( $_POST['delete_all_blobs'] ) &&
 			check_admin_referer( 'browse_select_container_' . $post_id, 'browse_select_container_nonce' )
 		) {
 			$selected_container_name = sanitize_text_field( $_POST['selected_container'] );
 		} elseif (
+			! isset( $_GET['delete_blob'] ) &&
 			! empty( $_GET['selected_container'] ) &&
 			check_admin_referer( 'browse_select_container_' . $post_id, 'browse_select_container_nonce' )
 		) {
@@ -160,7 +161,8 @@ function windows_azure_storage_dialog_browse_tab() {
 				</div>
 				<?php
 			} else {
-				deleteBlob( $selected_container_name, sanitize_text_field( $_GET['filename'] ) );
+				$selected_container_name = sanitize_text_field( $_GET['selected_container'] );
+				$result = \Windows_Azure_Helper::delete_blob( $selected_container_name, sanitize_text_field( $_GET['filename'] ) );
 			}
 		} // delete_blob
 
@@ -181,11 +183,12 @@ function windows_azure_storage_dialog_browse_tab() {
 				</div>
 				<?php
 			} else {
+				$selected_container_name = sanitize_text_field( $_POST['selected_container'] );
 				// Get list of blobs in specified container
-				$listBlobResult = $storageClient->listBlobs( $selected_container_name );
+				$blobs_iterator = \Windows_Azure_Helper::list_blobs( $selected_container_name );
 				// Delete each blob in specified container
-				foreach ( $listBlobResult->getBlobs() as $blob ) {
-					deleteBlob( $selected_container_name, $blob->getName() );
+				foreach ( $blobs_iterator as $blob ) {
+					\Windows_Azure_Helper::delete_blob( $selected_container_name, $blob['Name'] );
 				}
 
 				echo '<p style="margin: 10px; color: red;">'
@@ -204,14 +207,13 @@ function windows_azure_storage_dialog_browse_tab() {
 					) );
 				}
 
-				$fileTagFilter   = sanitize_text_field( $_POST["searchFileTag"] );
 				$fileNameFilter  = sanitize_text_field( $_POST["searchFileName"] );
 				$fileTypeFilter  = sanitize_text_field( $_POST["searchFileType"] );
 				$searchContainer = sanitize_text_field( $_POST["searchContainer"] );
 
-				if ( empty( $fileTagFilter ) &&
-				     empty( $fileNameFilter ) &&
-				     empty( $fileTypeFilter )
+				if (
+					empty( $fileNameFilter ) &&
+					empty( $fileTypeFilter )
 				) {
 					echo '<p style="margin: 10px;">Search criteria not specified.</p><br/>';
 				} else {
@@ -222,36 +224,28 @@ function windows_azure_storage_dialog_browse_tab() {
 					if ( ! empty( $fileTypeFilter ) ) {
 						$criteria[] = "file type like " . $fileTypeFilter;
 					}
-					if ( ! empty( $fileTagFilter ) ) {
-						$criteria[] = "tag like '" . $fileTagFilter . "'";
-					}
 
 					$searchResult = array();
 					if ( 'ALL_CONTAINERS' === $searchContainer ) {
 						$criteria[]          = "in 'all containers'";
-						$listContainerResult = $storageClient->listContainers();
-						foreach ( $listContainerResult->getContainers() as $container ) {
+						$listContainerResult = \Windows_Azure_Helper::list_containers();
+						foreach ( $listContainerResult as $container ) {
 							// Get list of blobs in specified container
-							$listBlobResult = $storageClient->listBlobs( $container->getName() );
-							foreach ( $listBlobResult->getBlobs() as $blob ) {
+							$listBlobResult = \Windows_Azure_Helper::list_blobs( $container['Name'] );
+							foreach ( $listBlobResult as $blob ) {
 								if ( ! empty( $fileNameFilter ) ) {
-									if ( stripos( $blob->getName(), $fileNameFilter ) === false ) {
+									if ( stripos( $blob['Name'], $fileNameFilter ) === false ) {
 										continue;
 									}
 								}
 
 								// TODO This is a temporary fix (replacing space with %20) will be removed once fixed in the core
-								$blobName              = str_replace( " ", "%20", $blob->getName() );
-								$getBlobMetadataResult = $storageClient->getBlobMetadata( $container->getName(), $blobName );
-								$metadata              = $getBlobMetadataResult->getMetadata();
+								$blobName = str_replace( " ", "%20", $blob->getName() );
+								$metadata = \Windows_Azure_Helper::get_blob_properties( $container['Name'], $blobName );
+
 
 								if ( ! empty( $fileTypeFilter ) ) {
-									if ( stripos( $metadata["mimetype"], $fileTypeFilter ) === false ) {
-										continue;
-									}
-								}
-								if ( ! empty( $fileTagFilter ) ) {
-									if ( stripos( $metadata["tag"], $fileTagFilter ) === false ) {
+									if ( stripos( $metadata["content-type"], $fileTypeFilter ) === false ) {
 										continue;
 									}
 								}
@@ -267,26 +261,20 @@ function windows_azure_storage_dialog_browse_tab() {
 						$criteria[] = "in container '" . $searchContainer . "'";
 
 						// Get list of blobs in specified container
-						$listBlobResult = $storageClient->listBlobs( $searchContainer );
-						foreach ( $listBlobResult->getBlobs() as $blob ) {
+						$listBlobResult = \Windows_Azure_Helper::list_blobs( $searchContainer  );
+						foreach ( $listBlobResult as $blob ) {
 							if ( ! empty( $fileNameFilter ) ) {
-								if ( stripos( $blob->getName(), $fileNameFilter ) === false ) {
+								if ( stripos( $blob['Name'], $fileNameFilter ) === false ) {
 									continue;
 								}
 							}
 
 							// TODO This is a temporary fix (replacing space with %20) will be removed once fixed in the core
-							$blobName              = str_replace( " ", "%20", $blob->getName() );
-							$getBlobMetadataResult = $storageClient->getBlobMetadata( $searchContainer, $blobName );
-							$metadata              = $getBlobMetadataResult->getMetadata();
-							if ( ! empty( $fileTypeFilter ) ) {
-								if ( stripos( $metadata["mimetype"], $fileTypeFilter ) === false ) {
-									continue;
-								}
-							}
+							$blobName = str_replace( " ", "%20", $blob['Name'] );
+							$metadata = \Windows_Azure_Helper::get_blob_properties( $searchContainer, $blobName );
 
-							if ( ! empty( $fileTagFilter ) ) {
-								if ( stripos( $metadata["tag"], $fileTagFilter ) === false ) {
+							if ( ! empty( $fileTypeFilter ) ) {
+								if ( stripos( $metadata["content-type"], $fileTypeFilter ) === false ) {
 									continue;
 								}
 							}
@@ -294,7 +282,7 @@ function windows_azure_storage_dialog_browse_tab() {
 							$searchResult[] = sprintf( '%1$s/%2$s/%3$s',
 								untrailingslashit( WindowsAzureStorageUtil::get_storage_url_base( false ) ),
 								$searchContainer,
-								$blob->getName() );
+								$blob['Name'] );
 						}
 					}
 
@@ -303,7 +291,7 @@ function windows_azure_storage_dialog_browse_tab() {
 					if ( empty( $searchResult ) ) {
 						echo '<p style="margin: 10px;">No file found matching specified criteria (' . implode( ', ', esc_html( $criteria ) ) . ')</p><br/>';
 					} else {
-						echo '<p style="margin: 10px;">Found ' . esc_html( count( $searchResult ) ) . ' file(s) matching specified criteria (' . implode( ', ', esc_html( $criteria ) ) . ')</p><br/>';
+						echo '<p style="margin: 10px;">Found ' . esc_html( count( $searchResult ) ) . ' file(s) matching specified criteria (' . esc_html( implode( ', ', $criteria ) ) . ')</p><br/>';
 						foreach ( $searchResult as $url ) {
 							//TODO: remove inline JS and CSS
 							$style          = 'margin: 10px;';
@@ -365,16 +353,15 @@ function windows_azure_storage_dialog_browse_tab() {
 						        onchange="<?php echo esc_js( 'this.form.setAttribute( "aria-busy", true ); this.form.submit(); this.disabled = true;' ); ?>">
 							<?php
 							try {
-								$storageClient       = WindowsAzureStorageUtil::getStorageClient();
-								$listContainerResult = $storageClient->listContainers();
-								foreach ( $listContainerResult->getContainers() as $container ) {
+								$listContainerResult = \Windows_Azure_Helper::list_containers();
+								foreach ( $listContainerResult as $container ) {
 									if ( empty( $first_container_name ) ) {
-										$first_container_name = $container->getName();
+										$first_container_name = $container['Name'];
 									}
 									?>
-									<option value="<?php echo esc_attr( $container->getName() ); ?>"
-										<?php selected( $container->getName(), $selected_container_name, true ); ?>>
-										<?php echo esc_html( $container->getName() ); ?>
+									<option value="<?php echo esc_attr( $container['Name'] ); ?>"
+										<?php selected( $container['Name'], $selected_container_name, true ); ?>>
+										<?php echo esc_html( $container['Name'] ); ?>
 									</option>
 									<?php
 								}
@@ -400,9 +387,8 @@ function windows_azure_storage_dialog_browse_tab() {
 						}
 
 						// Get list of blobs in specified container
-						$listBlobResult = $storageClient->listBlobs( $selected_container_name );
-						$blobs          = $listBlobResult->getBlobs();
-						if ( empty( $blobs ) ) { ?>
+						$blobs = \Windows_Azure_Helper::list_blobs( $selected_container_name );
+						if ( $blobs->is_empty() ) { ?>
 							<p style="margin: 10px;"><?php
 								printf(
 									esc_html__( 'No items in container "%s".', 'windows-azure-storage' ),
@@ -412,15 +398,15 @@ function windows_azure_storage_dialog_browse_tab() {
 							<?php
 						} else {
 							echo '<p style="margin: 10px;">Note: Click on the image to insert image URL into the blog!</p><br/>';
-							/** @var WindowsAzure\Blob\Models\Blob $blob */
+							/** @var array $blob */
 							foreach ( $blobs as $blob ) {
 								$url = sprintf( '%1$s/%2$s/%3$s',
 									untrailingslashit( WindowsAzureStorageUtil::get_storage_url_base( false ) ),
 									$selected_container_name,
-									$blob->getName()
+									$blob['Name']
 								);
 								// TODO switch to wp_check_filetype_and_ext()
-								$fileExt = substr( strrchr( $blob->getName(), '.' ), 1 );
+								$fileExt = substr( strrchr( $blob['Name'], '.' ), 1 );
 
 								//TODO: remove inline JS and CSS
 								$style          = 'margin: 10px;';
@@ -448,7 +434,7 @@ function windows_azure_storage_dialog_browse_tab() {
 											esc_url( $url ),
 											esc_attr( $style ),
 											esc_js( sprintf( $onclick_js, esc_url( $url ) ) ),
-											esc_html( $blob->getName() )
+											esc_html( $blob['Name'] )
 										);
 										break;
 								}
@@ -457,7 +443,7 @@ function windows_azure_storage_dialog_browse_tab() {
 									$delete_blob_url = add_query_arg( array(
 										'post_id'            => $post_id,
 										'tab'                => 'browse', // default tab
-										'filename'           => $blob->getName(),
+										'filename'           => $blob['Name'],
 										'selected_container' => $selected_container_name,
 									), MSFT_AZURE_PLUGIN_LEGACY_MEDIA_URL );
 									$delete_blob_url = wp_nonce_url( $delete_blob_url, 'delete_blob_' . $post_id, 'delete_blob' );
@@ -470,7 +456,7 @@ function windows_azure_storage_dialog_browse_tab() {
 											esc_attr__(
 												'Delete "%s" from this container.', 'windows-azure-storage'
 											),
-											esc_html( $blob->getName() )
+											esc_html( $blob['Name'] )
 										),
 										'x' // TODO maybe make this customizable via L10N?
 									);
@@ -488,7 +474,7 @@ function windows_azure_storage_dialog_browse_tab() {
 		<?php
 		// TODO: add an AYS check before submitting this form.
 		if (
-			! empty( $blobs ) &&
+			! $blobs->is_empty() &&
 			WindowsAzureStorageUtil::check_action_permissions( 'delete_all_blobs' )
 		) :
 			$form_action_url = add_query_arg( array(
@@ -543,9 +529,9 @@ function windows_azure_storage_dialog_search_tab() {
 	 */
 	$post_id = isset( $_GET['post_id'] ) ? (int) $_GET['post_id'] : 0;
 
-	$azure_storage_account_name                   = WindowsAzureStorageUtil::getAccountName();
-	$azure_storage_account_primary_access_key     = WindowsAzureStorageUtil::getAccountKey();
-	$default_azure_storage_account_container_name = WindowsAzureStorageUtil::getDefaultContainer();
+	$azure_storage_account_name                   = \Windows_Azure_Helper::get_account_name();
+	$azure_storage_account_primary_access_key     = \Windows_Azure_Helper::get_account_key();
+	$default_azure_storage_account_container_name = \Windows_Azure_Helper::get_default_container();
 
 	if ( empty( $azure_storage_account_name ) || empty( $azure_storage_account_primary_access_key ) ) {
 		echo '<h3 style="margin: 10px;">Azure Storage Account not yet configured</h3>';
@@ -561,15 +547,6 @@ function windows_azure_storage_dialog_search_tab() {
 			<form role="search" method="POST" action="<?php echo esc_url( $form_action_url ); ?>">
 				<?php wp_nonce_field( 'search_' . $post_id, 'search_nonce' ); ?>
 				<table class="form-table">
-					<tr valign="top">
-						<th scope="row">
-							<label for="searchFileTag">Tag:</label>
-						</th>
-						<td>
-							<input type="text" name="searchFileTag" value="" />
-						</td>
-					</tr>
-
 					<tr valign="top">
 						<th scope="row">
 							<label for="searchFileName">File Name:</label>
@@ -596,12 +573,10 @@ function windows_azure_storage_dialog_search_tab() {
 							<select name="searchContainer" title="Search within this container">
 								<?php
 								try {
-									$storageClient       = WindowsAzureStorageUtil::getStorageClient();
-									/** @var WindowsAzure\Blob\Models\ListContainersResult $listContainerResult */
-									$listContainerResult = $storageClient->listContainers();
-									/** @var WindowsAzure\Blob\Models\Container $container */
-									foreach ( $listContainerResult->getContainers() as $container ) {
-										$container_name = $container->getName();
+									$listContainerResult = \Windows_Azure_Helper::list_containers();
+									/** @var array $container */
+									foreach ( $listContainerResult as $container ) {
+										$container_name = $container['Name'];
 										?>
 										<option value="<?php echo esc_attr( $container_name ); ?>"
 											<?php selected( $container_name, $default_azure_storage_account_container_name ); ?>>
@@ -667,9 +642,9 @@ function windows_azure_storage_dialog_upload_tab() {
 	 */
 	$post_id = isset( $_GET['post_id'] ) ? (int) $_GET['post_id'] : 0;
 
-	$azure_storage_account_name                   = WindowsAzureStorageUtil::getAccountName();
-	$azure_storage_account_primary_access_key     = WindowsAzureStorageUtil::getAccountKey();
-	$default_azure_storage_account_container_name = WindowsAzureStorageUtil::getDefaultContainer();
+	$azure_storage_account_name                   = \Windows_Azure_Helper::get_account_name();
+	$azure_storage_account_primary_access_key     = \Windows_Azure_Helper::get_account_key();
+	$default_azure_storage_account_container_name = \Windows_Azure_Helper::get_default_container();
 	$uploadMessage                                = null;
 	$uploadSuccess                                = true;
 	if ( empty( $azure_storage_account_name ) || empty( $azure_storage_account_primary_access_key ) ) {
@@ -695,11 +670,6 @@ function windows_azure_storage_dialog_upload_tab() {
 				if ( ! file_exists( $_FILES['uploadFileName']['tmp_name'] ) ) {
 					echo "<p>Uploaded file " . esc_html( $_FILES['uploadFileName']['tmp_name'] ) . " does not exist</p><br/>";
 				} else {
-					$metaData = array( 'mimetype' => $_FILES['uploadFileName']['type'] );
-					if ( ! empty( $_POST["uploadFileTag"] ) ) {
-						$metaData["tag"] = sanitize_text_field( $_POST["uploadFileTag"] );
-					}
-
 					try {
 						if (
 							false === check_admin_referer( 'upload_blob_' . $post_id, 'upload_blob_nonce' ) ||
@@ -707,12 +677,16 @@ function windows_azure_storage_dialog_upload_tab() {
 						) {
 							throw new Exception( __( 'Nonce check failed. Please try again, or contact your site administrator for assistance.', 'windows-azure-storage' ) );
 						}
-						$blobName = WindowsAzureStorageUtil::uniqueBlobName( $selected_container_name, $_FILES['uploadFileName']['name'] );
-						WindowsAzureStorageUtil::putBlockBlob( $selected_container_name, $blobName, $_FILES['uploadFileName']['tmp_name'], null, $metaData );
-						$uploadMessage = "Successfully uploaded file '" . $blobName . "' to the container '" . $selected_container_name . "'.";
+						$blobName = \Windows_Azure_Helper::put_uploaded_file_to_blob_storage( $selected_container_name, sanitize_text_field( $_FILES['uploadFileName']['name'] ), $_FILES['uploadFileName']['tmp_name'] );
+						if ( is_string( $blobName )) {
+							$uploadMessage = "Successfully uploaded file '" . esc_html( $_FILES['uploadFileName']['name'] ) . "' to the container '" . $selected_container_name . "'. File URL: " . $blobName;
+						} else {
+							$uploadSuccess = false;
+							$uploadMessage = "Error in uploading file '" . esc_html( $_FILES['uploadFileName']['name'] );
+						}
 					} catch ( Exception $e ) {
 						$uploadSuccess = false;
-						$uploadMessage = "Error in uploading file '" . $_FILES['uploadFileName']['name'] . "', Error: " . $e->getMessage();
+						$uploadMessage = "Error in uploading file '" . esc_html( $_FILES['uploadFileName']['name'] ) . "', Error: " . $e->getMessage();
 					}
 				}
 			}
@@ -728,8 +702,13 @@ function windows_azure_storage_dialog_upload_tab() {
 						account. Please contact your site administrator for assistance.',
 							'windows-azure-storage' ) );
 					}
-					WindowsAzureStorageUtil::createPublicContainer( sanitize_text_field( $_POST["createContainer"] ) );
-					$uploadMessage = "The container '" . $_POST["createContainer"] . "' successfully created";
+					$container_name = \Windows_Azure_Helper::create_container( sanitize_text_field( $_POST["createContainer"] ) );
+					if ( ! is_wp_error( $container_name )) {
+						$uploadMessage = "The container '" . esc_html( $container_name ) . "' successfully created";
+					} else {
+						$uploadSuccess = false;
+						$uploadMessage = "Container creation failed: " . $container_name->get_error_message();
+					}
 				} catch ( Exception $e ) {
 					$uploadSuccess = false;
 					$uploadMessage = "Container creation failed: " . $e->getMessage();
@@ -760,13 +739,12 @@ function windows_azure_storage_dialog_upload_tab() {
 							<select name="selected_container" title="Storage container to be used for uploading media files" onChange="<?php echo esc_js( 'onUpload_ContainerSelectionChanged();' ); ?>">
 								<?php
 								try {
-									$storageClient       = WindowsAzureStorageUtil::getStorageClient();
-									$listContainerResult = $storageClient->listContainers();
-									foreach ( $listContainerResult->getContainers() as $container ) :
+									$listContainerResult = \Windows_Azure_Helper::list_containers();
+									foreach ( $listContainerResult as $container ) :
 										if ( empty( $selected_container_name ) ) {
-											$selected_container_name = $container->getName();
+											$selected_container_name = $container['Name'];
 										}
-										$container_name = $container->getName();
+										$container_name = $container['Name'];
 										?>
 										<option value="<?php echo esc_attr( $container_name ); ?>"
 											<?php selected( $container_name, $selected_container_name ); ?>>
@@ -792,15 +770,6 @@ function windows_azure_storage_dialog_upload_tab() {
 							<input type="text" name="createContainer" value="" />
 						</td>
 					</tr>
-					<tr valign="top">
-						<th scope="row">
-							<label for="uploadFileTag">Tag:</label>
-						</th>
-						<td>
-							<input type="text" name="uploadFileTag" value="" />
-						</td>
-					</tr>
-
 					<tr valign="top">
 						<th scope="row">
 							<label for="uploadFileName">File Name:</label>
