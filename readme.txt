@@ -1,5 +1,5 @@
 === Windows Azure Storage for WordPress ===
-Contributors: msopentech, 10up, morganestes, stevegrunwell
+Contributors: msopentech, 10up, morganestes, stevegrunwell, lpawlik
 Tags: Microsoft, Microsoft Open Technologies, Windows Azure, Windows Azure Storage, Media Files, Upload, CDN, blob storage
 Requires at least: 2.8.0
 Tested up to: 4.4
@@ -11,9 +11,9 @@ Use the Windows Azure Storage service to host your website's media files.
 
 == Description ==
 
-This WordPress plugin allows you to use Windows Azure Storage Service to host 
-your media for your WordPress powered blog. Windows Azure Storage is an effective way 
-to scale storage of your site without having to go through the expense of setting up the 
+This WordPress plugin allows you to use Windows Azure Storage Service to host
+your media for your WordPress powered blog. Windows Azure Storage is an effective way
+to scale storage of your site without having to go through the expense of setting up the
 infrastructure for a content delivery.
 
 For more details on Windows Azure Storage, please visit the <a href="https://azure.microsoft.com/en-us/services/storage/">Microsoft Azure website</a>.
