@@ -1188,7 +1188,8 @@ class Windows_Azure_Rest_Api_Client {
 
 		foreach ( $needs_sanitization as $item ) {
 			$info     = pathinfo( $item );
-			$new_name = isset( $info['dirname'] ) ? trailingslashit( $info['dirname'] ) : '';
+			$dirname  = isset( $info['dirname'] ) ? ltrim( $info['dirname'], '.' ) : '';
+			$new_name = ! empty( $dirname ) ? trailingslashit( $dirname ) : '';
 			$new_name .= $info['filename'] . '-' . uniqid( '', false );
 			$new_name .= isset( $info['extension'] ) ? '.' . $info['extension'] : '';
 			$sanitized_names[ $item ] = $new_name;

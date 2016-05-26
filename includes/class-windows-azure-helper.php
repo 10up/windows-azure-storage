@@ -287,14 +287,9 @@ class Windows_Azure_Helper {
 			return new \WP_Error( -1, sprintf( __( 'Uploaded file %s does not exist.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) ), $blob_name );
 		}
 		list( $account_name, $account_key ) = self::get_api_credentials( $account_name, $account_key );
-		$rest_api_client      = new Windows_Azure_Rest_Api_Client( $account_name, $account_key );
-		$file_info            = array(
-			$blob_name => array(
-				$blob_name => $blob_name,
-			),
-		);
-		$sanizited_file_names = $rest_api_client->sanitize_blobs_names( $container_name, $file_info );
-		$remote_path          = $sanizited_file_names[ $blob_name ][ $blob_name ];
+		$rest_api_client = new Windows_Azure_Rest_Api_Client( $account_name, $account_key );
+
+		$remote_path = self::get_unique_blob_name( $container_name, $blob_name );
 
 		$result = $rest_api_client->put_blob( $container_name, $local_path, $remote_path, true );
 		if ( ! $result || is_wp_error( $result ) ) {
@@ -304,6 +299,62 @@ class Windows_Azure_Helper {
 		$mime_type = finfo_file( $finfo, $local_path );
 		finfo_close( $finfo );
 		$rest_api_client->put_blob_properties( $container_name, $remote_path, array(
+			Windows_Azure_Rest_Api_Client::API_HEADER_MS_BLOB_CONTENT_TYPE => $mime_type,
+		) );
+
+		return $result;
+	}
+
+	/**
+	 * Wrapper for REST API client sanitize file names. Supports only single file.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $container_name Container name.
+	 * @param string $blob_name      Blob name.
+	 * @param string $account_name   Account name.
+	 * @param string $account_key    Account key.
+	 *
+	 * @return string Sanitized file name.
+	 */
+	static public function get_unique_blob_name( $container_name, $blob_name, $account_name = '', $account_key = '' ) {
+		list( $account_name, $account_key ) = self::get_api_credentials( $account_name, $account_key );
+		$rest_api_client      = new Windows_Azure_Rest_Api_Client( $account_name, $account_key );
+		$file_info            = array(
+			$blob_name => array(
+				$blob_name => $blob_name,
+			),
+		);
+		$sanizited_file_names = $rest_api_client->sanitize_blobs_names( $container_name, $file_info );
+
+		return $sanizited_file_names[ $blob_name ][ $blob_name ];
+	}
+
+	/**
+	 * Put media file into Azure storage.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $container_name Container name.
+	 * @param string $blob_name      Blob name.
+	 * @param string $local_path     Local path.
+	 * @param string $mime_type      Mime type.
+	 * @param string $account_name   Account name.
+	 * @param string $account_key    Account key.
+	 *
+	 * @return bool|string|WP_Error False or WP_Error on failure URI on success.
+	 */
+	static public function put_media_to_blob_storage( $container_name, $blob_name, $local_path, $mime_type, $account_name = '', $account_key = '' ) {
+
+		list( $account_name, $account_key ) = self::get_api_credentials( $account_name, $account_key );
+		$rest_api_client = new Windows_Azure_Rest_Api_Client( $account_name, $account_key );
+
+		$result = $rest_api_client->put_blob( $container_name, $local_path, $blob_name );
+		if ( ! $result || is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		$rest_api_client->put_blob_properties( $container_name, $blob_name, array(
 			Windows_Azure_Rest_Api_Client::API_HEADER_MS_BLOB_CONTENT_TYPE => $mime_type,
 		) );
 
