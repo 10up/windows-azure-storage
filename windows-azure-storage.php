@@ -127,16 +127,16 @@ if ( (bool) get_option( 'azure_storage_use_for_default_upload' ) ) {
 		'windows_azure_storage_wp_update_attachment_metadata',
 		9,
 		2
-	);
+	);//checked
 
 	// Hook for handling blog posts via xmlrpc. This is not full proof check
-	add_filter( 'content_save_pre', 'windows_azure_storage_content_save_pre' );
+	add_filter( 'content_save_pre', 'windows_azure_storage_content_save_pre' );//checked
 
 	//TODO: implement wp_unique_filename filter once it is available in WordPress
-	add_filter( 'wp_handle_upload_prefilter', 'windows_azure_storage_wp_handle_upload_prefilter' );
+	add_filter( 'wp_handle_upload_prefilter', 'windows_azure_storage_wp_handle_upload_prefilter' );//checked
 
 	// Hook for handling media uploads
-	add_filter( 'wp_handle_upload', 'windows_azure_storage_wp_handle_upload' );
+	add_filter( 'wp_handle_upload', 'windows_azure_storage_wp_handle_upload' );//checked
 
 	// Filter to modify file name when XML-RPC is used
 	//TODO: remove this filter when wp_unique_filename filter is available in WordPress
@@ -160,7 +160,7 @@ add_filter(
 );
 
 // Hook for handling deleting media files from standard WordpRess dialog
-add_action( 'delete_attachment', 'windows_azure_storage_delete_attachment' );
+add_action( 'delete_attachment', 'windows_azure_storage_delete_attachment' );//checked
 
 // Filter the 'srcset' attribute in 'the_content' introduced in WP 4.4.
 if ( function_exists( 'wp_calculate_image_srcset' ) ) {
@@ -596,13 +596,13 @@ function windows_azure_storage_delete_attachment( $postID ) {
 			// Delete media file from blob storage
 			$containerName = $mediaInfo['container'];
 			$blobName      = $mediaInfo['blob'];
-			WindowsAzureStorageUtil::deleteBlob( $containerName, $blobName );
+			\Windows_Azure_Helper::delete_blob( $containerName , $blobName );
 
 			// Delete associated thumbnails from blob storage (if any)
 			$thumbnails = $mediaInfo['thumbnails'];
 			if ( ! empty( $thumbnails ) ) {
 				foreach ( $thumbnails as $thumbnail_blob ) {
-					WindowsAzureStorageUtil::deleteBlob( $containerName, $thumbnail_blob );
+					\Windows_Azure_Helper::delete_blob( $containerName , $thumbnail_blob );
 				}
 			}
 		}
