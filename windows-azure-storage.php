@@ -67,7 +67,6 @@ define( 'MSFT_AZURE_PLUGIN_DOMAIN_NAME', 'windows-azure-storage' );
 $path = MSFT_AZURE_PLUGIN_PATH . 'library/dependencies';
 set_include_path( get_include_path() . PATH_SEPARATOR . $path );
 
-require_once MSFT_AZURE_PLUGIN_PATH . 'library/WindowsAzure/WindowsAzure.php';
 require_once MSFT_AZURE_PLUGIN_PATH . 'windows-azure-storage-settings.php';
 require_once MSFT_AZURE_PLUGIN_PATH . 'windows-azure-storage-dialog.php';
 require_once MSFT_AZURE_PLUGIN_PATH . 'windows-azure-storage-util.php';
@@ -734,7 +733,7 @@ function windows_azure_storage_wp_calculate_image_srcset( $sources, $size_array,
 	$media_info = get_post_meta( $attachment_id, 'windows_azure_storage_info', true );
 
 	// If a CNAME is configured, make sure only 'http' is used for the protocol.
-	$azure_cname       = WindowsAzureStorageUtil::getCNAME();
+	$azure_cname       = \Windows_Azure_Helper::get_cname();
 	$esc_url_protocols = ! empty ( $azure_cname ) ? array( 'https', 'http', '//' ) : null;
 
 	if ( ! empty( $media_info ) ) {

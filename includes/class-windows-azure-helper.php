@@ -46,6 +46,42 @@
 class Windows_Azure_Helper {
 
 	/**
+	 * Emulator hostname.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @const string
+	 */
+	const EMULATOR_BLOB_URI = '127.0.0.1:10000';
+
+	/**
+	 * Blob hostname.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @const string
+	 */
+	const BLOB_BASE_DNS_NAME = 'blob.core.windows.net';
+
+	/**
+	 * Developer storage account name.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @const string
+	 */
+	const DEV_STORE_NAME = 'devstoreaccount1';
+
+	/**
+	 * Developer storage account key.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @const string
+	 */
+	const DEV_STORE_KEY = 'Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==';
+
+	/**
 	 * Return account name.
 	 *
 	 * @since 4.0.0
@@ -65,6 +101,17 @@ class Windows_Azure_Helper {
 	 */
 	static public function get_account_key() {
 		return get_option( 'azure_storage_account_primary_access_key' );
+	}
+
+	/**
+	 * Return CNAME url.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return string CNAME value.
+	 */
+	static public function get_cname() {
+		return untrailingslashit( strtolower( get_option( 'cname' ) ) );
 	}
 
 	/**
@@ -359,5 +406,34 @@ class Windows_Azure_Helper {
 		) );
 
 		return $result;
+	}
+
+	/**
+	 * Return API hostname.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return string API hostname.
+	 */
+	static public function get_hostname() {
+		$storage_account_name = self::get_account_name();
+		if ( self::DEV_STORE_NAME === $storage_account_name ) {
+			// Use development storage
+			$host_name = self::EMULATOR_BLOB_URI;
+		} else {
+			// Use cloud storage
+			$host_name = self::BLOB_BASE_DNS_NAME;
+		}
+
+		// Remove http/https from the beginning
+		if ( 'http' === substr( $host_name, 0, 4 ) ) {
+			$parts     = parse_url( $host_name );
+			$host_name = $parts['host'];
+			if ( ! empty( $parts['port'] ) ) {
+				$host_name = $host_name . ':' . $parts['port'];
+			}
+		}
+
+		return $host_name;
 	}
 }

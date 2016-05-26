@@ -291,7 +291,7 @@ function windows_azure_storage_dialog_browse_tab() {
 					if ( empty( $searchResult ) ) {
 						echo '<p style="margin: 10px;">No file found matching specified criteria (' . implode( ', ', esc_html( $criteria ) ) . ')</p><br/>';
 					} else {
-						echo '<p style="margin: 10px;">Found ' . esc_html( count( $searchResult ) ) . ' file(s) matching specified criteria (' . implode( ', ', esc_html( $criteria ) ) . ')</p><br/>';
+						echo '<p style="margin: 10px;">Found ' . esc_html( count( $searchResult ) ) . ' file(s) matching specified criteria (' . esc_html( implode( ', ', $criteria ) ) . ')</p><br/>';
 						foreach ( $searchResult as $url ) {
 							//TODO: remove inline JS and CSS
 							$style          = 'margin: 10px;';
