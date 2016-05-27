@@ -68,7 +68,7 @@ function windows_azure_storage_plugin_settings_preamble() {
 			<?php _e( 'This plugin uses Windows Azure SDK for PHP (<a href="https://github.com/WindowsAzure/azure-sdk-for-php/">https://github.com/WindowsAzure/azure-sdk-for-php/</a>).', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?>
 		</p>
 		<b><?php _e( 'Plugin Web Site:', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?></b>
-			<a href="http://wordpress.org/extend/plugins/windows-azure-storage/">http://wordpress.org/extend/plugins/windows-azure-storage/</a>
+		<a href="http://wordpress.org/extend/plugins/windows-azure-storage/">http://wordpress.org/extend/plugins/windows-azure-storage/</a>
 		<br><br>
 	</div>
 	<?php

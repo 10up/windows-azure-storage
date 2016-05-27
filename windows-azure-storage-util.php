@@ -42,19 +42,6 @@
  * @link      http://www.microsoft.com
  */
 
-// import namepaces required for consuming Azure Blob Storage
-use WindowsAzure\Blob\Models\BlobBlockType;
-use WindowsAzure\Blob\Models\Block;
-use WindowsAzure\Blob\Models\CommitBlobBlocksOptions;
-use WindowsAzure\Blob\Models\CreateBlobOptions;
-use WindowsAzure\Blob\Models\CreateContainerOptions;
-use WindowsAzure\Blob\Models\ListContainersOptions;
-use WindowsAzure\Blob\Models\PublicAccessType;
-use WindowsAzure\Common\Internal\IServiceFilter;
-use windowsazure\common\Internal\Resources;
-use WindowsAzure\Common\ServiceException;
-use WindowsAzure\Common\ServicesBuilder;
-
 /**
  * Used for performing operations on Windows Azure Blob Storage
  *
