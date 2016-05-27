@@ -61,12 +61,6 @@ define( 'MSFT_AZURE_PLUGIN_LEGACY_MEDIA_URL', get_admin_url( get_current_blog_id
 define( 'MSFT_AZURE_PLUGIN_VERSION', '4.0.0' );
 define( 'MSFT_AZURE_PLUGIN_DOMAIN_NAME', 'windows-azure-storage' );
 
-/* Azure SDK relies on some PEAR dependencies, but doesn't load them itself.
- * We have to add the PEAR files to the path for the Azure SDK to see them.
- */
-$path = MSFT_AZURE_PLUGIN_PATH . 'library/dependencies';
-set_include_path( get_include_path() . PATH_SEPARATOR . $path );
-
 require_once MSFT_AZURE_PLUGIN_PATH . 'windows-azure-storage-settings.php';
 require_once MSFT_AZURE_PLUGIN_PATH . 'windows-azure-storage-dialog.php';
 require_once MSFT_AZURE_PLUGIN_PATH . 'windows-azure-storage-util.php';
@@ -91,6 +85,8 @@ register_activation_hook( __FILE__, 'check_prerequisite' );
 
 add_action( 'admin_menu', 'windows_azure_storage_plugin_menu' );
 add_filter( 'media_buttons_context', 'windows_azure_storage_media_buttons_context' );
+add_action( 'load-settings_page_windows-azure-storage-plugin-options', 'windows_azure_storage_load_settings_page' );
+add_action( 'load-settings_page_windows-azure-storage-plugin-options', 'windows_azure_storage_check_container_access_policy' );
 
 /**
  * Add Azure-specific tabs to the editor's media loader.
@@ -660,10 +656,10 @@ title="%2$s"><img src="%3$s" alt="%2$s" role="img" class="windows-azure-storage-
 function windows_azure_storage_plugin_menu() {
 	if ( WindowsAzureStorageUtil::check_action_permissions( 'change_settings' ) ) {
 		add_options_page(
-			'Windows Azure Storage Plugin Settings',
-			'Windows Azure',
+			__( 'Windows Azure Storage Plugin Settings', MSFT_AZURE_PLUGIN_DOMAIN_NAME ),
+			__( 'Windows Azure', MSFT_AZURE_PLUGIN_DOMAIN_NAME ),
 			'manage_options',
-			'b5506889-50de-42db-bf63-e9f248ca94e9',
+			'windows-azure-storage-plugin-options',
 			'windows_azure_storage_plugin_options_page'
 		);
 	}

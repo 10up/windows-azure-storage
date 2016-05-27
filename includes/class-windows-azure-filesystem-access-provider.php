@@ -54,7 +54,7 @@ class Windows_Azure_Filesystem_Access_Provider {
 	 *
 	 * @return bool|WP_Filesystem_Base WP_Filesystem instance of false on failure.
 	 */
-	static public function get_provider( $force_direct_access= false ) {
+	static public function get_provider( $force_direct_access = false ) {
 		global $wp_filesystem;
 		static $filesystem_access;
 
