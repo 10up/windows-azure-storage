@@ -170,6 +170,18 @@ class Windows_Azure_Helper {
 	}
 
 	/**
+	 * Whether to delete local file after uploading it to Azure Storage or not.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return bool True if delete, false to keep file.
+	 */
+	static public function delete_local_file() {
+		$option_value = (int)get_option( 'azure_storage_keep_local_file', 0 );
+		return ( 0 === $option_value );
+	}
+
+	/**
 	 * Return container ACL.
 	 *
 	 * @since 4.0.0

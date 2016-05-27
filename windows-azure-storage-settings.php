@@ -108,7 +108,7 @@ function windows_azure_storage_plugin_register_settings() {
 	register_setting( 'windows-azure-storage-settings-group', 'default_azure_storage_account_container_name', 'sanitize_text_field' );
 	register_setting( 'windows-azure-storage-settings-group', 'cname', 'esc_url_raw' );
 	register_setting( 'windows-azure-storage-settings-group', 'azure_storage_use_for_default_upload', 'wp_validate_boolean' );
-	register_setting( 'windows-azure-storage-settings-group', 'azure_storage_allow_per_user_settings', 'wp_validate_boolean' );
+	register_setting( 'windows-azure-storage-settings-group', 'azure_storage_keep_local_file', 'wp_validate_boolean' );
 
 	/**
 	 * @since 4.0.0
@@ -166,6 +166,16 @@ function windows_azure_storage_plugin_register_settings() {
 		'azure_storage_handle_uploads',
 		__( 'Use Windows Azure Storage for default upload', MSFT_AZURE_PLUGIN_DOMAIN_NAME ),
 		'windows_azure_storage_setting_handle_uploads',
+		'windows-azure-storage-plugin-options',
+		'windows-azure-storage-settings'
+	);
+	/**
+	 * @since 4.0.0
+	 */
+	add_settings_field(
+		'azure_storage_keep_local_file',
+		__( 'Keep local files', MSFT_AZURE_PLUGIN_DOMAIN_NAME ),
+		'windows_azure_storage_setting_keep_local_file',
 		'windows-azure-storage-plugin-options',
 		'windows-azure-storage-settings'
 	);
@@ -306,6 +316,22 @@ function windows_azure_storage_setting_handle_uploads() {
 	</label>
 	<br/>
 	<small><?php esc_html_e( 'Note: Uncheck this to revert back to using your own web host for storage at anytime.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?></small>
+	<?php
+}
+
+/**
+ * Keep local file setting callback function.
+ *
+ * @since 4.0.0
+ *
+ * @return void Method does not return.
+ */
+function windows_azure_storage_setting_keep_local_file() {
+	?>
+	<input type="checkbox" name="azure_storage_keep_local_file" title="<?php esc_attr_e( 'Do not delete local files after uploading them to Azure Storage.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) ?>" value="1" id="azure_storage_keep_local_file" <?php checked( (bool) get_option( 'azure_storage_keep_local_file' ) ); ?> />
+	<label for="azure_storage_keep_local_file">
+		<?php esc_html_e( 'Do not delete local files after uploading them to Azure Storage.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?>
+	</label>
 	<?php
 }
 
