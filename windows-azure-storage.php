@@ -375,29 +375,29 @@ function windows_azure_storage_wp_get_attachment_metadata( $data, $postID ) {
  */
 function windows_azure_storage_wp_update_attachment_metadata( $data, $postID ) {
 	$default_azure_storage_account_container_name = \Windows_Azure_Helper::get_default_container();
-	// Get full file path of uploaded file
-	$uploadFileName = get_attached_file( $postID, true );
+	$delete_local_file                            = \Windows_Azure_Helper::delete_local_file();
+	$upload_file_name                             = get_attached_file( $postID, true );
 
 	// If attachment metadata is empty (for video), generate correct blob names
 	if ( empty( $data ) || empty( $data['file'] ) ) {
 		// Get upload directory
-		$uploadDir = wp_upload_dir();
-		if ( '/' === $uploadDir['subdir']{0} ) {
-			$uploadDir['subdir'] = substr( $uploadDir['subdir'], 1 );
+		$upload_dir = wp_upload_dir();
+		if ( '/' === $upload_dir['subdir']{0} ) {
+			$upload_dir['subdir'] = substr( $upload_dir['subdir'], 1 );
 		}
 
 		// Prepare blob name
-		$relativeFileName = ( '' === $uploadDir['subdir'] ) ?
-			basename( $uploadFileName ) :
-			$uploadDir['subdir'] . "/" . basename( $uploadFileName );
+		$relative_file_name = ( '' === $upload_dir['subdir'] ) ?
+			basename( $upload_file_name ) :
+			$upload_dir['subdir'] . "/" . basename( $upload_file_name );
 	} else {
 		// Prepare blob name
-		$relativeFileName = $data['file'];
+		$relative_file_name = $data['file'];
 	}
 
 	try {
 		// Get full file path of uploaded file
-		$data['file'] = $uploadFileName;
+		$data['file'] = $upload_file_name;
 
 		// Get mime-type of the file
 		$mimeType = get_post_mime_type( $postID );
@@ -405,7 +405,7 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $postID ) {
 		try {
 			$result = \Windows_Azure_Helper::put_media_to_blob_storage(
 				$default_azure_storage_account_container_name,
-				$relativeFileName,
+				$relative_file_name,
 				$data['file'],
 				$mimeType
 			);
@@ -418,7 +418,7 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $postID ) {
 
 		$url = sprintf( '%1$s/%2$s',
 			untrailingslashit( WindowsAzureStorageUtil::get_storage_url_base() ),
-			$relativeFileName
+			$relative_file_name
 		);
 
 		// Set new url in returned data
@@ -427,26 +427,28 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $postID ) {
 		// Handle thumbnail and medium size files
 		$thumbnails = array();
 		if ( ! empty( $data["sizes"] ) ) {
-			$file_upload_dir = substr( $relativeFileName, 0, strripos( $relativeFileName, "/" ) );
+			$file_upload_dir = substr( $relative_file_name, 0, strripos( $relative_file_name, "/" ) );
 
 			foreach ( $data["sizes"] as $size ) {
 				// Do not prefix file name with wordpress upload folder path
-				$sizeFileName = dirname( $data['file'] ) . "/" . $size["file"];
+				$size_file_name = dirname( $data['file'] ) . "/" . $size["file"];
 
 				// Move only if file exists. Some theme may use same file name for multiple sizes
-				if ( file_exists( $sizeFileName ) ) {
-					$blobName = ( '' === $file_upload_dir ) ? $size['file'] : $file_upload_dir . '/' . $size['file'];
+				if ( file_exists( $size_file_name ) ) {
+					$blob_name = ( '' === $file_upload_dir ) ? $size['file'] : $file_upload_dir . '/' . $size['file'];
 					\Windows_Azure_Helper::put_media_to_blob_storage(
 						$default_azure_storage_account_container_name,
-						$blobName,
-						$sizeFileName,
+						$blob_name,
+						$size_file_name,
 						$mimeType
 					);
 
-					$thumbnails[] = $blobName;
+					$thumbnails[] = $blob_name;
 
 					// Delete the local thumbnail file
-					unlink( $sizeFileName );
+					if ( $delete_local_file ) {
+						unlink( $size_file_name );
+					}
 				}
 			}
 		}
@@ -457,14 +459,16 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $postID ) {
 			$postID, 'windows_azure_storage_info',
 			array(
 				'container'  => $default_azure_storage_account_container_name,
-				'blob'       => $relativeFileName,
+				'blob'       => $relative_file_name,
 				'url'        => $url,
 				'thumbnails' => $thumbnails,
 			)
 		);
 
 		// Delete the local file
-		unlink( $uploadFileName );
+		if ( $delete_local_file ) {
+			unlink( $upload_file_name );
+		}
 	} catch ( Exception $e ) {
 		echo "<p>Error in uploading file. Error: " . esc_html( $e->getMessage() ) . "</p><br/>";
 	}
