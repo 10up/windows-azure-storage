@@ -54,6 +54,7 @@
 function windows_azure_storage_dialog_scripts( $hook_suffix ) {
 	// TODO split into 'settings' and 'editor' and enqueue separately
 	wp_enqueue_script( 'windows-azure-storage', MSFT_AZURE_PLUGIN_URL . 'js/windows-azure-storage.js', array(), MSFT_AZURE_PLUGIN_VERSION );
+	wp_enqueue_script( 'windows-azure-storage-admin', MSFT_AZURE_PLUGIN_URL . 'js/windows-azure-storage-admin.js', array(), MSFT_AZURE_PLUGIN_VERSION );
 	wp_localize_script( 'windows-azure-storage', 'windowsAzureStorageSettings', array(
 		'l10n' => array(
 			'upload' => _x( 'Upload', 'verb', 'windows-azure-storage' ),

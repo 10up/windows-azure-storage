@@ -641,7 +641,7 @@ function windows_azure_storage_media_buttons_context( $context ) {
 	);
 
 	$azure_image_button_element = sprintf(
-		'<a id="windows-azure-storage-media-button" role="button" href="%1$s" class="thickbox button" data-editor="content"
+		'<a id="windows-azure-storage-media-button" role="button" href="javascript:void(0)" class="button" data-editor="content"
 title="%2$s"><img src="%3$s" alt="%2$s" role="img" class="windows-azure-storage-media-icon" />%4$s</a>',
 		esc_url( $browse_iframe_src ),
 		esc_attr__( 'Windows Azure Storage', 'windows-azure-storage' ),
