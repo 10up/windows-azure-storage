@@ -52,8 +52,10 @@
  * @param string $hook_suffix The hook of the current admin page.
  */
 function windows_azure_storage_dialog_scripts( $hook_suffix ) {
-	wp_enqueue_script( 'windows-azure-storage-admin', MSFT_AZURE_PLUGIN_URL . 'js/windows-azure-storage-admin.js', array(), MSFT_AZURE_PLUGIN_VERSION );
-	wp_enqueue_style( 'windows-azure-storage-style', MSFT_AZURE_PLUGIN_URL . 'css/windows-azure-storage.css', array(), MSFT_AZURE_PLUGIN_VERSION );
+	$js_ext  = ( ! defined( 'SCRIPT_DEBUG' ) || false === SCRIPT_DEBUG ) ? '.min.js' : '.js';
+	$css_ext = ( ! defined( 'SCRIPT_DEBUG' ) || false === SCRIPT_DEBUG ) ? '.min.css' : '.css';
+	wp_enqueue_script( 'windows-azure-storage-admin', MSFT_AZURE_PLUGIN_URL . 'js/windows-azure-storage-admin' . $js_ext, array(), MSFT_AZURE_PLUGIN_VERSION );
+	wp_enqueue_style( 'windows-azure-storage-style', MSFT_AZURE_PLUGIN_URL . 'css/windows-azure-storage' . $css_ext, array(), MSFT_AZURE_PLUGIN_VERSION );
 }
 
 add_action( 'admin_enqueue_scripts', 'windows_azure_storage_dialog_scripts' );

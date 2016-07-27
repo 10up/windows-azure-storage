@@ -1,12 +1,6 @@
-/**
- * Windows Azure Storage Plugin admin JavaScript handlers.
- * 10up
- * http://10up
- *
- * Copyright (c) 2016 10up
- *
- */
-
+/*!  - v4.0.0
+ * https://github.com/lukaspawlik/windows-azure-storage#readme
+ * Copyright (c) 2016; */
 (function ( $, window, undefined ) {
   'use strict';
   $( document ).ready( function () {
