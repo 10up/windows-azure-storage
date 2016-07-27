@@ -102,8 +102,6 @@ add_action( 'wp_ajax_delete-azure-blob', 'windows_azure_storage_delete_blob' );
  */
 function azure_storage_media_menu( $tabs ) {
 	$tabs['browse'] = __( 'Browse Azure Storage', 'windows-azure-storage' );
-	//$tabs['search'] = __( 'Search Azure Storage', 'windows-azure-storage' );
-	//$tabs['upload'] = __( 'Upload to Azure Storage', 'windows-azure-storage' );
 
 	return $tabs;
 }
@@ -597,8 +595,14 @@ function browse_tab() {
 	wp_iframe( 'windows_azure_storage_dialog_browse_tab' );
 }
 
+/**
+ * Output contents for Media Library Azure Browse iframe based tab.
+ *
+ * @since 4.0.0
+ *
+ * @return void Function does not return.
+ */
 function windows_azure_storage_dialog_browse_tab() {
-	//wp_enqueue_style( 'media' );
 	?>
 	<div id="windows-azure-storage-browser"></div>
 	<?php

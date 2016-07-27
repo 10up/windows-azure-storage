@@ -82,11 +82,6 @@ window.wp = window.wp || {};
       }
     } );
 
-    media.View = media.View.extend( {
-      trigger: function ( name, args ) {
-        curView.prototype.trigger.apply( this, arguments );
-      }
-    } );
     media.view.AttachmentsBrowser = media.view.AttachmentsBrowser.extend( {
       initialize: function () {
         this.options.sidebar = true;
@@ -112,10 +107,6 @@ window.wp = window.wp || {};
         options.controller = this;
         options.text = _wpMediaGridSettings.l10n.selectText;
         toolbar.view = new wp.media.view.Toolbar.Select( options );
-      },
-
-      trigger: function ( a, b ) {
-        return curManageFrame.prototype.trigger.apply( this, arguments );
       }
     } );
     media.view.Toolbar = media.view.Toolbar.extend( {
