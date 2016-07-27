@@ -335,6 +335,23 @@ function show_windows_azure_storage_settings( $mode ) {
 	</table>
 	<?php if ( is_wp_error( $containers_list ) || ! $container_creation_status || 0 === iterator_count( $containers_list ) ) : ?>
 		<script type="text/javascript">
+			function onContainerSelectionChanged( show ) {
+				var htmlForm = document.getElementsByName( 'SettingsForm' )[0];
+				var divCreateContainer = document.getElementById( 'divCreateContainer' );
+				if ( '__newContainer__' === htmlForm.elements['default_azure_storage_account_container_name'].value ) {
+					divCreateContainer.style.display = 'block';
+					htmlForm.elements['submitButton'].disabled = true;
+
+				} else {
+					if ( show ) {
+						divCreateContainer.style.display = 'block';
+					} else {
+						divCreateContainer.style.display = 'none';
+					}
+
+					htmlForm.elements['submitButton'].disabled = false;
+				}
+			}
 			onContainerSelectionChanged( true );
 		</script>
 

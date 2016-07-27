@@ -582,10 +582,11 @@ function windows_azure_storage_delete_attachment( $postID ) {
  * @return void
  */
 function browse_tab() {
+	$js_ext  = ( ! defined( 'SCRIPT_DEBUG' ) || false === SCRIPT_DEBUG ) ? '.min.js' : '.js';
 	add_action( 'admin_enqueue_scripts', 'windows_azure_storage_dialog_scripts' );
 	wp_enqueue_media();
 	wp_enqueue_script( 'media-grid' );
-	wp_enqueue_script( 'windows-azure-storage-media-browser', MSFT_AZURE_PLUGIN_URL . 'js/windows-azure-storage-media-browser.js', [ 'media-grid' ], MSFT_AZURE_PLUGIN_VERSION );
+	wp_enqueue_script( 'windows-azure-storage-media-browser', MSFT_AZURE_PLUGIN_URL . 'js/windows-azure-storage-media-browser' . $js_ext, [ 'media-grid' ], MSFT_AZURE_PLUGIN_VERSION );
 	wp_localize_script( 'media-grid', '_wpMediaGridSettings', [
 		'adminUrl' => parse_url( self_admin_url(), PHP_URL_PATH ),
 		'l10n'     => array(

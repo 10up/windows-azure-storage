@@ -1,6 +1,3 @@
-/*!  - v4.0.0
- * https://github.com/lukaspawlik/windows-azure-storage#readme
- * Copyright (c) 2016; */
 window.wp = window.wp || {};
 (function ( $, window, _ ) {
   $( document ).ready( function () {
