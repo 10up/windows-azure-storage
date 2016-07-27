@@ -10,7 +10,48 @@ window.wp = window.wp || {};
       curToolbar = media.view.Toolbar,
       curView = media.View,
       curAttachments = media.view.Attachments,
-      curQueryPrototype = _.clone( media.model.Query.prototype );
+      curQueryPrototype = _.clone( media.model.Query.prototype ),
+      curAttachmentModelPrototype = _.clone( media.model.Attachment.prototype ),
+      curDetailsModel = media.view.Attachment.Details;
+
+    media.view.Attachment.Details = media.view.Attachment.Details.extend( {
+      deleteAttachment: function ( event ) {
+        event.preventDefault();
+        if ( window.confirm( media.view.l10n.warnDelete ) ) {
+          this.model.destroy();
+        }
+      }
+    } );
+    _.extend( media.model.Attachment.prototype, {
+      sync: function ( method, model, options ) {
+        if ( _.isUndefined( this.id ) ) {
+          return $.Deferred().rejectWith( this ).promise();
+        }
+        if ( 'delete' === method ) {
+          options = options || {};
+          options.context = this;
+          options.data = _.extend( options.data || {}, {
+            action: 'delete-azure-blob',
+            id: this.id,
+            _wpnonce: this.get( 'nonces' )[ 'delete' ]
+          } );
+
+          return wp.media.ajax( options ).done( function () {
+            this.destroyed = true;
+          } ).fail( function () {
+            this.destroyed = false;
+          } );
+        } else {
+          return curAttachmentModelPrototype.sync.apply( this, arguments );
+        }
+      },
+
+      destroy: function ( options ) {
+        options = options || {};
+        options.wait = true;
+        return curAttachmentModelPrototype.destroy.apply( this, [ options ] );
+      }
+    } );
 
     _.extend( media.model.Query.prototype, {
       sync: function ( method, model, options ) {

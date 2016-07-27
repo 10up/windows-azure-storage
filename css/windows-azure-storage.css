@@ -32,3 +32,7 @@
 #windows-azure-storage-browser label.setting[data-setting='title']{
 	display: none;
 }
+
+#windows-azure-storage-browser .delete-attachment {
+	color: red;
+}

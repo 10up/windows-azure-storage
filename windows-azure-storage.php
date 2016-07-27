@@ -88,6 +88,7 @@ add_filter( 'media_buttons_context', 'windows_azure_storage_media_buttons_contex
 add_action( 'load-settings_page_windows-azure-storage-plugin-options', 'windows_azure_storage_load_settings_page' );
 add_action( 'load-settings_page_windows-azure-storage-plugin-options', 'windows_azure_storage_check_container_access_policy' );
 add_action( 'wp_ajax_query-azure-attachments', 'windows_azure_storage_query_azure_attachments' );
+add_action( 'wp_ajax_delete-azure-blob', 'windows_azure_storage_delete_blob' );
 
 /**
  * Add Azure-specific tabs to the editor's media loader.
@@ -318,7 +319,7 @@ function windows_azure_storage_newMediaObject( $args ) {
 		'file' => $upload['file'],
 		'url'  => $upload['url'],
 		'type' => $type,
-	;;
+	);
 
 	/** This filter is documented in wp-admin/includes/file.php */
 	return apply_filters( 'wp_handle_upload', $struct, 'upload' );
@@ -774,6 +775,7 @@ function windows_azure_storage_query_azure_attachments() {
 			'icon'                  => $is_image ? Windows_Azure_Helper::get_full_blob_url( $blob['Name'] ) : wp_mime_type_icon( blob['Properties']['Content-Type'] ),
 			'url'                   => Windows_Azure_Helper::get_full_blob_url( $blob['Name'] ),
 			'filesizeHumanReadable' => size_format( $blob['Properties']['Content-Length'] ),
+			'isImage'               => $is_image,
 		);
 
 		if ( current_user_can( 'delete_posts' ) ) {
@@ -783,4 +785,37 @@ function windows_azure_storage_query_azure_attachments() {
 		$posts[] = $blob_info;
 	}
 	wp_send_json_success( $posts );
+}
+
+/**
+ * Handle delete-blob ajax request.
+ *
+ * @since 4.0.0
+ *
+ * @return void Function does not return.
+ */
+function windows_azure_storage_delete_blob() {
+	$id = isset( $_POST['id'] ) ? $_POST['id'] : 0;
+
+	if ( ! check_ajax_referer( "delete-blob_$id", false, false ) ) {
+		wp_die( -1 );
+	}
+	if ( ! current_user_can( 'delete_posts' ) ) {
+		wp_die( -1 );
+	}
+
+	$remote_path = base64_decode( $id );
+
+	if ( ! $remote_path ) {
+		wp_die( -1 );
+	}
+
+	$credentials = Windows_Azure_Config_Provider::get_account_credentials();
+	$client      = new Windows_Azure_Rest_Api_Client( $credentials['account_name'], $credentials['account_key'] );
+	$result      = $client->delete_blob( Windows_Azure_Helper::get_default_container(), $remote_path );
+	if ( is_wp_error( $result ) || ! $result ) {
+		wp_die( 0 );
+	} else {
+		wp_die( 1 );
+	}
 }

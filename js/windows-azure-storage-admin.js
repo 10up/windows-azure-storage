@@ -24,8 +24,10 @@
       elem.blur();
       wp.azureFrame = wp.media.editor.open( editor, options );
       wp.azureFrame.on( 'azure:selected', function ( selectedImage ) {
-        console.log( 'azure-selected', selectedImage );
         var imgContent = '<img src="' + selectedImage.url + '" />';
+        if ( !selectedImage.isImage ) {
+          imgContent = '<a href="' + selectedImage.url + '">' + selectedImage.url + '</a>';
+        }
         wp.media.editor.activeEditor = 'content';
         wp.media.editor.insert( imgContent );
         wp.azureFrame.close();
