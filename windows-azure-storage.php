@@ -726,6 +726,13 @@ function windows_azure_storage_wp_calculate_image_srcset( $sources, $size_array,
 	return $sources;
 }
 
+/**
+ * Handle ajax request for querying Azure Blobs.
+ *
+ * @since 4.0.0
+ *
+ * @return void Function does not return.
+ */
 function windows_azure_storage_query_azure_attachments() {
 	if ( ! current_user_can( 'upload_files' ) ) {
 		wp_send_json_error();
