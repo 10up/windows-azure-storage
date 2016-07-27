@@ -87,6 +87,7 @@ add_action( 'admin_menu', 'windows_azure_storage_plugin_menu' );
 add_filter( 'media_buttons_context', 'windows_azure_storage_media_buttons_context' );
 add_action( 'load-settings_page_windows-azure-storage-plugin-options', 'windows_azure_storage_load_settings_page' );
 add_action( 'load-settings_page_windows-azure-storage-plugin-options', 'windows_azure_storage_check_container_access_policy' );
+add_action( 'wp_ajax_query-azure-attachments', 'windows_azure_storage_query_azure_attachments' );
 
 /**
  * Add Azure-specific tabs to the editor's media loader.
@@ -100,8 +101,8 @@ add_action( 'load-settings_page_windows-azure-storage-plugin-options', 'windows_
  */
 function azure_storage_media_menu( $tabs ) {
 	$tabs['browse'] = __( 'Browse Azure Storage', 'windows-azure-storage' );
-	$tabs['search'] = __( 'Search Azure Storage', 'windows-azure-storage' );
-	$tabs['upload'] = __( 'Upload to Azure Storage', 'windows-azure-storage' );
+	//$tabs['search'] = __( 'Search Azure Storage', 'windows-azure-storage' );
+	//$tabs['upload'] = __( 'Upload to Azure Storage', 'windows-azure-storage' );
 
 	return $tabs;
 }
@@ -112,8 +113,6 @@ add_filter( 'media_upload_tabs', 'azure_storage_media_menu' );
 
 // Add callback for three tabs in the Windows Azure Storage Dialog
 add_action( "media_upload_browse", "browse_tab" );
-add_action( "media_upload_search", "search_tab" );
-add_action( "media_upload_upload", "upload_tab" );
 
 // Hooks for handling default file uploads
 if ( (bool) get_option( 'azure_storage_use_for_default_upload' ) ) {
@@ -319,7 +318,8 @@ function windows_azure_storage_newMediaObject( $args ) {
 		'file' => $upload['file'],
 		'url'  => $upload['url'],
 		'type' => $type,
-	);
+	;
+	;
 
 	/** This filter is documented in wp-admin/includes/file.php */
 	return apply_filters( 'wp_handle_upload', $struct, 'upload' );
@@ -565,13 +565,13 @@ function windows_azure_storage_delete_attachment( $postID ) {
 			// Delete media file from blob storage
 			$containerName = $mediaInfo['container'];
 			$blobName      = $mediaInfo['blob'];
-			\Windows_Azure_Helper::delete_blob( $containerName , $blobName );
+			\Windows_Azure_Helper::delete_blob( $containerName, $blobName );
 
 			// Delete associated thumbnails from blob storage (if any)
 			$thumbnails = $mediaInfo['thumbnails'];
 			if ( ! empty( $thumbnails ) ) {
 				foreach ( $thumbnails as $thumbnail_blob ) {
-					\Windows_Azure_Helper::delete_blob( $containerName , $thumbnail_blob );
+					\Windows_Azure_Helper::delete_blob( $containerName, $thumbnail_blob );
 				}
 			}
 		}
@@ -585,30 +585,24 @@ function windows_azure_storage_delete_attachment( $postID ) {
  */
 function browse_tab() {
 	add_action( 'admin_enqueue_scripts', 'windows_azure_storage_dialog_scripts' );
-	wp_enqueue_style( 'media' );
+	wp_enqueue_media();
+	wp_enqueue_script( 'media-grid' );
+	wp_enqueue_script( 'windows-azure-storage-media-browser', MSFT_AZURE_PLUGIN_URL . 'js/windows-azure-storage-media-browser.js', [ 'media-grid' ], MSFT_AZURE_PLUGIN_VERSION );
+	wp_localize_script( 'media-grid', '_wpMediaGridSettings', [
+		'adminUrl' => parse_url( self_admin_url(), PHP_URL_PATH ),
+		'l10n'     => array(
+			'selectText' => __( 'Insert into post', MSFT_AZURE_PLUGIN_DOMAIN_NAME ),
+		)
+	] );
 	wp_iframe( 'windows_azure_storage_dialog_browse_tab' );
 }
 
-/**
- * Add Search tab to the popup windows
- *
- * @return void
- */
-function search_tab() {
-	add_action( 'admin_enqueue_scripts', 'windows_azure_storage_dialog_scripts' );
-	wp_enqueue_style( 'media' );
-	wp_iframe( 'windows_azure_storage_dialog_search_tab' );
-}
-
-/**
- * Add Upload tab to the popup windows
- *
- * @return void
- */
-function upload_tab() {
-	add_action( 'admin_enqueue_scripts', 'windows_azure_storage_dialog_scripts' );
-	wp_enqueue_style( 'media' );
-	wp_iframe( 'windows_azure_storage_dialog_upload_tab' );
+function windows_azure_storage_dialog_browse_tab() {
+	//wp_enqueue_style( 'media' );
+	?>
+	<div id="windows-azure-storage-browser"></div>
+	<?php
+	wp_print_media_templates();
 }
 
 /**
@@ -731,4 +725,56 @@ function windows_azure_storage_wp_calculate_image_srcset( $sources, $size_array,
 	}
 
 	return $sources;
+}
+
+function windows_azure_storage_query_azure_attachments() {
+	if ( ! current_user_can( 'upload_files' ) ) {
+		wp_send_json_error();
+	}
+
+	$query = isset( $_REQUEST['query'] ) ? (array) $_REQUEST['query'] : [ ];
+	$query = array_intersect_key( $query, array_flip( array(
+		's',
+		'posts_per_page',
+		'paged',
+	) ) );
+
+	$query = wp_parse_args( $query, array(
+		's'              => '',
+		'posts_per_page' => Windows_Azure_Rest_Api_Client::API_REQUEST_BULK_SIZE,
+		'paged'          => 1,
+	) );
+	if ( 1 === (int) $query['paged'] ) {
+		$next_marker = false;
+	} else {
+		$next_marker = $_COOKIE['azure_next_marker'];
+	}
+	$posts       = array();
+	$credentials = Windows_Azure_Config_Provider::get_account_credentials();
+	$client      = new Windows_Azure_Rest_Api_Client( $credentials['account_name'], $credentials['account_key'] );
+	$blobs       = $client->list_blobs( Windows_Azure_Helper::get_default_container(), $query['s'], (int) $query['posts_per_page'], $next_marker );
+	setcookie( 'azure_next_marker', $blobs->get_next_marker() );
+	foreach ( $blobs->get_all() as $blob ) {
+		if ('/' === $blob['Name'][strlen($blob['Name'])-1]) {
+			continue;
+		}
+		$is_image = ( false !== strpos($blob['Properties']['Content-Type'], 'image/' ) );
+
+		$blob_info = array(
+			'id' => base64_encode($blob['Name']),
+			'uploading' => false,
+			'filename' => $blob['Name'],
+			'dateFormatted' => $blob['Properties']['Last-Modified'],
+			'icon' => $is_image ? Windows_Azure_Helper::get_full_blob_url( $blob['Name'] ) : wp_mime_type_icon(blob['Properties']['Content-Type']),
+			'url' => Windows_Azure_Helper::get_full_blob_url( $blob['Name'] ),
+			'filesizeHumanReadable' => size_format( $blob['Properties']['Content-Length'] ),
+		);
+
+		if ( current_user_can( 'delete_posts' ) ) {
+			$blob_info['nonces']['delete'] = wp_create_nonce( 'delete-blob_' . $blob_info['id'] );
+		}
+
+		$posts[] = $blob_info;
+	}
+	wp_send_json_success( $posts );
 }

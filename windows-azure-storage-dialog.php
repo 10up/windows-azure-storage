@@ -95,7 +95,7 @@ function windows_azure_storage_dialog_add_tab( $tabs ) {
  *
  * @return void
  */
-function windows_azure_storage_dialog_browse_tab() {
+function windows_azure_storage_dialog_browse_tabx() {
 	// remove all registerd filters for the tabs
 	//TODO: switch to remove_all_filters('media_upload_tabs') and only call it once
 	unset( $GLOBALS['wp_filter']['media_upload_tabs'] );

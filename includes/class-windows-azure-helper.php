@@ -448,4 +448,18 @@ class Windows_Azure_Helper {
 
 		return $host_name;
 	}
+
+	/**
+	 * Return full blob URL.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return string Full blob URL.
+	 */
+	static public function get_full_blob_url( $blob_name ) {
+		return sprintf( '%1$s/%2$s',
+			untrailingslashit( WindowsAzureStorageUtil::get_storage_url_base( true ) ),
+			$blob_name
+		);
+	}
 }

@@ -61,7 +61,7 @@ class Windows_Azure_Rest_Api_Client {
 	 *
 	 * @const int
 	 */
-	const API_REQUEST_TIMEOUT = 30;
+	const API_REQUEST_TIMEOUT = 1800;
 
 	/**
 	 * Blob API default bulk size for various operations.
