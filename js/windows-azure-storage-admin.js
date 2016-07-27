@@ -37,6 +37,30 @@
         wp.media.editor.activeEditor = 'content';
       } );
     } );
+    $( '.azure-container-selector' ).on( 'change', function ( event ) {
+      event.preventDefault();
+      var htmlForm = document.getElementById( 'azure-settings-form' );
+      var divCreateContainer = document.getElementById( 'div-create-container' );
+      if ( '__newContainer__' === htmlForm.elements[ 'default_azure_storage_account_container_name' ].value ) {
+        divCreateContainer.style.display = 'block';
+        htmlForm.elements[ 'azure-submit-button' ].disabled = true;
+
+      } else {
+        divCreateContainer.style.display = 'none';
+        htmlForm.elements[ 'azure-submit-button' ].disabled = false;
+      }
+    } );
+    $( '.azure-create-container-button' ).on( 'click', function ( event ) {
+      event.preventDefault();
+      var htmlForm = document.getElementById( 'azure-settings-form' );
+      var action = document.getElementsByName( 'action' )[ 0 ];
+      if ( typeof action !== 'undefined' ) {
+        action.name = 'action2';
+      }
+
+      htmlForm.action = $( this ).data( 'containerUrl' );
+      htmlForm.submit();
+    } );
   } );
 
 })( jQuery, this );

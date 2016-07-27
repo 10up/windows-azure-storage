@@ -8,11 +8,9 @@ window.wp = window.wp || {};
     var curManageFrame = media.view.MediaFrame.Manage,
       curAttachmentsBrowser = media.view.AttachmentsBrowser,
       curToolbar = media.view.Toolbar,
-      curView = media.View,
       curAttachments = media.view.Attachments,
       curQueryPrototype = _.clone( media.model.Query.prototype ),
-      curAttachmentModelPrototype = _.clone( media.model.Attachment.prototype ),
-      curDetailsModel = media.view.Attachment.Details;
+      curAttachmentModelPrototype = _.clone( media.model.Attachment.prototype );
 
     media.view.Attachment.Details = media.view.Attachment.Details.extend( {
       deleteAttachment: function ( event ) {
