@@ -318,8 +318,7 @@ function windows_azure_storage_newMediaObject( $args ) {
 		'file' => $upload['file'],
 		'url'  => $upload['url'],
 		'type' => $type,
-	;
-	;
+	;;
 
 	/** This filter is documented in wp-admin/includes/file.php */
 	return apply_filters( 'wp_handle_upload', $struct, 'upload' );
@@ -755,18 +754,18 @@ function windows_azure_storage_query_azure_attachments() {
 	$blobs       = $client->list_blobs( Windows_Azure_Helper::get_default_container(), $query['s'], (int) $query['posts_per_page'], $next_marker );
 	setcookie( 'azure_next_marker', $blobs->get_next_marker() );
 	foreach ( $blobs->get_all() as $blob ) {
-		if ('/' === $blob['Name'][strlen($blob['Name'])-1]) {
+		if ( '/' === $blob['Name'][ strlen( $blob['Name'] ) - 1 ] ) {
 			continue;
 		}
-		$is_image = ( false !== strpos($blob['Properties']['Content-Type'], 'image/' ) );
+		$is_image = ( false !== strpos( $blob['Properties']['Content-Type'], 'image/' ) );
 
 		$blob_info = array(
-			'id' => base64_encode($blob['Name']),
-			'uploading' => false,
-			'filename' => $blob['Name'],
-			'dateFormatted' => $blob['Properties']['Last-Modified'],
-			'icon' => $is_image ? Windows_Azure_Helper::get_full_blob_url( $blob['Name'] ) : wp_mime_type_icon(blob['Properties']['Content-Type']),
-			'url' => Windows_Azure_Helper::get_full_blob_url( $blob['Name'] ),
+			'id'                    => base64_encode( $blob['Name'] ),
+			'uploading'             => false,
+			'filename'              => $blob['Name'],
+			'dateFormatted'         => $blob['Properties']['Last-Modified'],
+			'icon'                  => $is_image ? Windows_Azure_Helper::get_full_blob_url( $blob['Name'] ) : wp_mime_type_icon( blob['Properties']['Content-Type'] ),
+			'url'                   => Windows_Azure_Helper::get_full_blob_url( $blob['Name'] ),
 			'filesizeHumanReadable' => size_format( $blob['Properties']['Content-Length'] ),
 		);
 
