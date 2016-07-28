@@ -50,7 +50,7 @@ class Windows_Azure_Rest_Api_Client {
 	 *
 	 * @const string
 	 */
-	const API_VERSION = '2015-04-05';
+	const API_VERSION = '2015-12-11';
 
 	/**
 	 * Blob API default request timeout.
