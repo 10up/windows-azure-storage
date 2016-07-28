@@ -108,7 +108,6 @@ function azure_storage_media_menu( $tabs ) {
 
 // Hook for adding tabs
 add_filter( 'media_upload_tabs', 'azure_storage_media_menu' );
-//TODO: Set 'Browse Azure Storage' as the default tab in the new media loader.
 
 // Add callback for three tabs in the Windows Azure Storage Dialog
 add_action( "media_upload_browse", "browse_tab" );
@@ -123,17 +122,15 @@ if ( (bool) get_option( 'azure_storage_use_for_default_upload' ) ) {
 	);//checked
 
 	// Hook for handling blog posts via xmlrpc. This is not full proof check
-	add_filter( 'content_save_pre', 'windows_azure_storage_content_save_pre' );//checked
+	add_filter( 'content_save_pre', 'windows_azure_storage_content_save_pre' );
 
-	//TODO: implement wp_unique_filename filter once it is available in WordPress
-	add_filter( 'wp_handle_upload_prefilter', 'windows_azure_storage_wp_handle_upload_prefilter' );//checked
+	add_filter( 'wp_handle_upload_prefilter', 'windows_azure_storage_wp_handle_upload_prefilter' );
 
 	// Hook for handling media uploads
-	add_filter( 'wp_handle_upload', 'windows_azure_storage_wp_handle_upload' );//checked
+	add_filter( 'wp_handle_upload', 'windows_azure_storage_wp_handle_upload' );
 
 	// Filter to modify file name when XML-RPC is used
-	//TODO: remove this filter when wp_unique_filename filter is available in WordPress
-	add_filter( 'xmlrpc_methods', 'windows_azure_storage_xmlrpc_methods' ); //checked
+	add_filter( 'xmlrpc_methods', 'windows_azure_storage_xmlrpc_methods' );
 }
 
 // Hook for acecssing attachment (media file) URL
@@ -221,7 +218,7 @@ function windows_azure_storage_newMediaObject( $args ) {
 	do_action( 'xmlrpc_call', 'metaWeblog.newMediaObject' );
 
 	if ( ! current_user_can( 'upload_files' ) ) {
-		$wp_xmlrpc_server->error = new IXR_Error( 401, __( 'You do not have permission to upload files.' ) );
+		$wp_xmlrpc_server->error = new IXR_Error( 401, __( 'You do not have permission to upload files.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
 
 		return $wp_xmlrpc_server->error;
 	}
@@ -255,7 +252,7 @@ function windows_azure_storage_newMediaObject( $args ) {
 
 		// If query isn't successful, bail.
 		if ( is_null( $old_file ) ) {
-			return new WP_Error( 'Attachment not found', sprintf(
+			return new WP_Error( -1, sprintf(
 				__( 'Attachment not found in %s', 'windows-azure-storage' ),
 				esc_html( $name )
 			), $wpdb->print_error( $old_file ) );
@@ -287,7 +284,7 @@ function windows_azure_storage_newMediaObject( $args ) {
 
 	$upload = wp_upload_bits( $name, null, $bits );
 	if ( ! empty( $upload['error'] ) ) {
-		$errorString = sprintf( __( 'Could not write file %1$s (%2$s)' ), $name, $upload['error'] );
+		$errorString = sprintf( __( 'Could not write file %1$s (%2$s)', MSFT_AZURE_PLUGIN_DOMAIN_NAME ), $name, $upload['error'] );
 
 		return new IXR_Error( 500, $errorString );
 	}
@@ -297,7 +294,7 @@ function windows_azure_storage_newMediaObject( $args ) {
 		$post_id = (int) $data['post_id'];
 
 		if ( ! current_user_can( 'edit_post', $post_id ) ) {
-			return new IXR_Error( 401, __( 'Sorry, you cannot edit this post.' ) );
+			return new IXR_Error( 401, __( 'Sorry, you cannot edit this post.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
 		}
 	}
 	$attachment = array(
@@ -346,7 +343,7 @@ function windows_azure_storage_newMediaObject( $args ) {
 function windows_azure_storage_wp_get_attachment_url( $url, $postID ) {
 	$mediaInfo = get_post_meta( $postID, 'windows_azure_storage_info', true );
 
-	if ( ! empty( $mediaInfo ) ) {
+	if ( ! empty( $mediaInfo ) && isset( $mediaInfo['url'] ) ) {
 		return $mediaInfo['url'];
 	} else {
 		return $url;
@@ -420,7 +417,7 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $postID ) {
 			);
 
 		} catch ( Exception $e ) {
-			echo "<p>Error in uploading file. Error: " . esc_html( $e->getMessage() ) . "</p><br/>";
+			echo '<p>' . sprintf( __( 'Error in uploading file. Error: %s', MSFT_AZURE_PLUGIN_DOMAIN_NAME ), esc_html( $e->getMessage() ) ) . '</p><br/>';
 
 			return $data;
 		}
@@ -479,7 +476,7 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $postID ) {
 			unlink( $upload_file_name );
 		}
 	} catch ( Exception $e ) {
-		echo "<p>Error in uploading file. Error: " . esc_html( $e->getMessage() ) . "</p><br/>";
+		echo '<p>' . sprintf( __( 'Error in uploading file. Error: %s', MSFT_AZURE_PLUGIN_DOMAIN_NAME ), esc_html( $e->getMessage() ) ) . '</p><br/>';
 	}
 
 	return $data;
@@ -497,8 +494,6 @@ function windows_azure_storage_content_save_pre( $text ) {
 }
 
 /**
- * TODO: Implement wp_unique_filename filter once its available in WordPress.
- *
  * Hook for altering the file name.
  * Check whether the blob exists in the container and generate a unique file name for the blob.
  *
