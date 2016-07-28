@@ -465,4 +465,49 @@ class Windows_Azure_Helper {
 			$blob_name
 		);
 	}
+
+	/**
+	 * Unlink file using $wp_filesystem.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $relative_path Relative path under uploads directory.
+	 *
+	 * @return bool
+	 */
+	static public function unlink_file( $relative_path ) {
+		/** @var $wp_filesystem \WP_Filesystem_Base */
+		global $wp_filesystem;
+		if ( ! WP_Filesystem() ) {
+			return false;
+		}
+
+		$upload_dir = wp_upload_dir();
+		$filename   = trailingslashit( $upload_dir['basedir'] ) . $relative_path;
+		$result     = $wp_filesystem->delete( $filename, false, 'f' );
+
+		return $result;
+	}
+
+	/**
+	 * Check if file exits using $wp_filesystem.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $relative_path Relative path under uploads directory.
+	 *
+	 * @return bool
+	 */
+	static public function file_exists( $relative_path ) {
+		/** @var $wp_filesystem \WP_Filesystem_Base */
+		global $wp_filesystem;
+		if ( ! WP_Filesystem() ) {
+			return false;
+		}
+
+		$upload_dir = wp_upload_dir();
+		$filename   = trailingslashit( $upload_dir['basedir'] ) . $relative_path;
+
+		return $wp_filesystem->exists( $filename, false, 'f' );
+	}
 }

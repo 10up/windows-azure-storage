@@ -372,7 +372,6 @@ function windows_azure_storage_wp_get_attachment_metadata( $data, $post_id ) {
  * @return array data after updating information about blob storage URL and tags.
  */
 function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) {
-	global $wp_filesystem;
 	$default_azure_storage_account_container_name = \Windows_Azure_Helper::get_default_container();
 	$delete_local_file                            = \Windows_Azure_Helper::delete_local_file();
 	$upload_file_name                             = get_attached_file( $post_id, true );
@@ -405,7 +404,7 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 			$result = \Windows_Azure_Helper::put_media_to_blob_storage(
 				$default_azure_storage_account_container_name,
 				$relative_file_name,
-				$data['file'],
+				$relative_file_name,
 				$mime_type
 			);
 
@@ -433,12 +432,12 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 				$size_file_name = dirname( $data['file'] ) . '/' . $size['file'];
 
 				// Move only if file exists. Some theme may use same file name for multiple sizes.
-				if ( file_exists( $size_file_name ) ) {
+				if ( Windows_Azure_Helper::file_exists( trailingslashit( $file_upload_dir ) . $size['file'] ) ) {
 					$blob_name = ( '' === $file_upload_dir ) ? $size['file'] : $file_upload_dir . '/' . $size['file'];
 					\Windows_Azure_Helper::put_media_to_blob_storage(
 						$default_azure_storage_account_container_name,
 						$blob_name,
-						$size_file_name,
+						trailingslashit( $file_upload_dir ) . $size['file'],
 						$mime_type
 					);
 
@@ -446,8 +445,7 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 
 					// Delete the local thumbnail file.
 					if ( $delete_local_file ) {
-						// @todo Use $wp_filesystem instead
-						unlink( $size_file_name );
+						Windows_Azure_Helper::unlink_file( trailingslashit( $file_upload_dir ) . $size['file'] );
 					}
 				}
 			}
@@ -467,8 +465,7 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 
 		// Delete the local file.
 		if ( $delete_local_file ) {
-			// @todo Use $wp_filesystem instead
-			unlink( $upload_file_name );
+			Windows_Azure_Helper::unlink_file( $relative_file_name );
 		}
 	} catch ( Exception $e ) {
 		echo '<p>' . sprintf( __( 'Error in uploading file. Error: %s', 'windows-azure-storage' ), esc_html( $e->getMessage() ) ) . '</p><br/>';
