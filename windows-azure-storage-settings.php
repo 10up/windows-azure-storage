@@ -249,7 +249,7 @@ function windows_azure_storage_setting_storage_container() {
 				</option>
 				<?php
 			}
-			if ( WindowsAzureStorageUtil::check_action_permissions( 'create_container' ) ) {
+			if ( current_user_can( 'manage_options' ) ) {
 				?>
 				<option value="__newContainer__" <?php if ( $container_creation_failed ) : ?>selected="selected" <?php endif ?>>&mdash;&thinsp;<?php esc_html_e( 'Create New Container', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?>&thinsp;&mdash;</option>
 				<?php
@@ -258,7 +258,7 @@ function windows_azure_storage_setting_storage_container() {
 		?>
 	</select>
 	<?php
-	if ( WindowsAzureStorageUtil::check_action_permissions( 'create_container' ) ) :
+	if ( current_user_can( 'manage_options' ) ) :
 		wp_nonce_field( 'create_container', 'create_new_container_settings' );
 		?>
 		<br>
@@ -345,12 +345,9 @@ function windows_azure_storage_setting_keep_local_file() {
  * @return string|WP_Error|null Success message or WP_Error on failure.
  */
 function create_container_if_required( &$success = null ) {
-	$success = false;
-	if (
-	$action_set = isset( $_POST['newcontainer'] ) &&
-	              $permissions = WindowsAzureStorageUtil::check_action_permissions( 'create_container' ) &&
-	                             $admin_referer = check_admin_referer( 'create_container', 'create_new_container_settings' )
-	) {
+	$success       = false;
+	$action_set    = isset( $_POST['newcontainer'] ) && $permissions = current_user_can( 'manage_options' ) && $admin_referer = check_admin_referer( 'create_container', 'create_new_container_settings' );
+	if ( $action_set ) {
 		if ( ! empty( $_POST['newcontainer'] ) ) {
 			if ( empty( $_POST['azure_storage_account_name'] ) || empty( $_POST['azure_storage_account_primary_access_key'] ) ) {
 				return new WP_Error( -2, __( 'Please specify Storage Account Name and Primary Access Key to create container.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
