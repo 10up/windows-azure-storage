@@ -86,11 +86,11 @@ function windows_azure_storage_plugin_options_page() {
 	?>
 	<div class="wrap">
 		<div id="icon-options-general" class="icon32"><br/></div>
-		<form method="post" name="SettingsForm" action="options.php">
+		<form method="post" name="azure-settings-form" id="azure-settings-form" action="options.php">
 			<?php
 			settings_fields( 'windows-azure-storage-settings-group' );
 			do_settings_sections( 'windows-azure-storage-plugin-options' );
-			submit_button( __( 'Save Changes', MSFT_AZURE_PLUGIN_DOMAIN_NAME ), 'submit primary', 'submitButton', true );
+			submit_button( __( 'Save Changes', MSFT_AZURE_PLUGIN_DOMAIN_NAME ), 'submit primary', 'azure-submit-button', true );
 			?>
 		</form>
 	</div>
@@ -236,7 +236,7 @@ function windows_azure_storage_setting_storage_container() {
 	$new_container_name        = isset( $_POST['newcontainer'] ) ? sanitize_text_field( $_POST['newcontainer'] ) : '';
 	$container_creation_failed = apply_filters( 'windows_azure_storage_container_creation_failed', false );
 	?>
-	<select name="default_azure_storage_account_container_name" title="<?php esc_attr_e( 'Default container to be used for storing media files', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) ?>" onchange="onContainerSelectionChanged( false );">
+	<select name="default_azure_storage_account_container_name" title="<?php esc_attr_e( 'Default container to be used for storing media files', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) ?>" class="azure-container-selector">
 		<?php
 		if ( ! is_wp_error( $containers_list ) ) {
 			foreach ( $containers_list as $container ) {
@@ -262,13 +262,13 @@ function windows_azure_storage_setting_storage_container() {
 		wp_nonce_field( 'create_container', 'create_new_container_settings' );
 		?>
 		<br>
-		<div id="divCreateContainer" name="divCreateContainer" <?php if ( ! $container_creation_failed ) : ?>style="display:none;"<?php endif; ?>>
+		<div id="div-create-container" name="div-create-container" <?php if ( ! $container_creation_failed ) : ?>style="display:none;"<?php endif; ?>>
 			<p>
 				<label for="newcontainer" title="<?php __( 'Name of the new container to create', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?>"><?php echo __( 'New container name: ', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?></label>
 				<input type="text" name="newcontainer" class="regular-text" title="<?php __( 'Name of the new container to create', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?>" value="<?php echo esc_attr( $new_container_name ); ?>"/>
 			</p>
 			<p>
-				<input type="button" class="button-primary" value="<?php esc_attr_e( 'Create', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?>" onclick="<?php echo esc_js( sprintf( 'createContainer("%s");', esc_url( $_SERVER['REQUEST_URI'] ) ) ); ?>"/>
+				<input type="button" class="button-primary azure-create-container-button" value="<?php esc_attr_e( 'Create', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?>" data-container-url="<?php echo esc_attr( sprintf( '%s', esc_url( $_SERVER['REQUEST_URI'] ) ) ); ?>"/>
 			</p>
 		</div>
 	<?php endif;
