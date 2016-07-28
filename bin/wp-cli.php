@@ -346,7 +346,7 @@ class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 		$client      = new Windows_Azure_Rest_Api_Client( $credentials['account_name'], $credentials['account_key'] );
 		$format_args = array(
 			'format' => 'table',
-			'fields' => [ 'Name' ],
+			'fields' => array( 'Name' ),
 			'field'  => null,
 		);
 
