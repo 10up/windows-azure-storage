@@ -250,7 +250,7 @@ class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 		}
 
 		WP_CLI::success(
-			'Blob has been deleted.'
+			__( 'Blob has been deleted.', MSFT_AZURE_PLUGIN_DOMAIN_NAME )
 		);
 	}
 
