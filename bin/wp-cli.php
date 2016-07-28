@@ -85,7 +85,7 @@ class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 		}
 
 		if ( empty( $items ) ) {
-			return WP_CLI::warning( __( 'No containers found.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+			return WP_CLI::warning( __( 'No containers found.', 'windows-azure-storage' ) );
 		}
 
 		$table->display_items( $items );
@@ -111,7 +111,7 @@ class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 	 */
 	public function create_cointainer( $args, $assoc_args ) {
 		if ( empty( $args ) ) {
-			return WP_CLI::error( __( 'Container name must be set.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+			return WP_CLI::error( __( 'Container name must be set.', 'windows-azure-storage' ) );
 		}
 
 		list( $name ) = $args;
@@ -125,7 +125,7 @@ class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 
 		WP_CLI::success(
 			sprintf(
-				__( 'Created container with name "%s"', MSFT_AZURE_PLUGIN_DOMAIN_NAME ),
+				__( 'Created container with name "%s"', 'windows-azure-storage' ),
 				$result
 			)
 		);
@@ -151,7 +151,7 @@ class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 	 */
 	public function get_container_properties( $args, $assoc_args ) {
 		if ( empty( $args ) ) {
-			return WP_CLI::error( __( 'Container name must be set.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+			return WP_CLI::error( __( 'Container name must be set.', 'windows-azure-storage' ) );
 		}
 
 		list( $name ) = $args;
@@ -193,7 +193,7 @@ class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 	 */
 	public function get_container_acl( $args, $assoc_args ) {
 		if ( empty( $args ) ) {
-			return WP_CLI::error( __( 'Container name must be set.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+			return WP_CLI::error( __( 'Container name must be set.', 'windows-azure-storage' ) );
 		}
 
 		list( $name ) = $args;
@@ -207,7 +207,7 @@ class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 
 		WP_CLI::success(
 			sprintf(
-				__( 'Container "%s" access policy set to: "%s"' ),
+				__( 'Container "%s" access policy set to: "%s"', 'windows-azure-storage' ),
 				$name,
 				$result
 			)
@@ -237,7 +237,7 @@ class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 	 */
 	public function delete_blob( $args, $assoc_args ) {
 		if ( empty( $args ) || count( $args ) < 2 ) {
-			return WP_CLI::error( __( 'Container and remote path must be set.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+			return WP_CLI::error( __( 'Container and remote path must be set.', 'windows-azure-storage' ) );
 		}
 
 		list( $container, $remote_path ) = $args;
@@ -250,7 +250,7 @@ class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 		}
 
 		WP_CLI::success(
-			__( 'Blob has been deleted.', MSFT_AZURE_PLUGIN_DOMAIN_NAME )
+			__( 'Blob has been deleted.', 'windows-azure-storage' )
 		);
 	}
 
@@ -277,7 +277,7 @@ class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 	 */
 	public function get_blob_properties( $args, $assoc_args ) {
 		if ( count( $args ) < 2 ) {
-			return WP_CLI::error( __( 'Container name and blob path must be set.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+			return WP_CLI::error( __( 'Container name and blob path must be set.', 'windows-azure-storage' ) );
 		}
 
 		list( $container, $remote_path ) = $args;
@@ -327,7 +327,7 @@ class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 		) );
 
 		if ( empty( $assoc_args['container'] ) ) {
-			return WP_CLI::error( __( 'Container name amust be set.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+			return WP_CLI::error( __( 'Container name amust be set.', 'windows-azure-storage' ) );
 		}
 
 		$credentials = Windows_Azure_Config_Provider::get_account_credentials();
@@ -350,7 +350,7 @@ class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 		}
 
 		if ( empty( $items ) ) {
-			return WP_CLI::warning( __( 'No blobs found.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+			return WP_CLI::warning( __( 'No blobs found.', 'windows-azure-storage' ) );
 		}
 
 		$table->display_items( $items );

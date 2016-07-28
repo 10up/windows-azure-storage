@@ -59,7 +59,6 @@ define( 'MSFT_AZURE_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'MSFT_AZURE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'MSFT_AZURE_PLUGIN_LEGACY_MEDIA_URL', get_admin_url( get_current_blog_id(), 'media-upload.php' ) );
 define( 'MSFT_AZURE_PLUGIN_VERSION', '4.0.0' );
-define( 'MSFT_AZURE_PLUGIN_DOMAIN_NAME', 'windows-azure-storage' );
 
 require_once MSFT_AZURE_PLUGIN_PATH . 'windows-azure-storage-settings.php';
 require_once MSFT_AZURE_PLUGIN_PATH . 'windows-azure-storage-dialog.php';
@@ -168,12 +167,12 @@ function check_prerequisite() {
 	$php_compat = version_compare( $php_version, '5.3.0', '>=' );
 	if ( ! $php_compat ) {
 		deactivate_plugins( plugin_basename( __FILE__ ) );
-		wp_die( __( 'Windows Azure Storage for WordPress requires at least PHP 5.3.0', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+		wp_die( __( 'Windows Azure Storage for WordPress requires at least PHP 5.3.0', 'windows-azure-storage' ) );
 	}
 	$wp_compat = version_compare( $wp_version, '2.8.0', '>=' );
 	if ( ! $wp_compat ) {
 		deactivate_plugins( plugin_basename( __FILE__ ) );
-		wp_die( __( 'Windows Azure Storage for WordPress requires at least WordPress 2.8.0', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+		wp_die( __( 'Windows Azure Storage for WordPress requires at least WordPress 2.8.0', 'windows-azure-storage' ) );
 	}
 }
 
@@ -218,7 +217,7 @@ function windows_azure_storage_newMediaObject( $args ) {
 	do_action( 'xmlrpc_call', 'metaWeblog.newMediaObject' );
 
 	if ( ! current_user_can( 'upload_files' ) ) {
-		$wp_xmlrpc_server->error = new IXR_Error( 401, __( 'You do not have permission to upload files.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+		$wp_xmlrpc_server->error = new IXR_Error( 401, __( 'You do not have permission to upload files.', 'windows-azure-storage' ) );
 
 		return $wp_xmlrpc_server->error;
 	}
@@ -284,7 +283,7 @@ function windows_azure_storage_newMediaObject( $args ) {
 
 	$upload = wp_upload_bits( $name, null, $bits );
 	if ( ! empty( $upload['error'] ) ) {
-		$errorString = sprintf( __( 'Could not write file %1$s (%2$s)', MSFT_AZURE_PLUGIN_DOMAIN_NAME ), $name, $upload['error'] );
+		$errorString = sprintf( __( 'Could not write file %1$s (%2$s)', 'windows-azure-storage' ), $name, $upload['error'] );
 
 		return new IXR_Error( 500, $errorString );
 	}
@@ -294,7 +293,7 @@ function windows_azure_storage_newMediaObject( $args ) {
 		$post_id = (int) $data['post_id'];
 
 		if ( ! current_user_can( 'edit_post', $post_id ) ) {
-			return new IXR_Error( 401, __( 'Sorry, you cannot edit this post.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+			return new IXR_Error( 401, __( 'Sorry, you cannot edit this post.', 'windows-azure-storage' ) );
 		}
 	}
 	$attachment = array(
@@ -417,7 +416,7 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $postID ) {
 			);
 
 		} catch ( Exception $e ) {
-			echo '<p>' . sprintf( __( 'Error in uploading file. Error: %s', MSFT_AZURE_PLUGIN_DOMAIN_NAME ), esc_html( $e->getMessage() ) ) . '</p><br/>';
+			echo '<p>' . sprintf( __( 'Error in uploading file. Error: %s', 'windows-azure-storage' ), esc_html( $e->getMessage() ) ) . '</p><br/>';
 
 			return $data;
 		}
@@ -476,7 +475,7 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $postID ) {
 			unlink( $upload_file_name );
 		}
 	} catch ( Exception $e ) {
-		echo '<p>' . sprintf( __( 'Error in uploading file. Error: %s', MSFT_AZURE_PLUGIN_DOMAIN_NAME ), esc_html( $e->getMessage() ) ) . '</p><br/>';
+		echo '<p>' . sprintf( __( 'Error in uploading file. Error: %s', 'windows-azure-storage' ), esc_html( $e->getMessage() ) ) . '</p><br/>';
 	}
 
 	return $data;
@@ -596,7 +595,7 @@ function browse_tab() {
 	wp_localize_script( 'media-grid', '_wpMediaGridSettings', [
 		'adminUrl' => parse_url( self_admin_url(), PHP_URL_PATH ),
 		'l10n'     => array(
-			'selectText' => __( 'Insert into post', MSFT_AZURE_PLUGIN_DOMAIN_NAME ),
+			'selectText' => __( 'Insert into post', 'windows-azure-storage' ),
 		)
 	] );
 	wp_iframe( 'windows_azure_storage_dialog_browse_tab' );
@@ -665,8 +664,8 @@ title="%2$s"><img src="%3$s" alt="%2$s" role="img" class="windows-azure-storage-
 function windows_azure_storage_plugin_menu() {
 	if ( current_user_can( 'manage_options' ) ) {
 		add_options_page(
-			__( 'Windows Azure Storage Plugin Settings', MSFT_AZURE_PLUGIN_DOMAIN_NAME ),
-			__( 'Windows Azure', MSFT_AZURE_PLUGIN_DOMAIN_NAME ),
+			__( 'Windows Azure Storage Plugin Settings', 'windows-azure-storage' ),
+			__( 'Windows Azure', 'windows-azure-storage' ),
 			'manage_options',
 			'windows-azure-storage-plugin-options',
 			'windows_azure_storage_plugin_options_page'

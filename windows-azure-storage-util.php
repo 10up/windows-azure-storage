@@ -198,7 +198,7 @@ class WindowsAzureStorageUtil {
 		$proxyHost = null, $proxyPort = null,
 		$proxyUserName = null, $proxyPassword = null
 	) {
-		throw new Exception( __( 'Function has been removed.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ), -1 );
+		throw new Exception( __( 'Function has been removed.', 'windows-azure-storage' ), -1 );
 	}
 
 	/**
@@ -213,7 +213,7 @@ class WindowsAzureStorageUtil {
 	 * @return void
 	 */
 	public static function deleteBlob( $containerName, $blobName ) {
-		throw new Exception( __( 'Function has been removed.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ), -1 );
+		throw new Exception( __( 'Function has been removed.', 'windows-azure-storage' ), -1 );
 	}
 
 	/**

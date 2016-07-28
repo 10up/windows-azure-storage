@@ -120,7 +120,7 @@ function show_windows_azure_storage_settings( $mode ) {
 					$private_container_warning = sprintf(
 						__(
 							'Warning: The container "%1$s" is set to "private" and cannot be used. Please choose a public container as the default, or set the "%1$s" container to "public" in your Azure Storage settings.',
-							MSFT_AZURE_PLUGIN_DOMAIN_NAME
+							'windows-azure-storage'
 						),
 						$default_container
 					);
@@ -128,7 +128,7 @@ function show_windows_azure_storage_settings( $mode ) {
 			}
 			if ( is_wp_error( $containers_list ) ) {
 				$private_container_warning .= sprintf(
-					__( 'Unable to fetch containers list. Reason: %s', MSFT_AZURE_PLUGIN_DOMAIN_NAME ),
+					__( 'Unable to fetch containers list. Reason: %s', 'windows-azure-storage' ),
 					$containers_list->get_error_message()
 				);
 			}
@@ -145,10 +145,10 @@ function show_windows_azure_storage_settings( $mode ) {
 	<table class="form-table" border="0">
 		<tr valign="top">
 			<th scope="row">
-				<label for="storage_account_name" title="<?php esc_attr_e( 'Windows Azure Storage Account Name', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?>"><?php esc_html_e( 'Store Account Name', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?></label>
+				<label for="storage_account_name" title="<?php esc_attr_e( 'Windows Azure Storage Account Name', 'windows-azure-storage' ); ?>"><?php esc_html_e( 'Store Account Name', 'windows-azure-storage' ); ?></label>
 			</th>
 			<td>
-				<input type="text" name="azure_storage_account_name" title="<?php esc_attr_e( 'Windows Azure Storage Account Name', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?>" value="<?php
+				<input type="text" name="azure_storage_account_name" title="<?php esc_attr_e( 'Windows Azure Storage Account Name', 'windows-azure-storage' ); ?>" value="<?php
 				echo esc_attr( $storage_account_name ); ?>" />
 			</td>
 			<td></td>
@@ -156,17 +156,17 @@ function show_windows_azure_storage_settings( $mode ) {
 
 		<tr valign="top">
 			<th scope="row">
-				<label for="azure_storage_account_primary_access_key" title="<?php esc_attr_e( 'Windows Azure Storage Account Primary Access Key', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?>"><?php esc_html_e( 'Primary Access Key', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?></label>
+				<label for="azure_storage_account_primary_access_key" title="<?php esc_attr_e( 'Windows Azure Storage Account Primary Access Key', 'windows-azure-storage' ); ?>"><?php esc_html_e( 'Primary Access Key', 'windows-azure-storage' ); ?></label>
 			</th>
 			<td>
-				<input type="text" name="azure_storage_account_primary_access_key" title="<?php esc_attr_e( 'Windows Azure Storage Account Primary Access Key', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?>" value="<?php echo esc_attr( $storage_account_key ); ?>" />
+				<input type="text" name="azure_storage_account_primary_access_key" title="<?php esc_attr_e( 'Windows Azure Storage Account Primary Access Key', 'windows-azure-storage' ); ?>" value="<?php echo esc_attr( $storage_account_key ); ?>" />
 			</td>
 			<td></td>
 		</tr>
 
 		<tr valign="top">
 			<th scope="row">
-				<label for="storage_container_name" title="<?php esc_attr_e( 'Default container to be used for storing media files', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?>"><?php esc_html_e( 'Default Storage Container', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?></label>
+				<label for="storage_container_name" title="<?php esc_attr_e( 'Default container to be used for storing media files', 'windows-azure-storage' ); ?>"><?php esc_html_e( 'Default Storage Container', 'windows-azure-storage' ); ?></label>
 			</th>
 			<td WIDTH="80px">
 				<select name="default_azure_storage_account_container_name" title="Default container to be used for storing media files" onChange="<?php echo esc_js( 'onContainerSelectionChanged( false );' ); ?>">
@@ -197,10 +197,10 @@ function show_windows_azure_storage_settings( $mode ) {
 						<table style="border:1px solid black;">
 							<tr>
 								<td>
-									<label for="newcontainer" title="<?php esc_attr_e( 'Name of the new container to create', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?>"><?php esc_html_e( 'Create New Container:', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?> </label>
+									<label for="newcontainer" title="<?php esc_attr_e( 'Name of the new container to create', 'windows-azure-storage' ); ?>"><?php esc_html_e( 'Create New Container:', 'windows-azure-storage' ); ?> </label>
 								</td>
 								<td>
-									<input type="text" name="newcontainer" title="<?php esc_attr_e( 'Name of the new container to create', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?>" value="<?php echo esc_attr( $new_container_name ); ?>" />
+									<input type="text" name="newcontainer" title="<?php esc_attr_e( 'Name of the new container to create', 'windows-azure-storage' ); ?>" value="<?php echo esc_attr( $new_container_name ); ?>" />
 									<input type="button" class="button-primary" value="<?php esc_attr_e( 'Create', 'windows-azure-storage' ); ?>" onclick="<?php echo esc_js( sprintf( 'createContainer("%s");', esc_url( $_SERVER['REQUEST_URI'] ) ) ); ?>" />
 								</td>
 							</tr>
@@ -214,10 +214,10 @@ function show_windows_azure_storage_settings( $mode ) {
 		</tr>
 		<tr valign="top">
 			<th scope="row">
-				<label for="cname" title="<?php esc_attr_e( 'Use CNAME instead of Windows Azure Blob URL', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?>">CNAME</label>
+				<label for="cname" title="<?php esc_attr_e( 'Use CNAME instead of Windows Azure Blob URL', 'windows-azure-storage' ); ?>">CNAME</label>
 			</th>
 			<td colspan="2">
-				<input type="url" name="cname" title="<?php esc_attr_e( 'Use CNAME instead of Windows Azure Blob URL', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?>" value="<?php echo esc_attr( \Windows_Azure_Helper::get_cname() ); ?>" />
+				<input type="url" name="cname" title="<?php esc_attr_e( 'Use CNAME instead of Windows Azure Blob URL', 'windows-azure-storage' ); ?>" value="<?php echo esc_attr( \Windows_Azure_Helper::get_cname() ); ?>" />
 				<p class="field-description">
 					<?php
 					$notice = __(
@@ -272,10 +272,10 @@ function show_windows_azure_storage_settings( $mode ) {
 
 		<tr valign="top">
 			<th scope="row">
-				<label for="http_proxy_host" title="<?php esc_attr_e( 'Use HTTP proxy server host name if web proxy server is configured', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?>"><?php esc_html_e( 'HTTP Proxy Host Name', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?></label>
+				<label for="http_proxy_host" title="<?php esc_attr_e( 'Use HTTP proxy server host name if web proxy server is configured', 'windows-azure-storage' ); ?>"><?php esc_html_e( 'HTTP Proxy Host Name', 'windows-azure-storage' ); ?></label>
 			</th>
 			<td>
-				<input type="text" name="http_proxy_host" title="<?php esc_attr_e( 'Use HTTP proxy server host name if web proxy server is configured', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?>" value="<?php
+				<input type="text" name="http_proxy_host" title="<?php esc_attr_e( 'Use HTTP proxy server host name if web proxy server is configured', 'windows-azure-storage' ); ?>" value="<?php
 				echo esc_attr( $http_proxy_host ); ?>" />
 			</td>
 			<td></td>
@@ -283,20 +283,20 @@ function show_windows_azure_storage_settings( $mode ) {
 
 		<tr valign="top">
 			<th scope="row">
-				<label for="http_proxy_port" title="<?php esc_attr_e( 'Use HTTP proxy port if web proxy server is configured', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?>"><?php esc_html_e( 'HTTP Proxy Port', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?></label>
+				<label for="http_proxy_port" title="<?php esc_attr_e( 'Use HTTP proxy port if web proxy server is configured', 'windows-azure-storage' ); ?>"><?php esc_html_e( 'HTTP Proxy Port', 'windows-azure-storage' ); ?></label>
 			</th>
 			<td>
-				<input type="number" name="http_proxy_port" title="<?php esc_attr_e( 'Use HTTP proxy port if web proxy server is configured', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?>" value="<?php echo esc_attr( $http_proxy_port ); ?>" />
+				<input type="number" name="http_proxy_port" title="<?php esc_attr_e( 'Use HTTP proxy port if web proxy server is configured', 'windows-azure-storage' ); ?>" value="<?php echo esc_attr( $http_proxy_port ); ?>" />
 			</td>
 			<td></td>
 		</tr>
 
 		<tr valign="top">
 			<th scope="row">
-				<label for="http_proxy_username" title="<?php esc_attr_e( 'Use HTTP proxy user name if credential is required to access web proxy server', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?>"><?php esc_html_e( 'HTTP Proxy User Name', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?></label>
+				<label for="http_proxy_username" title="<?php esc_attr_e( 'Use HTTP proxy user name if credential is required to access web proxy server', 'windows-azure-storage' ); ?>"><?php esc_html_e( 'HTTP Proxy User Name', 'windows-azure-storage' ); ?></label>
 			</th>
 			<td>
-				<input type="text" name="http_proxy_username" title="<?php esc_attr_e( 'Use HTTP proxy user name if credential is required to access web proxy server', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?>" value="<?php
+				<input type="text" name="http_proxy_username" title="<?php esc_attr_e( 'Use HTTP proxy user name if credential is required to access web proxy server', 'windows-azure-storage' ); ?>" value="<?php
 				echo esc_attr( $http_proxy_username ); ?>" />
 			</td>
 			<td></td>
@@ -304,10 +304,10 @@ function show_windows_azure_storage_settings( $mode ) {
 
 		<tr valign="top">
 			<th scope="row">
-				<label for="http_proxy_password" title="<?php esc_attr_e( 'Use HTTP proxy password if credential is required to access web proxy server', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?>"><?php esc_html_e( 'HTTP Proxy Password', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?></label>
+				<label for="http_proxy_password" title="<?php esc_attr_e( 'Use HTTP proxy password if credential is required to access web proxy server', 'windows-azure-storage' ); ?>"><?php esc_html_e( 'HTTP Proxy Password', 'windows-azure-storage' ); ?></label>
 			</th>
 			<td>
-				<input type="text" name="http_proxy_password" title="<?php esc_attr_e( 'Use HTTP proxy password if credential is required to access web proxy server', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?>" value="<?php
+				<input type="text" name="http_proxy_password" title="<?php esc_attr_e( 'Use HTTP proxy password if credential is required to access web proxy server', 'windows-azure-storage' ); ?>" value="<?php
 				echo esc_attr( $http_proxy_password ); ?>" />
 			</td>
 			<td></td>
@@ -315,14 +315,14 @@ function show_windows_azure_storage_settings( $mode ) {
 
 		<tr valign="top">
 			<th scope="row">
-				<label for="azure_storage_use_for_default_upload" title="<?php esc_attr_e( 'Use Windows Azure Storage for default upload', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?>"><?php esc_html_e( 'Use Windows Azure Storage for default upload', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?></label>
+				<label for="azure_storage_use_for_default_upload" title="<?php esc_attr_e( 'Use Windows Azure Storage for default upload', 'windows-azure-storage' ); ?>"><?php esc_html_e( 'Use Windows Azure Storage for default upload', 'windows-azure-storage' ); ?></label>
 			</th>
 			<td colspan="2">
-				<input type="checkbox" name="azure_storage_use_for_default_upload" title="<?php esc_attr_e( 'Use Windows Azure Storage for default upload', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?>" value="1" id="azure_storage_use_for_default_upload"
+				<input type="checkbox" name="azure_storage_use_for_default_upload" title="<?php esc_attr_e( 'Use Windows Azure Storage for default upload', 'windows-azure-storage' ); ?>" value="1" id="azure_storage_use_for_default_upload"
 					<?php checked( (bool) get_option( 'azure_storage_use_for_default_upload' ) ); ?> />
-				<label for="wp-uploads"><?php esc_html_e( 'Use Windows Azure Storage when uploading via WordPress\' upload tab.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?></label>
+				<label for="wp-uploads"><?php esc_html_e( 'Use Windows Azure Storage when uploading via WordPress\' upload tab.', 'windows-azure-storage' ); ?></label>
 				<br />
-				<small><?php esc_html_e( 'Note: Uncheck this to revert back to using your own web host for storage at anytime.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?></small>
+				<small><?php esc_html_e( 'Note: Uncheck this to revert back to using your own web host for storage at anytime.', 'windows-azure-storage' ); ?></small>
 			</td>
 		</tr>
 	</table>
