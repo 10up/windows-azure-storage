@@ -1,8 +1,6 @@
 <?php
 
 /**
- * windows-azure-rest-api-client.php
- *
  * Windows Azure Storage REST API client.
  *
  * Version: 4.0.0
@@ -52,7 +50,7 @@ class Windows_Azure_Rest_Api_Client {
 	 *
 	 * @const string
 	 */
-	const API_VERSION = '2015-04-05';
+	const API_VERSION = '2015-12-11';
 
 	/**
 	 * Blob API default request timeout.
@@ -463,7 +461,7 @@ class Windows_Azure_Rest_Api_Client {
 			'If-Match',
 			'If-None-Match',
 			'If-Unmodified-Since',
-			'Range'
+			'Range',
 		);
 	}
 
@@ -568,7 +566,7 @@ class Windows_Azure_Rest_Api_Client {
 	public function list_containers( $prefix = '', $max_results = self::API_REQUEST_BULK_SIZE, $next_marker = false ) {
 		$query_args = array(
 			'comp'       => 'list',
-			'maxresults' => apply_filters( 'azure_blob_list_containers_max_results', $max_results )
+			'maxresults' => apply_filters( 'azure_blob_list_containers_max_results', $max_results ),
 		);
 
 		if ( ! empty( $prefix ) ) {
@@ -779,7 +777,7 @@ class Windows_Azure_Rest_Api_Client {
 			self::API_HEADER_CACHE_CONTROL,
 			self::API_HEADER_BLOB_SEQUENCE_NUMBER,
 			self::API_HEADER_ACCEPT_RANGES,
-			self::API_HEADER_BLOB_COMMITED_BLOCK_COUNT
+			self::API_HEADER_BLOB_COMMITED_BLOCK_COUNT,
 		);
 		$properties = array();
 
@@ -813,7 +811,7 @@ class Windows_Azure_Rest_Api_Client {
 			self::API_HEADER_MS_BLOB_CONTENT_MD5,
 			self::API_HEADER_MS_BLOB_CONTENT_ENCODING,
 			self::API_HEADER_MS_BLOB_CONTENT_LANGUAGE,
-			self::API_HEADER_MS_BLOB_CONTENT_DISPOSITION
+			self::API_HEADER_MS_BLOB_CONTENT_DISPOSITION,
 		);
 		$filtered_properties = array();
 
@@ -858,6 +856,8 @@ class Windows_Azure_Rest_Api_Client {
 		if ( empty( $files ) ) {
 			return $files;
 		}
+		$cycles        = 0;
+		$was_sanitized = false;
 		foreach ( $files as $prefix_group => &$group_contents ) {
 			$cycles = 0;
 			do {
@@ -869,6 +869,7 @@ class Windows_Azure_Rest_Api_Client {
 				$cycles++;
 			} while ( $was_sanitized && 5 > $cycles );
 		}
+
 		if ( 5 === $cycles && $was_sanitized ) {
 			return new WP_Error( -100, __( 'Unable to safely sanitize blob names.', 'windows-azure-storage' ) );
 		} else {
@@ -932,7 +933,7 @@ class Windows_Azure_Rest_Api_Client {
 		$query_args = array();
 		$headers    = apply_filters( 'azure_blob_put_blob_headers', array() );
 
-		// overwrite blob type
+		// overwrite blob type.
 		$headers[ self::API_HEADER_BLOB_TYPE ] = self::APPEND_BLOB_TYPE;
 
 		$result = $this->_send_request( 'PUT', $query_args, $headers, '', $container . $remote_path );
@@ -1002,7 +1003,7 @@ class Windows_Azure_Rest_Api_Client {
 	protected function _send_request( $method, array $query_args = array(), array $headers = array(), $body = '', $path = '' ) {
 
 		$query_args = wp_parse_args( $query_args, array(
-			'timeout' => apply_filters( 'azure_blob_operation_timeout', self::API_REQUEST_TIMEOUT )
+			'timeout' => apply_filters( 'azure_blob_operation_timeout', self::API_REQUEST_TIMEOUT ),
 		) );
 
 		$endpoint_url = $this->_build_api_endpoint_url( $path );
@@ -1172,7 +1173,7 @@ class Windows_Azure_Rest_Api_Client {
 				$needs_sanitization[] = $blob['Name'];
 				unset( $remote_paths[ $blob['Name'] ] );
 
-				// quit early as $blob is an Iterator instance with lazy loading
+				// quit early as $blob is an Iterator instance with lazy loading.
 				if ( 0 === count( $remote_paths ) ) {
 					break;
 				}

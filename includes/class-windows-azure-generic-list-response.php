@@ -1,8 +1,6 @@
 <?php
 
 /**
- * windows-azure-list-generic-response.php
- *
  * Windows Azure Storage REST API list containers response.
  *
  * Version: 4.0.0
@@ -156,7 +154,7 @@ abstract class Windows_Azure_Generic_List_Response implements Iterator {
 	 * @return void
 	 */
 	public function next() {
-		if ( ! empty( $this->_next_marker ) && ( $this->_position === count( $this->_items ) - 1 ) ) {
+		if ( ! empty( $this->_next_marker ) && ( ( count( $this->_items ) - 1 ) === $this->_position ) ) {
 			$lazy_loaded = $this->_list_items( $this->_prefix, $this->_max_results, $this->_next_marker, $this->_path );
 			if ( $lazy_loaded instanceof Windows_Azure_Generic_List_Response ) {
 				$this->_items       = array_merge( $this->_items, $lazy_loaded->get_all() );
@@ -248,5 +246,4 @@ abstract class Windows_Azure_Generic_List_Response implements Iterator {
 	protected function _list_items( $prefix, $max_results, $next_marker, $path ) {
 		return null;
 	}
-
 }

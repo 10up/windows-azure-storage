@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Windows Azure Storage command line client.
  *
@@ -77,7 +76,8 @@ class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 		$containers = $client->list_containers( $assoc_args['prefix'] );
 
 		if ( is_wp_error( $containers ) ) {
-			return WP_CLI::error( $containers->get_error_message() );
+			WP_CLI::error( $containers->get_error_message() );
+			exit;
 		}
 		$items = array();
 		foreach ( $containers as $container ) {
@@ -85,7 +85,8 @@ class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 		}
 
 		if ( empty( $items ) ) {
-			return WP_CLI::warning( __( 'No containers found.', 'windows-azure-storage' ) );
+			WP_CLI::warning( __( 'No containers found.', 'windows-azure-storage' ) );
+			exit;
 		}
 
 		$table->display_items( $items );
@@ -111,7 +112,8 @@ class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 	 */
 	public function create_cointainer( $args, $assoc_args ) {
 		if ( empty( $args ) ) {
-			return WP_CLI::error( __( 'Container name must be set.', 'windows-azure-storage' ) );
+			WP_CLI::error( __( 'Container name must be set.', 'windows-azure-storage' ) );
+			exit;
 		}
 
 		list( $name ) = $args;
@@ -120,7 +122,8 @@ class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 		$result      = $client->create_container( $name, Windows_Azure_Rest_Api_Client::CONTAINER_VISIBILITY_BLOB );
 
 		if ( is_wp_error( $result ) ) {
-			return WP_CLI::error( $result->get_error_message() );
+			WP_CLI::error( $result->get_error_message() );
+			exit;
 		}
 
 		WP_CLI::success(
@@ -151,7 +154,8 @@ class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 	 */
 	public function get_container_properties( $args, $assoc_args ) {
 		if ( empty( $args ) ) {
-			return WP_CLI::error( __( 'Container name must be set.', 'windows-azure-storage' ) );
+			WP_CLI::error( __( 'Container name must be set.', 'windows-azure-storage' ) );
+			exit;
 		}
 
 		list( $name ) = $args;
@@ -160,7 +164,8 @@ class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 		$result      = $client->get_container_properties( $name );
 
 		if ( is_wp_error( $result ) ) {
-			return WP_CLI::error( $result->get_error_message() );
+			WP_CLI::error( $result->get_error_message() );
+			exit;
 		}
 
 		$format_args = array(
@@ -193,7 +198,8 @@ class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 	 */
 	public function get_container_acl( $args, $assoc_args ) {
 		if ( empty( $args ) ) {
-			return WP_CLI::error( __( 'Container name must be set.', 'windows-azure-storage' ) );
+			WP_CLI::error( __( 'Container name must be set.', 'windows-azure-storage' ) );
+			exit;
 		}
 
 		list( $name ) = $args;
@@ -202,7 +208,8 @@ class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 		$result      = $client->get_container_acl( $name );
 
 		if ( is_wp_error( $result ) ) {
-			return WP_CLI::error( $result->get_error_message() );
+			WP_CLI::error( $result->get_error_message() );
+			exit;
 		}
 
 		WP_CLI::success(
@@ -237,7 +244,8 @@ class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 	 */
 	public function delete_blob( $args, $assoc_args ) {
 		if ( empty( $args ) || count( $args ) < 2 ) {
-			return WP_CLI::error( __( 'Container and remote path must be set.', 'windows-azure-storage' ) );
+			WP_CLI::error( __( 'Container and remote path must be set.', 'windows-azure-storage' ) );
+			exit;
 		}
 
 		list( $container, $remote_path ) = $args;
@@ -246,7 +254,8 @@ class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 		$result      = $client->delete_blob( $container, $remote_path );
 
 		if ( is_wp_error( $result ) ) {
-			return WP_CLI::error( $result->get_error_message() );
+			WP_CLI::error( $result->get_error_message() );
+			exit;
 		}
 
 		WP_CLI::success(
@@ -277,7 +286,8 @@ class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 	 */
 	public function get_blob_properties( $args, $assoc_args ) {
 		if ( count( $args ) < 2 ) {
-			return WP_CLI::error( __( 'Container name and blob path must be set.', 'windows-azure-storage' ) );
+			WP_CLI::error( __( 'Container name and blob path must be set.', 'windows-azure-storage' ) );
+			exit;
 		}
 
 		list( $container, $remote_path ) = $args;
@@ -286,7 +296,8 @@ class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 		$result      = $client->get_blob_properties( $container, $remote_path );
 
 		if ( is_wp_error( $result ) ) {
-			return WP_CLI::error( $result->get_error_message() );
+			WP_CLI::error( $result->get_error_message() );
+			exit;
 		}
 
 		$format_args = array(
@@ -327,14 +338,15 @@ class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 		) );
 
 		if ( empty( $assoc_args['container'] ) ) {
-			return WP_CLI::error( __( 'Container name amust be set.', 'windows-azure-storage' ) );
+			WP_CLI::error( __( 'Container name amust be set.', 'windows-azure-storage' ) );
+			exit;
 		}
 
 		$credentials = Windows_Azure_Config_Provider::get_account_credentials();
 		$client      = new Windows_Azure_Rest_Api_Client( $credentials['account_name'], $credentials['account_key'] );
 		$format_args = array(
 			'format' => 'table',
-			'fields' => [ 'Name' ],
+			'fields' => array( 'Name' ),
 			'field'  => null,
 		);
 
@@ -342,15 +354,17 @@ class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 		$blobs = $client->list_blobs( $assoc_args['container'], $assoc_args['prefix'] );
 
 		if ( is_wp_error( $blobs ) ) {
-			return WP_CLI::error( $blobs->get_error_message() );
+			WP_CLI::error( $blobs->get_error_message() );
+			exit;
 		}
-		$items = [ ];
+		$items = array();
 		foreach ( $blobs as $blob ) {
 			$items[] = $blob;
 		}
 
 		if ( empty( $items ) ) {
-			return WP_CLI::warning( __( 'No blobs found.', 'windows-azure-storage' ) );
+			WP_CLI::warning( __( 'No blobs found.', 'windows-azure-storage' ) );
+			exit;
 		}
 
 		$table->display_items( $items );

@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Plugin Name: Windows Azure Storage for WordPress
  * Plugin URI: https://wordpress.org/plugins/windows-azure-storage/
  * Description: Use the Windows Azure Storage service to host your website's media files.
@@ -79,7 +79,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	require_once MSFT_AZURE_PLUGIN_PATH . 'bin/wp-cli.php';
 }
 
-// Check prerequisite for plugin
+// Check prerequisite for plugin.
 register_activation_hook( __FILE__, 'windows_azure_plugin_check_prerequisite' );
 
 add_action( 'admin_menu', 'windows_azure_storage_plugin_menu' );
@@ -105,42 +105,42 @@ function azure_storage_media_menu( $tabs ) {
 	return $tabs;
 }
 
-// Hook for adding tabs
+// Hook for adding tabs.
 add_filter( 'media_upload_tabs', 'azure_storage_media_menu' );
 
-// Add callback for three tabs in the Windows Azure Storage Dialog
+// Add callback for three tabs in the Windows Azure Storage Dialog.
 add_action( 'media_upload_browse', 'windows_azure_browse_tab' );
 
-// Hooks for handling default file uploads
+// Hooks for handling default file uploads.
 if ( (bool) get_option( 'azure_storage_use_for_default_upload' ) ) {
 	add_filter(
 		'wp_update_attachment_metadata',
 		'windows_azure_storage_wp_update_attachment_metadata',
 		9,
 		2
-	);//checked
+	);
 
-	// Hook for handling blog posts via xmlrpc. This is not full proof check
+	// Hook for handling blog posts via xmlrpc. This is not full proof check.
 	add_filter( 'content_save_pre', 'windows_azure_storage_content_save_pre' );
 
 	add_filter( 'wp_handle_upload_prefilter', 'windows_azure_storage_wp_handle_upload_prefilter' );
 
-	// Hook for handling media uploads
+	// Hook for handling media uploads.
 	add_filter( 'wp_handle_upload', 'windows_azure_storage_wp_handle_upload' );
 
-	// Filter to modify file name when XML-RPC is used
+	// Filter to modify file name when XML-RPC is used.
 	add_filter( 'xmlrpc_methods', 'windows_azure_storage_xmlrpc_methods' );
 }
 
-// Hook for acecssing attachment (media file) URL
+// Hook for acecssing attachment (media file) URL.
 add_filter(
 	'wp_get_attachment_url',
 	'windows_azure_storage_wp_get_attachment_url',
 	9,
 	2
-);//checked
+);
 
-// Hook for acecssing metadata about attachment (media file)
+// Hook for acecssing metadata about attachment (media file).
 add_filter(
 	'wp_get_attachment_metadata',
 	'windows_azure_storage_wp_get_attachment_metadata',
@@ -148,8 +148,8 @@ add_filter(
 	2
 );
 
-// Hook for handling deleting media files from standard WordpRess dialog
-add_action( 'delete_attachment', 'windows_azure_storage_delete_attachment' );//checked
+// Hook for handling deleting media files from standard WordpRess dialog.
+add_action( 'delete_attachment', 'windows_azure_storage_delete_attachment' );
 
 // Filter the 'srcset' attribute in 'the_content' introduced in WP 4.4.
 if ( function_exists( 'wp_calculate_image_srcset' ) ) {
@@ -164,7 +164,7 @@ if ( function_exists( 'wp_calculate_image_srcset' ) ) {
 function windows_azure_plugin_check_prerequisite() {
 	global $wp_version;
 	$php_version = phpversion();
-	$php_compat = version_compare( $php_version, '5.3.0', '>=' );
+	$php_compat  = version_compare( $php_version, '5.3.0', '>=' );
 	if ( ! $php_compat ) {
 		deactivate_plugins( plugin_basename( __FILE__ ) );
 		wp_die( __( 'Windows Azure Storage for WordPress requires at least PHP 5.3.0', 'windows-azure-storage' ) );
@@ -179,12 +179,12 @@ function windows_azure_plugin_check_prerequisite() {
 /**
  * Replacing the callback for XML-RPC metaWeblog.newMediaObject
  *
- * @param array $methods XML-RPC methods
+ * @param array $methods XML-RPC methods.
  *
  * @return array $methods Modified XML-RPC methods
  */
 function windows_azure_storage_xmlrpc_methods( $methods ) {
-	$methods['metaWeblog.newMediaObject'] = 'windows_azure_storage_newMediaObject';
+	$methods['metaWeblog.newMediaObject'] = 'windows_azure_storage_new_media_object';
 
 	return $methods;
 }
@@ -193,14 +193,14 @@ function windows_azure_storage_xmlrpc_methods( $methods ) {
  * Upload a file
  * Added unique blob name to the WordPress core mw_newMediaObject method
  *
- * @param array $args Method parameters
+ * @param array $args Method parameters.
  *
  * @return array
  */
-function windows_azure_storage_newMediaObject( $args ) {
+function windows_azure_storage_new_media_object( $args ) {
 	global $wpdb, $wp_xmlrpc_server;
 
-	$blog_ID  = (int) $args[0];
+	$blog_id  = (int) $args[0];
 	$username = $wp_xmlrpc_server->escape( $args[1] );
 	$password = $wp_xmlrpc_server->escape( $args[2] );
 	$data     = $args[3];
@@ -239,15 +239,8 @@ function windows_azure_storage_newMediaObject( $args ) {
 	if ( ! empty( $data['overwrite'] ) && ( true === $data['overwrite'] ) ) {
 		// Get postmeta info on the object.
 		$old_file = $wpdb->get_row(
-			$wpdb->prepare( "
-				SELECT ID
-				FROM %s
-				WHERE post_title = %s
-				  AND post_type = %s
-				LIMIT 1;
-		", $wpdb->posts, $name, 'attachment' )
+			$wpdb->prepare( 'SELECT ID FROM %s WHERE post_title = %s  AND post_type = %s LIMIT 1', $wpdb->posts, $name, 'attachment' )
 		);
-
 
 		// If query isn't successful, bail.
 		if ( is_null( $old_file ) ) {
@@ -266,28 +259,28 @@ function windows_azure_storage_newMediaObject( $args ) {
 		$name     = "wpid{$old_file->ID}-{$filename}";
 	}
 
-	//default azure storage container
+	// default azure storage container.
 	$container = \Windows_Azure_Helper::get_default_container();
 
-	$uploadDir = wp_upload_dir();
-	if ( '/' === $uploadDir['subdir'][0] ) {
-		$uploadDir['subdir'] = substr( $uploadDir['subdir'], 1 );
+	$upload_dir = wp_upload_dir();
+	if ( '/' === $upload_dir['subdir'][0] ) {
+		$upload_dir['subdir'] = substr( $upload_dir['subdir'], 1 );
 	}
 
-	// Prepare blob name
-	$blobName = ( '' === $uploadDir['subdir'] ) ? $name : $uploadDir['subdir'] . '/' . $name;
+	// Prepare blob name.
+	$blob_name = ( '' === $upload_dir['subdir'] ) ? $name : $upload_dir['subdir'] . '/' . $name;
 
-	$blobName = \Windows_Azure_Helper::get_unique_blob_name( $container, $blobName );
+	$blob_name = \Windows_Azure_Helper::get_unique_blob_name( $container, $blob_name );
 
-	$name = basename( $blobName );
+	$name = basename( $blob_name );
 
 	$upload = wp_upload_bits( $name, null, $bits );
 	if ( ! empty( $upload['error'] ) ) {
-		$errorString = sprintf( __( 'Could not write file %1$s (%2$s)', 'windows-azure-storage' ), $name, $upload['error'] );
+		$error_string = sprintf( __( 'Could not write file %1$s (%2$s)', 'windows-azure-storage' ), $name, $upload['error'] );
 
-		return new IXR_Error( 500, $errorString );
+		return new IXR_Error( 500, $error_string );
 	}
-	// Construct the attachment array
+	// Construct the attachment array.
 	$post_id = 0;
 	if ( ! empty( $data['post_id'] ) ) {
 		$post_id = (int) $data['post_id'];
@@ -305,7 +298,7 @@ function windows_azure_storage_newMediaObject( $args ) {
 		'guid'           => $upload['url'],
 	);
 
-	// Save the data
+	// Save the data.
 	$id = wp_insert_attachment( $attachment, $upload['file'], $post_id );
 	wp_update_attachment_metadata( $id, wp_generate_attachment_metadata( $id, $upload['file'] ) );
 
@@ -333,17 +326,17 @@ function windows_azure_storage_newMediaObject( $args ) {
 /**
  * Wordpress hook for wp_get_attachment_url
  *
- * @param string  $url    post url
+ * @param string  $url     Post url.
  *
- * @param integer $postID post id
+ * @param integer $post_id Post id.
  *
- * @return string Returns metadata url
+ * @return string Returns metadata url.
  */
-function windows_azure_storage_wp_get_attachment_url( $url, $postID ) {
-	$mediaInfo = get_post_meta( $postID, 'windows_azure_storage_info', true );
+function windows_azure_storage_wp_get_attachment_url( $url, $post_id ) {
+	$media_info = get_post_meta( $post_id, 'windows_azure_storage_info', true );
 
-	if ( ! empty( $mediaInfo ) && isset( $mediaInfo['url'] ) ) {
-		return $mediaInfo['url'];
+	if ( ! empty( $media_info ) && isset( $media_info['url'] ) ) {
+		return $media_info['url'];
 	} else {
 		return $url;
 	}
@@ -353,16 +346,16 @@ function windows_azure_storage_wp_get_attachment_url( $url, $postID ) {
  * Wordpress hook for wp_get_attachment_metadata. Cache mediainfo for
  * further reference.
  *
- * @param string  $data   attachment data
+ * @param string  $data    Attachment data.
  *
- * @param integer $postID Associated post id
+ * @param integer $post_id Associated post id.
  *
- * @return array Return input data without modification
+ * @return array Return input data without modification.
  */
-function windows_azure_storage_wp_get_attachment_metadata( $data, $postID ) {
-	if ( is_numeric( $postID ) ) {
-		// Cache this metadata. Needed for deleting files
-		$mediaInfo = get_post_meta( $postID, 'windows_azure_storage_info', true );
+function windows_azure_storage_wp_get_attachment_metadata( $data, $post_id ) {
+	if ( is_numeric( $post_id ) ) {
+		// Cache this metadata. Needed for deleting files.
+		$media_info = get_post_meta( $post_id, 'windows_azure_storage_info', true );
 	}
 
 	return $data;
@@ -372,47 +365,47 @@ function windows_azure_storage_wp_get_attachment_metadata( $data, $postID ) {
  * Wordpress hook for wp_update_attachment_metadata, hook for handling
  * default media file upload in wordpress.
  *
- * @param string  $data   attachment data
+ * @param string  $data    Attachment data.
  *
- * @param integer $postID Associated post id
+ * @param integer $post_id Associated post id.
  *
- * @return array data after updating information about blob storage URL and tags
+ * @return array data after updating information about blob storage URL and tags.
  */
-function windows_azure_storage_wp_update_attachment_metadata( $data, $postID ) {
+function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) {
 	$default_azure_storage_account_container_name = \Windows_Azure_Helper::get_default_container();
 	$delete_local_file                            = \Windows_Azure_Helper::delete_local_file();
-	$upload_file_name                             = get_attached_file( $postID, true );
+	$upload_file_name                             = get_attached_file( $post_id, true );
 
-	// If attachment metadata is empty (for video), generate correct blob names
+	// If attachment metadata is empty (for video), generate correct blob names.
 	if ( empty( $data ) || empty( $data['file'] ) ) {
-		// Get upload directory
+		// Get upload directory.
 		$upload_dir = wp_upload_dir();
 		if ( '/' === $upload_dir['subdir']{0} ) {
 			$upload_dir['subdir'] = substr( $upload_dir['subdir'], 1 );
 		}
 
-		// Prepare blob name
+		// Prepare blob name.
 		$relative_file_name = ( '' === $upload_dir['subdir'] ) ?
 			basename( $upload_file_name ) :
-			$upload_dir['subdir'] . "/" . basename( $upload_file_name );
+			$upload_dir['subdir'] . '/' . basename( $upload_file_name );
 	} else {
-		// Prepare blob name
+		// Prepare blob name.
 		$relative_file_name = $data['file'];
 	}
 
 	try {
-		// Get full file path of uploaded file
+		// Get full file path of uploaded file.
 		$data['file'] = $upload_file_name;
 
-		// Get mime-type of the file
-		$mimeType = get_post_mime_type( $postID );
+		// Get mime-type of the file.
+		$mime_type = get_post_mime_type( $post_id );
 
 		try {
 			$result = \Windows_Azure_Helper::put_media_to_blob_storage(
 				$default_azure_storage_account_container_name,
 				$relative_file_name,
-				$data['file'],
-				$mimeType
+				$relative_file_name,
+				$mime_type
 			);
 
 		} catch ( Exception $e ) {
@@ -426,42 +419,42 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $postID ) {
 			$relative_file_name
 		);
 
-		// Set new url in returned data
+		// Set new url in returned data.
 		$data['url'] = $url;
 
-		// Handle thumbnail and medium size files
+		// Handle thumbnail and medium size files.
 		$thumbnails = array();
-		if ( ! empty( $data["sizes"] ) ) {
-			$file_upload_dir = substr( $relative_file_name, 0, strripos( $relative_file_name, "/" ) );
+		if ( ! empty( $data['sizes'] ) ) {
+			$file_upload_dir = substr( $relative_file_name, 0, strripos( $relative_file_name, '/' ) );
 
-			foreach ( $data["sizes"] as $size ) {
-				// Do not prefix file name with wordpress upload folder path
-				$size_file_name = dirname( $data['file'] ) . "/" . $size["file"];
+			foreach ( $data['sizes'] as $size ) {
+				// Do not prefix file name with wordpress upload folder path.
+				$size_file_name = dirname( $data['file'] ) . '/' . $size['file'];
 
-				// Move only if file exists. Some theme may use same file name for multiple sizes
-				if ( file_exists( $size_file_name ) ) {
+				// Move only if file exists. Some theme may use same file name for multiple sizes.
+				if ( Windows_Azure_Helper::file_exists( trailingslashit( $file_upload_dir ) . $size['file'] ) ) {
 					$blob_name = ( '' === $file_upload_dir ) ? $size['file'] : $file_upload_dir . '/' . $size['file'];
 					\Windows_Azure_Helper::put_media_to_blob_storage(
 						$default_azure_storage_account_container_name,
 						$blob_name,
-						$size_file_name,
-						$mimeType
+						trailingslashit( $file_upload_dir ) . $size['file'],
+						$mime_type
 					);
 
 					$thumbnails[] = $blob_name;
 
-					// Delete the local thumbnail file
+					// Delete the local thumbnail file.
 					if ( $delete_local_file ) {
-						unlink( $size_file_name );
+						Windows_Azure_Helper::unlink_file( trailingslashit( $file_upload_dir ) . $size['file'] );
 					}
 				}
 			}
 		}
 
-		delete_post_meta( $postID, 'windows_azure_storage_info' );
+		delete_post_meta( $post_id, 'windows_azure_storage_info' );
 
 		add_post_meta(
-			$postID, 'windows_azure_storage_info',
+			$post_id, 'windows_azure_storage_info',
 			array(
 				'container'  => $default_azure_storage_account_container_name,
 				'blob'       => $relative_file_name,
@@ -470,9 +463,9 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $postID ) {
 			)
 		);
 
-		// Delete the local file
+		// Delete the local file.
 		if ( $delete_local_file ) {
-			unlink( $upload_file_name );
+			Windows_Azure_Helper::unlink_file( $relative_file_name );
 		}
 	} catch ( Exception $e ) {
 		echo '<p>' . sprintf( __( 'Error in uploading file. Error: %s', 'windows-azure-storage' ), esc_html( $e->getMessage() ) ) . '</p><br/>';
@@ -482,11 +475,11 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $postID ) {
 }
 
 /**
- * Hook for updating post content prior to saving it in the database
+ * Hook for updating post content prior to saving it in the database.
  *
- * @param string $text post content
+ * @param string $text Post content.
  *
- * @return string Updated post content
+ * @return string Updated post content.
  */
 function windows_azure_storage_content_save_pre( $text ) {
 	return get_updated_upload_url( $text );
@@ -501,30 +494,30 @@ function windows_azure_storage_content_save_pre( $text ) {
  * @return array Updated file data.
  */
 function windows_azure_storage_wp_handle_upload_prefilter( $file ) {
-	//default azure storage container
+	// default azure storage container.
 	$container = \Windows_Azure_Helper::get_default_container();
 
-	$uploadDir = wp_upload_dir();
-	if ( '/' === $uploadDir['subdir'][0] ) {
-		$uploadDir['subdir'] = substr( $uploadDir['subdir'], 1 );
+	$upload_dir = wp_upload_dir();
+	if ( '/' === $upload_dir['subdir'][0] ) {
+		$upload_dir['subdir'] = substr( $upload_dir['subdir'], 1 );
 	}
 
-	// Prepare blob name
-	$blobName = ( '' === $uploadDir['subdir'] ) ? $file['name'] : $uploadDir['subdir'] . '/' . $file['name'];
+	// Prepare blob name.
+	$blob_name = ( '' === $upload_dir['subdir'] ) ? $file['name'] : $upload_dir['subdir'] . '/' . $file['name'];
 
-	$blobName = \Windows_Azure_Helper::get_unique_blob_name( $container, $blobName );
+	$blob_name = \Windows_Azure_Helper::get_unique_blob_name( $container, $blob_name );
 
-	$file['name'] = basename( $blobName );
+	$file['name'] = basename( $blob_name );
 
 	return $file;
 }
 
 /**
- * Hook for handling media uploads
+ * Hook for handling media uploads.
  *
- * @param array $uploads upload metadata
+ * @param array $uploads Upload metadata.
  *
- * @return array updated metadata
+ * @return array Updated metadata.
  */
 function windows_azure_storage_wp_handle_upload( $uploads ) {
 	$wp_upload_dir  = wp_upload_dir();
@@ -541,9 +534,9 @@ function windows_azure_storage_wp_handle_upload( $uploads ) {
  * Common function to replace wordpress file uplaod url with
  * Windows Azure Storage URLs
  *
- * @param string $url original upload URL
+ * @param string $url Original upload URL.
  *
- * @return string Updated upload URL
+ * @return string Updated upload URL.
  */
 function get_updated_upload_url( $url ) {
 	$wp_upload_dir      = wp_upload_dir();
@@ -554,27 +547,27 @@ function get_updated_upload_url( $url ) {
 }
 
 /**
- * Hook for handling deleting media files from standard WordpRess dialog
+ * Hook for handling deleting media files from standard WordpRess dialog.
  *
- * @param string $postID post id
+ * @param string $post_id Post id.
  *
  * @return void
  */
-function windows_azure_storage_delete_attachment( $postID ) {
-	if ( is_numeric( $postID ) ) {
-		$mediaInfo = get_post_meta( $postID, 'windows_azure_storage_info', true );
+function windows_azure_storage_delete_attachment( $post_id ) {
+	if ( is_numeric( $post_id ) ) {
+		$media_info = get_post_meta( $post_id, 'windows_azure_storage_info', true );
 
-		if ( ! empty( $mediaInfo ) ) {
-			// Delete media file from blob storage
-			$containerName = $mediaInfo['container'];
-			$blobName      = $mediaInfo['blob'];
-			\Windows_Azure_Helper::delete_blob( $containerName, $blobName );
+		if ( ! empty( $media_info ) ) {
+			// Delete media file from blob storage.
+			$container_name = $media_info['container'];
+			$blob_name      = $media_info['blob'];
+			\Windows_Azure_Helper::delete_blob( $container_name, $blob_name );
 
-			// Delete associated thumbnails from blob storage (if any)
-			$thumbnails = $mediaInfo['thumbnails'];
+			// Delete associated thumbnails from blob storage (if any).
+			$thumbnails = $media_info['thumbnails'];
 			if ( ! empty( $thumbnails ) ) {
 				foreach ( $thumbnails as $thumbnail_blob ) {
-					\Windows_Azure_Helper::delete_blob( $containerName, $thumbnail_blob );
+					\Windows_Azure_Helper::delete_blob( $container_name, $thumbnail_blob );
 				}
 			}
 		}
@@ -582,22 +575,25 @@ function windows_azure_storage_delete_attachment( $postID ) {
 }
 
 /**
- * Add Browse tab to the popup windows
+ * Add Browse tab to the popup windows.
  *
  * @return void
  */
 function windows_azure_browse_tab() {
-	$js_ext  = ( ! defined( 'SCRIPT_DEBUG' ) || false === SCRIPT_DEBUG ) ? '.min.js' : '.js';
+	/** @var $path_parsed array Parsed path. */
+	$path_parsed = wp_parse_url( self_admin_url() );
+	$path_parsed = isset( $path_parsed['path'] ) ? $path_parsed['path'] : null;
+	$js_ext      = ( ! defined( 'SCRIPT_DEBUG' ) || false === SCRIPT_DEBUG ) ? '.min.js' : '.js';
 	add_action( 'admin_enqueue_scripts', 'windows_azure_storage_dialog_scripts' );
 	wp_enqueue_media();
 	wp_enqueue_script( 'media-grid' );
-	wp_enqueue_script( 'windows-azure-storage-media-browser', MSFT_AZURE_PLUGIN_URL . 'js/windows-azure-storage-media-browser' . $js_ext, [ 'media-grid' ], MSFT_AZURE_PLUGIN_VERSION );
-	wp_localize_script( 'media-grid', '_wpMediaGridSettings', [
-		'adminUrl' => parse_url( self_admin_url(), PHP_URL_PATH ),
+	wp_enqueue_script( 'windows-azure-storage-media-browser', MSFT_AZURE_PLUGIN_URL . 'js/windows-azure-storage-media-browser' . $js_ext, array( 'media-grid' ), MSFT_AZURE_PLUGIN_VERSION );
+	wp_localize_script( 'media-grid', '_wpMediaGridSettings', array(
+		'adminUrl' => $path_parsed,
 		'l10n'     => array(
 			'selectText' => __( 'Insert into post', 'windows-azure-storage' ),
-		)
-	] );
+		),
+	) );
 	wp_iframe( 'windows_azure_storage_dialog_browse_tab' );
 }
 
@@ -606,7 +602,7 @@ function windows_azure_browse_tab() {
  *
  * @since 4.0.0
  *
- * @return void Function does not return.
+ * @return void
  */
 function windows_azure_storage_dialog_browse_tab() {
 	?>
@@ -629,13 +625,13 @@ function windows_azure_storage_dialog_browse_tab() {
 function windows_azure_storage_media_buttons_context( $context ) {
 	global $post_ID, $temp_ID;
 
-	$uploading_iframe_ID = (int) ( 0 === $post_ID ? $temp_ID : $post_ID );
+	$uploading_iframe_id = (int) ( 0 === $post_ID ? $temp_ID : $post_ID );
 
 	$browse_iframe_src = apply_filters( 'browse_iframe_src',
 		add_query_arg(
 			array(
-				'tab'       => 'browse', // 'browse', 'search', or 'upload'
-				'post_id'   => $uploading_iframe_ID,
+				'tab'       => 'browse',
+				'post_id'   => $uploading_iframe_id,
 				'TB_iframe' => 'true',
 				'height'    => 500,
 				'width'     => 640,
@@ -657,7 +653,7 @@ title="%2$s"><img src="%3$s" alt="%2$s" role="img" class="windows-azure-storage-
 }
 
 /**
- * Add option page for Windows Azure Storage Plugin
+ * Add option page for Windows Azure Storage Plugin.
  *
  * @return void
  */
@@ -672,7 +668,7 @@ function windows_azure_storage_plugin_menu() {
 		);
 	}
 
-	// Call register settings function
+	// Call register settings function.
 	add_action( 'admin_init', 'windows_azure_storage_plugin_register_settings' );
 }
 
@@ -708,11 +704,10 @@ function windows_azure_storage_wp_calculate_image_srcset( $sources, $size_array,
 
 	// If a CNAME is configured, make sure only 'http' is used for the protocol.
 	$azure_cname       = \Windows_Azure_Helper::get_cname();
-	$esc_url_protocols = ! empty ( $azure_cname ) ? array( 'https', 'http', '//' ) : null;
+	$esc_url_protocols = ! empty( $azure_cname ) ? array( 'https', 'http', '//' ) : null;
 
 	if ( ! empty( $media_info ) ) {
-		$base_url = trailingslashit( WindowsAzureStorageUtil::get_storage_url_base( false ) .
-		                             $media_info['container'] );
+		$base_url = trailingslashit( WindowsAzureStorageUtil::get_storage_url_base( false ) . $media_info['container'] );
 
 		foreach ( $sources as &$source ) {
 			$img_filename = substr( $source['url'], strrpos( $source['url'], '/' ) + 1 );
@@ -725,13 +720,9 @@ function windows_azure_storage_wp_calculate_image_srcset( $sources, $size_array,
 						$source['url'] = esc_url( $base_url . $thumbnail, $esc_url_protocols );
 						break;
 					}
-
 				}
-
 			}
-
 		}
-
 	}
 
 	return $sources;
@@ -742,15 +733,16 @@ function windows_azure_storage_wp_calculate_image_srcset( $sources, $size_array,
  *
  * @since 4.0.0
  *
- * @return void Function does not return.
+ * @return void
  */
 function windows_azure_storage_query_azure_attachments() {
 	if ( ! current_user_can( 'upload_files' ) ) {
 		wp_send_json_error();
 	}
 
-	$query = isset( $_REQUEST['query'] ) ? (array) $_REQUEST['query'] : [ ];
-	$query = array_intersect_key( $query, array_flip( array(
+	$request = wp_unslash( $_REQUEST );
+	$query   = isset( $request['query'] ) ? (array) $request['query'] : array();
+	$query   = array_intersect_key( $query, array_flip( array(
 		's',
 		'posts_per_page',
 		'paged',
@@ -764,7 +756,7 @@ function windows_azure_storage_query_azure_attachments() {
 	if ( 1 === (int) $query['paged'] ) {
 		$next_marker = false;
 	} else {
-		$next_marker = $_COOKIE['azure_next_marker'];
+		$next_marker = sanitize_text_field( wp_unslash( $_COOKIE['azure_next_marker'] ) );
 	}
 	$posts       = array();
 	$credentials = Windows_Azure_Config_Provider::get_account_credentials();
@@ -782,7 +774,7 @@ function windows_azure_storage_query_azure_attachments() {
 			'uploading'             => false,
 			'filename'              => $blob['Name'],
 			'dateFormatted'         => $blob['Properties']['Last-Modified'],
-			'icon'                  => $is_image ? Windows_Azure_Helper::get_full_blob_url( $blob['Name'] ) : wp_mime_type_icon( blob['Properties']['Content-Type'] ),
+			'icon'                  => $is_image ? Windows_Azure_Helper::get_full_blob_url( $blob['Name'] ) : wp_mime_type_icon( $blob['Properties']['Content-Type'] ),
 			'url'                   => Windows_Azure_Helper::get_full_blob_url( $blob['Name'] ),
 			'filesizeHumanReadable' => size_format( $blob['Properties']['Content-Length'] ),
 			'isImage'               => $is_image,
@@ -802,10 +794,11 @@ function windows_azure_storage_query_azure_attachments() {
  *
  * @since 4.0.0
  *
- * @return void Function does not return.
+ * @return void
  */
 function windows_azure_storage_delete_blob() {
-	$id = isset( $_POST['id'] ) ? $_POST['id'] : 0;
+	$post_array = wp_unslash( $_POST );
+	$id         = isset( $post_array['id'] ) ? $post_array['id'] : 0;
 
 	if ( ! check_ajax_referer( "delete-blob_$id", false, false ) ) {
 		wp_die( -1 );

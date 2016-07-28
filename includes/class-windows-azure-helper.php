@@ -1,8 +1,6 @@
 <?php
 
 /**
- * windows-azure-helper.php
- *
  * Windows Azure Storage helper class.
  *
  * Version: 4.0.0
@@ -177,7 +175,8 @@ class Windows_Azure_Helper {
 	 * @return bool True if delete, false to keep file.
 	 */
 	static public function delete_local_file() {
-		$option_value = (int)get_option( 'azure_storage_keep_local_file', 0 );
+		$option_value = (int) get_option( 'azure_storage_keep_local_file', 0 );
+
 		return ( 0 === $option_value );
 	}
 
@@ -298,6 +297,7 @@ class Windows_Azure_Helper {
 	static public function list_blobs( $container, $account_name = '', $account_key = '', $refresh = false ) {
 		static $blobs_list;
 
+		$containers_list = array();
 		if ( null === $blobs_list || $refresh ) {
 			list( $account_name, $account_key ) = self::get_api_credentials( $account_name, $account_key );
 			$rest_api_client = new Windows_Azure_Rest_Api_Client( $account_name, $account_key );
@@ -430,16 +430,17 @@ class Windows_Azure_Helper {
 	static public function get_hostname() {
 		$storage_account_name = self::get_account_name();
 		if ( self::DEV_STORE_NAME === $storage_account_name ) {
-			// Use development storage
+			// Use development storage.
 			$host_name = self::EMULATOR_BLOB_URI;
 		} else {
-			// Use cloud storage
+			// Use cloud storage.
 			$host_name = self::BLOB_BASE_DNS_NAME;
 		}
 
-		// Remove http/https from the beginning
-		if ( 'http' === substr( $host_name, 0, 4 ) ) {
-			$parts     = parse_url( $host_name );
+		// Remove http/https from the beginning.
+		if ( 0 === strpos( $host_name, 'http' ) ) {
+			/** @var $parts array */
+			$parts     = wp_parse_url( $host_name );
 			$host_name = $parts['host'];
 			if ( ! empty( $parts['port'] ) ) {
 				$host_name = $host_name . ':' . $parts['port'];
@@ -452,6 +453,8 @@ class Windows_Azure_Helper {
 	/**
 	 * Return full blob URL.
 	 *
+	 * @param string $blob_name Blob name.
+	 *
 	 * @since 4.0.0
 	 *
 	 * @return string Full blob URL.
@@ -461,5 +464,50 @@ class Windows_Azure_Helper {
 			untrailingslashit( WindowsAzureStorageUtil::get_storage_url_base( true ) ),
 			$blob_name
 		);
+	}
+
+	/**
+	 * Unlink file using $wp_filesystem.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $relative_path Relative path under uploads directory.
+	 *
+	 * @return bool
+	 */
+	static public function unlink_file( $relative_path ) {
+		/** @var $wp_filesystem \WP_Filesystem_Base */
+		global $wp_filesystem;
+		if ( ! WP_Filesystem() ) {
+			return false;
+		}
+
+		$upload_dir = wp_upload_dir();
+		$filename   = trailingslashit( $upload_dir['basedir'] ) . $relative_path;
+		$result     = $wp_filesystem->delete( $filename, false, 'f' );
+
+		return $result;
+	}
+
+	/**
+	 * Check if file exits using $wp_filesystem.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $relative_path Relative path under uploads directory.
+	 *
+	 * @return bool
+	 */
+	static public function file_exists( $relative_path ) {
+		/** @var $wp_filesystem \WP_Filesystem_Base */
+		global $wp_filesystem;
+		if ( ! WP_Filesystem() ) {
+			return false;
+		}
+
+		$upload_dir = wp_upload_dir();
+		$filename   = trailingslashit( $upload_dir['basedir'] ) . $relative_path;
+
+		return $wp_filesystem->exists( $filename, false, 'f' );
 	}
 }

@@ -1,8 +1,6 @@
 <?php
 
 /**
- * windows-azure-list-containers-response.php
- *
  * Windows Azure Storage REST API list containers response.
  *
  * Version: 4.0.0

@@ -1,8 +1,6 @@
 <?php
 
 /**
- * windows-azure-wp-filesystem-direct.php
- *
  * Windows Azure Storage REST API client.
  *
  * Version: 4.0.0
@@ -110,5 +108,4 @@ class Windows_Azure_WP_Filesystem_Direct extends WP_Filesystem_Direct {
 	public function rewind( $handle ) {
 		fseek( $handle, 0 );
 	}
-
 }

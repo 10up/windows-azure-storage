@@ -1,7 +1,5 @@
 <?php
 /**
- * windows-azure-storage-dialog.php
- *
  * Shows popup dialog when clicked on the Windows Azure Toolbar
  *
  * Version: 3.0.1
@@ -42,7 +40,6 @@
  * @link      http://www.microsoft.com
  */
 
-
 /**
  * Enqueue JavaScript and CSS needed by the settings page dialog.
  *
@@ -63,18 +60,17 @@ add_action( 'admin_enqueue_scripts', 'windows_azure_storage_dialog_scripts' );
 /**
  * Delete a blob from specified container
  *
- * @param string $containerName Name of the parent container
- *
- * @param string $blobName      Name of the blob to be deleted
+ * @param string $container_name Name of the parent container.
+ * @param string $blob_name      Name of the blob to be deleted.
  *
  * @deprecated 4.0
  *
  * @return void
  */
-function deleteBlob( $containerName, $blobName ) {
+function deleteBlob( $container_name, $blob_name ) {
 	_deprecated_function( __FUNCTION__, '4.0' );
 	try {
-		if ( WindowsAzureStorageUtil::blobExists( $containerName, $blobName ) ) {
+		if ( WindowsAzureStorageUtil::blobExists( $container_name, $blob_name ) ) {
 			$_SERVER['REQUEST_URI'] = remove_query_arg(
 				array(
 					'delete_blob',
@@ -83,14 +79,14 @@ function deleteBlob( $containerName, $blobName ) {
 				),
 				$_SERVER['REQUEST_URI']
 			);
-			WindowsAzureStorageUtil::deleteBlob( $containerName, $blobName );
+			WindowsAzureStorageUtil::deleteBlob( $container_name, $blob_name );
 		}
 	} catch ( Exception $e ) {
 		/* translators: 1: blob (file) name, 2: container name, 3: error message */
 		$message = sprintf(
 			__( 'Error in deleting blob %1$s from container %2$s: %3$s', 'windows-azure-storage' ),
-			$blobName,
-			$containerName,
+			$blob_name,
+			$container_name,
 			$e->getMessage()
 		);
 		echo '<p class="warning">' . esc_html( $message ) . '</p>';
@@ -100,7 +96,7 @@ function deleteBlob( $containerName, $blobName ) {
 /**
  * Generate ISO 8601 compliant date string in UTC time zone
  *
- * @param int $timestamp input timestamp for conversion
+ * @param int $timestamp Input timestamp for conversion.
  *
  * @deprecated 4.0
  *
@@ -114,8 +110,8 @@ function isoDate( $timestamp = null ) {
 		$timestamp = time();
 	}
 
-	$returnValue = str_replace( '+00:00', 'Z', @date( 'c', $timestamp ) );
+	$return_value = str_replace( '+00:00', 'Z', @date( 'c', $timestamp ) );
 	@date_default_timezone_set( $tz );
 
-	return $returnValue;
+	return $return_value;
 }

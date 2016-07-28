@@ -1,7 +1,5 @@
 <?php
 /**
- * windows-azure-storage-settings.php
- *
  * Shows various settings for Windows Azure Storage Plugin
  *
  * Version: 3.0.1
@@ -47,27 +45,27 @@
  *
  * @since 4.0.0
  *
- * @return void Method does not return.
+ * @return void
  */
 function windows_azure_storage_plugin_settings_preamble() {
 	?>
 	<div class="wrap">
 		<h2>
-			<img src="<?php echo esc_url( MSFT_AZURE_PLUGIN_URL . 'images/WindowsAzure.jpg' ); ?>" width="32" height="32"/><?php _e( 'Windows Azure Storage for WordPress', 'windows-azure-storage' ); ?>
+			<img src="<?php echo esc_url( MSFT_AZURE_PLUGIN_URL . 'images/WindowsAzure.jpg' ); ?>" width="32" height="32"/><?php esc_html_e( 'Windows Azure Storage for WordPress', 'windows-azure-storage' ); ?>
 		</h2>
 
-		<?php _e(
+		<?php esc_html_e(
 			'This WordPress plugin allows you to use Windows Azure Storage Service to host your media for your WordPress powered blog. Windows Azure provides storage in the cloud with authenticated access and triple replication to help keep your data safe. Applications work with data using REST conventions and standard HTTP operations to identify and expose data using URIs. This plugin allows you to easily upload, retrieve, and link to files stored on Windows Azure Storage service from within WordPress.',
 			'windows-azure-storage'
 		); ?>
 		<br/><br/>
-		<?php _e( 'For more details on Windows Azure Storage Services, please visit the <a href="http://www.microsoft.com/azure/windowsazure.mspx">Windows Azure Platform web-site</a>.', 'windows-azure-storage' ); ?>
+		<?php esc_html_e( 'For more details on Windows Azure Storage Services, please visit the <a href="http://www.microsoft.com/azure/windowsazure.mspx">Windows Azure Platform web-site</a>.', 'windows-azure-storage' ); ?>
 		<br/>
 
 		<p>
-			<?php _e( 'This plugin uses Windows Azure SDK for PHP (<a href="https://github.com/WindowsAzure/azure-sdk-for-php/">https://github.com/WindowsAzure/azure-sdk-for-php/</a>).', 'windows-azure-storage' ); ?>
+			<?php esc_html_e( 'This plugin uses Windows Azure SDK for PHP (<a href="https://github.com/WindowsAzure/azure-sdk-for-php/">https://github.com/WindowsAzure/azure-sdk-for-php/</a>).', 'windows-azure-storage' ); ?>
 		</p>
-		<b><?php _e( 'Plugin Web Site:', 'windows-azure-storage' ); ?></b>
+		<b><?php esc_html_e( 'Plugin Web Site:', 'windows-azure-storage' ); ?></b>
 		<a href="http://wordpress.org/extend/plugins/windows-azure-storage/">http://wordpress.org/extend/plugins/windows-azure-storage/</a>
 		<br><br>
 	</div>
@@ -79,7 +77,7 @@ function windows_azure_storage_plugin_settings_preamble() {
  *
  * @since 4.0.0
  *
- * @return Method does not return.
+ * @return void
  */
 function windows_azure_storage_plugin_options_page() {
 	windows_azure_storage_plugin_settings_preamble();
@@ -186,7 +184,7 @@ function windows_azure_storage_plugin_register_settings() {
  *
  * @since 4.0.0
  *
- * @return void Method does not return.
+ * @return void
  */
 function windows_azure_storage_plugin_settings_section() {
 	?>
@@ -200,7 +198,7 @@ function windows_azure_storage_plugin_settings_section() {
  *
  * @since 4.0.0
  *
- * @return void Method does not return.
+ * @return void
  */
 function windows_azure_storage_setting_account_name() {
 	$storage_account_name = Windows_Azure_Helper::get_account_name();
@@ -214,7 +212,7 @@ function windows_azure_storage_setting_account_name() {
  *
  * @since 4.0.0
  *
- * @return void Method does not return.
+ * @return void
  */
 function windows_azure_storage_setting_account_key() {
 	$storage_account_key = Windows_Azure_Helper::get_account_key();
@@ -228,12 +226,12 @@ function windows_azure_storage_setting_account_key() {
  *
  * @since 4.0.0
  *
- * @return void Method does not return.
+ * @return void
  */
 function windows_azure_storage_setting_storage_container() {
 	$default_container         = Windows_Azure_Helper::get_default_container();
 	$containers_list           = Windows_Azure_Helper::list_containers();
-	$new_container_name        = isset( $_POST['newcontainer'] ) ? sanitize_text_field( $_POST['newcontainer'] ) : '';
+	$new_container_name        = isset( $_POST['newcontainer'] ) ? sanitize_text_field( wp_unslash( $_POST['newcontainer'] ) ) : '';
 	$container_creation_failed = apply_filters( 'windows_azure_storage_container_creation_failed', false );
 	?>
 	<select name="default_azure_storage_account_container_name" title="<?php esc_attr_e( 'Default container to be used for storing media files', 'windows-azure-storage' ) ?>" class="azure-container-selector">
@@ -279,7 +277,7 @@ function windows_azure_storage_setting_storage_container() {
  *
  * @since 4.0.0
  *
- * @return void Method does not return.
+ * @return void
  */
 function windows_azure_storage_setting_cname() {
 	$cname = Windows_Azure_Helper::get_cname();
@@ -306,7 +304,7 @@ function windows_azure_storage_setting_cname() {
  *
  * @since 4.0.0
  *
- * @return void Method does not return.
+ * @return void
  */
 function windows_azure_storage_setting_handle_uploads() {
 	?>
@@ -324,7 +322,7 @@ function windows_azure_storage_setting_handle_uploads() {
  *
  * @since 4.0.0
  *
- * @return void Method does not return.
+ * @return void
  */
 function windows_azure_storage_setting_keep_local_file() {
 	?>
@@ -345,18 +343,19 @@ function windows_azure_storage_setting_keep_local_file() {
  * @return string|WP_Error|null Success message or WP_Error on failure.
  */
 function create_container_if_required( &$success = null ) {
-	$success       = false;
-	$action_set    = isset( $_POST['newcontainer'] ) && $permissions = current_user_can( 'manage_options' ) && $admin_referer = check_admin_referer( 'create_container', 'create_new_container_settings' );
+	$success    = false;
+	$post_array = wp_unslash( $_POST );
+	$action_set = isset( $post_array['newcontainer'] ) && $permissions = current_user_can( 'manage_options' ) && $admin_referer = check_admin_referer( 'create_container', 'create_new_container_settings' );
 	if ( $action_set ) {
-		if ( ! empty( $_POST['newcontainer'] ) ) {
-			if ( empty( $_POST['azure_storage_account_name'] ) || empty( $_POST['azure_storage_account_primary_access_key'] ) ) {
+		if ( ! empty( $post_array['newcontainer'] ) ) {
+			if ( empty( $post_array['azure_storage_account_name'] ) || empty( $post_array['azure_storage_account_primary_access_key'] ) ) {
 				return new WP_Error( -2, __( 'Please specify Storage Account Name and Primary Access Key to create container.', 'windows-azure-storage' ) );
 			}
 
 			try {
-				$account_name = $_POST['azure_storage_account_name'];
-				$account_key  = $_POST['azure_storage_account_primary_access_key'];
-				$result       = Windows_Azure_Helper::create_container( sanitize_text_field( $_POST['newcontainer'] ), $account_name, $account_key );
+				$account_name = $post_array['azure_storage_account_name'];
+				$account_key  = $post_array['azure_storage_account_primary_access_key'];
+				$result       = Windows_Azure_Helper::create_container( sanitize_text_field( $post_array['newcontainer'] ), $account_name, $account_key );
 
 				if ( ! is_wp_error( $result ) ) {
 					return sprintf(
@@ -393,7 +392,7 @@ function create_container_if_required( &$success = null ) {
  *
  * @since 4.0.0
  *
- * @return void Method does not return.
+ * @return void
  */
 function windows_azure_storage_load_settings_page() {
 	$result = create_container_if_required();
@@ -422,7 +421,7 @@ function windows_azure_storage_load_settings_page() {
  *
  * @since 4.0.0
  *
- * @return void Method does not return.
+ * @return void
  */
 function windows_azure_storage_check_container_access_policy() {
 	if ( ! isset( $_REQUEST['settings-updated'] ) || 'true' !== $_REQUEST['settings-updated'] ) {

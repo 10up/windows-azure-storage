@@ -1,8 +1,6 @@
 <?php
 
 /**
- * windows-azure-file-contents-provider.php
- *
  * Windows Azure Storage file contents provider.
  *
  * Version: 4.0.0
@@ -146,6 +144,10 @@ class Windows_Azure_File_Contents_Provider {
 	public function __construct( $file_path, $chunk_size = self::CHUNK_SIZE ) {
 		if ( null === $chunk_size ) {
 			$chunk_size = self::CHUNK_SIZE;
+		}
+		if ( '/' !== $file_path[0] && ( isset( $file_path[1] ) && ':' !== $file_path[1] ) ) {
+			$upload_dir = wp_upload_dir();
+			$file_path  = trailingslashit( $upload_dir['basedir'] ) . $file_path;
 		}
 		$this->_file_path     = $file_path;
 		$force_direct_access  = is_resource( $file_path );
