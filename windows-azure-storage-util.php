@@ -213,7 +213,8 @@ class WindowsAzureStorageUtil {
 	 * @return void
 	 */
 	public static function deleteBlob( $containerName, $blobName ) {
-		throw new Exception( __( 'Function has been removed.', 'windows-azure-storage' ), -1 );
+		_deprecated_function( __METHOD__, '4.0', 'Windows_Azure_Helper::delete_blob()' );
+		Windows_Azure_Helper::delete_blob( $containerName, $blobName );
 	}
 
 	/**

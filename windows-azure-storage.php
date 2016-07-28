@@ -80,7 +80,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 }
 
 // Check prerequisite for plugin
-register_activation_hook( __FILE__, 'check_prerequisite' );
+register_activation_hook( __FILE__, 'windows_azure_plugin_check_prerequisite' );
 
 add_action( 'admin_menu', 'windows_azure_storage_plugin_menu' );
 add_filter( 'media_buttons_context', 'windows_azure_storage_media_buttons_context' );
@@ -109,7 +109,7 @@ function azure_storage_media_menu( $tabs ) {
 add_filter( 'media_upload_tabs', 'azure_storage_media_menu' );
 
 // Add callback for three tabs in the Windows Azure Storage Dialog
-add_action( "media_upload_browse", "browse_tab" );
+add_action( 'media_upload_browse', 'windows_azure_browse_tab' );
 
 // Hooks for handling default file uploads
 if ( (bool) get_option( 'azure_storage_use_for_default_upload' ) ) {
@@ -161,7 +161,7 @@ if ( function_exists( 'wp_calculate_image_srcset' ) ) {
  *
  * @return void
  */
-function check_prerequisite() {
+function windows_azure_plugin_check_prerequisite() {
 	global $wp_version;
 	$php_version = phpversion();
 	$php_compat = version_compare( $php_version, '5.3.0', '>=' );
@@ -489,7 +489,7 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $postID ) {
  * @return string Updated post content
  */
 function windows_azure_storage_content_save_pre( $text ) {
-	return getUpdatedUploadUrl( $text );
+	return get_updated_upload_url( $text );
 }
 
 /**
@@ -545,7 +545,7 @@ function windows_azure_storage_wp_handle_upload( $uploads ) {
  *
  * @return string Updated upload URL
  */
-function getUpdatedUploadUrl( $url ) {
+function get_updated_upload_url( $url ) {
 	$wp_upload_dir      = wp_upload_dir();
 	$upload_dir_url     = $wp_upload_dir['baseurl'];
 	$storage_url_prefix = WindowsAzureStorageUtil::get_storage_url_base();
@@ -586,7 +586,7 @@ function windows_azure_storage_delete_attachment( $postID ) {
  *
  * @return void
  */
-function browse_tab() {
+function windows_azure_browse_tab() {
 	$js_ext  = ( ! defined( 'SCRIPT_DEBUG' ) || false === SCRIPT_DEBUG ) ? '.min.js' : '.js';
 	add_action( 'admin_enqueue_scripts', 'windows_azure_storage_dialog_scripts' );
 	wp_enqueue_media();

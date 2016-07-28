@@ -67,9 +67,12 @@ add_action( 'admin_enqueue_scripts', 'windows_azure_storage_dialog_scripts' );
  *
  * @param string $blobName      Name of the blob to be deleted
  *
+ * @deprecated 4.0
+ *
  * @return void
  */
 function deleteBlob( $containerName, $blobName ) {
+	_deprecated_function( __FUNCTION__, '4.0' );
 	try {
 		if ( WindowsAzureStorageUtil::blobExists( $containerName, $blobName ) ) {
 			$_SERVER['REQUEST_URI'] = remove_query_arg(
@@ -99,9 +102,12 @@ function deleteBlob( $containerName, $blobName ) {
  *
  * @param int $timestamp input timestamp for conversion
  *
+ * @deprecated 4.0
+ *
  * @return string
  */
 function isoDate( $timestamp = null ) {
+	_deprecated_function( __FUNCTION__, '4.0' );
 	$tz = @date_default_timezone_get();
 	@date_default_timezone_set( 'UTC' );
 	if ( is_null( $timestamp ) ) {
