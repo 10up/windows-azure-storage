@@ -297,6 +297,7 @@ class Windows_Azure_Helper {
 	static public function list_blobs( $container, $account_name = '', $account_key = '', $refresh = false ) {
 		static $blobs_list;
 
+		$containers_list = array();
 		if ( null === $blobs_list || $refresh ) {
 			list( $account_name, $account_key ) = self::get_api_credentials( $account_name, $account_key );
 			$rest_api_client = new Windows_Azure_Rest_Api_Client( $account_name, $account_key );
@@ -437,7 +438,7 @@ class Windows_Azure_Helper {
 		}
 
 		// Remove http/https from the beginning.
-		if ( 'http' === substr( $host_name, 0, 4 ) ) {
+		if ( 0 === strpos( $host_name, 'http' ) ) {
 			/** @var $parts array */
 			$parts     = wp_parse_url( $host_name );
 			$host_name = $parts['host'];

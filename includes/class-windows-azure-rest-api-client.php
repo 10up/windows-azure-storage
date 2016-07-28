@@ -856,6 +856,8 @@ class Windows_Azure_Rest_Api_Client {
 		if ( empty( $files ) ) {
 			return $files;
 		}
+		$cycles        = 0;
+		$was_sanitized = false;
 		foreach ( $files as $prefix_group => &$group_contents ) {
 			$cycles = 0;
 			do {
@@ -867,6 +869,7 @@ class Windows_Azure_Rest_Api_Client {
 				$cycles++;
 			} while ( $was_sanitized && 5 > $cycles );
 		}
+
 		if ( 5 === $cycles && $was_sanitized ) {
 			return new WP_Error( -100, __( 'Unable to safely sanitize blob names.', 'windows-azure-storage' ) );
 		} else {
