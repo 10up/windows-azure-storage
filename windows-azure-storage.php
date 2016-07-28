@@ -668,7 +668,7 @@ title="%2$s"><img src="%3$s" alt="%2$s" role="img" class="windows-azure-storage-
  * @return void
  */
 function windows_azure_storage_plugin_menu() {
-	if ( WindowsAzureStorageUtil::check_action_permissions( 'change_settings' ) ) {
+	if ( current_user_can( 'manage_options' ) ) {
 		add_options_page(
 			__( 'Windows Azure Storage Plugin Settings', MSFT_AZURE_PLUGIN_DOMAIN_NAME ),
 			__( 'Windows Azure', MSFT_AZURE_PLUGIN_DOMAIN_NAME ),
