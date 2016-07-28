@@ -53,21 +53,21 @@ function windows_azure_storage_plugin_settings_preamble() {
 	?>
 	<div class="wrap">
 		<h2>
-			<img src="<?php echo esc_url( MSFT_AZURE_PLUGIN_URL . 'images/WindowsAzure.jpg' ); ?>" width="32" height="32"/><?php _e( 'Windows Azure Storage for WordPress', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?>
+			<img src="<?php echo esc_url( MSFT_AZURE_PLUGIN_URL . 'images/WindowsAzure.jpg' ); ?>" width="32" height="32"/><?php _e( 'Windows Azure Storage for WordPress', 'windows-azure-storage' ); ?>
 		</h2>
 
 		<?php _e(
 			'This WordPress plugin allows you to use Windows Azure Storage Service to host your media for your WordPress powered blog. Windows Azure provides storage in the cloud with authenticated access and triple replication to help keep your data safe. Applications work with data using REST conventions and standard HTTP operations to identify and expose data using URIs. This plugin allows you to easily upload, retrieve, and link to files stored on Windows Azure Storage service from within WordPress.',
-			MSFT_AZURE_PLUGIN_DOMAIN_NAME
+			'windows-azure-storage'
 		); ?>
 		<br/><br/>
-		<?php _e( 'For more details on Windows Azure Storage Services, please visit the <a href="http://www.microsoft.com/azure/windowsazure.mspx">Windows Azure Platform web-site</a>.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?>
+		<?php _e( 'For more details on Windows Azure Storage Services, please visit the <a href="http://www.microsoft.com/azure/windowsazure.mspx">Windows Azure Platform web-site</a>.', 'windows-azure-storage' ); ?>
 		<br/>
 
 		<p>
-			<?php _e( 'This plugin uses Windows Azure SDK for PHP (<a href="https://github.com/WindowsAzure/azure-sdk-for-php/">https://github.com/WindowsAzure/azure-sdk-for-php/</a>).', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?>
+			<?php _e( 'This plugin uses Windows Azure SDK for PHP (<a href="https://github.com/WindowsAzure/azure-sdk-for-php/">https://github.com/WindowsAzure/azure-sdk-for-php/</a>).', 'windows-azure-storage' ); ?>
 		</p>
-		<b><?php _e( 'Plugin Web Site:', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?></b>
+		<b><?php _e( 'Plugin Web Site:', 'windows-azure-storage' ); ?></b>
 		<a href="http://wordpress.org/extend/plugins/windows-azure-storage/">http://wordpress.org/extend/plugins/windows-azure-storage/</a>
 		<br><br>
 	</div>
@@ -90,7 +90,7 @@ function windows_azure_storage_plugin_options_page() {
 			<?php
 			settings_fields( 'windows-azure-storage-settings-group' );
 			do_settings_sections( 'windows-azure-storage-plugin-options' );
-			submit_button( __( 'Save Changes', MSFT_AZURE_PLUGIN_DOMAIN_NAME ), 'submit primary', 'azure-submit-button', true );
+			submit_button( __( 'Save Changes', 'windows-azure-storage' ), 'submit primary', 'azure-submit-button', true );
 			?>
 		</form>
 	</div>
@@ -115,7 +115,7 @@ function windows_azure_storage_plugin_register_settings() {
 	 */
 	add_settings_section(
 		'windows-azure-storage-settings',
-		__( 'Windows Azure Storage Settings', MSFT_AZURE_PLUGIN_DOMAIN_NAME ),
+		__( 'Windows Azure Storage Settings', 'windows-azure-storage' ),
 		'windows_azure_storage_plugin_settings_section',
 		'windows-azure-storage-plugin-options'
 	);
@@ -124,7 +124,7 @@ function windows_azure_storage_plugin_register_settings() {
 	 */
 	add_settings_field(
 		'azure_storage_account_name',
-		__( 'Store Account Name', MSFT_AZURE_PLUGIN_DOMAIN_NAME ),
+		__( 'Store Account Name', 'windows-azure-storage' ),
 		'windows_azure_storage_setting_account_name',
 		'windows-azure-storage-plugin-options',
 		'windows-azure-storage-settings'
@@ -134,7 +134,7 @@ function windows_azure_storage_plugin_register_settings() {
 	 */
 	add_settings_field(
 		'azure_storage_account_key',
-		__( 'Store Account Name', MSFT_AZURE_PLUGIN_DOMAIN_NAME ),
+		__( 'Store Account Name', 'windows-azure-storage' ),
 		'windows_azure_storage_setting_account_key',
 		'windows-azure-storage-plugin-options',
 		'windows-azure-storage-settings'
@@ -144,7 +144,7 @@ function windows_azure_storage_plugin_register_settings() {
 	 */
 	add_settings_field(
 		'azure_storage_default_container',
-		__( 'Default Storage Container', MSFT_AZURE_PLUGIN_DOMAIN_NAME ),
+		__( 'Default Storage Container', 'windows-azure-storage' ),
 		'windows_azure_storage_setting_storage_container',
 		'windows-azure-storage-plugin-options',
 		'windows-azure-storage-settings'
@@ -154,7 +154,7 @@ function windows_azure_storage_plugin_register_settings() {
 	 */
 	add_settings_field(
 		'azure_storage_cname',
-		__( 'CNAME', MSFT_AZURE_PLUGIN_DOMAIN_NAME ),
+		__( 'CNAME', 'windows-azure-storage' ),
 		'windows_azure_storage_setting_cname',
 		'windows-azure-storage-plugin-options',
 		'windows-azure-storage-settings'
@@ -164,7 +164,7 @@ function windows_azure_storage_plugin_register_settings() {
 	 */
 	add_settings_field(
 		'azure_storage_handle_uploads',
-		__( 'Use Windows Azure Storage for default upload', MSFT_AZURE_PLUGIN_DOMAIN_NAME ),
+		__( 'Use Windows Azure Storage for default upload', 'windows-azure-storage' ),
 		'windows_azure_storage_setting_handle_uploads',
 		'windows-azure-storage-plugin-options',
 		'windows-azure-storage-settings'
@@ -174,7 +174,7 @@ function windows_azure_storage_plugin_register_settings() {
 	 */
 	add_settings_field(
 		'azure_storage_keep_local_file',
-		__( 'Keep local files', MSFT_AZURE_PLUGIN_DOMAIN_NAME ),
+		__( 'Keep local files', 'windows-azure-storage' ),
 		'windows_azure_storage_setting_keep_local_file',
 		'windows-azure-storage-plugin-options',
 		'windows-azure-storage-settings'
@@ -190,7 +190,7 @@ function windows_azure_storage_plugin_register_settings() {
  */
 function windows_azure_storage_plugin_settings_section() {
 	?>
-	<p><?php echo __( 'If you do not have Windows Azure Storage Account, please <a href="http://go.microsoft.com/fwlink/?LinkID=129453">register </a>for Windows Azure Services.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?></p>
+	<p><?php echo __( 'If you do not have Windows Azure Storage Account, please <a href="http://go.microsoft.com/fwlink/?LinkID=129453">register </a>for Windows Azure Services.', 'windows-azure-storage' ); ?></p>
 	<?php
 }
 
@@ -205,7 +205,7 @@ function windows_azure_storage_plugin_settings_section() {
 function windows_azure_storage_setting_account_name() {
 	$storage_account_name = Windows_Azure_Helper::get_account_name();
 	?>
-	<input type="text" name="azure_storage_account_name" class="regular-text" title="<?php esc_attr_e( 'Windows Azure Storage Account Name', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?>" value="<?php echo esc_attr( $storage_account_name ); ?>"/>
+	<input type="text" name="azure_storage_account_name" class="regular-text" title="<?php esc_attr_e( 'Windows Azure Storage Account Name', 'windows-azure-storage' ); ?>" value="<?php echo esc_attr( $storage_account_name ); ?>"/>
 	<?php
 }
 
@@ -219,7 +219,7 @@ function windows_azure_storage_setting_account_name() {
 function windows_azure_storage_setting_account_key() {
 	$storage_account_key = Windows_Azure_Helper::get_account_key();
 	?>
-	<input type="text" name="azure_storage_account_primary_access_key" class="large-text" title="<?php esc_attr_e( 'Windows Azure Storage Account Primary Access Key', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?>" value="<?php echo esc_attr( $storage_account_key ); ?>"/>
+	<input type="text" name="azure_storage_account_primary_access_key" class="large-text" title="<?php esc_attr_e( 'Windows Azure Storage Account Primary Access Key', 'windows-azure-storage' ); ?>" value="<?php echo esc_attr( $storage_account_key ); ?>"/>
 	<?php
 }
 
@@ -236,7 +236,7 @@ function windows_azure_storage_setting_storage_container() {
 	$new_container_name        = isset( $_POST['newcontainer'] ) ? sanitize_text_field( $_POST['newcontainer'] ) : '';
 	$container_creation_failed = apply_filters( 'windows_azure_storage_container_creation_failed', false );
 	?>
-	<select name="default_azure_storage_account_container_name" title="<?php esc_attr_e( 'Default container to be used for storing media files', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) ?>" class="azure-container-selector">
+	<select name="default_azure_storage_account_container_name" title="<?php esc_attr_e( 'Default container to be used for storing media files', 'windows-azure-storage' ) ?>" class="azure-container-selector">
 		<?php
 		if ( ! is_wp_error( $containers_list ) ) {
 			foreach ( $containers_list as $container ) {
@@ -251,7 +251,7 @@ function windows_azure_storage_setting_storage_container() {
 			}
 			if ( current_user_can( 'manage_options' ) ) {
 				?>
-				<option value="__newContainer__" <?php if ( $container_creation_failed ) : ?>selected="selected" <?php endif ?>>&mdash;&thinsp;<?php esc_html_e( 'Create New Container', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?>&thinsp;&mdash;</option>
+				<option value="__newContainer__" <?php if ( $container_creation_failed ) : ?>selected="selected" <?php endif ?>>&mdash;&thinsp;<?php esc_html_e( 'Create New Container', 'windows-azure-storage' ); ?>&thinsp;&mdash;</option>
 				<?php
 			}
 		}
@@ -264,11 +264,11 @@ function windows_azure_storage_setting_storage_container() {
 		<br>
 		<div id="div-create-container" name="div-create-container" <?php if ( ! $container_creation_failed ) : ?>style="display:none;"<?php endif; ?>>
 			<p>
-				<label for="newcontainer" title="<?php __( 'Name of the new container to create', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?>"><?php echo __( 'New container name: ', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?></label>
-				<input type="text" name="newcontainer" class="regular-text" title="<?php __( 'Name of the new container to create', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?>" value="<?php echo esc_attr( $new_container_name ); ?>"/>
+				<label for="newcontainer" title="<?php __( 'Name of the new container to create', 'windows-azure-storage' ); ?>"><?php echo __( 'New container name: ', 'windows-azure-storage' ); ?></label>
+				<input type="text" name="newcontainer" class="regular-text" title="<?php __( 'Name of the new container to create', 'windows-azure-storage' ); ?>" value="<?php echo esc_attr( $new_container_name ); ?>"/>
 			</p>
 			<p>
-				<input type="button" class="button-primary azure-create-container-button" value="<?php esc_attr_e( 'Create', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?>" data-container-url="<?php echo esc_attr( sprintf( '%s', esc_url( $_SERVER['REQUEST_URI'] ) ) ); ?>"/>
+				<input type="button" class="button-primary azure-create-container-button" value="<?php esc_attr_e( 'Create', 'windows-azure-storage' ); ?>" data-container-url="<?php echo esc_attr( sprintf( '%s', esc_url( $_SERVER['REQUEST_URI'] ) ) ); ?>"/>
 			</p>
 		</div>
 	<?php endif;
@@ -284,18 +284,18 @@ function windows_azure_storage_setting_storage_container() {
 function windows_azure_storage_setting_cname() {
 	$cname = Windows_Azure_Helper::get_cname();
 	?>
-	<input type="url" name="cname" class="regular-text" title="<?php esc_attr_e( 'Use CNAME instead of Windows Azure Blob URL', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?>" value="<?php echo esc_attr( $cname ); ?>"/>
+	<input type="url" name="cname" class="regular-text" title="<?php esc_attr_e( 'Use CNAME instead of Windows Azure Blob URL', 'windows-azure-storage' ); ?>" value="<?php echo esc_attr( $cname ); ?>"/>
 	<p class="field-description">
 		<?php
 		echo __(
 			'Note: Use this option if you would like to display image URLs belonging to your domain like <samp>http://mydomain.com/</samp> instead of <samp>http://your-account-name.blob.core.windows.net/</samp>.',
-			MSFT_AZURE_PLUGIN_DOMAIN_NAME
+			'windows-azure-storage'
 		);
 		?>
 	</p>
 	<p>
 		<?php
-		echo __( 'This CNAME must start with <samp>http(s)://</samp> and the administrator will have to update <abbr title="Domain Name System">DNS</abbr> entries accordingly.', MSFT_AZURE_PLUGIN_DOMAIN_NAME );
+		echo __( 'This CNAME must start with <samp>http(s)://</samp> and the administrator will have to update <abbr title="Domain Name System">DNS</abbr> entries accordingly.', 'windows-azure-storage' );
 		?>
 	</p>
 	<?php
@@ -310,12 +310,12 @@ function windows_azure_storage_setting_cname() {
  */
 function windows_azure_storage_setting_handle_uploads() {
 	?>
-	<input type="checkbox" name="azure_storage_use_for_default_upload" title="<?php esc_attr_e( 'Use Windows Azure Storage for default upload', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) ?>" value="1" id="azure_storage_use_for_default_upload" <?php checked( (bool) get_option( 'azure_storage_use_for_default_upload' ) ); ?> />
+	<input type="checkbox" name="azure_storage_use_for_default_upload" title="<?php esc_attr_e( 'Use Windows Azure Storage for default upload', 'windows-azure-storage' ) ?>" value="1" id="azure_storage_use_for_default_upload" <?php checked( (bool) get_option( 'azure_storage_use_for_default_upload' ) ); ?> />
 	<label for="azure_storage_use_for_default_upload">
-		<?php esc_html_e( 'Use Windows Azure Storage when uploading via WordPress\' upload tab.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?>
+		<?php esc_html_e( 'Use Windows Azure Storage when uploading via WordPress\' upload tab.', 'windows-azure-storage' ); ?>
 	</label>
 	<br/>
-	<small><?php esc_html_e( 'Note: Uncheck this to revert back to using your own web host for storage at anytime.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?></small>
+	<small><?php esc_html_e( 'Note: Uncheck this to revert back to using your own web host for storage at anytime.', 'windows-azure-storage' ); ?></small>
 	<?php
 }
 
@@ -328,9 +328,9 @@ function windows_azure_storage_setting_handle_uploads() {
  */
 function windows_azure_storage_setting_keep_local_file() {
 	?>
-	<input type="checkbox" name="azure_storage_keep_local_file" title="<?php esc_attr_e( 'Do not delete local files after uploading them to Azure Storage.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) ?>" value="1" id="azure_storage_keep_local_file" <?php checked( (bool) get_option( 'azure_storage_keep_local_file' ) ); ?> />
+	<input type="checkbox" name="azure_storage_keep_local_file" title="<?php esc_attr_e( 'Do not delete local files after uploading them to Azure Storage.', 'windows-azure-storage' ) ?>" value="1" id="azure_storage_keep_local_file" <?php checked( (bool) get_option( 'azure_storage_keep_local_file' ) ); ?> />
 	<label for="azure_storage_keep_local_file">
-		<?php esc_html_e( 'Do not delete local files after uploading them to Azure Storage.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ); ?>
+		<?php esc_html_e( 'Do not delete local files after uploading them to Azure Storage.', 'windows-azure-storage' ); ?>
 	</label>
 	<?php
 }
@@ -350,7 +350,7 @@ function create_container_if_required( &$success = null ) {
 	if ( $action_set ) {
 		if ( ! empty( $_POST['newcontainer'] ) ) {
 			if ( empty( $_POST['azure_storage_account_name'] ) || empty( $_POST['azure_storage_account_primary_access_key'] ) ) {
-				return new WP_Error( -2, __( 'Please specify Storage Account Name and Primary Access Key to create container.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+				return new WP_Error( -2, __( 'Please specify Storage Account Name and Primary Access Key to create container.', 'windows-azure-storage' ) );
 			}
 
 			try {
@@ -360,7 +360,7 @@ function create_container_if_required( &$success = null ) {
 
 				if ( ! is_wp_error( $result ) ) {
 					return sprintf(
-						__( 'The container <strong>%1$s</strong> successfully created. To use this container as default container, select it from the above drop down and click <strong>Save Changes</strong>.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ),
+						__( 'The container <strong>%1$s</strong> successfully created. To use this container as default container, select it from the above drop down and click <strong>Save Changes</strong>.', 'windows-azure-storage' ),
 						esc_html( $result )
 					);
 				} else {
@@ -369,17 +369,17 @@ function create_container_if_required( &$success = null ) {
 					return $result;
 				}
 			} catch ( Exception $e ) {
-				return new WP_Error( -3, sprintf( __( 'Container creation failed, Error: %s', MSFT_AZURE_PLUGIN_DOMAIN_NAME ), $e->getMessage() ) );
+				return new WP_Error( -3, sprintf( __( 'Container creation failed, Error: %s', 'windows-azure-storage' ), $e->getMessage() ) );
 			}
 		}
 
-		return new WP_Error( -4, __( 'Please specify name of the container to create', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+		return new WP_Error( -4, __( 'Please specify name of the container to create', 'windows-azure-storage' ) );
 	} elseif ( $action_set ) {
-		$error_message = __( 'Unable to create new container. Try again.', MSFT_AZURE_PLUGIN_DOMAIN_NAME );
+		$error_message = __( 'Unable to create new container. Try again.', 'windows-azure-storage' );
 		if ( ! $permissions ) {
-			$error_message = __( 'You do not have permissions to create new container.', MSFT_AZURE_PLUGIN_DOMAIN_NAME );
+			$error_message = __( 'You do not have permissions to create new container.', 'windows-azure-storage' );
 		} elseif ( ! $admin_referer ) {
-			$error_message = __( 'Form validation failed. Try again.', MSFT_AZURE_PLUGIN_DOMAIN_NAME );
+			$error_message = __( 'Form validation failed. Try again.', 'windows-azure-storage' );
 		}
 
 		return new WP_Error( -1, $error_message );
@@ -403,7 +403,7 @@ function windows_azure_storage_load_settings_page() {
 	add_action( 'admin_notices', function () use ( $result ) {
 		if ( is_wp_error( $result ) ) {
 			$notice_class = 'notice-error';
-			$notice       = sprintf( __( 'Container creation failed. Error: %s', MSFT_AZURE_PLUGIN_DOMAIN_NAME ), $result->get_error_message() );
+			$notice       = sprintf( __( 'Container creation failed. Error: %s', 'windows-azure-storage' ), $result->get_error_message() );
 			add_filter( 'windows_azure_storage_container_creation_failed', '__return_true' );
 		} elseif ( is_string( $result ) ) {
 			$notice_class = 'notice-success';
@@ -438,7 +438,7 @@ function windows_azure_storage_check_container_access_policy() {
 		$private_container_warning = sprintf(
 			__(
 				'Warning: The container <strong>%1$s</strong> is set to <strong>private</strong> and cannot be used. Please choose a public container as the default, or set the <strong>%1$s</strong> container to <strong>public</strong> in your Azure Storage settings.',
-				MSFT_AZURE_PLUGIN_DOMAIN_NAME
+				'windows-azure-storage'
 			),
 			$container
 		);

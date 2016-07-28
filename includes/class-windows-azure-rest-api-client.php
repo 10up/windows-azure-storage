@@ -870,7 +870,7 @@ class Windows_Azure_Rest_Api_Client {
 			} while ( $was_sanitized && 5 > $cycles );
 		}
 		if ( 5 === $cycles && $was_sanitized ) {
-			return new WP_Error( -100, __( 'Unable to safely sanitize blob names.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+			return new WP_Error( -100, __( 'Unable to safely sanitize blob names.', 'windows-azure-storage' ) );
 		} else {
 			return $files;
 		}
@@ -1073,7 +1073,7 @@ class Windows_Azure_Rest_Api_Client {
 	 */
 	protected function _build_api_endpoint_url( $path = '' ) {
 		if ( empty( $this->_account_name ) ) {
-			return new WP_Error( -1, __( 'Storage account name not set.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+			return new WP_Error( -1, __( 'Storage account name not set.', 'windows-azure-storage' ) );
 		}
 
 		$endpoint_url = sprintf( self::API_BLOB_ENDPOINT, $this->_account_name );

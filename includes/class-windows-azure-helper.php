@@ -343,7 +343,7 @@ class Windows_Azure_Helper {
 	 */
 	static public function put_uploaded_file_to_blob_storage( $container_name, $blob_name, $local_path, $account_name = '', $account_key = '' ) {
 		if ( ! file_exists( $local_path ) ) {
-			return new \WP_Error( -1, sprintf( __( 'Uploaded file %s does not exist.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) ), $blob_name );
+			return new \WP_Error( -1, sprintf( __( 'Uploaded file %s does not exist.', 'windows-azure-storage' ) ), $blob_name );
 		}
 		list( $account_name, $account_key ) = self::get_api_credentials( $account_name, $account_key );
 		$rest_api_client = new Windows_Azure_Rest_Api_Client( $account_name, $account_key );

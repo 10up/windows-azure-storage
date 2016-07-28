@@ -83,7 +83,7 @@ class WindowsAzureStorageUtil {
 	 * @return string Account Name
 	 */
 	public static function getAccountName() {
-		_deprecated_function( __METHOD__, '4.0', __( 'Windows_Azure_Helper::get_account_name()', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+		_deprecated_function( __METHOD__, '4.0', 'Windows_Azure_Helper::get_account_name()' );
 		return Windows_Azure_Helper::get_account_name();
 	}
 
@@ -95,7 +95,7 @@ class WindowsAzureStorageUtil {
 	 * @return string Account Key
 	 */
 	public static function getAccountKey() {
-		_deprecated_function( __FUNCTION__, '4.0', __( 'Windows_Azure_Helper::get_account_key()', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+		_deprecated_function( __FUNCTION__, '4.0', 'Windows_Azure_Helper::get_account_key()' );
 		return Windows_Azure_Helper::get_account_key();
 	}
 
@@ -107,7 +107,7 @@ class WindowsAzureStorageUtil {
 	 * @return string Default container name
 	 */
 	public static function getDefaultContainer() {
-		_deprecated_function( __FUNCTION__, '4.0', __( 'Windows_Azure_Helper::get_default_container()', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+		_deprecated_function( __FUNCTION__, '4.0', 'Windows_Azure_Helper::get_default_container()' );
 		return Windows_Azure_Helper::get_default_container();
 	}
 
@@ -134,7 +134,7 @@ class WindowsAzureStorageUtil {
 	 * @return string HTTP proxy host name
 	 */
 	public static function getHttpProxyHost() {
-		_deprecated_function( __FUNCTION__, '4.0', __( 'Windows_Azure_Helper::get_http_proxy_host()', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+		_deprecated_function( __FUNCTION__, '4.0', 'Windows_Azure_Helper::get_http_proxy_host()' );
 		return Windows_Azure_Helper::get_http_proxy_host();
 	}
 
@@ -146,7 +146,7 @@ class WindowsAzureStorageUtil {
 	 * @return string HTTP proxy port number
 	 */
 	public static function getHttpProxyPort() {
-		_deprecated_function( __FUNCTION__, '4.0', __( 'Windows_Azure_Helper::get_http_proxy_port()', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+		_deprecated_function( __FUNCTION__, '4.0', 'Windows_Azure_Helper::get_http_proxy_port()' );
 		return Windows_Azure_Helper::get_http_proxy_port();
 	}
 
@@ -158,7 +158,7 @@ class WindowsAzureStorageUtil {
 	 * @return string HTTP proxy user-name
 	 */
 	public static function getHttpProxyUserName() {
-		_deprecated_function( __FUNCTION__, '4.0', __( 'Windows_Azure_Helper::get_http_proxy_username()', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+		_deprecated_function( __FUNCTION__, '4.0', 'Windows_Azure_Helper::get_http_proxy_username()' );
 		return Windows_Azure_Helper::get_http_proxy_username();
 	}
 
@@ -170,7 +170,7 @@ class WindowsAzureStorageUtil {
 	 * @return string HTTP proxy password
 	 */
 	public static function getHttpProxyPassword() {
-		_deprecated_function( __FUNCTION__, '4.0', __( 'Windows_Azure_Helper::get_http_proxy_password()', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+		_deprecated_function( __FUNCTION__, '4.0', 'Windows_Azure_Helper::get_http_proxy_password()' );
 		return Windows_Azure_Helper::get_http_proxy_password();
 	}
 
@@ -198,49 +198,7 @@ class WindowsAzureStorageUtil {
 		$proxyHost = null, $proxyPort = null,
 		$proxyUserName = null, $proxyPassword = null
 	) {
-		_deprecated_function( __FUNCTION__, '4.0', 'figure out something' );
-		// Storage Account Settings from db
-		$storageAccountName = WindowsAzureStorageUtil::getAccountName();
-		$storageAccountKey  = WindowsAzureStorageUtil::getAccountKey();
-		$httpProxyHost      = WindowsAzureStorageUtil::getHttpProxyHost();
-		$httpProxyPort      = WindowsAzureStorageUtil::getHttpProxyPort();
-		$httpProxyUserName  = WindowsAzureStorageUtil::getHttpProxyUserName();
-		$httpProxyPassword  = WindowsAzureStorageUtil::getHttpProxyPassword();
-		// Parameters take precedence over settings in the db
-		if ( $accountName ) {
-			$storageAccountName = $accountName;
-			$storageAccountKey  = $accountKey;
-			$httpProxyHost      = $proxyHost;
-			$httpProxyPort      = $proxyPort;
-			$httpProxyUserName  = $proxyUserName;
-			$httpProxyPassword  = $proxyPassword;
-		}
-
-		$azureServiceConnectionString = null;
-		if ( 'devstoreaccount1' === $storageAccountName ) {
-			// Use development storage
-			$azureServiceConnectionString = "UseDevelopmentStorage=true";
-		} else {
-			// Use cloud storage
-			$azureServiceConnectionString = "DefaultEndpointsProtocol=http"
-			                                . ";AccountName=" . $storageAccountName
-			                                . ";AccountKey=" . $storageAccountKey;
-		}
-
-		$blobRestProxy = ServicesBuilder::getInstance()->createBlobService( $azureServiceConnectionString );
-		$httpProxyHost = $httpProxyHost;
-
-		if ( ! empty( $httpProxyHost ) ) {
-			$proxyFilter = new WindowsAzureStorageProxyFilter( $httpProxyHost,
-				$httpProxyPort,
-				$httpProxyUserName,
-				$httpProxyPassword
-			);
-
-			$blobRestProxy = $blobRestProxy->withFilter( $proxyFilter );
-		}
-
-		return $blobRestProxy;
+		throw new Exception( __( 'Function has been removed.', 'windows-azure-storage' ), -1 );
 	}
 
 	/**
@@ -255,11 +213,7 @@ class WindowsAzureStorageUtil {
 	 * @return void
 	 */
 	public static function deleteBlob( $containerName, $blobName ) {
-		_deprecated_function( __FUNCTION__, '4.0', 'figure out something' );
-		$blobRestProxy = WindowsAzureStorageUtil::getStorageClient();
-		if ( self::blobExists( $containerName, $blobName ) ) {
-			$blobRestProxy->deleteBlob( $containerName, $blobName );
-		}
+		throw new Exception( __( 'Function has been removed.', 'windows-azure-storage' ), -1 );
 	}
 
 	/**
@@ -277,7 +231,7 @@ class WindowsAzureStorageUtil {
 	 * @return boolean
 	 */
 	public static function blobExists( $containerName, $blobName ) {
-		_deprecated_function( __FUNCTION__, '3.0.0', 'WindowsAzureStorageUtil::blob_exists_in_container()' );
+		_deprecated_function( __FUNCTION__, '4.0', 'WindowsAzureStorageUtil::blob_exists_in_container()' );
 
 		return self::blob_exists_in_container( $blobName, $containerName );
 	}
@@ -294,20 +248,8 @@ class WindowsAzureStorageUtil {
 	 * @throws ServiceException
 	 */
 	public static function createPublicContainer( $containerName, $storageClient = null ) {
-		_deprecated_function( __FUNCTION__, '4.0', 'figure out something' );
-		$containerOptions = new CreateContainerOptions();
-		$containerOptions->setPublicAccess( PublicAccessType::CONTAINER_AND_BLOBS );
-		$blobRestProxy = $null;
-		try {
-			if ( $storageClient ) {
-				$blobRestProxy = $storageClient;
-			} else {
-				$blobRestProxy = WindowsAzureStorageUtil::getStorageClient();
-			}
-			$blobRestProxy->createContainer( $containerName, $containerOptions );
-		} catch ( ServiceException $e ) {
-			throw $e;
-		}
+		_deprecated_function( __FUNCTION__, '4.0', 'Windows_Azure_Helper::create_container()' );
+		Windows_Azure_Helper::create_container( $containerName );
 	}
 
 	/**
@@ -362,12 +304,9 @@ class WindowsAzureStorageUtil {
 	 *
 	 * @param bool $append_container Optional. Whether to append the container name to the URL. Default true.
 	 *
-	 * @deprecated 4.0
-	 *
 	 * @return string|WP_Error The base blob URL for an account, or an error if one can't be found/created.
 	 */
 	public static function get_storage_url_base( $append_container = true ) {
-		//_deprecated_function( __FUNCTION__, '4.0', 'figure out something' );
 		$azure_storage_account_name                   = \Windows_Azure_Helper::get_account_name();
 		$default_azure_storage_account_container_name = \Windows_Azure_Helper::get_default_container();
 
@@ -495,7 +434,7 @@ class WindowsAzureStorageUtil {
 	 * @return bool|WP_Error True if blob exists, false if not; WP_Error if container doesn't exist.
 	 */
 	public static function blob_exists_in_container( $blob_name, $container_name = '' ) {
-		_deprecated_function( __FUNCTION__, '4.0' );
+		_deprecated_function( __FUNCTION__, '4.0', 'Windows_Azure_Helper::get_blob_properties()' );
 		$result = \Windows_Azure_Helper::get_blob_properties( $container_name, $blob_name );
 
 		return ! is_wp_error( $result );
@@ -514,7 +453,7 @@ class WindowsAzureStorageUtil {
 	 * @return bool True if the container exists in the account, false if not.
 	 */
 	public static function container_exists_in_storage( $container_name ) {
-		_deprecated_function( __FUNCTION__, '4.0', 'figure out something' );
+		_deprecated_function( __FUNCTION__, '4.0', 'Windows_Azure_Helper::get_container_acl()' );
 		$result = \Windows_Azure_Helper::get_container_acl( $container_name );
 
 		return ! is_wp_error( $result );
@@ -622,6 +561,7 @@ class WindowsAzureStorageUtil {
 	 * @return bool Whether the action is permitted by the user.
 	 */
 	public static function check_action_permissions( $action = 'browse', $user = null ) {
+		_deprecated_function( __FUNCTION__, '4.0' );
 		if ( is_null( $user ) ) {
 			$user = get_current_user_id();
 		}

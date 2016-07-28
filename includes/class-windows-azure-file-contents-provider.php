@@ -164,7 +164,7 @@ class Windows_Azure_File_Contents_Provider {
 	 */
 	public function is_valid() {
 		if ( ! $this->_wp_filesystem ) {
-			return new WP_Error( -1, __( 'Access to WordPress filesystem has not been granted.', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+			return new WP_Error( -1, __( 'Access to WordPress filesystem has not been granted.', 'windows-azure-storage' ) );
 		}
 
 		if ( null === $this->_is_valid ) {

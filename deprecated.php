@@ -119,10 +119,8 @@ function show_windows_azure_storage_settings( $mode ) {
 					/* translators: %s is the container name and is used twice */
 					$private_container_warning = sprintf(
 						__(
-							'Warning: The container "%1$s" is set to "private" and cannot be used.' .
-							'Please choose a public container as the default, or set the "%1$s" container to ' .
-							'"public" in your Azure Storage settings.',
-							MSFT_AZURE_PLUGIN_DOMAIN_NAME
+							'Warning: The container "%1$s" is set to "private" and cannot be used. Please choose a public container as the default, or set the "%1$s" container to "public" in your Azure Storage settings.',
+							'windows-azure-storage'
 						),
 						$default_container
 					);
@@ -130,7 +128,7 @@ function show_windows_azure_storage_settings( $mode ) {
 			}
 			if ( is_wp_error( $containers_list ) ) {
 				$private_container_warning .= sprintf(
-					__( 'Unable to fetch containers list. Reason: %s', MSFT_AZURE_PLUGIN_DOMAIN_NAME ),
+					__( 'Unable to fetch containers list. Reason: %s', 'windows-azure-storage' ),
 					$containers_list->get_error_message()
 				);
 			}
@@ -147,10 +145,10 @@ function show_windows_azure_storage_settings( $mode ) {
 	<table class="form-table" border="0">
 		<tr valign="top">
 			<th scope="row">
-				<label for="storage_account_name" title="Windows Azure Storage Account Name">Store Account Name</label>
+				<label for="storage_account_name" title="<?php esc_attr_e( 'Windows Azure Storage Account Name', 'windows-azure-storage' ); ?>"><?php esc_html_e( 'Store Account Name', 'windows-azure-storage' ); ?></label>
 			</th>
 			<td>
-				<input type="text" name="azure_storage_account_name" title="Windows Azure Storage Account Name" value="<?php
+				<input type="text" name="azure_storage_account_name" title="<?php esc_attr_e( 'Windows Azure Storage Account Name', 'windows-azure-storage' ); ?>" value="<?php
 				echo esc_attr( $storage_account_name ); ?>" />
 			</td>
 			<td></td>
@@ -158,17 +156,17 @@ function show_windows_azure_storage_settings( $mode ) {
 
 		<tr valign="top">
 			<th scope="row">
-				<label for="azure_storage_account_primary_access_key" title="Windows Azure Storage Account Primary Access Key">Primary Access Key</label>
+				<label for="azure_storage_account_primary_access_key" title="<?php esc_attr_e( 'Windows Azure Storage Account Primary Access Key', 'windows-azure-storage' ); ?>"><?php esc_html_e( 'Primary Access Key', 'windows-azure-storage' ); ?></label>
 			</th>
 			<td>
-				<input type="text" name="azure_storage_account_primary_access_key" title="Windows Azure Storage Account Primary Access Key" value="<?php echo esc_attr( $storage_account_key ); ?>" />
+				<input type="text" name="azure_storage_account_primary_access_key" title="<?php esc_attr_e( 'Windows Azure Storage Account Primary Access Key', 'windows-azure-storage' ); ?>" value="<?php echo esc_attr( $storage_account_key ); ?>" />
 			</td>
 			<td></td>
 		</tr>
 
 		<tr valign="top">
 			<th scope="row">
-				<label for="storage_container_name" title="Default container to be used for storing media files">Default Storage Container</label>
+				<label for="storage_container_name" title="<?php esc_attr_e( 'Default container to be used for storing media files', 'windows-azure-storage' ); ?>"><?php esc_html_e( 'Default Storage Container', 'windows-azure-storage' ); ?></label>
 			</th>
 			<td WIDTH="80px">
 				<select name="default_azure_storage_account_container_name" title="Default container to be used for storing media files" onChange="<?php echo esc_js( 'onContainerSelectionChanged( false );' ); ?>">
@@ -199,10 +197,10 @@ function show_windows_azure_storage_settings( $mode ) {
 						<table style="border:1px solid black;">
 							<tr>
 								<td>
-									<label for="newcontainer" title="Name of the new container to create">Create New Container: </label>
+									<label for="newcontainer" title="<?php esc_attr_e( 'Name of the new container to create', 'windows-azure-storage' ); ?>"><?php esc_html_e( 'Create New Container:', 'windows-azure-storage' ); ?> </label>
 								</td>
 								<td>
-									<input type="text" name="newcontainer" title="Name of the new container to create" value="<?php echo esc_attr( $new_container_name ); ?>" />
+									<input type="text" name="newcontainer" title="<?php esc_attr_e( 'Name of the new container to create', 'windows-azure-storage' ); ?>" value="<?php echo esc_attr( $new_container_name ); ?>" />
 									<input type="button" class="button-primary" value="<?php esc_attr_e( 'Create', 'windows-azure-storage' ); ?>" onclick="<?php echo esc_js( sprintf( 'createContainer("%s");', esc_url( $_SERVER['REQUEST_URI'] ) ) ); ?>" />
 								</td>
 							</tr>
@@ -216,10 +214,10 @@ function show_windows_azure_storage_settings( $mode ) {
 		</tr>
 		<tr valign="top">
 			<th scope="row">
-				<label for="cname" title="Use CNAME instead of Windows Azure Blob URL">CNAME</label>
+				<label for="cname" title="<?php esc_attr_e( 'Use CNAME instead of Windows Azure Blob URL', 'windows-azure-storage' ); ?>">CNAME</label>
 			</th>
 			<td colspan="2">
-				<input type="url" name="cname" title="Use CNAME instead of Windows Azure Blob URL" value="<?php echo esc_attr( \Windows_Azure_Helper::get_cname() ); ?>" />
+				<input type="url" name="cname" title="<?php esc_attr_e( 'Use CNAME instead of Windows Azure Blob URL', 'windows-azure-storage' ); ?>" value="<?php echo esc_attr( \Windows_Azure_Helper::get_cname() ); ?>" />
 				<p class="field-description">
 					<?php
 					$notice = __(
@@ -236,11 +234,7 @@ function show_windows_azure_storage_settings( $mode ) {
 							$notice = sprintf(
 							/* translators: 1: link URL should not be translated, 2: link title is safe for translation  */
 								__(
-									'Windows Azure Storage <a href="%1$s" title="%2$s">does not currently support ' .
-									'SSL certificates for custom domain names</a>. ' .
-									'Since this WordPress site is configured to serve content over HTTPS, ' .
-									'it\'s recommended that you use the default Azure storage endpoint to avoid ' .
-									'mixed-content warnings for your visitors.',
+									'Windows Azure Storage <a href="%1$s" title="%2$s">does not currently support SSL certificates for custom domain names</a>. Since this WordPress site is configured to serve content over HTTPS, it\'s recommended that you use the default Azure storage endpoint to avoid mixed-content warnings for your visitors.',
 									'windows-azure-storage'
 								),
 								esc_url( 'https://feedback.azure.com/forums/217298-storage/suggestions/3007732-make-it-possible-to-use-ssl-on-blob-storage-using' ),
@@ -258,8 +252,7 @@ function show_windows_azure_storage_settings( $mode ) {
 							$notice = sprintf(
 							/* translators: the abbreviation "DNS" should remain, but the title can be translated */
 								__(
-									'This CNAME must start with <samp>http://</samp> and the administrator will have to update <abbr title="%s">DNS</abbr>
- entries accordingly.',
+									'This CNAME must start with <samp>http://</samp> and the administrator will have to update <abbr title="%s">DNS</abbr> entries accordingly.',
 									'windows-azure-storage'
 								),
 								_x( 'Domain Name System', 'The proper name of the Internet name resolution system',
@@ -279,10 +272,10 @@ function show_windows_azure_storage_settings( $mode ) {
 
 		<tr valign="top">
 			<th scope="row">
-				<label for="http_proxy_host" title="Use HTTP proxy server host name if web proxy server is configured">HTTP Proxy Host Name</label>
+				<label for="http_proxy_host" title="<?php esc_attr_e( 'Use HTTP proxy server host name if web proxy server is configured', 'windows-azure-storage' ); ?>"><?php esc_html_e( 'HTTP Proxy Host Name', 'windows-azure-storage' ); ?></label>
 			</th>
 			<td>
-				<input type="text" name="http_proxy_host" title="Use HTTP proxy server host name if web proxy server is configured" value="<?php
+				<input type="text" name="http_proxy_host" title="<?php esc_attr_e( 'Use HTTP proxy server host name if web proxy server is configured', 'windows-azure-storage' ); ?>" value="<?php
 				echo esc_attr( $http_proxy_host ); ?>" />
 			</td>
 			<td></td>
@@ -290,20 +283,20 @@ function show_windows_azure_storage_settings( $mode ) {
 
 		<tr valign="top">
 			<th scope="row">
-				<label for="http_proxy_port" title="Use HTTP proxy port if web proxy server is configured">HTTP Proxy Port</label>
+				<label for="http_proxy_port" title="<?php esc_attr_e( 'Use HTTP proxy port if web proxy server is configured', 'windows-azure-storage' ); ?>"><?php esc_html_e( 'HTTP Proxy Port', 'windows-azure-storage' ); ?></label>
 			</th>
 			<td>
-				<input type="number" name="http_proxy_port" title="Use HTTP proxy port if web proxy server is configured" value="<?php echo esc_attr( $http_proxy_port ); ?>" />
+				<input type="number" name="http_proxy_port" title="<?php esc_attr_e( 'Use HTTP proxy port if web proxy server is configured', 'windows-azure-storage' ); ?>" value="<?php echo esc_attr( $http_proxy_port ); ?>" />
 			</td>
 			<td></td>
 		</tr>
 
 		<tr valign="top">
 			<th scope="row">
-				<label for="http_proxy_username" title="Use HTTP proxy user name if credential is required to access web proxy server">HTTP Proxy User Name</label>
+				<label for="http_proxy_username" title="<?php esc_attr_e( 'Use HTTP proxy user name if credential is required to access web proxy server', 'windows-azure-storage' ); ?>"><?php esc_html_e( 'HTTP Proxy User Name', 'windows-azure-storage' ); ?></label>
 			</th>
 			<td>
-				<input type="text" name="http_proxy_username" title="Use HTTP proxy user name if credential is required to access web proxy server" value="<?php
+				<input type="text" name="http_proxy_username" title="<?php esc_attr_e( 'Use HTTP proxy user name if credential is required to access web proxy server', 'windows-azure-storage' ); ?>" value="<?php
 				echo esc_attr( $http_proxy_username ); ?>" />
 			</td>
 			<td></td>
@@ -311,10 +304,10 @@ function show_windows_azure_storage_settings( $mode ) {
 
 		<tr valign="top">
 			<th scope="row">
-				<label for="http_proxy_password" title="Use HTTP proxy password if credential is required to access web proxy server">HTTP Proxy Password</label>
+				<label for="http_proxy_password" title="<?php esc_attr_e( 'Use HTTP proxy password if credential is required to access web proxy server', 'windows-azure-storage' ); ?>"><?php esc_html_e( 'HTTP Proxy Password', 'windows-azure-storage' ); ?></label>
 			</th>
 			<td>
-				<input type="text" name="http_proxy_password" title="Use HTTP proxy password if credential is required to access web proxy server" value="<?php
+				<input type="text" name="http_proxy_password" title="<?php esc_attr_e( 'Use HTTP proxy password if credential is required to access web proxy server', 'windows-azure-storage' ); ?>" value="<?php
 				echo esc_attr( $http_proxy_password ); ?>" />
 			</td>
 			<td></td>
@@ -322,14 +315,14 @@ function show_windows_azure_storage_settings( $mode ) {
 
 		<tr valign="top">
 			<th scope="row">
-				<label for="azure_storage_use_for_default_upload" title="Use Windows Azure Storage for default upload">Use Windows Azure Storage for default upload</label>
+				<label for="azure_storage_use_for_default_upload" title="<?php esc_attr_e( 'Use Windows Azure Storage for default upload', 'windows-azure-storage' ); ?>"><?php esc_html_e( 'Use Windows Azure Storage for default upload', 'windows-azure-storage' ); ?></label>
 			</th>
 			<td colspan="2">
-				<input type="checkbox" name="azure_storage_use_for_default_upload" title="Use Windows Azure Storage for default upload" value="1" id="azure_storage_use_for_default_upload"
+				<input type="checkbox" name="azure_storage_use_for_default_upload" title="<?php esc_attr_e( 'Use Windows Azure Storage for default upload', 'windows-azure-storage' ); ?>" value="1" id="azure_storage_use_for_default_upload"
 					<?php checked( (bool) get_option( 'azure_storage_use_for_default_upload' ) ); ?> />
-				<label for="wp-uploads"> Use Windows Azure Storage when uploading via WordPress' upload tab.</label>
+				<label for="wp-uploads"><?php esc_html_e( 'Use Windows Azure Storage when uploading via WordPress\' upload tab.', 'windows-azure-storage' ); ?></label>
 				<br />
-				<small>Note: Uncheck this to revert back to using your own web host for storage at anytime.</small>
+				<small><?php esc_html_e( 'Note: Uncheck this to revert back to using your own web host for storage at anytime.', 'windows-azure-storage' ); ?></small>
 			</td>
 		</tr>
 	</table>

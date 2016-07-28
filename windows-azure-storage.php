@@ -59,7 +59,6 @@ define( 'MSFT_AZURE_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'MSFT_AZURE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'MSFT_AZURE_PLUGIN_LEGACY_MEDIA_URL', get_admin_url( get_current_blog_id(), 'media-upload.php' ) );
 define( 'MSFT_AZURE_PLUGIN_VERSION', '4.0.0' );
-define( 'MSFT_AZURE_PLUGIN_DOMAIN_NAME', 'windows-azure-storage' );
 
 require_once MSFT_AZURE_PLUGIN_PATH . 'windows-azure-storage-settings.php';
 require_once MSFT_AZURE_PLUGIN_PATH . 'windows-azure-storage-dialog.php';
@@ -108,7 +107,6 @@ function azure_storage_media_menu( $tabs ) {
 
 // Hook for adding tabs
 add_filter( 'media_upload_tabs', 'azure_storage_media_menu' );
-//TODO: Set 'Browse Azure Storage' as the default tab in the new media loader.
 
 // Add callback for three tabs in the Windows Azure Storage Dialog
 add_action( "media_upload_browse", "browse_tab" );
@@ -123,17 +121,15 @@ if ( (bool) get_option( 'azure_storage_use_for_default_upload' ) ) {
 	);//checked
 
 	// Hook for handling blog posts via xmlrpc. This is not full proof check
-	add_filter( 'content_save_pre', 'windows_azure_storage_content_save_pre' );//checked
+	add_filter( 'content_save_pre', 'windows_azure_storage_content_save_pre' );
 
-	//TODO: implement wp_unique_filename filter once it is available in WordPress
-	add_filter( 'wp_handle_upload_prefilter', 'windows_azure_storage_wp_handle_upload_prefilter' );//checked
+	add_filter( 'wp_handle_upload_prefilter', 'windows_azure_storage_wp_handle_upload_prefilter' );
 
 	// Hook for handling media uploads
-	add_filter( 'wp_handle_upload', 'windows_azure_storage_wp_handle_upload' );//checked
+	add_filter( 'wp_handle_upload', 'windows_azure_storage_wp_handle_upload' );
 
 	// Filter to modify file name when XML-RPC is used
-	//TODO: remove this filter when wp_unique_filename filter is available in WordPress
-	add_filter( 'xmlrpc_methods', 'windows_azure_storage_xmlrpc_methods' ); //checked
+	add_filter( 'xmlrpc_methods', 'windows_azure_storage_xmlrpc_methods' );
 }
 
 // Hook for acecssing attachment (media file) URL
@@ -171,12 +167,12 @@ function check_prerequisite() {
 	$php_compat = version_compare( $php_version, '5.3.0', '>=' );
 	if ( ! $php_compat ) {
 		deactivate_plugins( plugin_basename( __FILE__ ) );
-		wp_die( __( 'Windows Azure Storage for WordPress requires at least PHP 5.3.0', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+		wp_die( __( 'Windows Azure Storage for WordPress requires at least PHP 5.3.0', 'windows-azure-storage' ) );
 	}
 	$wp_compat = version_compare( $wp_version, '2.8.0', '>=' );
 	if ( ! $wp_compat ) {
 		deactivate_plugins( plugin_basename( __FILE__ ) );
-		wp_die( __( 'Windows Azure Storage for WordPress requires at least WordPress 2.8.0', MSFT_AZURE_PLUGIN_DOMAIN_NAME ) );
+		wp_die( __( 'Windows Azure Storage for WordPress requires at least WordPress 2.8.0', 'windows-azure-storage' ) );
 	}
 }
 
@@ -221,7 +217,7 @@ function windows_azure_storage_newMediaObject( $args ) {
 	do_action( 'xmlrpc_call', 'metaWeblog.newMediaObject' );
 
 	if ( ! current_user_can( 'upload_files' ) ) {
-		$wp_xmlrpc_server->error = new IXR_Error( 401, __( 'You do not have permission to upload files.' ) );
+		$wp_xmlrpc_server->error = new IXR_Error( 401, __( 'You do not have permission to upload files.', 'windows-azure-storage' ) );
 
 		return $wp_xmlrpc_server->error;
 	}
@@ -255,7 +251,7 @@ function windows_azure_storage_newMediaObject( $args ) {
 
 		// If query isn't successful, bail.
 		if ( is_null( $old_file ) ) {
-			return new WP_Error( 'Attachment not found', sprintf(
+			return new WP_Error( -1, sprintf(
 				__( 'Attachment not found in %s', 'windows-azure-storage' ),
 				esc_html( $name )
 			), $wpdb->print_error( $old_file ) );
@@ -287,7 +283,7 @@ function windows_azure_storage_newMediaObject( $args ) {
 
 	$upload = wp_upload_bits( $name, null, $bits );
 	if ( ! empty( $upload['error'] ) ) {
-		$errorString = sprintf( __( 'Could not write file %1$s (%2$s)' ), $name, $upload['error'] );
+		$errorString = sprintf( __( 'Could not write file %1$s (%2$s)', 'windows-azure-storage' ), $name, $upload['error'] );
 
 		return new IXR_Error( 500, $errorString );
 	}
@@ -297,7 +293,7 @@ function windows_azure_storage_newMediaObject( $args ) {
 		$post_id = (int) $data['post_id'];
 
 		if ( ! current_user_can( 'edit_post', $post_id ) ) {
-			return new IXR_Error( 401, __( 'Sorry, you cannot edit this post.' ) );
+			return new IXR_Error( 401, __( 'Sorry, you cannot edit this post.', 'windows-azure-storage' ) );
 		}
 	}
 	$attachment = array(
@@ -346,7 +342,7 @@ function windows_azure_storage_newMediaObject( $args ) {
 function windows_azure_storage_wp_get_attachment_url( $url, $postID ) {
 	$mediaInfo = get_post_meta( $postID, 'windows_azure_storage_info', true );
 
-	if ( ! empty( $mediaInfo ) ) {
+	if ( ! empty( $mediaInfo ) && isset( $mediaInfo['url'] ) ) {
 		return $mediaInfo['url'];
 	} else {
 		return $url;
@@ -420,7 +416,7 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $postID ) {
 			);
 
 		} catch ( Exception $e ) {
-			echo "<p>Error in uploading file. Error: " . esc_html( $e->getMessage() ) . "</p><br/>";
+			echo '<p>' . sprintf( __( 'Error in uploading file. Error: %s', 'windows-azure-storage' ), esc_html( $e->getMessage() ) ) . '</p><br/>';
 
 			return $data;
 		}
@@ -479,7 +475,7 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $postID ) {
 			unlink( $upload_file_name );
 		}
 	} catch ( Exception $e ) {
-		echo "<p>Error in uploading file. Error: " . esc_html( $e->getMessage() ) . "</p><br/>";
+		echo '<p>' . sprintf( __( 'Error in uploading file. Error: %s', 'windows-azure-storage' ), esc_html( $e->getMessage() ) ) . '</p><br/>';
 	}
 
 	return $data;
@@ -497,8 +493,6 @@ function windows_azure_storage_content_save_pre( $text ) {
 }
 
 /**
- * TODO: Implement wp_unique_filename filter once its available in WordPress.
- *
  * Hook for altering the file name.
  * Check whether the blob exists in the container and generate a unique file name for the blob.
  *
@@ -601,7 +595,7 @@ function browse_tab() {
 	wp_localize_script( 'media-grid', '_wpMediaGridSettings', [
 		'adminUrl' => parse_url( self_admin_url(), PHP_URL_PATH ),
 		'l10n'     => array(
-			'selectText' => __( 'Insert into post', MSFT_AZURE_PLUGIN_DOMAIN_NAME ),
+			'selectText' => __( 'Insert into post', 'windows-azure-storage' ),
 		)
 	] );
 	wp_iframe( 'windows_azure_storage_dialog_browse_tab' );
@@ -670,8 +664,8 @@ title="%2$s"><img src="%3$s" alt="%2$s" role="img" class="windows-azure-storage-
 function windows_azure_storage_plugin_menu() {
 	if ( current_user_can( 'manage_options' ) ) {
 		add_options_page(
-			__( 'Windows Azure Storage Plugin Settings', MSFT_AZURE_PLUGIN_DOMAIN_NAME ),
-			__( 'Windows Azure', MSFT_AZURE_PLUGIN_DOMAIN_NAME ),
+			__( 'Windows Azure Storage Plugin Settings', 'windows-azure-storage' ),
+			__( 'Windows Azure', 'windows-azure-storage' ),
 			'manage_options',
 			'windows-azure-storage-plugin-options',
 			'windows_azure_storage_plugin_options_page'
