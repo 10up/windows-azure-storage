@@ -1,8 +1,6 @@
 <?php
 
 /**
- * windows-azure-file-system-access-provider.php
- *
  * Windows Azure Storage REST API client.
  *
  * Version: 4.0.0

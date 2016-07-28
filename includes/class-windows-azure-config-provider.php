@@ -1,8 +1,6 @@
 <?php
 
 /**
- * windows-azure-config-provider.php
- *
  * Windows Azure Storage config provider.
  *
  * Version: 4.0.0

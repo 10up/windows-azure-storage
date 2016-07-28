@@ -1,8 +1,6 @@
 <?php
 
 /**
- * windows-azure-file-contents-provider.php
- *
  * Windows Azure Storage file contents provider.
  *
  * Version: 4.0.0
