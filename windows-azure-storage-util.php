@@ -1,7 +1,5 @@
 <?php
 /**
- * windows-azure-storage-util.php
- *
  * Various utility functions for accessing Windows Azure Storage
  *
  * Version: 3.0.1
@@ -72,6 +70,7 @@ class WindowsAzureStorageUtil {
 	 */
 	public static function getHostName() {
 		_deprecated_function( __FUNCTION__, '4.0', 'Windows_Azure_Helper::get_hostname()' );
+
 		return \Windows_Azure_Helper::get_hostname();
 	}
 
@@ -84,6 +83,7 @@ class WindowsAzureStorageUtil {
 	 */
 	public static function getAccountName() {
 		_deprecated_function( __METHOD__, '4.0', 'Windows_Azure_Helper::get_account_name()' );
+
 		return Windows_Azure_Helper::get_account_name();
 	}
 
@@ -96,6 +96,7 @@ class WindowsAzureStorageUtil {
 	 */
 	public static function getAccountKey() {
 		_deprecated_function( __FUNCTION__, '4.0', 'Windows_Azure_Helper::get_account_key()' );
+
 		return Windows_Azure_Helper::get_account_key();
 	}
 
@@ -108,14 +109,15 @@ class WindowsAzureStorageUtil {
 	 */
 	public static function getDefaultContainer() {
 		_deprecated_function( __FUNCTION__, '4.0', 'Windows_Azure_Helper::get_default_container()' );
+
 		return Windows_Azure_Helper::get_default_container();
 	}
 
 	/**
 	 * Get CNAME to be used for the base URL instead of the domain from Azure.
 	 *
-	 * @since 1.0.0
-	 * @since 3.0.0 Return a (maybe) filtered URL.
+	 * @since      1.0.0
+	 * @since      3.0.0 Return a (maybe) filtered URL.
 	 *
 	 * @deprecated 4.0
 	 *
@@ -123,6 +125,7 @@ class WindowsAzureStorageUtil {
 	 */
 	public static function getCNAME() {
 		_deprecated_function( __METHOD__, '4.0', 'Windows_Azure_Helper::get_cname()' );
+
 		return \Windows_Azure_Helper::get_cname();
 	}
 
@@ -135,6 +138,7 @@ class WindowsAzureStorageUtil {
 	 */
 	public static function getHttpProxyHost() {
 		_deprecated_function( __FUNCTION__, '4.0', 'Windows_Azure_Helper::get_http_proxy_host()' );
+
 		return Windows_Azure_Helper::get_http_proxy_host();
 	}
 
@@ -147,6 +151,7 @@ class WindowsAzureStorageUtil {
 	 */
 	public static function getHttpProxyPort() {
 		_deprecated_function( __FUNCTION__, '4.0', 'Windows_Azure_Helper::get_http_proxy_port()' );
+
 		return Windows_Azure_Helper::get_http_proxy_port();
 	}
 
@@ -159,6 +164,7 @@ class WindowsAzureStorageUtil {
 	 */
 	public static function getHttpProxyUserName() {
 		_deprecated_function( __FUNCTION__, '4.0', 'Windows_Azure_Helper::get_http_proxy_username()' );
+
 		return Windows_Azure_Helper::get_http_proxy_username();
 	}
 
@@ -171,32 +177,33 @@ class WindowsAzureStorageUtil {
 	 */
 	public static function getHttpProxyPassword() {
 		_deprecated_function( __FUNCTION__, '4.0', 'Windows_Azure_Helper::get_http_proxy_password()' );
+
 		return Windows_Azure_Helper::get_http_proxy_password();
 	}
 
 	/**
 	 * Create blob storage client using Azure SDK for PHP
 	 *
-	 * @param string $accountName   Windows Azure Storage account name
-	 *
-	 * @param string $accountKey    Windows Azure Storage account primary key
-	 *
-	 * @param string $proxyHost     Http proxy host
-	 *
-	 * @param string $proxyPort     Http proxy port
-	 *
-	 * @param string $proxyUserName Http proxy user name
-	 *
-	 * @param string $proxyPassword Http proxy password
+	 * @param string $account_name    Windows Azure Storage account name.
+	 * @param string $account_key     Windows Azure Storage account primary key.
+	 * @param string $proxy_host      Http proxy host.
+	 * @param string $proxy_port      Http proxy port.
+	 * @param string $proxy_user_name Http proxy user name.
+	 * @param string $proxy_password  Http proxy password.
 	 *
 	 * @deprecated 4.0
 	 *
-	 * @return WindowsAzure\Blob\BlobRestProxy Blob storage client
+	 * @throws Exception
+	 *
+	 * @return void
 	 */
 	public static function getStorageClient(
-		$accountName = null, $accountKey = null,
-		$proxyHost = null, $proxyPort = null,
-		$proxyUserName = null, $proxyPassword = null
+		$account_name = null,
+		$account_key = null,
+		$proxy_host = null,
+		$proxy_port = null,
+		$proxy_user_name = null,
+		$proxy_password = null
 	) {
 		throw new Exception( __( 'Function has been removed.', 'windows-azure-storage' ), -1 );
 	}
@@ -204,53 +211,51 @@ class WindowsAzureStorageUtil {
 	/**
 	 * Delete a blob from specified container
 	 *
-	 * @param string $containerName Name of the parent container
-	 *
-	 * @param string $blobName      Name of the blob to be deleted
+	 * @param string $container_name Name of the parent container.
+	 * @param string $blob_name      Name of the blob to be deleted.
 	 *
 	 * @deprecated 4.0
 	 *
 	 * @return void
 	 */
-	public static function deleteBlob( $containerName, $blobName ) {
+	public static function deleteBlob( $container_name, $blob_name ) {
 		_deprecated_function( __METHOD__, '4.0', 'Windows_Azure_Helper::delete_blob()' );
-		Windows_Azure_Helper::delete_blob( $containerName, $blobName );
+		Windows_Azure_Helper::delete_blob( $container_name, $blob_name );
 	}
 
 	/**
 	 * Check if a blob exists
 	 *
-	 * @since Unknown
-	 * @since 3.0.0 Wrapper for blob_exists_in_container().
-	 * @see   WindowsAzureStorageUtil::blob_exists_in_container()
+	 * @since      Unknown
+	 * @since      3.0.0 Wrapper for blob_exists_in_container().
+	 * @see        WindowsAzureStorageUtil::blob_exists_in_container()
 	 *
-	 * @param string $containerName Name of the parent container
-	 * @param string $blobName      Name of the blob to be checked
+	 * @param string $container_name Name of the parent container.
+	 * @param string $blob_name      Name of the blob to be checked.
 	 *
 	 * @deprecated 4.0
 	 *
 	 * @return boolean
 	 */
-	public static function blobExists( $containerName, $blobName ) {
+	public static function blobExists( $container_name, $blob_name ) {
 		_deprecated_function( __FUNCTION__, '4.0', 'WindowsAzureStorageUtil::blob_exists_in_container()' );
 
-		return self::blob_exists_in_container( $blobName, $containerName );
+		return self::blob_exists_in_container( $blob_name, $container_name );
 	}
 
 	/**
 	 * Creates a public container
 	 *
-	 * @param string        $containerName Name of the container to create
-	 *
-	 * @param BlobRestProxy $storageClient Reference of storage client to use
+	 * @param string        $container_name Name of the container to create.
+	 * @param BlobRestProxy $storage_client Reference of storage client to use.
 	 *
 	 * @deprecated 4.0
 	 *
-	 * @throws ServiceException
+	 * @return void
 	 */
-	public static function createPublicContainer( $containerName, $storageClient = null ) {
+	public static function createPublicContainer( $container_name, $storage_client = null ) {
 		_deprecated_function( __FUNCTION__, '4.0', 'Windows_Azure_Helper::create_container()' );
-		Windows_Azure_Helper::create_container( $containerName );
+		Windows_Azure_Helper::create_container( $container_name );
 	}
 
 	/**
@@ -259,7 +264,7 @@ class WindowsAzureStorageUtil {
 	 * If the CNAME is configured different than what Azure supports or the current site's protocol,
 	 * this will modify it to match, based on the filter's value.
 	 *
-	 * @since 3.0.0
+	 * @since      3.0.0
 	 *
 	 * @param string $cname The CNAME value set in the plugin options.
 	 *
@@ -331,7 +336,7 @@ class WindowsAzureStorageUtil {
 			$protocol .= '://';
 		}
 
-		// Get CNAME if defined
+		// Get CNAME if defined.
 		$cname = \Windows_Azure_Helper::get_cname();
 		if ( ! ( empty( $cname ) ) ) {
 			$url = sprintf( '%1$s/%2$s',
@@ -343,7 +348,7 @@ class WindowsAzureStorageUtil {
 			$storage_account_name   = \Windows_Azure_Helper::get_account_name();
 
 			if ( Windows_Azure_Helper::DEV_STORE_NAME === $storage_account_name ) {
-				// Use development storage
+				// Use development storage.
 				$url = sprintf( '%1$s%2%s/%3$s/%4$s',
 					$protocol,
 					$blob_storage_host_name,
@@ -351,7 +356,7 @@ class WindowsAzureStorageUtil {
 					$append_container ? $default_azure_storage_account_container_name : ''
 				);
 			} else {
-				// Use cloud storage
+				// Use cloud storage.
 				$url = sprintf( '%1$s%2$s.%3$s/%4$s',
 					$protocol,
 					$azure_storage_account_name,
@@ -378,16 +383,17 @@ class WindowsAzureStorageUtil {
 	/**
 	 * Genarate a blob name that is unique for the given container.
 	 *
-	 * @param string $container The default Azure storage container
-	 * @param string $blobName  The blob name
+	 * @param string $container The default Azure storage container.
+	 * @param string $blob_name The blob name.
 	 *
 	 * @deprecated 4.0
 	 *
 	 * @return string Unique blob name
 	 */
-	public static function uniqueBlobName( $container, $blobName ) {
+	public static function uniqueBlobName( $container, $blob_name ) {
 		_deprecated_function( __FUNCTION__, '4.0', 'Windows_Azure_Helper::get_unique_blob_name()' );
-		return \Windows_Azure_Helper::get_unique_blob_name( $container, $blobName );
+
+		return \Windows_Azure_Helper::get_unique_blob_name( $container, $blob_name );
 	}
 
 	/**
@@ -406,26 +412,26 @@ class WindowsAzureStorageUtil {
 	 * specified block blob, but it does  not become part of the blob until you commit a list
 	 * of blocks that includes the new block's ID.
 	 *
-	 * @param string $containerName   The container to add the blob to.
-	 * @param string $blobName        The name of the blob to upload.
-	 * @param string $localFileName   The full path to local file to be uploaded.
-	 * @param string $blobContentType Optional. Content type of the blob.
-	 * @param array  $metadata        Optional. Metadata to describe the blob.
+	 * @param string $container_name    The container to add the blob to.
+	 * @param string $blob_name         The name of the blob to upload.
+	 * @param string $local_file_name   The full path to local file to be uploaded.
+	 * @param string $blob_content_type Optional. Content type of the blob.
+	 * @param array  $metadata          Optional. Metadata to describe the blob.
 	 *
 	 * @deprecated 4.0
 	 *
 	 * @throws \Exception|ServiceException Exception if local file can't be read;
 	 *                                     ServiceException if response code is incorrect.
 	 */
-	public static function putBlockBlob( $containerName, $blobName, $localFileName, $blobContentType = null, $metadata = array() ) {
+	public static function putBlockBlob( $container_name, $blob_name, $local_file_name, $blob_content_type = null, $metadata = array() ) {
 		_deprecated_function( __FUNCTION__, '4.0', 'Windows_Azure_Helper::put_uploaded_file_to_blob_storage()' );
-		\Windows_Azure_Helper::put_uploaded_file_to_blob_storage( $containerName, $blobName, $localFileName );
+		\Windows_Azure_Helper::put_uploaded_file_to_blob_storage( $container_name, $blob_name, $local_file_name );
 	}
 
 	/**
 	 * Verify if a blob exists in the Storage container.
 	 *
-	 * @since 3.0.0
+	 * @since      3.0.0
 	 *
 	 * @param string $blob_name      The blob to check.
 	 * @param string $container_name Optional. The container to check. Defaults to default container in settings.
@@ -444,8 +450,8 @@ class WindowsAzureStorageUtil {
 	/**
 	 * Check if a container exists in the current account.
 	 *
-	 * @since 3.0.0
-	 * @link  https://goo.gl/6XsKAJ Official SDK example for checking containers.
+	 * @since      3.0.0
+	 * @link       https://goo.gl/6XsKAJ Official SDK example for checking containers.
 	 *
 	 * @param string $container_name The container name to check.
 	 *
@@ -463,32 +469,24 @@ class WindowsAzureStorageUtil {
 	/**
 	 * Create signature
 	 *
-	 * @param string  $accountName     Account name for Windows Azure
-	 *
-	 * @param string  $accountKey      Account key for Windows Azure
-	 *
-	 * @param boolean $usePathStyleUri Use path-style URI's
-	 *
-	 * @param string  $path            Path for the
-	 *
-	 * @param string  $resource        Signed resource - container (c) - blob (b)
-	 *
-	 * @param string  $permissions     Signed permissions - read (r), write (w), delete (d) and list (l)
-	 *
-	 * @param string  $start           The time at which the Shared Access Signature becomes valid.
-	 *
-	 * @param string  $expiry          The time at which the Shared Access Signature becomes invalid.
-	 *
-	 * @param string  $identifier      Signed identifier
+	 * @param string  $account_name       Account name for Windows Azure.
+	 * @param string  $account_key        Account key for Windows Azure.
+	 * @param boolean $use_path_style_uri Use path-style URI's.
+	 * @param string  $path               Path.
+	 * @param string  $resource           Signed resource - container (c) - blob (b).
+	 * @param string  $permissions        Signed permissions - read (r), write (w), delete (d) and list (l).
+	 * @param string  $start              The time at which the Shared Access Signature becomes valid.
+	 * @param string  $expiry             The time at which the Shared Access Signature becomes invalid.
+	 * @param string  $identifier         Signed identifier.
 	 *
 	 * @deprecated 4.0
 	 *
 	 * @return string
 	 */
 	public static function createSharedAccessSignature(
-		$accountName,
-		$accountKey,
-		$usePathStyleUri,
+		$account_name,
+		$account_key,
+		$use_path_style_uri,
 		$path = '/',
 		$resource = 'b',
 		$permissions = 'r',
@@ -497,31 +495,31 @@ class WindowsAzureStorageUtil {
 		$identifier = ''
 	) {
 		_deprecated_function( __FUNCTION__, '4.0' );
-		$accountKey = base64_decode( $accountKey );
-		// Determine path
-		if ( $usePathStyleUri ) {
+		$account_key = base64_decode( $account_key );
+		// Determine path.
+		if ( $use_path_style_uri ) {
 			$path = substr( $path, strpos( $path, '/' ) );
 		}
 
-		// Add trailing slash to $path
+		// Add trailing slash to $path.
 		if ( substr( $path, 0, 1 ) !== '/' ) {
 			$path = '/' . $path;
 		}
 
-		// Build canonicalized resource string
-		$canonicalizedResource = '/' . $accountName;
-		$canonicalizedResource .= $path;
+		// Build canonicalized resource string.
+		$canonicalized_resource = '/' . $account_name;
+		$canonicalized_resource .= $path;
 
-		// Create string to sign
-		$stringToSign   = array();
-		$stringToSign[] = $permissions;
-		$stringToSign[] = $start;
-		$stringToSign[] = $expiry;
-		$stringToSign[] = $canonicalizedResource;
-		$stringToSign[] = $identifier;
+		// Create string to sign.
+		$string_to_sign   = array();
+		$string_to_sign[] = $permissions;
+		$string_to_sign[] = $start;
+		$string_to_sign[] = $expiry;
+		$string_to_sign[] = $canonicalized_resource;
+		$string_to_sign[] = $identifier;
 
-		$stringToSign = implode( "\n", $stringToSign );
-		$signature    = base64_encode( hash_hmac( 'sha256', $stringToSign, $accountKey, true ) );
+		$string_to_sign = implode( "\n", $string_to_sign );
+		$signature      = base64_encode( hash_hmac( 'sha256', $string_to_sign, $account_key, true ) );
 
 		return $signature;
 	}
@@ -530,7 +528,7 @@ class WindowsAzureStorageUtil {
 	 * Generate block id which can be base-64 encoded, the pre-encoded string must be 64
 	 * bytes or less
 	 *
-	 * @param int $part Block number
+	 * @param int $part Block number.
 	 *
 	 * @deprecated 4.0
 	 *
@@ -538,19 +536,19 @@ class WindowsAzureStorageUtil {
 	 */
 	protected static function _generateBlockId( $part = 0 ) {
 		_deprecated_function( __FUNCTION__, '4.0' );
-		$returnValue = $part;
-		while ( strlen( $returnValue ) < 64 ) {
-			$returnValue = '0' . $returnValue;
+		$return_value = $part;
+		while ( strlen( $return_value ) < 64 ) {
+			$return_value = '0' . $return_value;
 		}
 
-		return $returnValue;
+		return $return_value;
 	}
 
 	/**
 	 * Check if the user can take the specified action for Azure Storage.
 	 *
-	 * @since 3.0.0
-	 * @see   user_can()
+	 * @since      3.0.0
+	 * @see        user_can()
 	 *
 	 * @param string     $action Optional. The plugin's action to check. Default 'browse'.
 	 *                           Allowed actions are: 'browse', 'insert', 'upload', 'create_container',
