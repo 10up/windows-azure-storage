@@ -88,6 +88,7 @@ add_action( 'load-settings_page_windows-azure-storage-plugin-options', 'windows_
 add_action( 'load-settings_page_windows-azure-storage-plugin-options', 'windows_azure_storage_check_container_access_policy' );
 add_action( 'wp_ajax_query-azure-attachments', 'windows_azure_storage_query_azure_attachments' );
 add_action( 'wp_ajax_delete-azure-blob', 'windows_azure_storage_delete_blob' );
+add_action( 'wp_ajax_get-azure-progress', 'windows_azure_upload_progress' );
 
 /**
  * Add Azure-specific tabs to the editor's media loader.
@@ -394,6 +395,14 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 	}
 
 	try {
+		$post_array = wp_unslash( $_POST );
+		$post_array = wp_parse_args( $post_array, array(
+			'item_id' => $post_array['name'] . '_' . $post_array['_wpnonce'],
+		) );
+
+		$azure_progress_key = 'azure_progress_' . sanitize_text_field( $post_array['item_id'] );
+		$current            = 0;
+		set_transient( $azure_progress_key, array( 'current' => $current, 'total' => count( $data['sizes'] ) + 1 ), 30 );
 		// Get full file path of uploaded file.
 		$data['file'] = $upload_file_name;
 
@@ -407,6 +416,7 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 				$relative_file_name,
 				$mime_type
 			);
+			set_transient( $azure_progress_key, array( 'current' => ++$current, 'total' => count( $data['sizes'] ) + 1 ), 30 );
 
 		} catch ( Exception $e ) {
 			echo '<p>' . sprintf( __( 'Error in uploading file. Error: %s', 'windows-azure-storage' ), esc_html( $e->getMessage() ) ) . '</p><br/>';
@@ -447,6 +457,7 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 					if ( $delete_local_file ) {
 						Windows_Azure_Helper::unlink_file( trailingslashit( $file_upload_dir ) . $size['file'] );
 					}
+					set_transient( $azure_progress_key, array( 'current' => ++$current, 'total' => count( $data['sizes'] ) + 1 ), 30 );
 				}
 			}
 		}
@@ -831,4 +842,39 @@ function windows_azure_storage_delete_blob() {
 	} else {
 		wp_die( 1 );
 	}
+}
+
+/**
+ * Handle ajax requests for Azure upload progress.
+ *
+ * @since 4.0.0
+ *
+ * @return void
+ */
+function windows_azure_upload_progress() {
+	$post_array = wp_unslash( $_POST );
+	$item_id    = isset( $post_array['data']['item_id'] ) ? sanitize_text_field( $post_array['data']['item_id'] ) : false;
+	if ( ! $item_id ) {
+		wp_send_json_success( array(
+			'progress' => 100,
+			'current'  => -1,
+			'total'    => -1,
+		) );
+	}
+
+	$progress = get_transient( 'azure_progress_' . $item_id );
+	if ( ! $progress ) {
+		wp_send_json_success( array(
+			'progress' => 0,
+			'current'  => -1,
+			'total'    => -1,
+		) );
+	} else {
+		wp_send_json_success( array(
+			'progress' => (int) ( $progress['current'] * 100 / $progress['total'] ),
+			'current'  => $progress['current'],
+			'total'    => $progress['total'],
+		) );
+	}
+
 }

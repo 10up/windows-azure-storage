@@ -61,6 +61,44 @@
       htmlForm.action = $( this ).data( 'containerUrl' );
       htmlForm.submit();
     } );
+
+    function get_upload_progress( item_id, item ) {
+      $.post( window.ajaxurl, {
+        action: 'get-azure-progress',
+        data: {
+          item_id: item_id
+        }
+      } ).done( function ( response ) {
+        var progressText = azureStorageConfig.l10n.uploadingToAzure + ' ' + response.data.progress + '%...';
+        if ( response.data.total > 0 && response.data.current > 0 ) {
+          progressText += '(' + response.data.current + ' / ' + response.data.total + ')';
+        }
+        $( '.percent', item ).html( progressText );
+        $( '.bar', item ).width( 2 * response.data.progress );
+        if ( response.data.progress < 100 ) {
+          window.setTimeout( function () {
+            get_upload_progress( item_id, item );
+          }, 1000 );
+        }
+      } ).fail( function () {
+        window.setTimeout( function () {
+          get_upload_progress( item_id, item );
+        }, 1000 );
+      } );
+    }
+
+    if ( typeof uploader !== 'undefined' ) {
+      uploader.bind( 'UploadProgress', function ( up, file ) {
+        if ( file.percent === 100 ) {
+          var item = $( '#media-item-' + file.id );
+          $( '.percent', item ).html( azureStorageConfig.l10n.uploadingToAzure );
+          get_upload_progress( file.id, item );
+        }
+      } );
+      uploader.bind( 'BeforeUpload', function ( up, file ) {
+        up.settings.multipart_params.item_id = file.id;
+      } );
+    }
   } );
 
 })( jQuery, this );
