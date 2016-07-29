@@ -53,6 +53,11 @@ function windows_azure_storage_dialog_scripts( $hook_suffix ) {
 	$css_ext = ( ! defined( 'SCRIPT_DEBUG' ) || false === SCRIPT_DEBUG ) ? '.min.css' : '.css';
 	wp_enqueue_script( 'windows-azure-storage-admin', MSFT_AZURE_PLUGIN_URL . 'js/windows-azure-storage-admin' . $js_ext, array(), MSFT_AZURE_PLUGIN_VERSION );
 	wp_enqueue_style( 'windows-azure-storage-style', MSFT_AZURE_PLUGIN_URL . 'css/windows-azure-storage' . $css_ext, array(), MSFT_AZURE_PLUGIN_VERSION );
+	wp_localize_script( 'windows-azure-storage-admin', 'azureStorageConfig', array(
+		'l10n' => array(
+			'uploadingToAzure' => __( 'Uploading to Azure', 'windows-azure-storage' ),
+		),
+	) );
 }
 
 add_action( 'admin_enqueue_scripts', 'windows_azure_storage_dialog_scripts' );
