@@ -69,12 +69,15 @@
           item_id: item_id
         }
       } ).done( function ( response ) {
-        var progressText = azureStorageConfig.l10n.uploadingToAzure + ' ' + response.data.progress + '%...';
-        if ( response.data.total > 0 && response.data.current > 0 ) {
-          progressText += '(' + response.data.current + ' / ' + response.data.total + ')';
+        var progressText = azureStorageConfig.l10n.uploadingToAzure + '...';
+        if ( response.data.total > 0 && response.data.current > -1 ) {
+          progressText += ' (' + response.data.current + ' / ' + response.data.total + ')';
         }
         $( '.percent', item ).html( progressText );
         $( '.bar', item ).width( 2 * response.data.progress );
+        $( 'div.media-modal-content' ).find( 'div.media-uploader-status.uploading > *' ).first().text( progressText );
+        $( 'div.media-modal-content' ).find( 'div.media-uploader-status.uploading' ).find( 'div.media-progress-bar > div' ).css( 'width', response.data.progress + '%' );
+        $( 'div.media-modal-content' ).find( 'ul.attachments' ).find( 'div.media-progress-bar:last > div' ).css( 'width', response.data.progress + '%' );
         if ( response.data.progress < 100 ) {
           window.setTimeout( function () {
             get_upload_progress( item_id, item );
@@ -87,16 +90,40 @@
       } );
     }
 
+    window.before_upload = function ( up, file ) {
+      up.settings.multipart_params.item_id = file.id;
+    };
+
+    window.upload_progess = function ( up, file ) {
+      if ( file.percent === 100 ) {
+        var item = $( '#media-item-' + file.id );
+        $( '.percent', item ).html( azureStorageConfig.l10n.uploadingToAzure );
+        $( 'div.media-uploader-status.uploading > *' ).first().text( azureStorageConfig.l10n.uploadingToAzure );
+        get_upload_progress( file.id, item );
+      }
+    };
+
     if ( typeof uploader !== 'undefined' ) {
       uploader.bind( 'UploadProgress', function ( up, file ) {
-        if ( file.percent === 100 ) {
-          var item = $( '#media-item-' + file.id );
-          $( '.percent', item ).html( azureStorageConfig.l10n.uploadingToAzure );
-          get_upload_progress( file.id, item );
-        }
+        window.upload_progess( up, file );
       } );
       uploader.bind( 'BeforeUpload', function ( up, file ) {
-        up.settings.multipart_params.item_id = file.id;
+        window.before_upload( up, file );
+      } );
+    }
+
+    if ( wp && wp.media && wp.media.view && wp.media.view.UploaderWindow ) {
+      var curUploaderWindow = wp.media.view.UploaderWindow;
+      wp.media.view.UploaderWindow = wp.media.view.UploaderWindow.extend( {
+        ready: function () {
+          curUploaderWindow.prototype.ready.apply( this, arguments );
+          this.uploader.uploader.bind( 'BeforeUpload', function ( up, file ) {
+            window.before_upload( up, file );
+          } );
+          this.uploader.uploader.bind( 'UploadProgress', function ( up, file ) {
+            window.upload_progess( up, file );
+          } );
+        }
       } );
     }
   } );

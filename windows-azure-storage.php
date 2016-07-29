@@ -402,7 +402,6 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 
 		$azure_progress_key = 'azure_progress_' . sanitize_text_field( $post_array['item_id'] );
 		$current            = 0;
-		set_transient( $azure_progress_key, array( 'current' => $current, 'total' => count( $data['sizes'] ) + 1 ), 30 );
 		// Get full file path of uploaded file.
 		$data['file'] = $upload_file_name;
 
@@ -410,13 +409,13 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 		$mime_type = get_post_mime_type( $post_id );
 
 		try {
+			set_transient( $azure_progress_key, array( 'current' => ++$current, 'total' => count( $data['sizes'] ) + 1 ), 5 * MINUTE_IN_SECONDS );
 			$result = \Windows_Azure_Helper::put_media_to_blob_storage(
 				$default_azure_storage_account_container_name,
 				$relative_file_name,
 				$relative_file_name,
 				$mime_type
 			);
-			set_transient( $azure_progress_key, array( 'current' => ++$current, 'total' => count( $data['sizes'] ) + 1 ), 30 );
 
 		} catch ( Exception $e ) {
 			echo '<p>' . sprintf( __( 'Error in uploading file. Error: %s', 'windows-azure-storage' ), esc_html( $e->getMessage() ) ) . '</p><br/>';
@@ -444,6 +443,7 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 				// Move only if file exists. Some theme may use same file name for multiple sizes.
 				if ( Windows_Azure_Helper::file_exists( trailingslashit( $file_upload_dir ) . $size['file'] ) ) {
 					$blob_name = ( '' === $file_upload_dir ) ? $size['file'] : $file_upload_dir . '/' . $size['file'];
+					set_transient( $azure_progress_key, array( 'current' => ++$current, 'total' => count( $data['sizes'] ) + 1 ), 5 * MINUTE_IN_SECONDS );
 					\Windows_Azure_Helper::put_media_to_blob_storage(
 						$default_azure_storage_account_container_name,
 						$blob_name,
@@ -457,7 +457,6 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 					if ( $delete_local_file ) {
 						Windows_Azure_Helper::unlink_file( trailingslashit( $file_upload_dir ) . $size['file'] );
 					}
-					set_transient( $azure_progress_key, array( 'current' => ++$current, 'total' => count( $data['sizes'] ) + 1 ), 30 );
 				}
 			}
 		}
