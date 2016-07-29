@@ -107,6 +107,7 @@ function windows_azure_storage_plugin_register_settings() {
 	register_setting( 'windows-azure-storage-settings-group', 'cname', 'esc_url_raw' );
 	register_setting( 'windows-azure-storage-settings-group', 'azure_storage_use_for_default_upload', 'wp_validate_boolean' );
 	register_setting( 'windows-azure-storage-settings-group', 'azure_storage_keep_local_file', 'wp_validate_boolean' );
+	register_setting( 'windows-azure-storage-settings-group', 'azure_browse_cache_results', 'intval' );
 
 	/**
 	 * @since 4.0.0
@@ -174,6 +175,16 @@ function windows_azure_storage_plugin_register_settings() {
 		'azure_storage_keep_local_file',
 		__( 'Keep local files', 'windows-azure-storage' ),
 		'windows_azure_storage_setting_keep_local_file',
+		'windows-azure-storage-plugin-options',
+		'windows-azure-storage-settings'
+	);
+	/**
+	 * @since 4.0.0
+	 */
+	add_settings_field(
+		'azure_browse_cache_results',
+		__( 'Browse cache period in minutes', 'windows-azure-storage' ),
+		'windows_azure_browse_cache_results',
 		'windows-azure-storage-plugin-options',
 		'windows-azure-storage-settings'
 	);
@@ -330,6 +341,28 @@ function windows_azure_storage_setting_keep_local_file() {
 	<label for="azure_storage_keep_local_file">
 		<?php esc_html_e( 'Do not delete local files after uploading them to Azure Storage.', 'windows-azure-storage' ); ?>
 	</label>
+	<?php
+}
+
+/**
+ * Browse cache results setting.
+ *
+ * @since 4.0.0
+ *
+ * @return void
+ */
+function windows_azure_browse_cache_results() {
+	$ttl = Windows_Azure_Helper::get_cache_ttl();
+	?>
+	<input type="number" name="azure_browse_cache_results" class="regular-text" title="<?php esc_attr_e( 'Browse cache TTL', 'windows-azure-storage' ); ?>" value="<?php echo esc_attr( $ttl ); ?>"/>
+	<p class="field-description">
+		<?php
+		echo __(
+			'Note: If you want to disable browse caching please set this value to 0.',
+			'windows-azure-storage'
+		);
+		?>
+	</p>
 	<?php
 }
 

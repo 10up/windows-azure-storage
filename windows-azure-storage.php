@@ -740,9 +740,10 @@ function windows_azure_storage_query_azure_attachments() {
 		wp_send_json_error();
 	}
 
-	$request = wp_unslash( $_REQUEST );
-	$query   = isset( $request['query'] ) ? (array) $request['query'] : array();
-	$query   = array_intersect_key( $query, array_flip( array(
+	$cache_ttl = Windows_Azure_Helper::get_cache_ttl();
+	$request   = wp_unslash( $_REQUEST );
+	$query     = isset( $request['query'] ) ? (array) $request['query'] : array();
+	$query     = array_intersect_key( $query, array_flip( array(
 		's',
 		'posts_per_page',
 		'paged',
@@ -757,6 +758,12 @@ function windows_azure_storage_query_azure_attachments() {
 		$next_marker = false;
 	} else {
 		$next_marker = sanitize_text_field( wp_unslash( $_COOKIE['azure_next_marker'] ) );
+	}
+	$cache_key = 'wasr_' . md5( json_encode( $query ) );
+	if ( $cache_ttl > 0 && $posts = wp_cache_get( $cache_key ) ) {
+		wp_send_json_success( $posts );
+
+		return;
 	}
 	$posts       = array();
 	$credentials = Windows_Azure_Config_Provider::get_account_credentials();
@@ -785,6 +792,9 @@ function windows_azure_storage_query_azure_attachments() {
 		}
 
 		$posts[] = $blob_info;
+	}
+	if ( $cache_ttl > 0 ) {
+		wp_cache_set( $cache_key, $posts, '', $cache_ttl * MINUTE_IN_SECONDS );
 	}
 	wp_send_json_success( $posts );
 }
