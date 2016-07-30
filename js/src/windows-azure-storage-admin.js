@@ -78,6 +78,9 @@
         $( 'div.media-modal-content' ).find( 'div.media-uploader-status.uploading > *' ).first().text( progressText );
         $( 'div.media-modal-content' ).find( 'div.media-uploader-status.uploading' ).find( 'div.media-progress-bar > div' ).css( 'width', response.data.progress + '%' );
         $( 'div.media-modal-content' ).find( 'ul.attachments' ).find( 'div.media-progress-bar:last > div' ).css( 'width', response.data.progress + '%' );
+        $( 'div.media-frame' ).find( 'ul.attachments' ).find( 'div.media-progress-bar:last > div' ).css( 'width', response.data.progress + '%' );
+        $( 'div.media-frame-content' ).find( 'div.attachment-media-view.landscape' ).find( 'div.media-progress-bar > div' ).css( 'width', response.data.progress + '%' );
+        $( 'div.media-modal.wp-core-ui' ).find( 'div.media-frame-title > h1' ).text( progressText );
         if ( response.data.progress < 100 ) {
           window.setTimeout( function () {
             get_upload_progress( item_id, item );
