@@ -591,7 +591,7 @@ function windows_azure_storage_delete_attachment( $post_id ) {
  */
 function windows_azure_browse_tab() {
 	/** @var $path_parsed array Parsed path. */
-	$path_parsed = wp_parse_url( self_admin_url() );
+	$path_parsed = parse_url( self_admin_url() );
 	$path_parsed = isset( $path_parsed['path'] ) ? $path_parsed['path'] : null;
 	$js_ext      = ( ! defined( 'SCRIPT_DEBUG' ) || false === SCRIPT_DEBUG ) ? '.min.js' : '.js';
 	add_action( 'admin_enqueue_scripts', 'windows_azure_storage_dialog_scripts' );
