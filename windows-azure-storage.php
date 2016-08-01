@@ -400,7 +400,7 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 			'item_id' => $post_array['name'] . '_' . $post_array['_wpnonce'],
 		) );
 
-		$azure_progress_key = 'azure_progress_' . sanitize_text_field( $post_array['item_id'] );
+		$azure_progress_key = 'azure_progress_' . sanitize_text_field( trim( $post_array['item_id'] ) );
 		$current            = 0;
 		// Get full file path of uploaded file.
 		$data['file'] = $upload_file_name;
@@ -856,6 +856,7 @@ function windows_azure_storage_delete_blob() {
 function windows_azure_upload_progress() {
 	$post_array = wp_unslash( $_POST );
 	$item_id    = isset( $post_array['data']['item_id'] ) ? sanitize_text_field( $post_array['data']['item_id'] ) : false;
+	$item_id    = trim( $item_id );
 	if ( ! $item_id ) {
 		wp_send_json_success( array(
 			'progress' => 100,
@@ -867,7 +868,7 @@ function windows_azure_upload_progress() {
 	$progress = get_transient( 'azure_progress_' . $item_id );
 	if ( ! $progress ) {
 		wp_send_json_success( array(
-			'progress' => 0,
+			'progress' => -1,
 			'current'  => -1,
 			'total'    => -1,
 		) );
