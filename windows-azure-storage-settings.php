@@ -246,6 +246,10 @@ function windows_azure_storage_setting_storage_container() {
 		<?php
 		if ( ! is_wp_error( $containers_list ) ) {
 			foreach ( $containers_list as $container ) {
+				if ( empty( $default_container ) ) {
+					$default_container = $container['Name'];
+					Windows_Azure_Helper::set_default_container( $default_container );
+				}
 				?>
 				<option value="<?php echo esc_attr( $container['Name'] ); ?>"
 					<?php if ( ! $container_creation_failed ) {
