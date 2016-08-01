@@ -73,14 +73,16 @@
         if ( response.data.total > 0 && response.data.current > -1 ) {
           progressText += ' (' + response.data.current + ' / ' + response.data.total + ')';
         }
-        $( '.percent', item ).html( progressText );
-        $( '.bar', item ).width( 2 * response.data.progress );
-        $( 'div.media-modal-content' ).find( 'div.media-uploader-status.uploading > *' ).first().text( progressText );
-        $( 'div.media-modal-content' ).find( 'div.media-uploader-status.uploading' ).find( 'div.media-progress-bar > div' ).css( 'width', response.data.progress + '%' );
-        $( 'div.media-modal-content' ).find( 'ul.attachments' ).find( 'div.media-progress-bar:last > div' ).css( 'width', response.data.progress + '%' );
-        $( 'div.media-frame' ).find( 'ul.attachments' ).find( 'div.media-progress-bar:last > div' ).css( 'width', response.data.progress + '%' );
-        $( 'div.media-frame-content' ).find( 'div.attachment-media-view.landscape' ).find( 'div.media-progress-bar > div' ).css( 'width', response.data.progress + '%' );
-        $( 'div.media-modal.wp-core-ui' ).find( 'div.media-frame-title > h1' ).text( progressText );
+        if ( response.data.progress >= 0 ) {
+          $( '.percent', item ).html( progressText );
+          $( '.bar', item ).width( 2 * response.data.progress );
+          $( 'div.media-modal-content' ).find( 'div.media-uploader-status.uploading > *' ).first().text( progressText );
+          $( 'div.media-modal-content' ).find( 'div.media-uploader-status.uploading' ).find( 'div.media-progress-bar > div' ).css( 'width', response.data.progress + '%' );
+          $( 'div.media-modal-content' ).find( 'ul.attachments' ).find( 'div.media-progress-bar:last > div' ).css( 'width', response.data.progress + '%' );
+          $( 'div.media-frame' ).find( 'ul.attachments' ).find( 'div.media-progress-bar:last > div' ).css( 'width', response.data.progress + '%' );
+          $( 'div.media-frame-content' ).find( 'div.attachment-media-view.landscape' ).find( 'div.media-progress-bar > div' ).css( 'width', response.data.progress + '%' );
+          $( 'div.media-modal.wp-core-ui' ).find( 'div.media-frame-title > h1' ).text( progressText );
+        }
         if ( response.data.progress < 100 ) {
           window.setTimeout( function () {
             get_upload_progress( item_id, item );
@@ -102,7 +104,9 @@
         var item = $( '#media-item-' + file.id );
         $( '.percent', item ).html( azureStorageConfig.l10n.uploadingToAzure );
         $( 'div.media-uploader-status.uploading > *' ).first().text( azureStorageConfig.l10n.uploadingToAzure );
-        get_upload_progress( file.id, item );
+        window.setTimeout( function () {
+          get_upload_progress( file.id, item );
+        }, 2000 );
       }
     };
 

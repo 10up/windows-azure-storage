@@ -36,3 +36,7 @@
 #windows-azure-storage-browser .delete-attachment {
 	color: red;
 }
+
+#windows-azure-storage-browser .media-toolbar.wp-filter  .media-toolbar-primary.search-form {
+	margin: 10px 0;
+}

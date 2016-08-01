@@ -400,7 +400,7 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 			'item_id' => $post_array['name'] . '_' . $post_array['_wpnonce'],
 		) );
 
-		$azure_progress_key = 'azure_progress_' . sanitize_text_field( $post_array['item_id'] );
+		$azure_progress_key = 'azure_progress_' . sanitize_text_field( trim( $post_array['item_id'] ) );
 		$current            = 0;
 		// Get full file path of uploaded file.
 		$data['file'] = $upload_file_name;
@@ -409,6 +409,9 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 		$mime_type = get_post_mime_type( $post_id );
 
 		try {
+			if ( ! isset( $data['sizes'] ) ) {
+				$data['sizes'] = array();
+			}
 			set_transient( $azure_progress_key, array( 'current' => ++$current, 'total' => count( $data['sizes'] ) + 1 ), 5 * MINUTE_IN_SECONDS );
 			$result = \Windows_Azure_Helper::put_media_to_blob_storage(
 				$default_azure_storage_account_container_name,
@@ -591,7 +594,7 @@ function windows_azure_storage_delete_attachment( $post_id ) {
  */
 function windows_azure_browse_tab() {
 	/** @var $path_parsed array Parsed path. */
-	$path_parsed = wp_parse_url( self_admin_url() );
+	$path_parsed = parse_url( self_admin_url() );
 	$path_parsed = isset( $path_parsed['path'] ) ? $path_parsed['path'] : null;
 	$js_ext      = ( ! defined( 'SCRIPT_DEBUG' ) || false === SCRIPT_DEBUG ) ? '.min.js' : '.js';
 	add_action( 'admin_enqueue_scripts', 'windows_azure_storage_dialog_scripts' );
@@ -853,6 +856,7 @@ function windows_azure_storage_delete_blob() {
 function windows_azure_upload_progress() {
 	$post_array = wp_unslash( $_POST );
 	$item_id    = isset( $post_array['data']['item_id'] ) ? sanitize_text_field( $post_array['data']['item_id'] ) : false;
+	$item_id    = trim( $item_id );
 	if ( ! $item_id ) {
 		wp_send_json_success( array(
 			'progress' => 100,
@@ -864,7 +868,7 @@ function windows_azure_upload_progress() {
 	$progress = get_transient( 'azure_progress_' . $item_id );
 	if ( ! $progress ) {
 		wp_send_json_success( array(
-			'progress' => 0,
+			'progress' => -1,
 			'current'  => -1,
 			'total'    => -1,
 		) );

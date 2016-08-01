@@ -62,9 +62,6 @@ function windows_azure_storage_plugin_settings_preamble() {
 		<?php esc_html_e( 'For more details on Windows Azure Storage Services, please visit the <a href="http://www.microsoft.com/azure/windowsazure.mspx">Windows Azure Platform web-site</a>.', 'windows-azure-storage' ); ?>
 		<br/>
 
-		<p>
-			<?php esc_html_e( 'This plugin uses Windows Azure SDK for PHP (<a href="https://github.com/WindowsAzure/azure-sdk-for-php/">https://github.com/WindowsAzure/azure-sdk-for-php/</a>).', 'windows-azure-storage' ); ?>
-		</p>
 		<b><?php esc_html_e( 'Plugin Web Site:', 'windows-azure-storage' ); ?></b>
 		<a href="http://wordpress.org/extend/plugins/windows-azure-storage/">http://wordpress.org/extend/plugins/windows-azure-storage/</a>
 		<br><br>

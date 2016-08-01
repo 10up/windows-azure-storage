@@ -451,7 +451,7 @@ class Windows_Azure_Helper {
 		// Remove http/https from the beginning.
 		if ( 0 === strpos( $host_name, 'http' ) ) {
 			/** @var $parts array */
-			$parts     = wp_parse_url( $host_name );
+			$parts     = parse_url( $host_name );
 			$host_name = $parts['host'];
 			if ( ! empty( $parts['port'] ) ) {
 				$host_name = $host_name . ':' . $parts['port'];

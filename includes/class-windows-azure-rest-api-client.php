@@ -1020,7 +1020,7 @@ class Windows_Azure_Rest_Api_Client {
 
 		$headers = array_merge( $headers, array(
 			self::API_HEADER_MS_VERSION => self::API_VERSION,
-			self::API_HEADER_MS_DATE    => get_gmt_from_date( date( 'D, d M Y H:i:s T' ), 'D, d M Y H:i:s T' ),
+			self::API_HEADER_MS_DATE    => get_gmt_from_date( date( 'Y-m-d H:i:s' ), 'D, d M Y H:i:s T' ),
 			'Content-Length'            => strlen( $body ) > 0 ? strlen( $body ) : null,
 			'Content-Type'              => 'text/plain',
 		) );
@@ -1057,7 +1057,7 @@ class Windows_Azure_Rest_Api_Client {
 
 		$xml_structure = simplexml_load_string( $body );
 		if ( ! empty( $body ) ) {
-			return json_decode( wp_json_encode( $xml_structure ), true );
+			return json_decode( json_encode( $xml_structure ), true );
 		} else {
 			return $result;
 		}
@@ -1128,7 +1128,7 @@ class Windows_Azure_Rest_Api_Client {
 	 */
 	protected function _build_canonicalized_resource( $url, $account_name ) {
 		/** @var $parsed_url array */
-		$parsed_url             = wp_parse_url( $url );
+		$parsed_url             = parse_url( $url );
 		$canonicalized_resource = '/' . $account_name . ( isset( $parsed_url['path'] ) ? $parsed_url['path'] : '' );
 
 		if ( isset( $parsed_url['query'] ) ) {
