@@ -168,6 +168,19 @@ class Windows_Azure_Helper {
 	}
 
 	/**
+	 * Set storage default container.
+	 *
+	 * @param string $container Default container.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return void
+	 */
+	static public function set_default_container( $container ) {
+		return update_option( 'default_azure_storage_account_container_name', $container );
+	}
+
+	/**
 	 * Whether to delete local file after uploading it to Azure Storage or not.
 	 *
 	 * @since 4.0.0
