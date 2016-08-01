@@ -1057,7 +1057,7 @@ class Windows_Azure_Rest_Api_Client {
 
 		$xml_structure = simplexml_load_string( $body );
 		if ( ! empty( $body ) ) {
-			return json_decode( wp_json_encode( $xml_structure ), true );
+			return json_decode( json_encode( $xml_structure ), true );
 		} else {
 			return $result;
 		}

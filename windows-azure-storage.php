@@ -409,6 +409,9 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 		$mime_type = get_post_mime_type( $post_id );
 
 		try {
+			if ( ! isset( $data['sizes'] ) ) {
+				$data['sizes'] = array();
+			}
 			set_transient( $azure_progress_key, array( 'current' => ++$current, 'total' => count( $data['sizes'] ) + 1 ), 5 * MINUTE_IN_SECONDS );
 			$result = \Windows_Azure_Helper::put_media_to_blob_storage(
 				$default_azure_storage_account_container_name,
