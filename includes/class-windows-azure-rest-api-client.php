@@ -1020,7 +1020,7 @@ class Windows_Azure_Rest_Api_Client {
 
 		$headers = array_merge( $headers, array(
 			self::API_HEADER_MS_VERSION => self::API_VERSION,
-			self::API_HEADER_MS_DATE    => get_gmt_from_date( date( 'Y-m-d H:i:s' ), 'D, d M Y H:i:s T' ),
+			self::API_HEADER_MS_DATE    => get_gmt_from_date( current_time( 'mysql', 0 ), 'D, d M Y H:i:s' ) . ' GMT',
 			'Content-Length'            => strlen( $body ) > 0 ? strlen( $body ) : null,
 			'Content-Type'              => 'text/plain',
 		) );

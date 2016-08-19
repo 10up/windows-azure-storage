@@ -170,10 +170,10 @@ function windows_azure_plugin_check_prerequisite() {
 		deactivate_plugins( plugin_basename( __FILE__ ) );
 		wp_die( __( 'Windows Azure Storage for WordPress requires at least PHP 5.3.0', 'windows-azure-storage' ) );
 	}
-	$wp_compat = version_compare( $wp_version, '2.8.0', '>=' );
+	$wp_compat = version_compare( $wp_version, '4.0', '>=' );
 	if ( ! $wp_compat ) {
 		deactivate_plugins( plugin_basename( __FILE__ ) );
-		wp_die( __( 'Windows Azure Storage for WordPress requires at least WordPress 2.8.0', 'windows-azure-storage' ) );
+		wp_die( __( 'Windows Azure Storage for WordPress requires at least WordPress 4.0', 'windows-azure-storage' ) );
 	}
 }
 
