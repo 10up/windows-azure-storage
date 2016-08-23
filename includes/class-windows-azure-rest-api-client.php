@@ -548,6 +548,9 @@ class Windows_Azure_Rest_Api_Client {
 		$string_to_sign                   = implode( "\n", $signature_data );
 		$signature                        = 'SharedKey ' . $this->get_account_name() . ':' . base64_encode( hash_hmac( 'sha256', $string_to_sign, base64_decode( $this->get_access_key() ), true ) );
 		$args['headers']['Authorization'] = $signature;
+		if ( array_key_exists( 'Content-Length', $args['headers'] ) ) {
+			$args['headers']['Content-Length'] = (int)$args['headers']['Content-Length'];
+		}
 
 		return $args;
 	}
