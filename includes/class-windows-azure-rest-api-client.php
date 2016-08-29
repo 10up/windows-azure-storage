@@ -1044,7 +1044,7 @@ class Windows_Azure_Rest_Api_Client {
 		$this->_current_url = null;
 
 		// Remove this filter once request is done.
-		remove_filter( 'http_request_args', array( $this, 'inject_authorization_header' ) );
+		remove_filter( 'http_request_args', array( $this, 'inject_authorization_header' ), PHP_INT_MAX );
 
 		$body = wp_remote_retrieve_body( $result );
 

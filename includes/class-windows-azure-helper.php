@@ -408,9 +408,9 @@ class Windows_Azure_Helper {
 				$blob_name => $blob_name,
 			),
 		);
-		$sanizited_file_names = $rest_api_client->sanitize_blobs_names( $container_name, $file_info );
+		$sanitize_blobs_names = $rest_api_client->sanitize_blobs_names( $container_name, $file_info );
 
-		return $sanizited_file_names[ $blob_name ][ $blob_name ];
+		return $sanitize_blobs_names[ $blob_name ][ $blob_name ];
 	}
 
 	/**
