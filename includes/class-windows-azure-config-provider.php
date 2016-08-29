@@ -53,8 +53,8 @@ class Windows_Azure_Config_Provider {
 		static $credentials;
 		if ( null === $credentials ) {
 			$credentials = array(
-				'account_name' => get_option( 'azure_storage_account_name', false ),
-				'account_key'  => get_option( 'azure_storage_account_primary_access_key', false ),
+				'account_name' => Windows_Azure_Helper::get_account_name(),
+				'account_key'  => Windows_Azure_Helper::get_account_key(),
 			);
 		}
 

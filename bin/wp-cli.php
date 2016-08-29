@@ -110,7 +110,7 @@ class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 	 * ## EXAMPLE
 	 * wp windows-azure-storage container-create testcontainer
 	 */
-	public function create_cointainer( $args, $assoc_args ) {
+	public function create_container( $args, $assoc_args ) {
 		if ( empty( $args ) ) {
 			WP_CLI::error( __( 'Container name must be set.', 'windows-azure-storage' ) );
 			exit;
