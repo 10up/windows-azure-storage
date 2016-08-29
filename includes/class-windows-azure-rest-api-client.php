@@ -1029,7 +1029,7 @@ class Windows_Azure_Rest_Api_Client {
 		) );
 
 		// Add this filter to be able to inject authorization header.
-		add_filter( 'http_request_args', array( $this, 'inject_authorization_header' ), 10, 2 );
+		add_filter( 'http_request_args', array( $this, 'inject_authorization_header' ), PHP_INT_MAX, 2 );
 
 		$this->_current_url = $endpoint_url;
 
