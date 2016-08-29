@@ -59,7 +59,7 @@ function windows_azure_storage_plugin_settings_preamble() {
 			'windows-azure-storage'
 		); ?>
 		<br/><br/>
-		<?php esc_html_e( 'For more details on Windows Azure Storage Services, please visit the <a href="http://www.microsoft.com/azure/windowsazure.mspx">Windows Azure Platform web-site</a>.', 'windows-azure-storage' ); ?>
+		<?php echo __( 'For more details on Windows Azure Storage Services, please visit the <a href="http://www.microsoft.com/azure/windowsazure.mspx">Windows Azure Platform web-site</a>.', 'windows-azure-storage' ); ?>
 		<br/>
 
 		<b><?php esc_html_e( 'Plugin Web Site:', 'windows-azure-storage' ); ?></b>
