@@ -409,10 +409,15 @@ class Windows_Azure_Helper {
 			),
 		);
 		$sanitize_blobs_names = $rest_api_client->sanitize_blobs_names( $container_name, $file_info );
-
 		// Go very optimistic.
 		if ( is_wp_error( $sanitize_blobs_names ) ) {
-			return uniqid( '-', false ) . '-' . uniqid( '-', false ) . $blob_name;
+			$info        = pathinfo( $blob_name );
+			$unique_name = uniqid( '-', false ) . '-' . uniqid( '-', false ) . $info['basename'];
+			if ( array_key_exists( 'extension', $info ) && ! empty( $info['extension'] ) ) {
+				$unique_name .= '.' . $info['extension'];
+			}
+
+			return $unique_name;
 		}
 
 		return $sanitize_blobs_names[ $blob_name ][ $blob_name ];
