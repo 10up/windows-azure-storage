@@ -1,6 +1,16 @@
 4.0.0 / 2016-05
-
-  * Replaced Azure SDK with independent library.
+=================
+  * Removed old PHP SDK and use WordPress HTTP API based client library.
+  * Added compatibility with API version 2015-12-11.
+  * Added compatibility with PHP 5.3+.
+  * Improved overall performance.
+  * L10N/I18N: Round 2 of preparing strings for translation.
+  * Refactored code to match WordPress standards.
+  * Better UX by adding more feedback during long operations.
+  * Integrated Azure Blob browser into WordPress Media Library.
+  * Added option to keep local files after uploading them to Azure Blob.
+  * Deduplicated code functionality.
+  * Security: validate, sanitize, and escape (allthethings).
   * Introduced filter `azure_blob_operation_timeout` which defines REST operation timeout.
   * Introduced filter `azure_blob_list_containers_max_results` which defines max size of containers listing per one request.
   * Introduced filter `azure_blob_list_blobs_max_results` which defines max size of blobs listing per one request.
