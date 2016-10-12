@@ -74,6 +74,7 @@ require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php';
 require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
 require_once MSFT_AZURE_PLUGIN_PATH . 'includes/class-windows-azure-wp-filesystem-direct.php';
 require_once MSFT_AZURE_PLUGIN_PATH . 'includes/class-windows-azure-helper.php';
+require_once MSFT_AZURE_PLUGIN_PATH . 'includes/compat.php';
 
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	require_once MSFT_AZURE_PLUGIN_PATH . 'bin/wp-cli.php';
