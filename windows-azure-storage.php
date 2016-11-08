@@ -808,7 +808,7 @@ function windows_azure_storage_query_azure_attachments() {
 		$posts[] = $blob_info;
 	}
 	if ( $cache_ttl > 0 ) {
-		wp_cache_set( $cache_key, $posts, '', $cache_ttl * MINUTE_IN_SECONDS );
+		wp_cache_set( $cache_key, $posts, '', $cache_ttl );
 	}
 	wp_send_json_success( $posts );
 }

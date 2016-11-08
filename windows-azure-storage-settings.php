@@ -180,7 +180,7 @@ function windows_azure_storage_plugin_register_settings() {
 	 */
 	add_settings_field(
 		'azure_browse_cache_results',
-		__( 'Browse cache period in minutes', 'windows-azure-storage' ),
+		__( 'Timeout for azure file list cache in seconds', 'windows-azure-storage' ),
 		'windows_azure_browse_cache_results',
 		'windows-azure-storage-plugin-options',
 		'windows-azure-storage-settings'
@@ -340,7 +340,7 @@ function windows_azure_storage_setting_keep_local_file() {
 	?>
 	<input type="checkbox" name="azure_storage_keep_local_file" title="<?php esc_attr_e( 'Do not delete local files after uploading them to Azure Storage.', 'windows-azure-storage' ) ?>" value="1" id="azure_storage_keep_local_file" <?php checked( (bool) get_option( 'azure_storage_keep_local_file' ) ); ?> />
 	<label for="azure_storage_keep_local_file">
-		<?php esc_html_e( 'Do not delete local files after uploading them to Azure Storage.', 'windows-azure-storage' ); ?>
+		<?php esc_html_e( 'Keep local files after uploading them to Azure Storage.', 'windows-azure-storage' ); ?>
 	</label>
 	<?php
 }
@@ -355,11 +355,11 @@ function windows_azure_storage_setting_keep_local_file() {
 function windows_azure_browse_cache_results() {
 	$ttl = Windows_Azure_Helper::get_cache_ttl();
 	?>
-	<input type="number" name="azure_browse_cache_results" class="regular-text" title="<?php esc_attr_e( 'Browse cache TTL', 'windows-azure-storage' ); ?>" value="<?php echo esc_attr( $ttl ); ?>"/>
+	<input type="number" name="azure_browse_cache_results" class="regular-text" title="<?php esc_attr_e( 'Browse azure file list cache TTL', 'windows-azure-storage' ); ?>" value="<?php echo esc_attr( $ttl ); ?>"/>
 	<p class="field-description">
 		<?php
 		echo __(
-			'Note: If you want to disable browse caching please set this value to 0.',
+			'Note: If you want to disable azure file list caching please set this value to 0.',
 			'windows-azure-storage'
 		);
 		?>

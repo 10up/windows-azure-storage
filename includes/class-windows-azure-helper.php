@@ -201,7 +201,7 @@ class Windows_Azure_Helper {
 	 * @return int Cache TTL.
 	 */
 	static public function get_cache_ttl() {
-		return (int) get_option( 'azure_browse_cache_results', 0 );
+		return (int) get_option( 'azure_browse_cache_results', 15 );
 	}
 
 	/**
