@@ -130,7 +130,7 @@ function windows_azure_storage_plugin_register_settings() {
 	 */
 	add_settings_field(
 		'azure_storage_account_key',
-		__( 'Store Account Name', 'windows-azure-storage' ),
+		__( 'Store Account Key', 'windows-azure-storage' ),
 		'windows_azure_storage_setting_account_key',
 		'windows-azure-storage-plugin-options',
 		'windows-azure-storage-settings'
