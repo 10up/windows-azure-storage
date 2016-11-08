@@ -12,9 +12,8 @@ Use the Windows Azure Storage service to host your website's media files.
 == Description ==
 
 This WordPress plugin allows you to use Windows Azure Storage Service to host
-your media for your WordPress powered blog. Windows Azure Storage is an effective way
-to scale storage of your site without having to go through the expense of setting up the
-infrastructure for a content delivery.
+your media and uploads for your WordPress powered website. Windows Azure Storage is an effective way
+to infinitely scale storage of your site and leverage Azure's global infrastructure.
 
 For more details on Windows Azure Storage, please visit the <a href="https://azure.microsoft.com/en-us/services/storage/">Microsoft Azure website</a>.
 
