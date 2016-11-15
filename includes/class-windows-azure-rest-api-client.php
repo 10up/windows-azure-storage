@@ -807,6 +807,7 @@ class Windows_Azure_Rest_Api_Client {
 		$query_args = array(
 			'comp' => 'properties',
 		);
+		$properties = apply_filters( 'azure_blob_put_blob_properties', $properties, $container, $remote_path );
 
 		$allowed_properties  = array(
 			self::API_HEADER_MS_BLOB_CACHE_CONTROL,
