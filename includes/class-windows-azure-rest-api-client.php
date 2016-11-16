@@ -807,6 +807,7 @@ class Windows_Azure_Rest_Api_Client {
 		$query_args = array(
 			'comp' => 'properties',
 		);
+
 		$properties = apply_filters( 'windows_azure_storage_blob_properties', $properties, $container, $remote_path );
 
 		$allowed_properties  = array(
