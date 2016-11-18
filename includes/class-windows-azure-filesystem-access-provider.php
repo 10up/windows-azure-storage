@@ -57,15 +57,17 @@ class Windows_Azure_Filesystem_Access_Provider {
 		static $filesystem_access;
 
 		if ( null === $filesystem_access ) {
-			if ( ! WP_Filesystem() ) {
-				return false;
+			$filesystem_access = false;
+			if ( WP_Filesystem() ) {
+				$filesystem_access = $wp_filesystem;
+				if ( $force_direct_access || 'direct' === get_filesystem_method() ) {
+					$filesystem_access = new Windows_Azure_WP_Filesystem_Direct( null );
+				}
 			}
-			$filesystem_access = $wp_filesystem;
-			if ( $force_direct_access || 'direct' === get_filesystem_method() ) {
-				$filesystem_access = new Windows_Azure_WP_Filesystem_Direct( null );
-			}
+			
+			$filesystem_access = apply_filters( 'windows_azure_filesystem_access_provider', $filesystem_access, $force_direct_access );
 		}
-
+		
 		return $filesystem_access;
 	}
 }

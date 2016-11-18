@@ -512,15 +512,16 @@ class Windows_Azure_Helper {
 	static public function unlink_file( $relative_path ) {
 		/** @var $wp_filesystem \WP_Filesystem_Base */
 		global $wp_filesystem;
-		if ( ! WP_Filesystem() ) {
-			return false;
+		
+		$result = false;
+		
+		if ( WP_Filesystem() ) {
+			$upload_dir = wp_upload_dir();
+			$filename   = trailingslashit( $upload_dir['basedir'] ) . $relative_path;
+			$result     = $wp_filesystem->delete( $filename, false, 'f' );
 		}
-
-		$upload_dir = wp_upload_dir();
-		$filename   = trailingslashit( $upload_dir['basedir'] ) . $relative_path;
-		$result     = $wp_filesystem->delete( $filename, false, 'f' );
-
-		return $result;
+		
+		return apply_filters( 'windows_azure_unlink_file', $result, $relative_path );
 	}
 
 	/**
@@ -535,13 +536,15 @@ class Windows_Azure_Helper {
 	static public function file_exists( $relative_path ) {
 		/** @var $wp_filesystem \WP_Filesystem_Base */
 		global $wp_filesystem;
-		if ( ! WP_Filesystem() ) {
-			return false;
+		
+		$exist = false;
+		
+		if ( WP_Filesystem() ) {
+			$upload_dir = wp_upload_dir();
+			$filename   = trailingslashit( $upload_dir['basedir'] ) . $relative_path;
+			$exist = $wp_filesystem->exists( $filename, false, 'f' );
 		}
-
-		$upload_dir = wp_upload_dir();
-		$filename   = trailingslashit( $upload_dir['basedir'] ) . $relative_path;
-
-		return $wp_filesystem->exists( $filename, false, 'f' );
+		
+		return apply_filters( 'windows_azure_file_exist', $exist, $relative_path );
 	}
 }

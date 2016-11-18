@@ -882,3 +882,22 @@ function windows_azure_upload_progress() {
 	}
 
 }
+
+/**
+ * Add admin notice if no direct filesystem access
+ *
+ * @since 4.0.1
+ */
+function windows_azure_no_filesystem_access_notice() {
+	if ( ! WP_Filesystem() ) {
+		?>
+		<div class="notice notice-error">
+			<p>
+				<?php esc_html_e( 'Windows Azure Storage requires direct filesystem access in order to work.', 'windows-azure-storage' ) ?>
+			</p>
+		</div>
+		<?php
+	}
+}
+
+add_action( 'admin_notices', 'windows_azure_no_filesystem_access_notice' );
