@@ -521,7 +521,7 @@ class Windows_Azure_Helper {
 			$result     = $wp_filesystem->delete( $filename, false, 'f' );
 		}
 		
-		return apply_filters( 'windows_azure_unlink_file', $result, $relative_path );
+		return apply_filters( 'windows_azure_storage_unlink_file', $result, $relative_path );
 	}
 
 	/**
@@ -545,6 +545,6 @@ class Windows_Azure_Helper {
 			$exist = $wp_filesystem->exists( $filename, false, 'f' );
 		}
 		
-		return apply_filters( 'windows_azure_file_exist', $exist, $relative_path );
+		return apply_filters( 'windows_azure_storage_file_exist', $exist, $relative_path );
 	}
 }

@@ -65,7 +65,7 @@ class Windows_Azure_Filesystem_Access_Provider {
 				}
 			}
 			
-			$filesystem_access = apply_filters( 'windows_azure_filesystem_access_provider', $filesystem_access, $force_direct_access );
+			$filesystem_access = apply_filters( 'windows_azure_storage_filesystem_access_provider', $filesystem_access, $force_direct_access );
 		}
 		
 		return $filesystem_access;
