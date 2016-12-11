@@ -5,7 +5,7 @@ Use the Windows Azure Storage service to host your website's media files.
 **Contributors:** [msopentech](https://profiles.wordpress.org/msopentech), [10up](https://profiles.wordpress.org/10up), [morganestes](https://profiles.wordpress.org/morganestes), [stevegrunwell](https://profiles.wordpress.org/stevegrunwell), [lpawlik](https://profiles.wordpress.org/lpawlik), [rittesh.patel](https://profiles.wordpress.org/rittesh.patel)  
 **Tags:** [Microsoft](https://wordpress.org/plugins/tags/microsoft), [Microsoft Open Technologies](https://wordpress.org/plugins/tags/microsoft-open-technologies), [Windows Azure](https://wordpress.org/plugins/tags/windows-azure), [Windows Azure Storage](https://wordpress.org/plugins/tags/windows-azure-storage), [Media Files](https://wordpress.org/plugins/tags/media-files), [Upload](https://wordpress.org/plugins/tags/upload), [CDN](https://wordpress.org/plugins/tags/cdn), [blob storage](https://wordpress.org/plugins/tags/blob-storage)  
 **Requires at least:** 4.0  
-**Tested up to:** 4.6  
+**Tested up to:** 4.7  
 **Stable tag:** 4.0.0  
 **License:** [BSD 2-Clause](http://www.opensource.org/licenses/bsd-license.php)  
 
