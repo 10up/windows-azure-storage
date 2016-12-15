@@ -377,23 +377,17 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 	$default_azure_storage_account_container_name = \Windows_Azure_Helper::get_default_container();
 	$delete_local_file                            = \Windows_Azure_Helper::delete_local_file();
 	$upload_file_name                             = get_attached_file( $post_id, true );
-
-	// If attachment metadata is empty (for video), generate correct blob names.
-	if ( empty( $data ) || empty( $data['file'] ) ) {
-		// Get upload directory.
-		$upload_dir = wp_upload_dir();
-		if ( '/' === $upload_dir['subdir']{0} ) {
-			$upload_dir['subdir'] = substr( $upload_dir['subdir'], 1 );
-		}
-
-		// Prepare blob name.
-		$relative_file_name = ( '' === $upload_dir['subdir'] ) ?
-			basename( $upload_file_name ) :
-			$upload_dir['subdir'] . '/' . basename( $upload_file_name );
-	} else {
-		// Prepare blob name.
-		$relative_file_name = $data['file'];
+	
+	// Get upload directory.
+	$upload_dir = wp_upload_dir();
+	if ( '/' === $upload_dir['subdir']{0} ) {
+		$upload_dir['subdir'] = substr( $upload_dir['subdir'], 1 );
 	}
+	
+	// Prepare blob name.
+	$relative_file_name = ( '' === $upload_dir['subdir'] ) ?
+		basename( $upload_file_name ) :
+		$upload_dir['subdir'] . '/' . basename( $upload_file_name );
 
 	try {
 		$post_array = wp_unslash( $_POST );
