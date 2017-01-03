@@ -3,7 +3,7 @@ Contributors: msopentech, 10up, morganestes, stevegrunwell, lpawlik, rittesh.pat
 Tags: Microsoft, Microsoft Open Technologies, Windows Azure, Windows Azure Storage, Media Files, Upload, CDN, blob storage
 Requires at least: 4.0
 Tested up to: 4.7
-Stable tag: 4.0.0
+Stable tag: 4.0.1
 License: BSD 2-Clause
 License URI: http://www.opensource.org/licenses/bsd-license.php
 
@@ -23,6 +23,10 @@ For more details on Windows Azure Storage, please visit the <a href="https://azu
 1. Use the Settings->Windows Azure screen to configure the plugin.
 
 == Changelog ==
+
+= 4.0.1 =
+* Fix blob name while media file
+* Show admin notice if can't access files directly
 
 = 4.0.0 =
 * Removed old PHP SDK and use WordPress HTTP API based client library.
