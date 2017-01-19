@@ -166,6 +166,9 @@ if ( function_exists( 'wp_calculate_image_srcset' ) ) {
 function windows_azure_plugin_check_prerequisite() {
 	global $wp_version;
 	$php_version = phpversion();
+
+	WindowsAzureStorageUtil::write_log("Check prerequisite. PHP: {$php_version} WP: {$wp_version}");
+
 	$php_compat  = version_compare( $php_version, '5.3.0', '>=' );
 	if ( ! $php_compat ) {
 		deactivate_plugins( plugin_basename( __FILE__ ) );
@@ -188,6 +191,8 @@ function windows_azure_plugin_check_prerequisite() {
 function windows_azure_storage_xmlrpc_methods( $methods ) {
 	$methods['metaWeblog.newMediaObject'] = 'windows_azure_storage_new_media_object';
 
+	WindowsAzureStorageUtil::write_log('Replacing the callback for XML-RPC metaWeblog.newMediaObject');
+
 	return $methods;
 }
 
@@ -201,6 +206,9 @@ function windows_azure_storage_xmlrpc_methods( $methods ) {
  */
 function windows_azure_storage_new_media_object( $args ) {
 	global $wpdb, $wp_xmlrpc_server;
+
+	WindowsAzureStorageUtil::write_log('Upload a file');
+	WindowsAzureStorageUtil::write_log(args);
 
 	$blog_id  = (int) $args[0];
 	$username = $wp_xmlrpc_server->escape( $args[1] );
@@ -383,11 +391,14 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 	if ( '/' === $upload_dir['subdir']{0} ) {
 		$upload_dir['subdir'] = substr( $upload_dir['subdir'], 1 );
 	}
-	
+
 	// Prepare blob name.
 	$relative_file_name = ( '' === $upload_dir['subdir'] ) ?
-		basename( $upload_file_name ) :
-		$upload_dir['subdir'] . '/' . basename( $upload_file_name );
+		basename( $upload_file_name ) : //TODO SJ I think this is also covered by the next line
+		str_replace($upload_dir['basedir'] . '/', '', $upload_file_name);
+
+	WindowsAzureStorageUtil::write_log("Upload file metadata for {$post_id} to {$relative_file_name} from {$upload_file_name}");
+	WindowsAzureStorageUtil::write_log($data);
 
 	try {
 		$post_array = wp_unslash( $_POST );
@@ -411,7 +422,7 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 			$result = \Windows_Azure_Helper::put_media_to_blob_storage(
 				$default_azure_storage_account_container_name,
 				$relative_file_name,
-				$relative_file_name,
+				$upload_file_name, // This has to be the real file name
 				$mime_type
 			);
 
@@ -490,6 +501,9 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
  * @return string Updated post content.
  */
 function windows_azure_storage_content_save_pre( $text ) {
+
+	WindowsAzureStorageUtil::write_log("Updating post content prior to saving it in the database {$text}");
+
 	return get_updated_upload_url( $text );
 }
 
@@ -502,6 +516,9 @@ function windows_azure_storage_content_save_pre( $text ) {
  * @return array Updated file data.
  */
 function windows_azure_storage_wp_handle_upload_prefilter( $file ) {
+	WindowsAzureStorageUtil::write_log('Altering the file name');
+	WindowsAzureStorageUtil::write_log($file);
+
 	// default azure storage container.
 	$container = \Windows_Azure_Helper::get_default_container();
 
@@ -528,12 +545,13 @@ function windows_azure_storage_wp_handle_upload_prefilter( $file ) {
  * @return array Updated metadata.
  */
 function windows_azure_storage_wp_handle_upload( $uploads ) {
-	$wp_upload_dir  = wp_upload_dir();
-	$uploads['url'] = sprintf( '%1$s/%2$s/%3$s',
-		untrailingslashit( WindowsAzureStorageUtil::get_storage_url_base() ),
-		ltrim( $wp_upload_dir['subdir'], '/' ),
-		basename( $uploads['file'] )
-	);
+	WindowsAzureStorageUtil::write_log("Handling media uploads for {$uploads['url']}");
+	WindowsAzureStorageUtil::write_log($uploads);
+
+	$wp_upload_dir = wp_upload_dir();
+	$uploads['url'] = get_updated_upload_url($uploads['url']);
+
+	WindowsAzureStorageUtil::write_log("Handling media uploads to {$uploads['url']}");
 
 	return $uploads;
 }
@@ -549,9 +567,13 @@ function windows_azure_storage_wp_handle_upload( $uploads ) {
 function get_updated_upload_url( $url ) {
 	$wp_upload_dir      = wp_upload_dir();
 	$upload_dir_url     = $wp_upload_dir['baseurl'];
-	$storage_url_prefix = WindowsAzureStorageUtil::get_storage_url_base();
+	$storage_url_prefix = untrailingslashit( WindowsAzureStorageUtil::get_storage_url_base() );
 
-	return str_replace( $upload_dir_url, $storage_url_prefix, $url );
+	$result = str_replace( $upload_dir_url, $storage_url_prefix, $url );
+	
+	WindowsAzureStorageUtil::write_log("Replace wordpress file uplaod url with Windows Azure Storage URL: {$url} -> {$result}");
+
+	return $result;
 }
 
 /**
@@ -708,6 +730,8 @@ function windows_azure_storage_plugin_menu() {
  * @return array The filtered $sources array.
  */
 function windows_azure_storage_wp_calculate_image_srcset( $sources, $size_array, $image_src, $image_meta, $attachment_id ) {
+	WindowsAzureStorageUtil::write_log("Point {$image_src} to Azure for {$attachment_id}");
+
 	$media_info = get_post_meta( $attachment_id, 'windows_azure_storage_info', true );
 
 	// If a CNAME is configured, make sure only 'http' is used for the protocol.
@@ -747,6 +771,7 @@ function windows_azure_storage_query_azure_attachments() {
 	if ( ! current_user_can( 'upload_files' ) ) {
 		wp_send_json_error();
 	}
+	WindowsAzureStorageUtil::write_log('Handle ajax request for querying Azure Blobs');
 
 	$cache_ttl = Windows_Azure_Helper::get_cache_ttl();
 	$request   = wp_unslash( $_REQUEST );
@@ -859,6 +884,8 @@ function windows_azure_upload_progress() {
 			'total'    => -1,
 		) );
 	}
+
+	WindowsAzureStorageUtil::write_log('Handle ajax request for Azure upload progress');
 
 	$progress = get_transient( 'azure_progress_' . $item_id );
 	if ( ! $progress ) {
