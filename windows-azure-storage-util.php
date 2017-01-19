@@ -587,4 +587,18 @@ class WindowsAzureStorageUtil {
 
 		return false;
 	}
+
+	/**
+	 * Writes a log statement
+	 *
+	 * @param string|object	Writes the given string or the object via `print_r`.
+	 */
+	public static function write_log( $log )  {
+		if ( is_array( $log ) || is_object( $log ) ) {
+			error_log( print_r( $log, true ) );
+		} else {
+			error_log( $log );
+		}
+	}
+
 }
