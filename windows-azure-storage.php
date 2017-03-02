@@ -3,7 +3,7 @@
  * Plugin Name: Windows Azure Storage for WordPress
  * Plugin URI: https://wordpress.org/plugins/windows-azure-storage/
  * Description: Use the Windows Azure Storage service to host your website's media files.
- * Version: 4.0.1
+ * Version: 4.0.2
  * Author: 10up, Microsoft Open Technologies
  * Author URI: http://10up.com/
  * License: BSD 2-Clause
@@ -383,11 +383,11 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 	if ( '/' === $upload_dir['subdir']{0} ) {
 		$upload_dir['subdir'] = substr( $upload_dir['subdir'], 1 );
 	}
-	
+
 	// Prepare blob name.
 	$relative_file_name = ( '' === $upload_dir['subdir'] ) ?
 		basename( $upload_file_name ) :
-		$upload_dir['subdir'] . '/' . basename( $upload_file_name );
+		str_replace( $upload_dir['basedir'] . '/', '', $upload_file_name );
 
 	try {
 		$post_array = wp_unslash( $_POST );
