@@ -383,11 +383,11 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 	if ( '/' === $upload_dir['subdir']{0} ) {
 		$upload_dir['subdir'] = substr( $upload_dir['subdir'], 1 );
 	}
-	
+
 	// Prepare blob name.
 	$relative_file_name = ( '' === $upload_dir['subdir'] ) ?
 		basename( $upload_file_name ) :
-		$upload_dir['subdir'] . '/' . basename( $upload_file_name );
+		str_replace( $upload_dir['basedir'] . '/', '', $upload_file_name );
 
 	try {
 		$post_array = wp_unslash( $_POST );
