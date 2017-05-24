@@ -389,6 +389,11 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 		basename( $upload_file_name ) :
 		str_replace( $upload_dir['basedir'] . '/', '', $upload_file_name );
 
+	// do nothing if file doesn’t exist locally
+	if ( ! Windows_Azure_Helper::file_exists( $relative_file_name ) ) {
+		return;
+	}
+	
 	try {
 		$post_array = wp_unslash( $_POST );
 		$post_array = wp_parse_args( $post_array, array(
