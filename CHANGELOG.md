@@ -1,6 +1,7 @@
 4.0.3 / 2017-10
 =================
-  * 
+  * Fixed uploading issue when year/month based folders are not used
+  * Fixed CNAME issue in the srcset attribute when yar/month based folders are not used
 
 4.0.0 / 2016-05
 =================
