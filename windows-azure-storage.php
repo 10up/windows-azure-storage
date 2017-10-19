@@ -430,7 +430,9 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 		// Handle thumbnail and medium size files.
 		$thumbnails = array();
 		if ( ! empty( $data['sizes'] ) ) {
-			$file_upload_dir = substr( $relative_file_name, 0, strripos( $relative_file_name, '/' ) );
+			$file_upload_dir = strpos( $relative_file_name, '/' ) !== false
+				? substr( $relative_file_name, 0, strrpos( $relative_file_name, '/' ) )
+				: '';
 
 			foreach ( $data['sizes'] as $size ) {
 				// Do not prefix file name with wordpress upload folder path.
@@ -439,11 +441,17 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 				// Move only if file exists. Some theme may use same file name for multiple sizes.
 				if ( Windows_Azure_Helper::file_exists( trailingslashit( $file_upload_dir ) . $size['file'] ) ) {
 					$blob_name = ( '' === $file_upload_dir ) ? $size['file'] : $file_upload_dir . '/' . $size['file'];
-					set_transient( $azure_progress_key, array( 'current' => ++$current, 'total' => count( $data['sizes'] ) + 1 ), 5 * MINUTE_IN_SECONDS );
+
+					set_transient(
+						$azure_progress_key,
+						array( 'current' => ++$current, 'total' => count( $data['sizes'] ) + 1 ),
+						5 * MINUTE_IN_SECONDS
+					);
+
 					\Windows_Azure_Helper::put_media_to_blob_storage(
 						$default_azure_storage_account_container_name,
 						$blob_name,
-						trailingslashit( $file_upload_dir ) . $size['file'],
+						( '' === $file_upload_dir ) ? $size['file'] : trailingslashit( $file_upload_dir ) . $size['file'],
 						$mime_type
 					);
 
