@@ -377,7 +377,7 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 	$default_azure_storage_account_container_name = \Windows_Azure_Helper::get_default_container();
 	$delete_local_file                            = \Windows_Azure_Helper::delete_local_file();
 	$upload_file_name                             = get_attached_file( $post_id, true );
-	
+
 	// Get upload directory.
 	$upload_dir = wp_upload_dir();
 	if ( '/' === $upload_dir['subdir']{0} ) {
@@ -720,11 +720,11 @@ function windows_azure_storage_wp_calculate_image_srcset( $sources, $size_array,
 		foreach ( $sources as &$source ) {
 			$img_filename = substr( $source['url'], strrpos( $source['url'], '/' ) + 1 );
 
-			if ( substr( $media_info['blob'], strrpos( $media_info['blob'], '/' ) + 1 ) === $img_filename ) {
+			if ( basename( $media_info['blob'] ) === $img_filename ) {
 				$source['url'] = esc_url( $base_url . $media_info['blob'], $esc_url_protocols );
 			} else {
 				foreach ( $media_info['thumbnails'] as $thumbnail ) {
-					if ( substr( $thumbnail, strrpos( $thumbnail, '/' ) + 1 ) === $img_filename ) {
+					if ( basename( $thumbnail ) === $img_filename ) {
 						$source['url'] = esc_url( $base_url . $thumbnail, $esc_url_protocols );
 						break;
 					}
