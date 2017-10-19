@@ -377,12 +377,10 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 	$default_azure_storage_account_container_name = \Windows_Azure_Helper::get_default_container();
 	$delete_local_file                            = \Windows_Azure_Helper::delete_local_file();
 	$upload_file_name                             = get_attached_file( $post_id, true );
-	
+
 	// Get upload directory.
 	$upload_dir = wp_upload_dir();
-	if ( '/' === $upload_dir['subdir']{0} ) {
-		$upload_dir['subdir'] = substr( $upload_dir['subdir'], 1 );
-	}
+	$upload_dir['subdir'] = ltrim( $upload_dir['subdir'], '/' );
 
 	// Prepare blob name.
 	$relative_file_name = ( '' === $upload_dir['subdir'] ) ?
@@ -432,7 +430,9 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 		// Handle thumbnail and medium size files.
 		$thumbnails = array();
 		if ( ! empty( $data['sizes'] ) ) {
-			$file_upload_dir = substr( $relative_file_name, 0, strripos( $relative_file_name, '/' ) );
+			$file_upload_dir = strpos( $relative_file_name, '/' ) !== false
+				? substr( $relative_file_name, 0, strrpos( $relative_file_name, '/' ) )
+				: '';
 
 			foreach ( $data['sizes'] as $size ) {
 				// Do not prefix file name with wordpress upload folder path.
@@ -441,11 +441,17 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 				// Move only if file exists. Some theme may use same file name for multiple sizes.
 				if ( Windows_Azure_Helper::file_exists( trailingslashit( $file_upload_dir ) . $size['file'] ) ) {
 					$blob_name = ( '' === $file_upload_dir ) ? $size['file'] : $file_upload_dir . '/' . $size['file'];
-					set_transient( $azure_progress_key, array( 'current' => ++$current, 'total' => count( $data['sizes'] ) + 1 ), 5 * MINUTE_IN_SECONDS );
+
+					set_transient(
+						$azure_progress_key,
+						array( 'current' => ++$current, 'total' => count( $data['sizes'] ) + 1 ),
+						5 * MINUTE_IN_SECONDS
+					);
+
 					\Windows_Azure_Helper::put_media_to_blob_storage(
 						$default_azure_storage_account_container_name,
 						$blob_name,
-						trailingslashit( $file_upload_dir ) . $size['file'],
+						( '' === $file_upload_dir ) ? $size['file'] : trailingslashit( $file_upload_dir ) . $size['file'],
 						$mime_type
 					);
 
@@ -506,9 +512,7 @@ function windows_azure_storage_wp_handle_upload_prefilter( $file ) {
 	$container = \Windows_Azure_Helper::get_default_container();
 
 	$upload_dir = wp_upload_dir();
-	if ( '/' === $upload_dir['subdir'][0] ) {
-		$upload_dir['subdir'] = substr( $upload_dir['subdir'], 1 );
-	}
+	$upload_dir['subdir'] = ltrim( $upload_dir['subdir'], '/' );
 
 	// Prepare blob name.
 	$blob_name = ( '' === $upload_dir['subdir'] ) ? $file['name'] : $upload_dir['subdir'] . '/' . $file['name'];
@@ -720,11 +724,11 @@ function windows_azure_storage_wp_calculate_image_srcset( $sources, $size_array,
 		foreach ( $sources as &$source ) {
 			$img_filename = substr( $source['url'], strrpos( $source['url'], '/' ) + 1 );
 
-			if ( substr( $media_info['blob'], strrpos( $media_info['blob'], '/' ) + 1 ) === $img_filename ) {
+			if ( basename( $media_info['blob'] ) === $img_filename ) {
 				$source['url'] = esc_url( $base_url . $media_info['blob'], $esc_url_protocols );
 			} else {
 				foreach ( $media_info['thumbnails'] as $thumbnail ) {
-					if ( substr( $thumbnail, strrpos( $thumbnail, '/' ) + 1 ) === $img_filename ) {
+					if ( basename( $thumbnail ) === $img_filename ) {
 						$source['url'] = esc_url( $base_url . $thumbnail, $esc_url_protocols );
 						break;
 					}
