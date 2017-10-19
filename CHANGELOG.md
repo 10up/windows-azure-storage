@@ -2,6 +2,7 @@
 =================
   * Fixed uploading issue when year/month based folders are not used
   * Fixed CNAME issue in the srcset attribute when yar/month based folders are not used
+  * Added POT file and loaded text domain
 
 4.0.0 / 2016-05
 =================

@@ -83,6 +83,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 // Check prerequisite for plugin.
 register_activation_hook( __FILE__, 'windows_azure_plugin_check_prerequisite' );
 
+add_action( 'plugins_loaded', 'windows_azure_storage_load_textdomain' );
 add_action( 'admin_menu', 'windows_azure_storage_plugin_menu' );
 add_filter( 'media_buttons_context', 'windows_azure_storage_media_buttons_context' );
 add_action( 'load-settings_page_windows-azure-storage-plugin-options', 'windows_azure_storage_load_settings_page' );
@@ -115,12 +116,7 @@ add_action( 'media_upload_browse', 'windows_azure_browse_tab' );
 
 // Hooks for handling default file uploads.
 if ( (bool) get_option( 'azure_storage_use_for_default_upload' ) ) {
-	add_filter(
-		'wp_update_attachment_metadata',
-		'windows_azure_storage_wp_update_attachment_metadata',
-		9,
-		2
-	);
+	add_filter( 'wp_update_attachment_metadata', 'windows_azure_storage_wp_update_attachment_metadata', 9, 2 );
 
 	// Hook for handling blog posts via xmlrpc. This is not full proof check.
 	add_filter( 'content_save_pre', 'windows_azure_storage_content_save_pre' );
@@ -135,20 +131,10 @@ if ( (bool) get_option( 'azure_storage_use_for_default_upload' ) ) {
 }
 
 // Hook for acecssing attachment (media file) URL.
-add_filter(
-	'wp_get_attachment_url',
-	'windows_azure_storage_wp_get_attachment_url',
-	9,
-	2
-);
+add_filter( 'wp_get_attachment_url', 'windows_azure_storage_wp_get_attachment_url', 9, 2 );
 
 // Hook for acecssing metadata about attachment (media file).
-add_filter(
-	'wp_get_attachment_metadata',
-	'windows_azure_storage_wp_get_attachment_metadata',
-	9,
-	2
-);
+add_filter( 'wp_get_attachment_metadata', 'windows_azure_storage_wp_get_attachment_metadata', 9, 2 );
 
 // Hook for handling deleting media files from standard WordpRess dialog.
 add_action( 'delete_attachment', 'windows_azure_storage_delete_attachment' );
@@ -156,6 +142,15 @@ add_action( 'delete_attachment', 'windows_azure_storage_delete_attachment' );
 // Filter the 'srcset' attribute in 'the_content' introduced in WP 4.4.
 if ( function_exists( 'wp_calculate_image_srcset' ) ) {
 	add_filter( 'wp_calculate_image_srcset', 'windows_azure_storage_wp_calculate_image_srcset', 9, 5 );
+}
+
+/**
+ * Loads text domain.
+ *
+ * @since 4.0.3
+ */
+function windows_azure_storage_load_textdomain() {
+	load_plugin_textdomain( 'windows-azure-storage', false, basename( dirname( __FILE__ ) ) . '/languages' );
 }
 
 /**

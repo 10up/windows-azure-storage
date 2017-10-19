@@ -296,17 +296,10 @@ function windows_azure_storage_setting_cname() {
 	?>
 	<input type="url" name="cname" class="regular-text" title="<?php esc_attr_e( 'Use CNAME instead of Windows Azure Blob URL', 'windows-azure-storage' ); ?>" value="<?php echo esc_attr( $cname ); ?>"/>
 	<p class="field-description">
-		<?php
-		echo __(
-			'Note: Use this option if you would like to display image URLs belonging to your domain like <samp>http://mydomain.com/</samp> instead of <samp>http://your-account-name.blob.core.windows.net/</samp>.',
-			'windows-azure-storage'
-		);
-		?>
+		<?php _e( 'Note: Use this option if you would like to display image URLs belonging to your domain like <code>http://mydomain.com/</code> instead of <code>http://your-account-name.blob.core.windows.net/</code>.', 'windows-azure-storage' ); ?>
 	</p>
 	<p>
-		<?php
-		echo __( 'This CNAME must start with <samp>http(s)://</samp> and the administrator will have to update <abbr title="Domain Name System">DNS</abbr> entries accordingly.', 'windows-azure-storage' );
-		?>
+		<?php _e( 'This CNAME must start with <code>http(s)://</code> and the administrator will have to update <abbr title="Domain Name System">DNS</abbr> entries accordingly.', 'windows-azure-storage' ); ?>
 	</p>
 	<?php
 }
