@@ -380,9 +380,7 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 
 	// Get upload directory.
 	$upload_dir = wp_upload_dir();
-	if ( '/' === $upload_dir['subdir']{0} ) {
-		$upload_dir['subdir'] = substr( $upload_dir['subdir'], 1 );
-	}
+	$upload_dir['subdir'] = ltrim( $upload_dir['subdir'], '/' );
 
 	// Prepare blob name.
 	$relative_file_name = ( '' === $upload_dir['subdir'] ) ?
@@ -506,9 +504,7 @@ function windows_azure_storage_wp_handle_upload_prefilter( $file ) {
 	$container = \Windows_Azure_Helper::get_default_container();
 
 	$upload_dir = wp_upload_dir();
-	if ( '/' === $upload_dir['subdir'][0] ) {
-		$upload_dir['subdir'] = substr( $upload_dir['subdir'], 1 );
-	}
+	$upload_dir['subdir'] = ltrim( $upload_dir['subdir'], '/' );
 
 	// Prepare blob name.
 	$blob_name = ( '' === $upload_dir['subdir'] ) ? $file['name'] : $upload_dir['subdir'] . '/' . $file['name'];
