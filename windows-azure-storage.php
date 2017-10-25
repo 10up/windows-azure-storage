@@ -3,7 +3,7 @@
  * Plugin Name: Windows Azure Storage for WordPress
  * Plugin URI: https://wordpress.org/plugins/windows-azure-storage/
  * Description: Use the Windows Azure Storage service to host your website's media files.
- * Version: 4.0.2
+ * Version: 4.0.3
  * Author: 10up, Microsoft Open Technologies
  * Author URI: http://10up.com/
  * License: BSD 2-Clause
@@ -83,6 +83,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 // Check prerequisite for plugin.
 register_activation_hook( __FILE__, 'windows_azure_plugin_check_prerequisite' );
 
+add_action( 'plugins_loaded', 'windows_azure_storage_load_textdomain' );
 add_action( 'admin_menu', 'windows_azure_storage_plugin_menu' );
 add_filter( 'media_buttons_context', 'windows_azure_storage_media_buttons_context' );
 add_action( 'load-settings_page_windows-azure-storage-plugin-options', 'windows_azure_storage_load_settings_page' );
@@ -115,12 +116,7 @@ add_action( 'media_upload_browse', 'windows_azure_browse_tab' );
 
 // Hooks for handling default file uploads.
 if ( (bool) get_option( 'azure_storage_use_for_default_upload' ) ) {
-	add_filter(
-		'wp_update_attachment_metadata',
-		'windows_azure_storage_wp_update_attachment_metadata',
-		9,
-		2
-	);
+	add_filter( 'wp_update_attachment_metadata', 'windows_azure_storage_wp_update_attachment_metadata', 9, 2 );
 
 	// Hook for handling blog posts via xmlrpc. This is not full proof check.
 	add_filter( 'content_save_pre', 'windows_azure_storage_content_save_pre' );
@@ -135,20 +131,10 @@ if ( (bool) get_option( 'azure_storage_use_for_default_upload' ) ) {
 }
 
 // Hook for acecssing attachment (media file) URL.
-add_filter(
-	'wp_get_attachment_url',
-	'windows_azure_storage_wp_get_attachment_url',
-	9,
-	2
-);
+add_filter( 'wp_get_attachment_url', 'windows_azure_storage_wp_get_attachment_url', 9, 2 );
 
 // Hook for acecssing metadata about attachment (media file).
-add_filter(
-	'wp_get_attachment_metadata',
-	'windows_azure_storage_wp_get_attachment_metadata',
-	9,
-	2
-);
+add_filter( 'wp_get_attachment_metadata', 'windows_azure_storage_wp_get_attachment_metadata', 9, 2 );
 
 // Hook for handling deleting media files from standard WordpRess dialog.
 add_action( 'delete_attachment', 'windows_azure_storage_delete_attachment' );
@@ -156,6 +142,15 @@ add_action( 'delete_attachment', 'windows_azure_storage_delete_attachment' );
 // Filter the 'srcset' attribute in 'the_content' introduced in WP 4.4.
 if ( function_exists( 'wp_calculate_image_srcset' ) ) {
 	add_filter( 'wp_calculate_image_srcset', 'windows_azure_storage_wp_calculate_image_srcset', 9, 5 );
+}
+
+/**
+ * Loads text domain.
+ *
+ * @since 4.0.3
+ */
+function windows_azure_storage_load_textdomain() {
+	load_plugin_textdomain( 'windows-azure-storage', false, basename( dirname( __FILE__ ) ) . '/languages' );
 }
 
 /**
@@ -377,12 +372,10 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 	$default_azure_storage_account_container_name = \Windows_Azure_Helper::get_default_container();
 	$delete_local_file                            = \Windows_Azure_Helper::delete_local_file();
 	$upload_file_name                             = get_attached_file( $post_id, true );
-	
+
 	// Get upload directory.
 	$upload_dir = wp_upload_dir();
-	if ( '/' === $upload_dir['subdir']{0} ) {
-		$upload_dir['subdir'] = substr( $upload_dir['subdir'], 1 );
-	}
+	$upload_dir['subdir'] = ltrim( $upload_dir['subdir'], '/' );
 
 	// Prepare blob name.
 	$relative_file_name = ( '' === $upload_dir['subdir'] ) ?
@@ -432,7 +425,9 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 		// Handle thumbnail and medium size files.
 		$thumbnails = array();
 		if ( ! empty( $data['sizes'] ) ) {
-			$file_upload_dir = substr( $relative_file_name, 0, strripos( $relative_file_name, '/' ) );
+			$file_upload_dir = strpos( $relative_file_name, '/' ) !== false
+				? substr( $relative_file_name, 0, strrpos( $relative_file_name, '/' ) )
+				: '';
 
 			foreach ( $data['sizes'] as $size ) {
 				// Do not prefix file name with wordpress upload folder path.
@@ -441,11 +436,17 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 				// Move only if file exists. Some theme may use same file name for multiple sizes.
 				if ( Windows_Azure_Helper::file_exists( trailingslashit( $file_upload_dir ) . $size['file'] ) ) {
 					$blob_name = ( '' === $file_upload_dir ) ? $size['file'] : $file_upload_dir . '/' . $size['file'];
-					set_transient( $azure_progress_key, array( 'current' => ++$current, 'total' => count( $data['sizes'] ) + 1 ), 5 * MINUTE_IN_SECONDS );
+
+					set_transient(
+						$azure_progress_key,
+						array( 'current' => ++$current, 'total' => count( $data['sizes'] ) + 1 ),
+						5 * MINUTE_IN_SECONDS
+					);
+
 					\Windows_Azure_Helper::put_media_to_blob_storage(
 						$default_azure_storage_account_container_name,
 						$blob_name,
-						trailingslashit( $file_upload_dir ) . $size['file'],
+						( '' === $file_upload_dir ) ? $size['file'] : trailingslashit( $file_upload_dir ) . $size['file'],
 						$mime_type
 					);
 
@@ -506,9 +507,7 @@ function windows_azure_storage_wp_handle_upload_prefilter( $file ) {
 	$container = \Windows_Azure_Helper::get_default_container();
 
 	$upload_dir = wp_upload_dir();
-	if ( '/' === $upload_dir['subdir'][0] ) {
-		$upload_dir['subdir'] = substr( $upload_dir['subdir'], 1 );
-	}
+	$upload_dir['subdir'] = ltrim( $upload_dir['subdir'], '/' );
 
 	// Prepare blob name.
 	$blob_name = ( '' === $upload_dir['subdir'] ) ? $file['name'] : $upload_dir['subdir'] . '/' . $file['name'];
@@ -720,11 +719,11 @@ function windows_azure_storage_wp_calculate_image_srcset( $sources, $size_array,
 		foreach ( $sources as &$source ) {
 			$img_filename = substr( $source['url'], strrpos( $source['url'], '/' ) + 1 );
 
-			if ( substr( $media_info['blob'], strrpos( $media_info['blob'], '/' ) + 1 ) === $img_filename ) {
+			if ( basename( $media_info['blob'] ) === $img_filename ) {
 				$source['url'] = esc_url( $base_url . $media_info['blob'], $esc_url_protocols );
 			} else {
 				foreach ( $media_info['thumbnails'] as $thumbnail ) {
-					if ( substr( $thumbnail, strrpos( $thumbnail, '/' ) + 1 ) === $img_filename ) {
+					if ( basename( $thumbnail ) === $img_filename ) {
 						$source['url'] = esc_url( $base_url . $thumbnail, $esc_url_protocols );
 						break;
 					}
