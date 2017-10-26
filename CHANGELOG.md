@@ -1,6 +1,6 @@
 4.1.0 / 2017-
 =================
-  *
+  * Added error message when SimpleXML library is not found
 
 4.0.3 / 2017-10
 =================
