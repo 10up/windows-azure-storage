@@ -4,14 +4,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Windows Azure Storage for WordPress 4.0.3\n"
-"POT-Creation-Date: 2017-10-19 18:02+0300\n"
+"POT-Creation-Date: 2017-10-26 18:54+0300\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "PO-Revision-Date: 2017-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
-"X-Generator: Poedit 2.0.1\n"
+"X-Generator: Poedit 2.0.4\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: __;_e;_n:1;_x:1,2c;_ex:1,2c;_nx:1,2,4c;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;_nx_noop:1,2,3c\n"
 "X-Poedit-SearchPath-0: .\n"
@@ -67,7 +67,11 @@ msgstr ""
 msgid "Unable to safely sanitize blob names."
 msgstr ""
 
-#: includes/class-windows-azure-rest-api-client.php:1081
+#: includes/class-windows-azure-rest-api-client.php:1062
+msgid "SimpleXML library hasn't been found. Please, check your PHP config."
+msgstr ""
+
+#: includes/class-windows-azure-rest-api-client.php:1084
 msgid "Storage account name not set."
 msgstr ""
 
@@ -264,61 +268,61 @@ msgstr ""
 msgid "A valid Azure Storage URL could not be found for this account."
 msgstr ""
 
-#: windows-azure-storage.php:106
+#: windows-azure-storage.php:108
 msgid "Browse Azure Storage"
 msgstr ""
 
-#: windows-azure-storage.php:167
+#: windows-azure-storage.php:169
 msgid "Windows Azure Storage for WordPress requires at least PHP 5.3.0"
 msgstr ""
 
-#: windows-azure-storage.php:172
+#: windows-azure-storage.php:174
 msgid "Windows Azure Storage for WordPress requires at least WordPress 4.0"
 msgstr ""
 
-#: windows-azure-storage.php:217
+#: windows-azure-storage.php:219
 msgid "You do not have permission to upload files."
 msgstr ""
 
-#: windows-azure-storage.php:245
+#: windows-azure-storage.php:247
 #, php-format
 msgid "Attachment not found in %s"
 msgstr ""
 
-#: windows-azure-storage.php:276
+#: windows-azure-storage.php:278
 #, php-format
 msgid "Could not write file %1$s (%2$s)"
 msgstr ""
 
-#: windows-azure-storage.php:286
+#: windows-azure-storage.php:288
 msgid "Sorry, you cannot edit this post."
 msgstr ""
 
-#: windows-azure-storage.php:412 windows-azure-storage.php:480
+#: windows-azure-storage.php:414 windows-azure-storage.php:482
 #, php-format
 msgid "Error in uploading file. Error: %s"
 msgstr ""
 
-#: windows-azure-storage.php:601
+#: windows-azure-storage.php:603
 msgid "Insert into post"
 msgstr ""
 
-#: windows-azure-storage.php:654
+#: windows-azure-storage.php:656
 msgid "Windows Azure Storage"
 msgstr ""
 
-#: windows-azure-storage.php:656
+#: windows-azure-storage.php:658
 msgid "Add Media From Azure"
 msgstr ""
 
-#: windows-azure-storage.php:670
+#: windows-azure-storage.php:672
 msgid "Windows Azure Storage Plugin Settings"
 msgstr ""
 
-#: windows-azure-storage.php:671
+#: windows-azure-storage.php:673
 msgid "Windows Azure"
 msgstr ""
 
-#: windows-azure-storage.php:889
+#: windows-azure-storage.php:891
 msgid "Windows Azure Storage requires direct filesystem access in order to work."
 msgstr ""
