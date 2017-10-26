@@ -1,3 +1,7 @@
+4.1.0 / 2017-
+=================
+  *
+
 4.0.3 / 2017-10
 =================
   * Fixed uploading issue when year/month based folders are not used

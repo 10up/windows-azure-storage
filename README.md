@@ -6,7 +6,7 @@ Use the Windows Azure Storage service to host your website's media files.
 **Tags:** [Microsoft](https://wordpress.org/plugins/tags/microsoft), [Microsoft Open Technologies](https://wordpress.org/plugins/tags/microsoft-open-technologies), [Windows Azure](https://wordpress.org/plugins/tags/windows-azure), [Windows Azure Storage](https://wordpress.org/plugins/tags/windows-azure-storage), [Media Files](https://wordpress.org/plugins/tags/media-files), [Upload](https://wordpress.org/plugins/tags/upload), [CDN](https://wordpress.org/plugins/tags/cdn), [blob storage](https://wordpress.org/plugins/tags/blob-storage)
 **Requires at least:** 4.0
 **Tested up to:** 4.8.2
-**Stable tag:** 4.0.3
+**Stable tag:** 4.1.0
 **License:** [BSD 2-Clause](http://www.opensource.org/licenses/bsd-license.php)
 
 ## Description ##
@@ -24,6 +24,9 @@ For more details on Windows Azure Storage, please visit the <a href="https://azu
 1. Use the Settings->Windows Azure screen to configure the plugin.
 
 ## Changelog ##
+
+### 4.1.0 ###
+* 
 
 ### 4.0.3 ###
 * Fixed uploading issue when year/month based folders are not used
@@ -127,5 +130,3 @@ Images uploaded to the Azure Storage service will not automatically receive resp
 Images added through the WordPress Media Loader *should* get automatically converted to responsive
 images when inserted into a post or page.
 We are investigating options for full support of responsive images in the plugin.
-
-

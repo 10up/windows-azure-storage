@@ -3,7 +3,7 @@ Contributors: msopentech, 10up, morganestes, stevegrunwell, lpawlik, rittesh.pat
 Tags: Microsoft, Microsoft Open Technologies, Windows Azure, Windows Azure Storage, Media Files, Upload, CDN, blob storage
 Requires at least: 4.0
 Tested up to: 4.8.2
-Stable tag: 4.0.3
+Stable tag: 4.1.0
 License: BSD 2-Clause
 License URI: http://www.opensource.org/licenses/bsd-license.php
 
@@ -23,6 +23,9 @@ For more details on Windows Azure Storage, please visit the <a href="https://azu
 1. Use the Settings->Windows Azure screen to configure the plugin.
 
 == Changelog ==
+
+= 4.1.0 =
+* 
 
 = 4.0.3 =
 * Fixed uploading issue when year/month based folders are not used
