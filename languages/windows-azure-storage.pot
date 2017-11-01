@@ -4,14 +4,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Windows Azure Storage for WordPress 4.0.3\n"
-"POT-Creation-Date: 2017-10-19 18:02+0300\n"
+"POT-Creation-Date: 2017-11-01 21:51+0200\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "PO-Revision-Date: 2017-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
-"X-Generator: Poedit 2.0.1\n"
+"X-Generator: Poedit 2.0.4\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: __;_e;_n:1;_x:1,2c;_ex:1,2c;_nx:1,2,4c;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;_nx_noop:1,2,3c\n"
 "X-Poedit-SearchPath-0: .\n"
@@ -58,7 +58,7 @@ msgstr ""
 msgid "Access to WordPress filesystem has not been granted."
 msgstr ""
 
-#: includes/class-windows-azure-helper.php:370
+#: includes/class-windows-azure-helper.php:381
 #, php-format
 msgid "Uploaded file %s does not exist."
 msgstr ""
@@ -110,144 +110,152 @@ msgstr ""
 msgid "Save Changes"
 msgstr ""
 
-#: windows-azure-storage-settings.php:114
+#: windows-azure-storage-settings.php:115
 msgid "Windows Azure Storage Settings"
 msgstr ""
 
-#: windows-azure-storage-settings.php:123
+#: windows-azure-storage-settings.php:124
 msgid "Store Account Name"
 msgstr ""
 
-#: windows-azure-storage-settings.php:133
+#: windows-azure-storage-settings.php:134
 msgid "Store Account Key"
 msgstr ""
 
-#: windows-azure-storage-settings.php:143
+#: windows-azure-storage-settings.php:144
 msgid "Default Storage Container"
 msgstr ""
 
-#: windows-azure-storage-settings.php:153
+#: windows-azure-storage-settings.php:154
 msgid "CNAME"
 msgstr ""
 
-#: windows-azure-storage-settings.php:163
-#: windows-azure-storage-settings.php:316
+#: windows-azure-storage-settings.php:164
+#: windows-azure-storage-settings.php:327
 msgid "Use Windows Azure Storage for default upload"
 msgstr ""
 
-#: windows-azure-storage-settings.php:173
+#: windows-azure-storage-settings.php:174
 msgid "Keep local files"
 msgstr ""
 
-#: windows-azure-storage-settings.php:183
+#: windows-azure-storage-settings.php:184
 msgid "Timeout for azure file list cache in seconds"
 msgstr ""
 
-#: windows-azure-storage-settings.php:199
+#: windows-azure-storage-settings.php:194
+msgid "Cache control in seconds"
+msgstr ""
+
+#: windows-azure-storage-settings.php:210
 msgid "If you do not have Windows Azure Storage Account, please <a href=\"http://go.microsoft.com/fwlink/?LinkID=129453\">register </a>for Windows Azure Services."
 msgstr ""
 
-#: windows-azure-storage-settings.php:214
+#: windows-azure-storage-settings.php:225
 msgid "Windows Azure Storage Account Name"
 msgstr ""
 
-#: windows-azure-storage-settings.php:228
+#: windows-azure-storage-settings.php:239
 msgid "Windows Azure Storage Account Primary Access Key"
 msgstr ""
 
-#: windows-azure-storage-settings.php:245
+#: windows-azure-storage-settings.php:256
 msgid "Default container to be used for storing media files"
 msgstr ""
 
-#: windows-azure-storage-settings.php:264
+#: windows-azure-storage-settings.php:275
 msgid "Create New Container"
 msgstr ""
 
-#: windows-azure-storage-settings.php:277
-#: windows-azure-storage-settings.php:278
+#: windows-azure-storage-settings.php:288
+#: windows-azure-storage-settings.php:289
 msgid "Name of the new container to create"
 msgstr ""
 
-#: windows-azure-storage-settings.php:277
+#: windows-azure-storage-settings.php:288
 msgid "New container name: "
 msgstr ""
 
-#: windows-azure-storage-settings.php:281
+#: windows-azure-storage-settings.php:292
 msgid "Create"
 msgstr ""
 
-#: windows-azure-storage-settings.php:297
+#: windows-azure-storage-settings.php:308
 msgid "Use CNAME instead of Windows Azure Blob URL"
 msgstr ""
 
-#: windows-azure-storage-settings.php:299
+#: windows-azure-storage-settings.php:310
 msgid "Note: Use this option if you would like to display image URLs belonging to your domain like <code>http://mydomain.com/</code> instead of <code>http://your-account-name.blob.core.windows.net/</code>."
 msgstr ""
 
-#: windows-azure-storage-settings.php:302
+#: windows-azure-storage-settings.php:313
 msgid "This CNAME must start with <code>http(s)://</code> and the administrator will have to update <abbr title=\"Domain Name System\">DNS</abbr> entries accordingly."
 msgstr ""
 
-#: windows-azure-storage-settings.php:318
+#: windows-azure-storage-settings.php:329
 msgid "Use Windows Azure Storage when uploading via WordPress' upload tab."
 msgstr ""
 
-#: windows-azure-storage-settings.php:321
+#: windows-azure-storage-settings.php:332
 msgid "Note: Uncheck this to revert back to using your own web host for storage at anytime."
 msgstr ""
 
-#: windows-azure-storage-settings.php:334
+#: windows-azure-storage-settings.php:345
 msgid "Do not delete local files after uploading them to Azure Storage."
 msgstr ""
 
-#: windows-azure-storage-settings.php:336
+#: windows-azure-storage-settings.php:347
 msgid "Keep local files after uploading them to Azure Storage."
 msgstr ""
 
-#: windows-azure-storage-settings.php:351
+#: windows-azure-storage-settings.php:362
 msgid "Browse azure file list cache TTL"
 msgstr ""
 
-#: windows-azure-storage-settings.php:355
+#: windows-azure-storage-settings.php:366
 msgid "Note: If you want to disable azure file list caching please set this value to 0."
 msgstr ""
 
-#: windows-azure-storage-settings.php:379
+#: windows-azure-storage-settings.php:386
+msgid "Setting Cache-Control on publicly accessible Windows Azure Blobs can help reduce bandwidth by preventing consumers from having to continuously download resources. Specify a relative amount of time in seconds to cache data after it was received."
+msgstr ""
+
+#: windows-azure-storage-settings.php:406
 msgid "Please specify Storage Account Name and Primary Access Key to create container."
 msgstr ""
 
-#: windows-azure-storage-settings.php:389
+#: windows-azure-storage-settings.php:416
 #, php-format
 msgid "The container <strong>%1$s</strong> successfully created. To use this container as default container, select it from the above drop down and click <strong>Save Changes</strong>."
 msgstr ""
 
-#: windows-azure-storage-settings.php:398
+#: windows-azure-storage-settings.php:425
 #, php-format
 msgid "Container creation failed, Error: %s"
 msgstr ""
 
-#: windows-azure-storage-settings.php:402
+#: windows-azure-storage-settings.php:429
 msgid "Please specify name of the container to create"
 msgstr ""
 
-#: windows-azure-storage-settings.php:404
+#: windows-azure-storage-settings.php:431
 msgid "Unable to create new container. Try again."
 msgstr ""
 
-#: windows-azure-storage-settings.php:406
+#: windows-azure-storage-settings.php:433
 msgid "You do not have permissions to create new container."
 msgstr ""
 
-#: windows-azure-storage-settings.php:408
+#: windows-azure-storage-settings.php:435
 msgid "Form validation failed. Try again."
 msgstr ""
 
-#: windows-azure-storage-settings.php:432
+#: windows-azure-storage-settings.php:459
 #, php-format
 msgid "Container creation failed. Error: %s"
 msgstr ""
 
-#: windows-azure-storage-settings.php:466
+#: windows-azure-storage-settings.php:493
 #, php-format
 msgid "Warning: The container <strong>%1$s</strong> is set to <strong>private</strong> and cannot be used. Please choose a public container as the default, or set the <strong>%1$s</strong> container to <strong>public</strong> in your Azure Storage settings."
 msgstr ""
