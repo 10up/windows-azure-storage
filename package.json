@@ -1,7 +1,7 @@
 {
   "name": "windows-azure-storage",
   "version": "4.1.0",
-  "description": "Windows Azure Storage for WordPress",
+  "description": "Microsoft Azure Storage for WordPress",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
