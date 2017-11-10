@@ -203,6 +203,17 @@ class Windows_Azure_Helper {
 	static public function get_cache_ttl() {
 		return (int) get_option( 'azure_browse_cache_results', 15 );
 	}
+	
+	/**
+	 * Returns cache-control.
+	 * 
+	 * @since 4.1.0
+	 * 
+	 * @return int Cache-control.
+	 */
+	static public function get_cache_control() {
+		return (int) get_option( 'azure_cache_control', 600 );
+	}
 
 	/**
 	 * Return container ACL.
@@ -381,8 +392,10 @@ class Windows_Azure_Helper {
 		$finfo     = finfo_open( FILEINFO_MIME_TYPE );
 		$mime_type = finfo_file( $finfo, $local_path );
 		finfo_close( $finfo );
+		
 		$rest_api_client->put_blob_properties( $container_name, $remote_path, array(
 			Windows_Azure_Rest_Api_Client::API_HEADER_MS_BLOB_CONTENT_TYPE => $mime_type,
+			Windows_Azure_Rest_Api_Client::API_HEADER_CACHE_CONTROL        => sprintf( "max-age=%d, must-revalidate", Windows_Azure_Helper::get_cache_control() ),
 		) );
 
 		return $result;
@@ -449,6 +462,7 @@ class Windows_Azure_Helper {
 
 		$rest_api_client->put_blob_properties( $container_name, $blob_name, array(
 			Windows_Azure_Rest_Api_Client::API_HEADER_MS_BLOB_CONTENT_TYPE => $mime_type,
+			Windows_Azure_Rest_Api_Client::API_HEADER_CACHE_CONTROL        => sprintf( "max-age=%d, must-revalidate", Windows_Azure_Helper::get_cache_control() ),
 		) );
 
 		return $result;

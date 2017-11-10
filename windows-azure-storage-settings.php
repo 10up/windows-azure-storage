@@ -105,6 +105,7 @@ function windows_azure_storage_plugin_register_settings() {
 	register_setting( 'windows-azure-storage-settings-group', 'azure_storage_use_for_default_upload', 'wp_validate_boolean' );
 	register_setting( 'windows-azure-storage-settings-group', 'azure_storage_keep_local_file', 'wp_validate_boolean' );
 	register_setting( 'windows-azure-storage-settings-group', 'azure_browse_cache_results', 'intval' );
+	register_setting( 'windows-azure-storage-settings-group', 'azure_cache_control', 'intval' );
 
 	/**
 	 * @since 4.0.0
@@ -182,6 +183,16 @@ function windows_azure_storage_plugin_register_settings() {
 		'azure_browse_cache_results',
 		__( 'Timeout for azure file list cache in seconds', 'windows-azure-storage' ),
 		'windows_azure_browse_cache_results',
+		'windows-azure-storage-plugin-options',
+		'windows-azure-storage-settings'
+	);
+	/**
+	 * @since 4.1.0
+	 */
+	add_settings_field(
+		'azure_cache_control',
+		__( 'Cache control in seconds', 'windows-azure-storage' ),
+		'windows_azure_cache_control',
 		'windows-azure-storage-plugin-options',
 		'windows-azure-storage-settings'
 	);
@@ -358,6 +369,22 @@ function windows_azure_browse_cache_results() {
 		?>
 	</p>
 	<?php
+}
+
+/**
+ * Displays cache-control setting.
+ *
+ * @since 4.1.0
+ *
+ * @return void
+ */
+function windows_azure_cache_control() {
+	$cache_control = Windows_Azure_Helper::get_cache_control();
+	
+	?><input type="number" name="azure_cache_control" class="regular-text" value="<?php echo esc_attr( $cache_control ); ?>">
+	<p class="field-description">
+		<?php esc_html_e( 'Setting Cache-Control on publicly accessible Windows Azure Blobs can help reduce bandwidth by preventing consumers from having to continuously download resources. Specify a relative amount of time in seconds to cache data after it was received.', 'windows-azure-storage' ); ?>
+	</p><?php	
 }
 
 /**

@@ -1,6 +1,6 @@
 4.1.0 / 2017-
 =================
-  *
+  * Added ability to enter Cache-Control property
 
 4.0.3 / 2017-10
 =================
