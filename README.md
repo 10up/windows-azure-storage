@@ -27,6 +27,7 @@ For more details on Microsoft Azure Storage, please visit the <a href="https://a
 
 ### 4.1.0 ###
 * Added ability to enter Cache-Control property
+* Renamed plugin to be Microsoft Azure Storage for WordPress
 
 ### 4.0.3 ###
 * Fixed uploading issue when year/month based folders are not used

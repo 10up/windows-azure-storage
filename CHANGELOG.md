@@ -1,6 +1,7 @@
 4.1.0 / 2017-
 =================
   * Added ability to enter Cache-Control property
+  * Renamed plugin to be Microsoft Azure Storage for WordPress
 
 4.0.3 / 2017-10
 =================
