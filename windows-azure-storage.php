@@ -1,13 +1,15 @@
 <?php
 /**
- * Plugin Name: Windows Azure Storage for WordPress
+ * Plugin Name: Microsoft Azure Storage for WordPress
  * Plugin URI: https://wordpress.org/plugins/windows-azure-storage/
- * Description: Use the Windows Azure Storage service to host your website's media files.
- * Version: 4.0.3
+ * Description: Use the Microsoft Azure Storage service to host your website's media files.
+ * Version: 4.1.0
  * Author: 10up, Microsoft Open Technologies
  * Author URI: http://10up.com/
  * License: BSD 2-Clause
  * License URI: http://www.opensource.org/licenses/bsd-license.php
+ * Text Domain: windows-azure-storage
+ * Domain Path: /languages
  */
 
 /*
@@ -47,10 +49,10 @@
  */
 
 /*
- * 'Windows Azure SDK for PHP v0.4.0' and its dependencies are included
+ * 'Microsoft Azure SDK for PHP v0.4.0' and its dependencies are included
  * in the library directory. If another version of the SDK is installed
  * and USESDKINSTALLEDGLOBALLY is defined, that version will be used instead.
- * 'Windows Azure SDK for PHP' provides access to the Windows Azure
+ * 'Microsoft Azure SDK for PHP' provides access to the Microsoft Azure
  * Blob Storage service that this plugin enables for WordPress.
  * See https://github.com/windowsazure/azure-sdk-for-php/ for updates to the SDK.
  */
@@ -111,7 +113,7 @@ function azure_storage_media_menu( $tabs ) {
 // Hook for adding tabs.
 add_filter( 'media_upload_tabs', 'azure_storage_media_menu' );
 
-// Add callback for three tabs in the Windows Azure Storage Dialog.
+// Add callback for three tabs in the Microsoft Azure Storage Dialog.
 add_action( 'media_upload_browse', 'windows_azure_browse_tab' );
 
 // Hooks for handling default file uploads.
@@ -164,12 +166,12 @@ function windows_azure_plugin_check_prerequisite() {
 	$php_compat  = version_compare( $php_version, '5.3.0', '>=' );
 	if ( ! $php_compat ) {
 		deactivate_plugins( plugin_basename( __FILE__ ) );
-		wp_die( __( 'Windows Azure Storage for WordPress requires at least PHP 5.3.0', 'windows-azure-storage' ) );
+		wp_die( __( 'Microsoft Azure Storage for WordPress requires at least PHP 5.3.0', 'windows-azure-storage' ) );
 	}
 	$wp_compat = version_compare( $wp_version, '4.0', '>=' );
 	if ( ! $wp_compat ) {
 		deactivate_plugins( plugin_basename( __FILE__ ) );
-		wp_die( __( 'Windows Azure Storage for WordPress requires at least WordPress 4.0', 'windows-azure-storage' ) );
+		wp_die( __( 'Microsoft Azure Storage for WordPress requires at least WordPress 4.0', 'windows-azure-storage' ) );
 	}
 }
 
@@ -539,7 +541,7 @@ function windows_azure_storage_wp_handle_upload( $uploads ) {
 
 /**
  * Common function to replace wordpress file uplaod url with
- * Windows Azure Storage URLs
+ * Microsoft Azure Storage URLs
  *
  * @param string $url Original upload URL.
  *
@@ -547,8 +549,8 @@ function windows_azure_storage_wp_handle_upload( $uploads ) {
  */
 function get_updated_upload_url( $url ) {
 	$wp_upload_dir      = wp_upload_dir();
-	$upload_dir_url     = $wp_upload_dir['baseurl'];
-	$storage_url_prefix = untrailingslashit(WindowsAzureStorageUtil::get_storage_url_base());
+	$upload_dir_url     = untrailingslashit( $wp_upload_dir['baseurl'] );
+	$storage_url_prefix = untrailingslashit( WindowsAzureStorageUtil::get_storage_url_base() );
 
 	return str_replace( $upload_dir_url, $storage_url_prefix, $url );
 }
@@ -651,8 +653,8 @@ function windows_azure_storage_media_buttons_context( $context ) {
 		'<a id="windows-azure-storage-media-button" role="button" href="javascript:void(0)" class="button" data-editor="content"
 title="%2$s"><img src="%3$s" alt="%2$s" role="img" class="windows-azure-storage-media-icon" />%4$s</a>',
 		esc_url( $browse_iframe_src ),
-		esc_attr__( 'Windows Azure Storage', 'windows-azure-storage' ),
-		esc_url( MSFT_AZURE_PLUGIN_URL . 'images/WindowsAzure.jpg' ),
+		esc_attr__( 'Microsoft Azure Storage', 'windows-azure-storage' ),
+		esc_url( MSFT_AZURE_PLUGIN_URL . 'images/azure-icon.png' ),
 		esc_html__( 'Add Media From Azure', 'windows-azure-storage' )
 	);
 
@@ -660,15 +662,15 @@ title="%2$s"><img src="%3$s" alt="%2$s" role="img" class="windows-azure-storage-
 }
 
 /**
- * Add option page for Windows Azure Storage Plugin.
+ * Add option page for Microsoft Azure Storage Plugin.
  *
  * @return void
  */
 function windows_azure_storage_plugin_menu() {
 	if ( current_user_can( 'manage_options' ) ) {
 		add_options_page(
-			__( 'Windows Azure Storage Plugin Settings', 'windows-azure-storage' ),
-			__( 'Windows Azure', 'windows-azure-storage' ),
+			__( 'Microsoft Azure Storage Plugin Settings', 'windows-azure-storage' ),
+			__( 'Microsoft Azure', 'windows-azure-storage' ),
 			'manage_options',
 			'windows-azure-storage-plugin-options',
 			'windows_azure_storage_plugin_options_page'
@@ -761,11 +763,11 @@ function windows_azure_storage_query_azure_attachments() {
 		'posts_per_page' => Windows_Azure_Rest_Api_Client::API_REQUEST_BULK_SIZE,
 		'paged'          => 1,
 	) );
-	if ( 1 === (int) $query['paged'] ) {
-		$next_marker = false;
-	} else {
-		$next_marker = sanitize_text_field( wp_unslash( $_COOKIE['azure_next_marker'] ) );
-	}
+	
+	$next_marker = 1 === (int) $query['paged'] || empty( $_COOKIE['azure_next_marker'] )
+		? false
+		: sanitize_text_field( wp_unslash( $_COOKIE['azure_next_marker'] ) );
+
 	$cache_key = 'wasr_' . md5( json_encode( $query ) );
 	if ( $cache_ttl > 0 && $posts = wp_cache_get( $cache_key ) ) {
 		wp_send_json_success( $posts );
@@ -886,7 +888,7 @@ function windows_azure_no_filesystem_access_notice() {
 		?>
 		<div class="notice notice-error">
 			<p>
-				<?php esc_html_e( 'Windows Azure Storage requires direct filesystem access in order to work.', 'windows-azure-storage' ) ?>
+				<?php esc_html_e( 'Microsoft Azure Storage requires direct filesystem access in order to work.', 'windows-azure-storage' ) ?>
 			</p>
 		</div>
 		<?php
