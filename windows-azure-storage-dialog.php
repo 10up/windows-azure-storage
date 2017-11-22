@@ -1,6 +1,6 @@
 <?php
 /**
- * Shows popup dialog when clicked on the Windows Azure Toolbar
+ * Shows popup dialog when clicked on the Microsoft Azure Toolbar
  *
  * Version: 3.0.1
  *

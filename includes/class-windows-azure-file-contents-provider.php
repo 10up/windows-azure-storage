@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Windows Azure Storage file contents provider.
+ * Microsoft Azure Storage file contents provider.
  *
  * Version: 4.0.0
  *

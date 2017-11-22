@@ -1,6 +1,8 @@
 4.1.0 / 2017-
 =================
   * Added error message when SimpleXML library is not found
+  * Added ability to enter Cache-Control property
+  * Renamed plugin to be Microsoft Azure Storage for WordPress
 
 4.0.3 / 2017-10
 =================
@@ -200,10 +202,10 @@
   * Use the localized object in the Azure plugin JS
   * Add the stock WordPress JSHint ruleset
   * Enqueue the plugin script before localizing
-  * Localize the JS for the Windows Azure Storage plugin
+  * Localize the JS for the Microsoft Azure Storage plugin
   * Enqueue the plugin style directly without prior registration
   * Updated docs for windows_azure_storage_dialog_scripts
-  * Add a stylesheet to Windows Azure Storage plugin
+  * Add a stylesheet to Microsoft Azure Storage plugin
   * Enqueue JS and CSS instead of directly printing
   * Set constants for use throughout the plugin
   * Use absolute URLs for including assets
