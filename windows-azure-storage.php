@@ -763,11 +763,11 @@ function windows_azure_storage_query_azure_attachments() {
 		'posts_per_page' => Windows_Azure_Rest_Api_Client::API_REQUEST_BULK_SIZE,
 		'paged'          => 1,
 	) );
-	if ( 1 === (int) $query['paged'] ) {
-		$next_marker = false;
-	} else {
-		$next_marker = sanitize_text_field( wp_unslash( $_COOKIE['azure_next_marker'] ) );
-	}
+	
+	$next_marker = 1 === (int) $query['paged'] || empty( $_COOKIE['azure_next_marker'] )
+		? false
+		: sanitize_text_field( wp_unslash( $_COOKIE['azure_next_marker'] ) );
+
 	$cache_key = 'wasr_' . md5( json_encode( $query ) );
 	if ( $cache_ttl > 0 && $posts = wp_cache_get( $cache_key ) ) {
 		wp_send_json_success( $posts );

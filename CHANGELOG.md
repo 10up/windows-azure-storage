@@ -4,6 +4,7 @@
   * Added ability to enter Cache-Control property
   * Renamed plugin to be Microsoft Azure Storage for WordPress
   * Fixed trailing slash issue which led to double slashes in URLs
+  * Fixed minor warnings
 
 4.0.3 / 2017-10
 =================
