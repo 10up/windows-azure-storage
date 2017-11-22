@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Windows Azure Storage helper class.
+ * Microsoft Azure Storage helper class.
  *
  * Version: 4.0.0
  *

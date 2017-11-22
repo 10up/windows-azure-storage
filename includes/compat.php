@@ -1,6 +1,6 @@
 <?php
 /**
- * Compatibility assistance for WordPress and Windows Azure Storage.
+ * Compatibility assistance for WordPress and Microsoft Azure Storage.
  */
 
 namespace Microsoft\Azure\BlobStorage\Helpers;
