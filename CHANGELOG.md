@@ -1,4 +1,4 @@
-4.1.0 / 2017-
+4.1.0 / 2017-11
 =================
   * Added error message when SimpleXML library is not found
   * Added ability to enter Cache-Control property
