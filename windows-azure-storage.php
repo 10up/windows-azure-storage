@@ -548,7 +548,7 @@ function windows_azure_storage_wp_handle_upload( $uploads ) {
 function get_updated_upload_url( $url ) {
 	$wp_upload_dir      = wp_upload_dir();
 	$upload_dir_url     = $wp_upload_dir['baseurl'];
-	$storage_url_prefix = WindowsAzureStorageUtil::get_storage_url_base();
+	$storage_url_prefix = untrailingslashit(WindowsAzureStorageUtil::get_storage_url_base());
 
 	return str_replace( $upload_dir_url, $storage_url_prefix, $url );
 }
