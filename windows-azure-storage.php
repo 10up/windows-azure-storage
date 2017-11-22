@@ -8,6 +8,8 @@
  * Author URI: http://10up.com/
  * License: BSD 2-Clause
  * License URI: http://www.opensource.org/licenses/bsd-license.php
+ * Text Domain: windows-azure-storage
+ * Domain Path: /languages
  */
 
 /*

@@ -25,6 +25,7 @@ For more details on Microsoft Azure Storage, please visit the <a href="https://a
 == Changelog ==
 
 = 4.1.0 =
+* Added error message when SimpleXML library is not found
 * Added ability to enter Cache-Control property
 * Renamed plugin to be Microsoft Azure Storage for WordPress
 
