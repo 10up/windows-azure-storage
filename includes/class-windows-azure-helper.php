@@ -113,7 +113,7 @@ class Windows_Azure_Helper {
 	 * @return string CNAME value.
 	 */
 	static public function get_cname() {
-		return untrailingslashit( strtolower( get_option( 'cname' ) ) );
+		return untrailingslashit( strtolower( defined( 'MICROSOFT_AZURE_CNAME' ) ? MICROSOFT_AZURE_CNAME : get_option( 'cname' ) ) );
 	}
 
 	/**

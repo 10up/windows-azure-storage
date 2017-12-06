@@ -99,6 +99,11 @@ function windows_azure_storage_plugin_options_page() {
  * @return void
  */
 function windows_azure_storage_plugin_register_settings() {
+	register_setting( 'windows-azure-storage-settings-group', 'default_azure_storage_account_container_name', 'sanitize_text_field' );
+	register_setting( 'windows-azure-storage-settings-group', 'azure_storage_use_for_default_upload', 'wp_validate_boolean' );
+	register_setting( 'windows-azure-storage-settings-group', 'azure_storage_keep_local_file', 'wp_validate_boolean' );
+	register_setting( 'windows-azure-storage-settings-group', 'azure_browse_cache_results', 'intval' );
+
 	if ( ! defined( 'MICROSOFT_AZURE_ACCOUNT_NAME' ) ) {
 		register_setting( 'windows-azure-storage-settings-group', 'azure_storage_account_name', 'sanitize_text_field' );
 	}
@@ -107,11 +112,9 @@ function windows_azure_storage_plugin_register_settings() {
 		register_setting( 'windows-azure-storage-settings-group', 'azure_storage_account_primary_access_key', 'sanitize_text_field' );
 	}
 
-	register_setting( 'windows-azure-storage-settings-group', 'default_azure_storage_account_container_name', 'sanitize_text_field' );
-	register_setting( 'windows-azure-storage-settings-group', 'cname', 'esc_url_raw' );
-	register_setting( 'windows-azure-storage-settings-group', 'azure_storage_use_for_default_upload', 'wp_validate_boolean' );
-	register_setting( 'windows-azure-storage-settings-group', 'azure_storage_keep_local_file', 'wp_validate_boolean' );
-	register_setting( 'windows-azure-storage-settings-group', 'azure_browse_cache_results', 'intval' );
+	if ( ! defined( 'MICROSOFT_AZURE_CNAME' ) ) {
+		register_setting( 'windows-azure-storage-settings-group', 'cname', 'esc_url_raw' );
+	}
 
 	if ( ! defined( 'MICROSOFT_AZURE_CACHE_CONTROL' ) ) {
 		register_setting( 'windows-azure-storage-settings-group', 'azure_cache_control', 'intval' );
@@ -171,7 +174,7 @@ function windows_azure_storage_plugin_register_settings() {
 	 */
 	add_settings_field(
 		'azure_storage_handle_uploads',
-		__( 'Use Microsoft Azure Storage for default upload', 'windows-azure-storage' ),
+		__( 'Use for default upload', 'windows-azure-storage' ),
 		'windows_azure_storage_setting_handle_uploads',
 		'windows-azure-storage-plugin-options',
 		'windows-azure-storage-settings'
@@ -328,15 +331,16 @@ function windows_azure_storage_setting_storage_container() {
  */
 function windows_azure_storage_setting_cname() {
 	$cname = Windows_Azure_Helper::get_cname();
-	?>
-	<input type="url" name="cname" class="regular-text" title="<?php esc_attr_e( 'Use CNAME instead of Microsoft Azure Blob URL', 'windows-azure-storage' ); ?>" value="<?php echo esc_attr( $cname ); ?>"/>
-	<p class="field-description">
-		<?php _e( 'Note: Use this option if you would like to display image URLs belonging to your domain like <code>http://mydomain.com/</code> instead of <code>http://your-account-name.blob.core.windows.net/</code>.', 'windows-azure-storage' ); ?>
-	</p>
-	<p>
-		<?php _e( 'This CNAME must start with <code>http(s)://</code> and the administrator will have to update <abbr title="Domain Name System">DNS</abbr> entries accordingly.', 'windows-azure-storage' ); ?>
-	</p>
-	<?php
+
+	if ( defined( 'MICROSOFT_AZURE_CNAME' ) ) {
+		echo '<input type="url" class="regular-text" value="', esc_attr( $cname ), '" readonly disabled>';
+	} else {
+		echo '<input type="url" name="cname" class="regular-text" value="', esc_attr( $cname ), '">';
+	}
+
+	echo '<p>';
+		_e( 'Use this option if you would like to display image URLs belonging to your domain like <code>http://mydomain.com/</code> instead of <code>http://your-account-name.blob.core.windows.net/</code>. This CNAME must start with <code>http(s)://</code> and the administrator will have to update <abbr title="Domain Name System">DNS</abbr> entries accordingly. You can use <code>MICROSOFT_AZURE_CNAME</code> constant to override it.', 'windows-azure-storage' );
+	echo '</p>';
 }
 
 /**
@@ -352,8 +356,7 @@ function windows_azure_storage_setting_handle_uploads() {
 	<label for="azure_storage_use_for_default_upload">
 		<?php esc_html_e( 'Use Microsoft Azure Storage when uploading via WordPress\' upload tab.', 'windows-azure-storage' ); ?>
 	</label>
-	<br/>
-	<small><?php esc_html_e( 'Note: Uncheck this to revert back to using your own web host for storage at anytime.', 'windows-azure-storage' ); ?></small>
+	<p><?php esc_html_e( 'Note: Uncheck this to revert back to using your own web host for storage at anytime.', 'windows-azure-storage' ); ?></p>
 	<?php
 }
 
