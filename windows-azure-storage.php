@@ -403,12 +403,16 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 				$data['sizes'] = array();
 			}
 			set_transient( $azure_progress_key, array( 'current' => ++$current, 'total' => count( $data['sizes'] ) + 1 ), 5 * MINUTE_IN_SECONDS );
-			$result = \Windows_Azure_Helper::put_media_to_blob_storage(
-				$default_azure_storage_account_container_name,
-				$relative_file_name,
-				$relative_file_name,
-				$mime_type
-			);
+			
+			// only upload file if file exists locally
+			if (Windows_Azure_Helper::file_exists($relative_file_name)) {
+				$result = \Windows_Azure_Helper::put_media_to_blob_storage(
+					$default_azure_storage_account_container_name,
+					$relative_file_name,
+					$relative_file_name,
+					$mime_type
+				);
+			}
 
 		} catch ( Exception $e ) {
 			echo '<p>' . sprintf( __( 'Error in uploading file. Error: %s', 'windows-azure-storage' ), esc_html( $e->getMessage() ) ) . '</p><br/>';
