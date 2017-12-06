@@ -100,7 +100,9 @@ class Windows_Azure_Helper {
 	 * @return mixed|void Account key.
 	 */
 	static public function get_account_key() {
-		return get_option( 'azure_storage_account_primary_access_key' );
+		return defined( 'MICROSOFT_AZURE_ACCOUNT_KEY' )
+			? MICROSOFT_AZURE_ACCOUNT_KEY
+			: get_option( 'azure_storage_account_primary_access_key' );
 	}
 
 	/**

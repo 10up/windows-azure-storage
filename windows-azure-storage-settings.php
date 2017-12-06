@@ -102,8 +102,11 @@ function windows_azure_storage_plugin_register_settings() {
 	if ( ! defined( 'MICROSOFT_AZURE_ACCOUNT_NAME' ) ) {
 		register_setting( 'windows-azure-storage-settings-group', 'azure_storage_account_name', 'sanitize_text_field' );
 	}
-	
-	register_setting( 'windows-azure-storage-settings-group', 'azure_storage_account_primary_access_key', 'sanitize_text_field' );
+
+	if ( ! defined( 'MICROSOFT_AZURE_ACCOUNT_KEY' ) ) {
+		register_setting( 'windows-azure-storage-settings-group', 'azure_storage_account_primary_access_key', 'sanitize_text_field' );
+	}
+
 	register_setting( 'windows-azure-storage-settings-group', 'default_azure_storage_account_container_name', 'sanitize_text_field' );
 	register_setting( 'windows-azure-storage-settings-group', 'cname', 'esc_url_raw' );
 	register_setting( 'windows-azure-storage-settings-group', 'azure_storage_use_for_default_upload', 'wp_validate_boolean' );
@@ -249,9 +252,16 @@ function windows_azure_storage_setting_account_name() {
  */
 function windows_azure_storage_setting_account_key() {
 	$storage_account_key = Windows_Azure_Helper::get_account_key();
-	?>
-	<input type="text" name="azure_storage_account_primary_access_key" class="large-text" title="<?php esc_attr_e( 'Microsoft Azure Storage Account Primary Access Key', 'windows-azure-storage' ); ?>" value="<?php echo esc_attr( $storage_account_key ); ?>"/>
-	<?php
+
+	if ( defined( 'MICROSOFT_AZURE_ACCOUNT_KEY' ) ) {
+		echo '<input type="text" class="large-text" value="', esc_attr( $storage_account_key ), '" readonly disabled>';
+	} else {
+		echo '<input type="text" name="azure_storage_account_primary_access_key" class="large-text" value="', esc_attr( $storage_account_key ), '">';
+	}
+
+	echo '<p>';
+		_e( 'Microsoft Azure Storage Account Primary Access Key. You can define <code>MICROSOFT_AZURE_ACCOUNT_KEY</code> constant to override it.', 'windows-azure-storage' );
+	echo '</p>';
 }
 
 /**
