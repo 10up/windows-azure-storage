@@ -117,7 +117,7 @@ add_filter( 'media_upload_tabs', 'azure_storage_media_menu' );
 add_action( 'media_upload_browse', 'windows_azure_browse_tab' );
 
 // Hooks for handling default file uploads.
-if ( (bool) get_option( 'azure_storage_use_for_default_upload' ) ) {
+if ( Windows_Azure_Helper::get_use_for_default_upload() ) {
 	add_filter( 'wp_update_attachment_metadata', 'windows_azure_storage_wp_update_attachment_metadata', 9, 2 );
 
 	// Hook for handling blog posts via xmlrpc. This is not full proof check.
@@ -403,7 +403,7 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 				$data['sizes'] = array();
 			}
 			set_transient( $azure_progress_key, array( 'current' => ++$current, 'total' => count( $data['sizes'] ) + 1 ), 5 * MINUTE_IN_SECONDS );
-			
+
 			// only upload file if file exists locally
 			if (Windows_Azure_Helper::file_exists($relative_file_name)) {
 				$result = \Windows_Azure_Helper::put_media_to_blob_storage(
@@ -767,7 +767,7 @@ function windows_azure_storage_query_azure_attachments() {
 		'posts_per_page' => Windows_Azure_Rest_Api_Client::API_REQUEST_BULK_SIZE,
 		'paged'          => 1,
 	) );
-	
+
 	$next_marker = 1 === (int) $query['paged'] || empty( $_COOKIE['azure_next_marker'] )
 		? false
 		: sanitize_text_field( wp_unslash( $_COOKIE['azure_next_marker'] ) );

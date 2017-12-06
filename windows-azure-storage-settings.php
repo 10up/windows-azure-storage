@@ -99,7 +99,6 @@ function windows_azure_storage_plugin_options_page() {
  * @return void
  */
 function windows_azure_storage_plugin_register_settings() {
-	register_setting( 'windows-azure-storage-settings-group', 'azure_storage_use_for_default_upload', 'wp_validate_boolean' );
 	register_setting( 'windows-azure-storage-settings-group', 'azure_storage_keep_local_file', 'wp_validate_boolean' );
 	register_setting( 'windows-azure-storage-settings-group', 'azure_browse_cache_results', 'intval' );
 
@@ -117,6 +116,10 @@ function windows_azure_storage_plugin_register_settings() {
 
 	if ( ! defined( 'MICROSOFT_AZURE_CNAME' ) ) {
 		register_setting( 'windows-azure-storage-settings-group', 'cname', 'esc_url_raw' );
+	}
+
+	if ( ! defined( 'MICROSOFT_AZURE_USE_FOR_DEFAULT_UPLOAD' ) ) {
+		register_setting( 'windows-azure-storage-settings-group', 'azure_storage_use_for_default_upload', 'wp_validate_boolean' );
 	}
 
 	if ( ! defined( 'MICROSOFT_AZURE_CACHE_CONTROL' ) ) {
@@ -358,13 +361,21 @@ function windows_azure_storage_setting_cname() {
  * @return void
  */
 function windows_azure_storage_setting_handle_uploads() {
-	?>
-	<input type="checkbox" name="azure_storage_use_for_default_upload" title="<?php esc_attr_e( 'Use Microsoft Azure Storage for default upload', 'windows-azure-storage' ) ?>" value="1" id="azure_storage_use_for_default_upload" <?php checked( (bool) get_option( 'azure_storage_use_for_default_upload' ) ); ?> />
-	<label for="azure_storage_use_for_default_upload">
-		<?php esc_html_e( 'Use Microsoft Azure Storage when uploading via WordPress\' upload tab.', 'windows-azure-storage' ); ?>
-	</label>
-	<p><?php esc_html_e( 'Note: Uncheck this to revert back to using your own web host for storage at anytime.', 'windows-azure-storage' ); ?></p>
-	<?php
+	$use_for_upload = Windows_Azure_Helper::get_use_for_default_upload();
+
+	if ( defined( 'MICROSOFT_AZURE_USE_FOR_DEFAULT_UPLOAD' ) ) {
+		echo '<input type="checkbox" id="azure_storage_use_for_default_upload"', checked( $use_for_upload, true, false ), ' readonly disabled>';
+	} else {
+		echo '<input type="checkbox" name="azure_storage_use_for_default_upload" value="1" id="azure_storage_use_for_default_upload"', checked( $use_for_upload, true, false ), '>';
+	}
+
+	echo '<label for="azure_storage_use_for_default_upload">';
+		esc_html_e( 'Use Microsoft Azure Storage when uploading via WordPress\' upload tab.', 'windows-azure-storage' );
+	echo '</label>';
+
+	echo '<p>';
+		_e( 'Note: Uncheck this to revert back to using your own web host for storage at anytime. You can define <code>MICROSOFT_AZURE_USE_FOR_DEFAULT_UPLOAD</code> to override it.', 'windows-azure-storage' );
+	echo '</p>';
 }
 
 /**
