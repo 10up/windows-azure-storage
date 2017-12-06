@@ -106,7 +106,10 @@ function windows_azure_storage_plugin_register_settings() {
 	register_setting( 'windows-azure-storage-settings-group', 'azure_storage_use_for_default_upload', 'wp_validate_boolean' );
 	register_setting( 'windows-azure-storage-settings-group', 'azure_storage_keep_local_file', 'wp_validate_boolean' );
 	register_setting( 'windows-azure-storage-settings-group', 'azure_browse_cache_results', 'intval' );
-	register_setting( 'windows-azure-storage-settings-group', 'azure_cache_control', 'intval' );
+
+	if ( ! defined( 'MICROSOFT_AZURE_CACHE_CONTROL' ) ) {
+		register_setting( 'windows-azure-storage-settings-group', 'azure_cache_control', 'intval' );
+	}
 
 	/**
 	 * @since 4.0.0
@@ -381,11 +384,16 @@ function windows_azure_browse_cache_results() {
  */
 function windows_azure_cache_control() {
 	$cache_control = Windows_Azure_Helper::get_cache_control();
-	
-	?><input type="number" name="azure_cache_control" class="regular-text" value="<?php echo esc_attr( $cache_control ); ?>">
-	<p class="field-description">
-		<?php esc_html_e( 'Setting Cache-Control on publicly accessible Microsoft Azure Blobs can help reduce bandwidth by preventing consumers from having to continuously download resources. Specify a relative amount of time in seconds to cache data after it was received.', 'windows-azure-storage' ); ?>
-	</p><?php	
+
+	if ( defined( 'MICROSOFT_AZURE_CACHE_CONTROL' ) ) {
+		echo '<input type="number" class="regular-text" value="', esc_attr( $cache_control ), '" readonly disabled>';
+	} else {
+		echo '<input type="number" name="azure_cache_control" class="regular-text" value="', esc_attr( $cache_control ), '">';
+	}
+
+	echo '<p>';
+		_e( 'Setting Cache-Control on publicly accessible Microsoft Azure Blobs can help reduce bandwidth by preventing consumers from having to continuously download resources. Specify a relative amount of time in seconds to cache data after it was received. You can define <code>MICROSOFT_AZURE_CACHE_CONTROL</code> constant to override it.', 'windows-azure-storage' );
+	echo '</p>';
 }
 
 /**
