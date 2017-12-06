@@ -325,7 +325,7 @@ function windows_azure_storage_setting_storage_container() {
 	}
 
 	echo '<p>';
-		_e( 'Default container to be used for storing media files.', 'windows-azure-storage' );
+		_e( 'Default container to be used for storing media files. You can define <code>MICROSOFT_AZURE_CONTAINER</code> constant to override it.', 'windows-azure-storage' );
 	echo '</p>';
 }
 
