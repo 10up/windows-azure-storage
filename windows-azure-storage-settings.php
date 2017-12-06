@@ -99,14 +99,29 @@ function windows_azure_storage_plugin_options_page() {
  * @return void
  */
 function windows_azure_storage_plugin_register_settings() {
-	register_setting( 'windows-azure-storage-settings-group', 'azure_storage_account_name', 'sanitize_text_field' );
-	register_setting( 'windows-azure-storage-settings-group', 'azure_storage_account_primary_access_key', 'sanitize_text_field' );
-	register_setting( 'windows-azure-storage-settings-group', 'default_azure_storage_account_container_name', 'sanitize_text_field' );
-	register_setting( 'windows-azure-storage-settings-group', 'cname', 'esc_url_raw' );
 	register_setting( 'windows-azure-storage-settings-group', 'azure_storage_use_for_default_upload', 'wp_validate_boolean' );
 	register_setting( 'windows-azure-storage-settings-group', 'azure_storage_keep_local_file', 'wp_validate_boolean' );
 	register_setting( 'windows-azure-storage-settings-group', 'azure_browse_cache_results', 'intval' );
-	register_setting( 'windows-azure-storage-settings-group', 'azure_cache_control', 'intval' );
+
+	if ( ! defined( 'MICROSOFT_AZURE_ACCOUNT_NAME' ) ) {
+		register_setting( 'windows-azure-storage-settings-group', 'azure_storage_account_name', 'sanitize_text_field' );
+	}
+
+	if ( ! defined( 'MICROSOFT_AZURE_ACCOUNT_KEY' ) ) {
+		register_setting( 'windows-azure-storage-settings-group', 'azure_storage_account_primary_access_key', 'sanitize_text_field' );
+	}
+
+	if ( ! defined( 'MICROSOFT_AZURE_CONTAINER' ) ) {
+		register_setting( 'windows-azure-storage-settings-group', 'default_azure_storage_account_container_name', 'sanitize_text_field' );
+	}
+
+	if ( ! defined( 'MICROSOFT_AZURE_CNAME' ) ) {
+		register_setting( 'windows-azure-storage-settings-group', 'cname', 'esc_url_raw' );
+	}
+
+	if ( ! defined( 'MICROSOFT_AZURE_CACHE_CONTROL' ) ) {
+		register_setting( 'windows-azure-storage-settings-group', 'azure_cache_control', 'intval' );
+	}
 
 	/**
 	 * @since 4.0.0
@@ -162,7 +177,7 @@ function windows_azure_storage_plugin_register_settings() {
 	 */
 	add_settings_field(
 		'azure_storage_handle_uploads',
-		__( 'Use Microsoft Azure Storage for default upload', 'windows-azure-storage' ),
+		__( 'Use for default upload', 'windows-azure-storage' ),
 		'windows_azure_storage_setting_handle_uploads',
 		'windows-azure-storage-plugin-options',
 		'windows-azure-storage-settings'
@@ -222,9 +237,16 @@ function windows_azure_storage_plugin_settings_section() {
  */
 function windows_azure_storage_setting_account_name() {
 	$storage_account_name = Windows_Azure_Helper::get_account_name();
-	?>
-	<input type="text" name="azure_storage_account_name" class="regular-text" title="<?php esc_attr_e( 'Microsoft Azure Storage Account Name', 'windows-azure-storage' ); ?>" value="<?php echo esc_attr( $storage_account_name ); ?>"/>
-	<?php
+
+	if ( defined( 'MICROSOFT_AZURE_ACCOUNT_NAME' ) ) {
+		echo '<input type="text" class="regular-text" value="', esc_attr( $storage_account_name ), '" readonly disabled>';
+	} else {
+		echo '<input type="text" name="azure_storage_account_name" class="regular-text" value="', esc_attr( $storage_account_name ), '">';
+	}
+
+	echo '<p>';
+		_e( 'Microsoft Azure Storage Account Name. You can define <code>MICROSOFT_AZURE_ACCOUNT_NAME</code> constant to override it.', 'windows-azure-storage' );
+	echo '</p>';
 }
 
 /**
@@ -236,9 +258,16 @@ function windows_azure_storage_setting_account_name() {
  */
 function windows_azure_storage_setting_account_key() {
 	$storage_account_key = Windows_Azure_Helper::get_account_key();
-	?>
-	<input type="text" name="azure_storage_account_primary_access_key" class="large-text" title="<?php esc_attr_e( 'Microsoft Azure Storage Account Primary Access Key', 'windows-azure-storage' ); ?>" value="<?php echo esc_attr( $storage_account_key ); ?>"/>
-	<?php
+
+	if ( defined( 'MICROSOFT_AZURE_ACCOUNT_KEY' ) ) {
+		echo '<input type="text" class="large-text" value="', esc_attr( $storage_account_key ), '" readonly disabled>';
+	} else {
+		echo '<input type="text" name="azure_storage_account_primary_access_key" class="large-text" value="', esc_attr( $storage_account_key ), '">';
+	}
+
+	echo '<p>';
+		_e( 'Microsoft Azure Storage Account Primary Access Key. You can define <code>MICROSOFT_AZURE_ACCOUNT_KEY</code> constant to override it.', 'windows-azure-storage' );
+	echo '</p>';
 }
 
 /**
@@ -249,51 +278,55 @@ function windows_azure_storage_setting_account_key() {
  * @return void
  */
 function windows_azure_storage_setting_storage_container() {
-	$default_container         = Windows_Azure_Helper::get_default_container();
-	$containers_list           = Windows_Azure_Helper::list_containers();
-	$new_container_name        = isset( $_POST['newcontainer'] ) ? sanitize_text_field( wp_unslash( $_POST['newcontainer'] ) ) : '';
-	$container_creation_failed = apply_filters( 'windows_azure_storage_container_creation_failed', false );
-	?>
-	<select name="default_azure_storage_account_container_name" title="<?php esc_attr_e( 'Default container to be used for storing media files', 'windows-azure-storage' ) ?>" class="azure-container-selector">
-		<?php
-		if ( ! is_wp_error( $containers_list ) ) {
-			foreach ( $containers_list as $container ) {
-				if ( empty( $default_container ) ) {
-					$default_container = $container['Name'];
-					Windows_Azure_Helper::set_default_container( $default_container );
+	$default_container = Windows_Azure_Helper::get_default_container();
+
+	if ( defined( 'MICROSOFT_AZURE_CONTAINER' ) ) {
+		echo '<input type="text" class="regular-text" value="', $default_container, '" readonly disabled>';
+	} else {
+		$containers_list = Windows_Azure_Helper::list_containers();
+		$new_container_name = isset( $_POST['newcontainer'] ) ? sanitize_text_field( wp_unslash( $_POST['newcontainer'] ) ) : '';
+		$container_creation_failed = apply_filters( 'windows_azure_storage_container_creation_failed', false );
+
+		?><select name="default_azure_storage_account_container_name" class="azure-container-selector regular-text"><?php
+			if ( ! is_wp_error( $containers_list ) ) {
+				foreach ( $containers_list as $container ) {
+					if ( empty( $default_container ) ) {
+						$default_container = $container['Name'];
+						Windows_Azure_Helper::set_default_container( $default_container );
+					}
+
+					?><option value="<?php echo esc_attr( $container['Name'] ); ?>"
+						<?php if ( ! $container_creation_failed ) {
+							selected( $container['Name'], $default_container );
+						} ?>>
+						<?php echo esc_html( $container['Name'] ); ?>
+					</option><?php
 				}
-				?>
-				<option value="<?php echo esc_attr( $container['Name'] ); ?>"
-					<?php if ( ! $container_creation_failed ) {
-						selected( $container['Name'], $default_container );
-					} ?>>
-					<?php echo esc_html( $container['Name'] ); ?>
-				</option>
-				<?php
+				if ( current_user_can( 'manage_options' ) ) {
+					?><option value="__newContainer__" <?php selected( $container_creation_failed ); ?>>
+						&mdash;&thinsp;<?php esc_html_e( 'Create New Container', 'windows-azure-storage' ); ?>&thinsp;&mdash;
+					</option><?php
+				}
 			}
-			if ( current_user_can( 'manage_options' ) ) {
-				?>
-				<option value="__newContainer__" <?php if ( $container_creation_failed ) : ?>selected="selected" <?php endif ?>>&mdash;&thinsp;<?php esc_html_e( 'Create New Container', 'windows-azure-storage' ); ?>&thinsp;&mdash;</option>
-				<?php
-			}
-		}
-		?>
-	</select>
-	<?php
-	if ( current_user_can( 'manage_options' ) ) :
-		wp_nonce_field( 'create_container', 'create_new_container_settings' );
-		?>
-		<br>
-		<div id="div-create-container" name="div-create-container" <?php if ( ! $container_creation_failed ) : ?>style="display:none;"<?php endif; ?>>
-			<p>
-				<label for="newcontainer" title="<?php __( 'Name of the new container to create', 'windows-azure-storage' ); ?>"><?php echo __( 'New container name: ', 'windows-azure-storage' ); ?></label>
-				<input type="text" name="newcontainer" class="regular-text" title="<?php __( 'Name of the new container to create', 'windows-azure-storage' ); ?>" value="<?php echo esc_attr( $new_container_name ); ?>"/>
-			</p>
-			<p>
-				<input type="button" class="button-primary azure-create-container-button" value="<?php esc_attr_e( 'Create', 'windows-azure-storage' ); ?>" data-container-url="<?php echo esc_attr( sprintf( '%s', esc_url( $_SERVER['REQUEST_URI'] ) ) ); ?>"/>
-			</p>
-		</div>
-	<?php endif;
+		?></select><?php
+
+		if ( current_user_can( 'manage_options' ) ) :
+			wp_nonce_field( 'create_container', 'create_new_container_settings' );
+			?><div id="div-create-container" name="div-create-container" <?php if ( ! $container_creation_failed ) : ?>style="display:none;"<?php endif; ?>>
+				<p>
+					<label for="newcontainer" title="<?php __( 'Name of the new container to create', 'windows-azure-storage' ); ?>"><?php echo __( 'New container name: ', 'windows-azure-storage' ); ?></label>
+					<input type="text" name="newcontainer" class="regular-text" title="<?php __( 'Name of the new container to create', 'windows-azure-storage' ); ?>" value="<?php echo esc_attr( $new_container_name ); ?>"/>
+				</p>
+				<p>
+					<input type="button" class="button-primary azure-create-container-button" value="<?php esc_attr_e( 'Create', 'windows-azure-storage' ); ?>" data-container-url="<?php echo esc_attr( sprintf( '%s', esc_url( $_SERVER['REQUEST_URI'] ) ) ); ?>"/>
+				</p>
+			</div><?php
+		endif;
+	}
+
+	echo '<p>';
+		_e( 'Default container to be used for storing media files. You can define <code>MICROSOFT_AZURE_CONTAINER</code> constant to override it.', 'windows-azure-storage' );
+	echo '</p>';
 }
 
 /**
@@ -305,15 +338,16 @@ function windows_azure_storage_setting_storage_container() {
  */
 function windows_azure_storage_setting_cname() {
 	$cname = Windows_Azure_Helper::get_cname();
-	?>
-	<input type="url" name="cname" class="regular-text" title="<?php esc_attr_e( 'Use CNAME instead of Microsoft Azure Blob URL', 'windows-azure-storage' ); ?>" value="<?php echo esc_attr( $cname ); ?>"/>
-	<p class="field-description">
-		<?php _e( 'Note: Use this option if you would like to display image URLs belonging to your domain like <code>http://mydomain.com/</code> instead of <code>http://your-account-name.blob.core.windows.net/</code>.', 'windows-azure-storage' ); ?>
-	</p>
-	<p>
-		<?php _e( 'This CNAME must start with <code>http(s)://</code> and the administrator will have to update <abbr title="Domain Name System">DNS</abbr> entries accordingly.', 'windows-azure-storage' ); ?>
-	</p>
-	<?php
+
+	if ( defined( 'MICROSOFT_AZURE_CNAME' ) ) {
+		echo '<input type="url" class="regular-text" value="', esc_attr( $cname ), '" readonly disabled>';
+	} else {
+		echo '<input type="url" name="cname" class="regular-text" value="', esc_attr( $cname ), '">';
+	}
+
+	echo '<p>';
+		_e( 'Use this option if you would like to display image URLs belonging to your domain like <code>http://mydomain.com/</code> instead of <code>http://your-account-name.blob.core.windows.net/</code>. This CNAME must start with <code>http(s)://</code> and the administrator will have to update <abbr title="Domain Name System">DNS</abbr> entries accordingly. You can use <code>MICROSOFT_AZURE_CNAME</code> constant to override it.', 'windows-azure-storage' );
+	echo '</p>';
 }
 
 /**
@@ -329,8 +363,7 @@ function windows_azure_storage_setting_handle_uploads() {
 	<label for="azure_storage_use_for_default_upload">
 		<?php esc_html_e( 'Use Microsoft Azure Storage when uploading via WordPress\' upload tab.', 'windows-azure-storage' ); ?>
 	</label>
-	<br/>
-	<small><?php esc_html_e( 'Note: Uncheck this to revert back to using your own web host for storage at anytime.', 'windows-azure-storage' ); ?></small>
+	<p><?php esc_html_e( 'Note: Uncheck this to revert back to using your own web host for storage at anytime.', 'windows-azure-storage' ); ?></p>
 	<?php
 }
 
@@ -381,11 +414,16 @@ function windows_azure_browse_cache_results() {
  */
 function windows_azure_cache_control() {
 	$cache_control = Windows_Azure_Helper::get_cache_control();
-	
-	?><input type="number" name="azure_cache_control" class="regular-text" value="<?php echo esc_attr( $cache_control ); ?>">
-	<p class="field-description">
-		<?php esc_html_e( 'Setting Cache-Control on publicly accessible Microsoft Azure Blobs can help reduce bandwidth by preventing consumers from having to continuously download resources. Specify a relative amount of time in seconds to cache data after it was received.', 'windows-azure-storage' ); ?>
-	</p><?php	
+
+	if ( defined( 'MICROSOFT_AZURE_CACHE_CONTROL' ) ) {
+		echo '<input type="number" class="regular-text" value="', esc_attr( $cache_control ), '" readonly disabled>';
+	} else {
+		echo '<input type="number" name="azure_cache_control" class="regular-text" value="', esc_attr( $cache_control ), '">';
+	}
+
+	echo '<p>';
+		_e( 'Setting Cache-Control on publicly accessible Microsoft Azure Blobs can help reduce bandwidth by preventing consumers from having to continuously download resources. Specify a relative amount of time in seconds to cache data after it was received. You can define <code>MICROSOFT_AZURE_CACHE_CONTROL</code> constant to override it.', 'windows-azure-storage' );
+	echo '</p>';
 }
 
 /**

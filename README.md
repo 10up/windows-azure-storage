@@ -26,7 +26,7 @@ For more details on Microsoft Azure Storage, please visit the <a href="https://a
 ## Changelog ##
 
 ### 4.2.0 ###
-* 
+* Added ability to setup Azure settings using constants in wp-config.php file
 
 ### 4.1.0 ###
 * Added error message when SimpleXML library is not found

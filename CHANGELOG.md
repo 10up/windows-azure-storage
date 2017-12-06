@@ -1,6 +1,6 @@
 4.2.0 / 2017-
 =================
-  * 
+  * Added ability to setup Azure settings using constants in wp-config.php file
 
 4.1.0 / 2017-11
 =================
