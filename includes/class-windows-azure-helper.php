@@ -87,7 +87,9 @@ class Windows_Azure_Helper {
 	 * @return mixed|void Account name.
 	 */
 	static public function get_account_name() {
-		return get_option( 'azure_storage_account_name' );
+		return defined( 'MICROSOFT_AZURE_ACCOUNT_NAME' )
+			? MICROSOFT_AZURE_ACCOUNT_NAME
+			: get_option( 'azure_storage_account_name' );
 	}
 
 	/**

@@ -99,7 +99,10 @@ function windows_azure_storage_plugin_options_page() {
  * @return void
  */
 function windows_azure_storage_plugin_register_settings() {
-	register_setting( 'windows-azure-storage-settings-group', 'azure_storage_account_name', 'sanitize_text_field' );
+	if ( ! defined( 'MICROSOFT_AZURE_ACCOUNT_NAME' ) ) {
+		register_setting( 'windows-azure-storage-settings-group', 'azure_storage_account_name', 'sanitize_text_field' );
+	}
+	
 	register_setting( 'windows-azure-storage-settings-group', 'azure_storage_account_primary_access_key', 'sanitize_text_field' );
 	register_setting( 'windows-azure-storage-settings-group', 'default_azure_storage_account_container_name', 'sanitize_text_field' );
 	register_setting( 'windows-azure-storage-settings-group', 'cname', 'esc_url_raw' );
@@ -225,9 +228,16 @@ function windows_azure_storage_plugin_settings_section() {
  */
 function windows_azure_storage_setting_account_name() {
 	$storage_account_name = Windows_Azure_Helper::get_account_name();
-	?>
-	<input type="text" name="azure_storage_account_name" class="regular-text" title="<?php esc_attr_e( 'Microsoft Azure Storage Account Name', 'windows-azure-storage' ); ?>" value="<?php echo esc_attr( $storage_account_name ); ?>"/>
-	<?php
+
+	if ( defined( 'MICROSOFT_AZURE_ACCOUNT_NAME' ) ) {
+		echo '<input type="text" class="regular-text" value="', esc_attr( $storage_account_name ), '" readonly disabled>';
+	} else {
+		echo '<input type="text" name="azure_storage_account_name" class="regular-text" value="', esc_attr( $storage_account_name ), '">';
+	}
+
+	echo '<p>';
+		_e( 'Microsoft Azure Storage Account Name. You can define <code>MICROSOFT_AZURE_ACCOUNT_NAME</code> constant to override it.', 'windows-azure-storage' );
+	echo '</p>';
 }
 
 /**
