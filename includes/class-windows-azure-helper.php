@@ -117,6 +117,23 @@ class Windows_Azure_Helper {
 	}
 
 	/**
+	 * Returns a flag which determines whether or not to use this for default upload.
+	 *
+	 * @since 4.2.0
+	 *
+	 * @static
+	 * @access public
+	 * @return boolean
+	 */
+	static public function get_use_for_default_upload() {
+		$use_for_default_upload = defined( 'MICROSOFT_AZURE_USE_FOR_DEFAULT_UPLOAD' )
+			? MICROSOFT_AZURE_USE_FOR_DEFAULT_UPLOAD
+			: get_option( 'azure_storage_use_for_default_upload' );
+
+		return filter_var( $use_for_default_upload, FILTER_VALIDATE_BOOLEAN );
+	}
+
+	/**
 	 * Return HTTP proxy setting.
 	 *
 	 * @since 4.0.0
