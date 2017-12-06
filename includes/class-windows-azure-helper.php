@@ -168,7 +168,9 @@ class Windows_Azure_Helper {
 	 * @return mixed|void Default container name.
 	 */
 	static public function get_default_container() {
-		return get_option( 'default_azure_storage_account_container_name' );
+		return defined( 'MICROSOFT_AZURE_CONTAINER' )
+			? MICROSOFT_AZURE_CONTAINER
+			: get_option( 'default_azure_storage_account_container_name' );
 	}
 
 	/**

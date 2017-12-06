@@ -99,7 +99,6 @@ function windows_azure_storage_plugin_options_page() {
  * @return void
  */
 function windows_azure_storage_plugin_register_settings() {
-	register_setting( 'windows-azure-storage-settings-group', 'default_azure_storage_account_container_name', 'sanitize_text_field' );
 	register_setting( 'windows-azure-storage-settings-group', 'azure_storage_use_for_default_upload', 'wp_validate_boolean' );
 	register_setting( 'windows-azure-storage-settings-group', 'azure_storage_keep_local_file', 'wp_validate_boolean' );
 	register_setting( 'windows-azure-storage-settings-group', 'azure_browse_cache_results', 'intval' );
@@ -110,6 +109,10 @@ function windows_azure_storage_plugin_register_settings() {
 
 	if ( ! defined( 'MICROSOFT_AZURE_ACCOUNT_KEY' ) ) {
 		register_setting( 'windows-azure-storage-settings-group', 'azure_storage_account_primary_access_key', 'sanitize_text_field' );
+	}
+
+	if ( ! defined( 'MICROSOFT_AZURE_CONTAINER' ) ) {
+		register_setting( 'windows-azure-storage-settings-group', 'default_azure_storage_account_container_name', 'sanitize_text_field' );
 	}
 
 	if ( ! defined( 'MICROSOFT_AZURE_CNAME' ) ) {
@@ -275,51 +278,55 @@ function windows_azure_storage_setting_account_key() {
  * @return void
  */
 function windows_azure_storage_setting_storage_container() {
-	$default_container         = Windows_Azure_Helper::get_default_container();
-	$containers_list           = Windows_Azure_Helper::list_containers();
-	$new_container_name        = isset( $_POST['newcontainer'] ) ? sanitize_text_field( wp_unslash( $_POST['newcontainer'] ) ) : '';
-	$container_creation_failed = apply_filters( 'windows_azure_storage_container_creation_failed', false );
-	?>
-	<select name="default_azure_storage_account_container_name" title="<?php esc_attr_e( 'Default container to be used for storing media files', 'windows-azure-storage' ) ?>" class="azure-container-selector">
-		<?php
-		if ( ! is_wp_error( $containers_list ) ) {
-			foreach ( $containers_list as $container ) {
-				if ( empty( $default_container ) ) {
-					$default_container = $container['Name'];
-					Windows_Azure_Helper::set_default_container( $default_container );
+	$default_container = Windows_Azure_Helper::get_default_container();
+
+	if ( defined( 'MICROSOFT_AZURE_CONTAINER' ) ) {
+		echo '<input type="text" class="regular-text" value="', $default_container, '" readonly disabled>';
+	} else {
+		$containers_list = Windows_Azure_Helper::list_containers();
+		$new_container_name = isset( $_POST['newcontainer'] ) ? sanitize_text_field( wp_unslash( $_POST['newcontainer'] ) ) : '';
+		$container_creation_failed = apply_filters( 'windows_azure_storage_container_creation_failed', false );
+
+		?><select name="default_azure_storage_account_container_name" class="azure-container-selector regular-text"><?php
+			if ( ! is_wp_error( $containers_list ) ) {
+				foreach ( $containers_list as $container ) {
+					if ( empty( $default_container ) ) {
+						$default_container = $container['Name'];
+						Windows_Azure_Helper::set_default_container( $default_container );
+					}
+
+					?><option value="<?php echo esc_attr( $container['Name'] ); ?>"
+						<?php if ( ! $container_creation_failed ) {
+							selected( $container['Name'], $default_container );
+						} ?>>
+						<?php echo esc_html( $container['Name'] ); ?>
+					</option><?php
 				}
-				?>
-				<option value="<?php echo esc_attr( $container['Name'] ); ?>"
-					<?php if ( ! $container_creation_failed ) {
-						selected( $container['Name'], $default_container );
-					} ?>>
-					<?php echo esc_html( $container['Name'] ); ?>
-				</option>
-				<?php
+				if ( current_user_can( 'manage_options' ) ) {
+					?><option value="__newContainer__" <?php selected( $container_creation_failed ); ?>>
+						&mdash;&thinsp;<?php esc_html_e( 'Create New Container', 'windows-azure-storage' ); ?>&thinsp;&mdash;
+					</option><?php
+				}
 			}
-			if ( current_user_can( 'manage_options' ) ) {
-				?>
-				<option value="__newContainer__" <?php if ( $container_creation_failed ) : ?>selected="selected" <?php endif ?>>&mdash;&thinsp;<?php esc_html_e( 'Create New Container', 'windows-azure-storage' ); ?>&thinsp;&mdash;</option>
-				<?php
-			}
-		}
-		?>
-	</select>
-	<?php
-	if ( current_user_can( 'manage_options' ) ) :
-		wp_nonce_field( 'create_container', 'create_new_container_settings' );
-		?>
-		<br>
-		<div id="div-create-container" name="div-create-container" <?php if ( ! $container_creation_failed ) : ?>style="display:none;"<?php endif; ?>>
-			<p>
-				<label for="newcontainer" title="<?php __( 'Name of the new container to create', 'windows-azure-storage' ); ?>"><?php echo __( 'New container name: ', 'windows-azure-storage' ); ?></label>
-				<input type="text" name="newcontainer" class="regular-text" title="<?php __( 'Name of the new container to create', 'windows-azure-storage' ); ?>" value="<?php echo esc_attr( $new_container_name ); ?>"/>
-			</p>
-			<p>
-				<input type="button" class="button-primary azure-create-container-button" value="<?php esc_attr_e( 'Create', 'windows-azure-storage' ); ?>" data-container-url="<?php echo esc_attr( sprintf( '%s', esc_url( $_SERVER['REQUEST_URI'] ) ) ); ?>"/>
-			</p>
-		</div>
-	<?php endif;
+		?></select><?php
+
+		if ( current_user_can( 'manage_options' ) ) :
+			wp_nonce_field( 'create_container', 'create_new_container_settings' );
+			?><div id="div-create-container" name="div-create-container" <?php if ( ! $container_creation_failed ) : ?>style="display:none;"<?php endif; ?>>
+				<p>
+					<label for="newcontainer" title="<?php __( 'Name of the new container to create', 'windows-azure-storage' ); ?>"><?php echo __( 'New container name: ', 'windows-azure-storage' ); ?></label>
+					<input type="text" name="newcontainer" class="regular-text" title="<?php __( 'Name of the new container to create', 'windows-azure-storage' ); ?>" value="<?php echo esc_attr( $new_container_name ); ?>"/>
+				</p>
+				<p>
+					<input type="button" class="button-primary azure-create-container-button" value="<?php esc_attr_e( 'Create', 'windows-azure-storage' ); ?>" data-container-url="<?php echo esc_attr( sprintf( '%s', esc_url( $_SERVER['REQUEST_URI'] ) ) ); ?>"/>
+				</p>
+			</div><?php
+		endif;
+	}
+
+	echo '<p>';
+		_e( 'Default container to be used for storing media files.', 'windows-azure-storage' );
+	echo '</p>';
 }
 
 /**
