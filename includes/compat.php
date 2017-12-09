@@ -56,7 +56,7 @@ function restore_original_image( $file, $attachment_id ) {
 	}
 
 	// If the encompassing directory doesn't exist, create it so the remote_get stream doesn't fail.
-	$path = trailingslashit( pathinfo( $file )['dirname'] );
+	$path = pathinfo( $file )['dirname'];
 	if ( ! file_exists( $path ) ) {
 		wp_mkdir_p( $path );
 	}
