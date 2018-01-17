@@ -144,6 +144,7 @@ add_action( 'delete_attachment', 'windows_azure_storage_delete_attachment' );
 // Filter the 'srcset' attribute in 'the_content' introduced in WP 4.4.
 if ( function_exists( 'wp_calculate_image_srcset' ) ) {
 	add_filter( 'wp_calculate_image_srcset', 'windows_azure_storage_wp_calculate_image_srcset', 9, 5 );
+	add_filter( 'wp_calculate_image_srcset_meta', 'windows_azure_storage_image_srcset_meta', 9, 4 );
 }
 
 /**
@@ -739,6 +740,23 @@ function windows_azure_storage_wp_calculate_image_srcset( $sources, $size_array,
 	}
 
 	return $sources;
+}
+
+/**
+ * For WP multisite `srcset` is not returned for images which are uploaded using the plugin
+ * This is because of a WP check for the actual image file location against the image URL
+ * Multisite images file location contains the `sites/SITE_ID` in the file location and this fails the check
+ * https://core.trac.wordpress.org/browser/tags/4.9.2/src/wp-includes/media.php#L1147
+ *
+ * This fix will remove the `sites/SITE_ID` from the actual image location
+ *
+ * @return array
+ */
+function windows_azure_storage_image_srcset_meta( $image_meta, $size_array, $image_src, $attachment_id ) {
+	if ( is_multisite() && ! empty( $image_meta ) && ! empty( $image_meta['file'] ) ) {
+		$image_meta['file'] = preg_replace( '/sites\/[0-9]+\//', '', $image_meta['file'] );
+	}
+	return $image_meta;
 }
 
 /**
