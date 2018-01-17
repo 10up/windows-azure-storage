@@ -1,10 +1,7 @@
-4.2.1 / 2018-01
-=================
-  * Fixed no srcset issue on multisite installations
-
 4.2.0 / 2017-
 =================
   * Added ability to setup Azure settings using constants in wp-config.php file
+  * Fixed no srcset issue on multisite installations
 
 4.1.0 / 2017-11
 =================
