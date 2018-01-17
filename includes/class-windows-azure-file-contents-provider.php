@@ -146,8 +146,7 @@ class Windows_Azure_File_Contents_Provider {
 			$chunk_size = self::CHUNK_SIZE;
 		}
 		if ( '/' !== $file_path[0] && ( isset( $file_path[1] ) && ':' !== $file_path[1] ) ) {
-			$upload_dir = wp_upload_dir();
-			$file_path  = trailingslashit( $upload_dir['basedir'] ) . $file_path;
+			$file_path  = trailingslashit( \Windows_Azure_Helper::get_uploads_basedir() ) . $file_path;
 		}
 		$this->_file_path     = $file_path;
 		$force_direct_access  = is_resource( $file_path );

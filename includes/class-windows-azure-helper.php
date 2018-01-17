@@ -555,8 +555,7 @@ class Windows_Azure_Helper {
 		$result = false;
 
 		if ( WP_Filesystem() ) {
-			$upload_dir = wp_upload_dir();
-			$filename   = trailingslashit( $upload_dir['basedir'] ) . $relative_path;
+			$filename   = trailingslashit( self::get_uploads_basedir() ) . $relative_path;
 			$result     = $wp_filesystem->delete( $filename, false, 'f' );
 		}
 
@@ -579,11 +578,53 @@ class Windows_Azure_Helper {
 		$exist = false;
 
 		if ( WP_Filesystem() ) {
-			$upload_dir = wp_upload_dir();
-			$filename   = trailingslashit( $upload_dir['basedir'] ) . $relative_path;
+			$filename   = trailingslashit( self::get_uploads_basedir() ) . $relative_path;
 			$exist = $wp_filesystem->exists( $filename, false, 'f' );
 		}
 
 		return apply_filters( 'windows_azure_storage_file_exist', $exist, $relative_path );
 	}
+
+    /**
+     * Get the uploads basedir without `sites/SITE_ID` for multisite installation.
+     *
+     * @since 4.2.0
+     *
+     * @return bool
+     */
+    static public function get_uploads_basedir() {
+        $upload_dir = wp_upload_dir();
+        return preg_replace( '#\/sites\/[0-9]+#', '', $upload_dir['basedir'] );
+    }
+
+    /**
+     * Get the uploads baseurl without `sites/SITE_ID` for multisite installation.
+     *
+     * @since 4.2.0
+     *
+     * @return bool
+     */
+    static public function get_uploads_baseurl() {
+        $upload_dir = wp_upload_dir();
+        return preg_replace( '#\/sites\/[0-9]+#', '', $upload_dir['baseurl'] );
+    }
+
+    /**
+     * Get the uploads subdir and append `sites/SITE_ID` for multisite installation.
+     *
+     * @since 4.2.0
+     *
+     * @return bool
+     */
+    static public function get_uploads_subdir() {
+        $upload_dir = wp_upload_dir();
+
+        $sub_dir = ltrim( $upload_dir['subdir'], '/' );
+
+        if ( preg_match( '#sites\/[0-9]+#', $upload_dir['basedir'], $site ) ) {
+            $sub_dir = $site[0] . '/' . $sub_dir;
+        }
+
+        return $sub_dir;
+    }
 }

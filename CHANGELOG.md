@@ -1,6 +1,8 @@
 4.2.0 / 2017-
 =================
   * Added ability to setup Azure settings using constants in wp-config.php file
+  * Fixed no srcset issue on multisite installations
+  * Add sites/SITE_ID to the Azure Blob path for multisite installations
 
 4.1.0 / 2017-11
 =================
