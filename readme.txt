@@ -24,6 +24,9 @@ For more details on Microsoft Azure Storage, please visit the <a href="https://a
 
 == Changelog ==
 
+= 4.2.1 =
+* Fixed no srcset issue on multisite installations
+
 = 4.2.0 =
 * Added ability to setup Azure settings using constants in wp-config.php file
 
