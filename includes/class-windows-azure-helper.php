@@ -586,4 +586,33 @@ class Windows_Azure_Helper {
 
 		return apply_filters( 'windows_azure_storage_file_exist', $exist, $relative_path );
 	}
+
+	/**
+	 * Returns an array containing the current upload directory's path and url.
+	 *
+	 * @since 4.2.0
+	 *
+	 * @static
+	 * @access public
+	 * @return array
+	 */
+	static public function wp_upload_dir() {
+		static $wp_upload_dir = null;
+
+		if ( is_null( $wp_upload_dir ) ) {
+			$dir = $upload_path = trim( get_option( 'upload_path' ) );
+			if ( empty( $upload_path ) || 'wp-content/uploads' == $upload_path ) {
+				$dir = WP_CONTENT_DIR . '/uploads';
+			} elseif ( 0 !== strpos( $upload_path, ABSPATH ) ) {
+				// $dir is absolute, $upload_path is (maybe) relative to ABSPATH
+				$dir = path_join( ABSPATH, $upload_path );
+			}
+
+			$wp_upload_dir = call_user_func_array( 'wp_upload_dir', func_get_args() );
+			$wp_upload_dir['reldir'] = substr( $wp_upload_dir['basedir'], strlen( rtrim( $dir, DIRECTORY_SEPARATOR ) ) );
+		}
+
+		return $wp_upload_dir;
+	}
+
 }
