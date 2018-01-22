@@ -1,6 +1,7 @@
 4.2.0 / 2017-
 =================
   * Added ability to setup Azure settings using constants in wp-config.php file
+  * Fixed media popup to work properly with multiple editors on a page
 
 4.1.0 / 2017-11
 =================
