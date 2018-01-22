@@ -597,9 +597,10 @@ function windows_azure_browse_tab() {
 	$path_parsed = parse_url( self_admin_url() );
 	$path_parsed = isset( $path_parsed['path'] ) ? $path_parsed['path'] : null;
 	$js_ext      = ( ! defined( 'SCRIPT_DEBUG' ) || false === SCRIPT_DEBUG ) ? '.min.js' : '.js';
+
 	add_action( 'admin_enqueue_scripts', 'windows_azure_storage_dialog_scripts' );
+
 	wp_enqueue_media();
-	wp_enqueue_script( 'media-grid' );
 	wp_enqueue_script( 'windows-azure-storage-media-browser', MSFT_AZURE_PLUGIN_URL . 'js/windows-azure-storage-media-browser' . $js_ext, array( 'media-grid' ), MSFT_AZURE_PLUGIN_VERSION );
 	wp_localize_script( 'media-grid', '_wpMediaGridSettings', array(
 		'adminUrl' => $path_parsed,
@@ -607,6 +608,7 @@ function windows_azure_browse_tab() {
 			'selectText' => __( 'Insert into post', 'windows-azure-storage' ),
 		),
 	) );
+
 	wp_iframe( 'windows_azure_storage_dialog_browse_tab' );
 }
 
@@ -618,9 +620,7 @@ function windows_azure_browse_tab() {
  * @return void
  */
 function windows_azure_storage_dialog_browse_tab() {
-	?>
-	<div id="windows-azure-storage-browser"></div>
-	<?php
+	?><div id="windows-azure-storage-browser"></div><?php
 	wp_print_media_templates();
 }
 
@@ -654,8 +654,9 @@ function windows_azure_storage_media_buttons_context( $context ) {
 	);
 
 	$azure_image_button_element = sprintf(
-		'<a id="windows-azure-storage-media-button" role="button" href="javascript:void(0)" class="button" data-editor="content"
-title="%2$s"><img src="%3$s" alt="%2$s" role="img" class="windows-azure-storage-media-icon" />%4$s</a>',
+		'<a role="button" href="javascript:void(0)" class="button windows-azure-storage-media-button" data-editor="content" title="%2$s">' .
+			'<img src="%3$s" alt="%2$s" role="img" class="windows-azure-storage-media-icon">%4$s' .
+		'</a>',
 		esc_url( $browse_iframe_src ),
 		esc_attr__( 'Microsoft Azure Storage', 'windows-azure-storage' ),
 		esc_url( MSFT_AZURE_PLUGIN_URL . 'images/azure-icon.png' ),
@@ -775,18 +776,19 @@ function windows_azure_storage_query_azure_attachments() {
 	$cache_key = 'wasr_' . md5( json_encode( $query ) );
 	if ( $cache_ttl > 0 && $posts = wp_cache_get( $cache_key ) ) {
 		wp_send_json_success( $posts );
-
-		return;
 	}
+
 	$posts       = array();
 	$credentials = Windows_Azure_Config_Provider::get_account_credentials();
 	$client      = new Windows_Azure_Rest_Api_Client( $credentials['account_name'], $credentials['account_key'] );
 	$blobs       = $client->list_blobs( Windows_Azure_Helper::get_default_container(), $query['s'], (int) $query['posts_per_page'], $next_marker );
 	setcookie( 'azure_next_marker', $blobs->get_next_marker() );
+
 	foreach ( $blobs->get_all() as $blob ) {
 		if ( '/' === $blob['Name'][ strlen( $blob['Name'] ) - 1 ] ) {
 			continue;
 		}
+
 		$is_image = ( false !== strpos( $blob['Properties']['Content-Type'], 'image/' ) );
 
 		$blob_info = array(
@@ -806,9 +808,11 @@ function windows_azure_storage_query_azure_attachments() {
 
 		$posts[] = $blob_info;
 	}
+
 	if ( $cache_ttl > 0 ) {
 		wp_cache_set( $cache_key, $posts, '', $cache_ttl );
 	}
+
 	wp_send_json_success( $posts );
 }
 
