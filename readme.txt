@@ -26,6 +26,8 @@ For more details on Microsoft Azure Storage, please visit the <a href="https://a
 
 = 4.2.0 =
 * Added ability to setup Azure settings using constants in wp-config.php file
+* Fixed images uploading issue in the multisite environment, now it doesn't strip "site/{id}" from filename
+* Fixed srcset issue for images uploaded before 4.2.0 version
 
 = 4.1.0 =
 * Added error message when SimpleXML library is not found
