@@ -262,7 +262,7 @@ function windows_azure_storage_new_media_object( $args ) {
 	$container = \Windows_Azure_Helper::get_default_container();
 
 	$upload_dir = \Windows_Azure_Helper::wp_upload_dir();
-	if ( '/' === $upload_dir['subdir'][0] ) {
+	if ( DIRECTORY_SEPARATOR === $upload_dir['subdir'][0] ) {
 		$upload_dir['subdir'] = substr( $upload_dir['subdir'], 1 );
 	}
 
@@ -512,10 +512,12 @@ function windows_azure_storage_wp_handle_upload_prefilter( $file ) {
 	$container = \Windows_Azure_Helper::get_default_container();
 
 	$upload_dir = \Windows_Azure_Helper::wp_upload_dir();
-	$upload_dir['subdir'] = ltrim( $upload_dir['subdir'], '/' );
+	$subdir = ltrim( $upload_dir['reldir'] . $upload_dir['subdir'], DIRECTORY_SEPARATOR );
 
 	// Prepare blob name.
-	$blob_name = ( '' === $upload_dir['subdir'] ) ? $file['name'] : $upload_dir['subdir'] . '/' . $file['name'];
+	$blob_name = '' === $subdir
+		? $file['name']
+		: $subdir . DIRECTORY_SEPARATOR . $file['name'];
 
 	$blob_name = \Windows_Azure_Helper::get_unique_blob_name( $container, $blob_name );
 
@@ -533,9 +535,11 @@ function windows_azure_storage_wp_handle_upload_prefilter( $file ) {
  */
 function windows_azure_storage_wp_handle_upload( $uploads ) {
 	$wp_upload_dir  = \Windows_Azure_Helper::wp_upload_dir();
-	$uploads['url'] = sprintf( '%1$s/%2$s/%3$s',
+
+	$uploads['url'] = sprintf(
+		'%1$s/%2$s/%3$s',
 		untrailingslashit( WindowsAzureStorageUtil::get_storage_url_base() ),
-		ltrim( $wp_upload_dir['subdir'], '/' ),
+		ltrim( $wp_upload_dir['reldir'] . $wp_upload_dir['subdir'], '/' ),
 		basename( $uploads['file'] )
 	);
 
@@ -553,7 +557,7 @@ function windows_azure_storage_wp_handle_upload( $uploads ) {
 function get_updated_upload_url( $url ) {
 	$wp_upload_dir      = \Windows_Azure_Helper::wp_upload_dir();
 	$upload_dir_url     = untrailingslashit( $wp_upload_dir['baseurl'] );
-	$storage_url_prefix = untrailingslashit( WindowsAzureStorageUtil::get_storage_url_base() );
+	$storage_url_prefix = untrailingslashit( WindowsAzureStorageUtil::get_storage_url_base() ) . untrailingslashit( $wp_upload_dir['reldir'] );
 
 	return str_replace( $upload_dir_url, $storage_url_prefix, $url );
 }
