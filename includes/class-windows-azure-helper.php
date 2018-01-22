@@ -476,7 +476,6 @@ class Windows_Azure_Helper {
 	 * @return bool|string|WP_Error False or WP_Error on failure URI on success.
 	 */
 	static public function put_media_to_blob_storage( $container_name, $blob_name, $local_path, $mime_type, $account_name = '', $account_key = '' ) {
-
 		list( $account_name, $account_key ) = self::get_api_credentials( $account_name, $account_key );
 		$rest_api_client = new Windows_Azure_Rest_Api_Client( $account_name, $account_key );
 
@@ -555,8 +554,8 @@ class Windows_Azure_Helper {
 		$result = false;
 
 		if ( WP_Filesystem() ) {
-			$upload_dir = wp_upload_dir();
-			$filename   = trailingslashit( $upload_dir['basedir'] ) . $relative_path;
+			$upload_dir = self::wp_upload_dir();
+			$filename   = $upload_dir['uploads'] . DIRECTORY_SEPARATOR . $relative_path;
 			$result     = $wp_filesystem->delete( $filename, false, 'f' );
 		}
 
@@ -579,8 +578,8 @@ class Windows_Azure_Helper {
 		$exist = false;
 
 		if ( WP_Filesystem() ) {
-			$upload_dir = wp_upload_dir();
-			$filename   = trailingslashit( $upload_dir['basedir'] ) . $relative_path;
+			$upload_dir = self::wp_upload_dir();
+			$filename   = $upload_dir['uploads'] . DIRECTORY_SEPARATOR . $relative_path;
 			$exist = $wp_filesystem->exists( $filename, false, 'f' );
 		}
 
@@ -608,8 +607,11 @@ class Windows_Azure_Helper {
 				$dir = path_join( ABSPATH, $upload_path );
 			}
 
+			$dir = rtrim( $dir, DIRECTORY_SEPARATOR );
+
 			$wp_upload_dir = call_user_func_array( 'wp_upload_dir', func_get_args() );
-			$wp_upload_dir['reldir'] = substr( $wp_upload_dir['basedir'], strlen( rtrim( $dir, DIRECTORY_SEPARATOR ) ) );
+			$wp_upload_dir['reldir'] = substr( $wp_upload_dir['basedir'], strlen( $dir ) );
+			$wp_upload_dir['uploads'] = $dir;
 		}
 
 		return $wp_upload_dir;
