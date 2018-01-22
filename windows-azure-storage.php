@@ -144,6 +144,7 @@ add_action( 'delete_attachment', 'windows_azure_storage_delete_attachment' );
 // Filter the 'srcset' attribute in 'the_content' introduced in WP 4.4.
 if ( function_exists( 'wp_calculate_image_srcset' ) ) {
 	add_filter( 'wp_calculate_image_srcset', 'windows_azure_storage_wp_calculate_image_srcset', 9, 5 );
+	add_filter( 'wp_calculate_image_srcset_meta', 'windows_azure_storage_image_srcset_meta', 9, 4 );
 }
 
 /**
@@ -742,6 +743,29 @@ function windows_azure_storage_wp_calculate_image_srcset( $sources, $size_array,
 	}
 
 	return $sources;
+}
+
+/**
+ * Removes "sites/{id}" from filename for attachments uploaded before 4.2.0 to provide backward compatibility.
+ *
+ * @since 4.2.0
+ * @filter wp_calculate_image_srcset_meta
+ *
+ * @param array $image_meta The image meta data as returned by 'wp_get_attachment_metadata()'.
+ * @param array $size_array Array of width and height values in pixels (in that order).
+ * @param string $image_src The 'src' of the image.
+ * @param int $attachment_id The image attachment ID or 0 if not supplied.
+ * @return type
+ */
+function windows_azure_storage_image_srcset_meta( $image_meta, $size_array, $image_src, $attachment_id ) {
+	if ( is_multisite() && ! empty( $image_meta ) && ! empty( $image_meta['file'] ) ) {
+		$info = get_post_meta( $attachment_id, 'windows_azure_storage_info', true );
+		if ( empty( $info['version'] ) || version_compare( $info['version'], '4.2.0', '<' ) ) {
+			$image_meta['file'] = preg_replace( '/sites\/[0-9]+\//', '', $image_meta['file'] );
+		}
+	}
+
+	return $image_meta;
 }
 
 /**
