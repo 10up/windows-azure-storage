@@ -104,6 +104,7 @@ window.wp = window.wp || {};
 				this.options.mode = ['grid'];
 				this.options.multiple = false;
 				curManageFrame.prototype.initialize.apply(this, arguments);
+				this.$el.addClass('hide-menu');
 			},
 
 			bindRegionModeHandlers: function () {

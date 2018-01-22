@@ -16,7 +16,7 @@
 		event.preventDefault();
 
 		var elem = $(event.currentTarget),
-			editor = elem.data('editor') + '-azure',
+			editor = elem.data('editor'),
 			options = {
 				frame: 'post',
 				state: 'iframe:browse',
@@ -29,19 +29,21 @@
 		wp.azureFrame = wp.media.editor.open(editor, options);
 
 		wp.azureFrame.on('azure:selected', function (selectedImage) {
-			var imgContent = '<img src="' + selectedImage.url + '" />';
+			var imgContent = '<img src="' + selectedImage.url + '">';
+
 			if (!selectedImage.isImage) {
 				imgContent = '<a href="' + selectedImage.url + '">' + selectedImage.url + '</a>';
 			}
 
-			wp.media.editor.activeEditor = 'content';
+			wp.media.editor.activeEditor = editor;
 			wp.media.editor.insert(imgContent);
+			
 			wp.azureFrame.close();
 		});
 
 		wp.azureFrame.on('close', function () {
 			wp.azureFrame.off('azure:selected');
-			wp.media.editor.activeEditor = 'content';
+			wp.media.editor.activeEditor = editor;
 		});
 	});
 
@@ -83,7 +85,7 @@
 				}
 			}).done(function (response) {
 				var progressText = azureStorageConfig.l10n.uploadingToAzure + '...';
-				
+
 				if (response.data.total > 0 && response.data.current > -1) {
 					progressText += ' (' + response.data.current + ' / ' + response.data.total + ')';
 				}
