@@ -467,16 +467,13 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 		}
 
 		delete_post_meta( $post_id, 'windows_azure_storage_info' );
-
-		add_post_meta(
-			$post_id, 'windows_azure_storage_info',
-			array(
-				'container'  => $default_azure_storage_account_container_name,
-				'blob'       => $relative_file_name,
-				'url'        => $url,
-				'thumbnails' => $thumbnails,
-			)
-		);
+		add_post_meta( $post_id, 'windows_azure_storage_info', array(
+			'container'  => $default_azure_storage_account_container_name,
+			'blob'       => $relative_file_name,
+			'url'        => $url,
+			'thumbnails' => $thumbnails,
+			'version'    => MSFT_AZURE_PLUGIN_VERSION,
+		) );
 
 		// Delete the local file.
 		if ( $delete_local_file ) {
