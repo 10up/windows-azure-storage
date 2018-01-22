@@ -596,9 +596,10 @@ class Windows_Azure_Helper {
 	 * @return array
 	 */
 	static public function wp_upload_dir() {
-		static $wp_upload_dir = null;
+		static $wp_upload_dir = array();
 
-		if ( is_null( $wp_upload_dir ) ) {
+		$blog_id = get_current_blog_id();
+		if ( empty( $wp_upload_dir[ $blog_id ] ) ) {
 			$dir = $upload_path = trim( get_option( 'upload_path' ) );
 			if ( empty( $upload_path ) || 'wp-content/uploads' == $upload_path ) {
 				$dir = WP_CONTENT_DIR . '/uploads';
@@ -609,12 +610,12 @@ class Windows_Azure_Helper {
 
 			$dir = rtrim( $dir, DIRECTORY_SEPARATOR );
 
-			$wp_upload_dir = call_user_func_array( 'wp_upload_dir', func_get_args() );
-			$wp_upload_dir['reldir'] = substr( $wp_upload_dir['basedir'], strlen( $dir ) );
-			$wp_upload_dir['uploads'] = $dir;
+			$wp_upload_dir[ $blog_id ] = call_user_func_array( 'wp_upload_dir', func_get_args() );
+			$wp_upload_dir[ $blog_id ]['reldir'] = substr( $wp_upload_dir[ $blog_id ]['basedir'], strlen( $dir ) );
+			$wp_upload_dir[ $blog_id ]['uploads'] = $dir;
 		}
 
-		return $wp_upload_dir;
+		return $wp_upload_dir[ $blog_id ];
 	}
 
 }
