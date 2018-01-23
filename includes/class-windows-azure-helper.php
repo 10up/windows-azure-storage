@@ -237,7 +237,7 @@ class Windows_Azure_Helper {
 	static public function get_cache_control() {
 		return defined( 'MICROSOFT_AZURE_CACHE_CONTROL' )
 			? MICROSOFT_AZURE_CACHE_CONTROL
-			: (int) get_option( 'azure_cache_control', 600 );
+			: get_option( 'azure_cache_control', 600 );
 	}
 
 	/**
@@ -485,9 +485,14 @@ class Windows_Azure_Helper {
 			return $result;
 		}
 
+		$cache_control = Windows_Azure_Helper::get_cache_control();
+		if ( is_numeric( $cache_control ) ) {
+			$cache_control = sprintf( "max-age=%d, must-revalidate", $cache_control );
+		}
+
 		$rest_api_client->put_blob_properties( $container_name, $blob_name, array(
 			Windows_Azure_Rest_Api_Client::API_HEADER_MS_BLOB_CONTENT_TYPE  => $mime_type,
-			Windows_Azure_Rest_Api_Client::API_HEADER_MS_BLOB_CACHE_CONTROL => sprintf( "max-age=%d, must-revalidate", Windows_Azure_Helper::get_cache_control() ),
+			Windows_Azure_Rest_Api_Client::API_HEADER_MS_BLOB_CACHE_CONTROL => apply_filters( 'windows_azure_blog_cache_control', $cache_control ),
 		) );
 
 		return $result;
