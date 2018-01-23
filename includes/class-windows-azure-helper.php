@@ -486,8 +486,8 @@ class Windows_Azure_Helper {
 		}
 
 		$rest_api_client->put_blob_properties( $container_name, $blob_name, array(
-			Windows_Azure_Rest_Api_Client::API_HEADER_MS_BLOB_CONTENT_TYPE => $mime_type,
-			Windows_Azure_Rest_Api_Client::API_HEADER_CACHE_CONTROL        => sprintf( "max-age=%d, must-revalidate", Windows_Azure_Helper::get_cache_control() ),
+			Windows_Azure_Rest_Api_Client::API_HEADER_MS_BLOB_CONTENT_TYPE  => $mime_type,
+			Windows_Azure_Rest_Api_Client::API_HEADER_MS_BLOB_CACHE_CONTROL => sprintf( "max-age=%d, must-revalidate", Windows_Azure_Helper::get_cache_control() ),
 		) );
 
 		return $result;
