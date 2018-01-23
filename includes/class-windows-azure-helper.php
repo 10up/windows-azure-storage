@@ -492,7 +492,7 @@ class Windows_Azure_Helper {
 
 		$rest_api_client->put_blob_properties( $container_name, $blob_name, array(
 			Windows_Azure_Rest_Api_Client::API_HEADER_MS_BLOB_CONTENT_TYPE  => $mime_type,
-			Windows_Azure_Rest_Api_Client::API_HEADER_MS_BLOB_CACHE_CONTROL => apply_filters( 'windows_azure_blog_cache_control', $cache_control ),
+			Windows_Azure_Rest_Api_Client::API_HEADER_MS_BLOB_CACHE_CONTROL => apply_filters( 'windows_azure_blob_cache_control', $cache_control ),
 		) );
 
 		return $result;
