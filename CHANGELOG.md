@@ -1,3 +1,8 @@
+4.1.1 / 2018-01-30
+=================
+* Removed build tools from the plugin repository
+* Updated authors list
+
 4.1.0 / 2017-11
 =================
   * Added error message when SimpleXML library is not found
