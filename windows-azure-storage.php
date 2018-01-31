@@ -3,7 +3,7 @@
  * Plugin Name: Microsoft Azure Storage for WordPress
  * Plugin URI: https://wordpress.org/plugins/windows-azure-storage/
  * Description: Use the Microsoft Azure Storage service to host your website's media files.
- * Version: 4.1.0
+ * Version: 4.1.1
  * Author: 10up, Microsoft Open Technologies
  * Author URI: http://10up.com/
  * License: BSD 2-Clause
@@ -60,7 +60,7 @@
 define( 'MSFT_AZURE_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'MSFT_AZURE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'MSFT_AZURE_PLUGIN_LEGACY_MEDIA_URL', get_admin_url( get_current_blog_id(), 'media-upload.php' ) );
-define( 'MSFT_AZURE_PLUGIN_VERSION', '4.0.0' );
+define( 'MSFT_AZURE_PLUGIN_VERSION', '4.1.1' );
 
 require_once MSFT_AZURE_PLUGIN_PATH . 'windows-azure-storage-settings.php';
 require_once MSFT_AZURE_PLUGIN_PATH . 'windows-azure-storage-dialog.php';
@@ -403,7 +403,7 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 				$data['sizes'] = array();
 			}
 			set_transient( $azure_progress_key, array( 'current' => ++$current, 'total' => count( $data['sizes'] ) + 1 ), 5 * MINUTE_IN_SECONDS );
-			
+
 			// only upload file if file exists locally
 			if (Windows_Azure_Helper::file_exists($relative_file_name)) {
 				$result = \Windows_Azure_Helper::put_media_to_blob_storage(
@@ -767,7 +767,7 @@ function windows_azure_storage_query_azure_attachments() {
 		'posts_per_page' => Windows_Azure_Rest_Api_Client::API_REQUEST_BULK_SIZE,
 		'paged'          => 1,
 	) );
-	
+
 	$next_marker = 1 === (int) $query['paged'] || empty( $_COOKIE['azure_next_marker'] )
 		? false
 		: sanitize_text_field( wp_unslash( $_COOKIE['azure_next_marker'] ) );
