@@ -1,9 +1,9 @@
 === Microsoft Azure Storage for WordPress ===
-Contributors: msopentech, 10up, morganestes, stevegrunwell, lpawlik, rittesh.patel
+Contributors: 10up
 Tags: Microsoft, Microsoft Open Technologies, Microsoft Azure, Microsoft Azure Storage, Media Files, Upload, CDN, blob storage
 Requires at least: 4.0
-Tested up to: 4.9
-Stable tag: 4.1.0
+Tested up to: 4.9.2
+Stable tag: 4.1.1
 License: BSD 2-Clause
 License URI: http://www.opensource.org/licenses/bsd-license.php
 
@@ -23,6 +23,10 @@ For more details on Microsoft Azure Storage, please visit the <a href="https://a
 1. Use the Settings->Microsoft Azure screen to configure the plugin.
 
 == Changelog ==
+
+= 4.1.1 =
+* Removed build tools from the plugin repository
+* Updated authors list
 
 = 4.1.0 =
 * Added error message when SimpleXML library is not found
