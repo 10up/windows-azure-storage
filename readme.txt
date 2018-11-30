@@ -2,8 +2,8 @@
 Contributors: 10up
 Tags: Microsoft, Microsoft Open Technologies, Microsoft Azure, Microsoft Azure Storage, Media Files, Upload, CDN, blob storage
 Requires at least: 4.0
-Tested up to: 4.9.2
-Stable tag: 4.1.1
+Tested up to: 4.9.8
+Stable tag: 4.1.2
 License: BSD 2-Clause
 License URI: http://www.opensource.org/licenses/bsd-license.php
 
@@ -21,6 +21,9 @@ For more details on Microsoft Azure Storage, please visit the <a href="https://a
 1. Use the Settings->Microsoft Azure screen to configure the plugin.
 
 == Changelog ==
+
+= 4.1.2 =
+* Bug fix to support special characters in file names
 
 = 4.1.1 =
 * Removed build tools from the plugin repository
