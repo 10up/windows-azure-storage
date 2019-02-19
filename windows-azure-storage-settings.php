@@ -60,7 +60,7 @@ function windows_azure_storage_plugin_settings_preamble() {
 			'windows-azure-storage'
 		); ?>
 		<br/><br/>
-		<?php echo __( 'For more details on Microsoft Azure Storage Services, please visit the <a href="http://www.microsoft.com/azure/windowsazure.mspx">Microsoft Azure Platform web-site</a>.', 'windows-azure-storage' ); ?>
+		<?php echo __( 'For more details on Microsoft Azure Storage Services, please visit the <a href="https://azure.microsoft.com/en-us/">Microsoft Azure Platform web-site</a>.', 'windows-azure-storage' ); ?>
 		<br/>
 
 		<b><?php esc_html_e( 'Plugin Web Site:', 'windows-azure-storage' ); ?></b>
@@ -208,7 +208,7 @@ function windows_azure_storage_plugin_register_settings() {
  */
 function windows_azure_storage_plugin_settings_section() {
 	?>
-	<p><?php echo __( 'If you do not have Microsoft Azure Storage Account, please <a href="http://go.microsoft.com/fwlink/?LinkID=129453">register </a>for Microsoft Azure Services.', 'windows-azure-storage' ); ?></p>
+	<p><?php echo __( 'If you do not have Microsoft Azure Storage Account, please <a href="https://azure.microsoft.com/en-us/free/">register </a>for Microsoft Azure Services.', 'windows-azure-storage' ); ?></p>
 	<?php
 }
 
