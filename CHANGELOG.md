@@ -1,6 +1,7 @@
 4.2.0 / 2017-
 =================
   * Added ability to setup Azure settings using constants in wp-config.php file
+  * Added ability to filter cache-control option for blob files and enter arbitrary cache-control value in the settings
 
 4.1.0 / 2017-11
 =================
