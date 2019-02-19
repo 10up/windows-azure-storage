@@ -19,12 +19,12 @@
 	},
 	"homepage": "https://github.com/lukaspawlik/windows-azure-storage#readme",
 	"dependencies": {
-		"grunt": "^1.0.1",
+		"grunt": "^1.0.3",
 		"grunt-contrib-concat": "^1.0.1",
-		"grunt-contrib-cssmin": "^2.2.1",
+		"grunt-contrib-cssmin": "^3.0.0",
 		"grunt-contrib-uglify": "^3.3.0",
-		"grunt-contrib-watch": "^1.0.0",
+		"grunt-contrib-watch": "^1.1.0",
 		"grunt-postcss": "^0.9.0",
-		"load-grunt-tasks": "^3.5.2"
+		"load-grunt-tasks": "^4.0.0"
 	}
 }
