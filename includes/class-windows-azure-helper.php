@@ -87,7 +87,9 @@ class Windows_Azure_Helper {
 	 * @return mixed|void Account name.
 	 */
 	static public function get_account_name() {
-		return get_option( 'azure_storage_account_name' );
+		return defined( 'MICROSOFT_AZURE_ACCOUNT_NAME' )
+			? MICROSOFT_AZURE_ACCOUNT_NAME
+			: get_option( 'azure_storage_account_name' );
 	}
 
 	/**
@@ -98,7 +100,9 @@ class Windows_Azure_Helper {
 	 * @return mixed|void Account key.
 	 */
 	static public function get_account_key() {
-		return get_option( 'azure_storage_account_primary_access_key' );
+		return defined( 'MICROSOFT_AZURE_ACCOUNT_KEY' )
+			? MICROSOFT_AZURE_ACCOUNT_KEY
+			: get_option( 'azure_storage_account_primary_access_key' );
 	}
 
 	/**
@@ -109,7 +113,24 @@ class Windows_Azure_Helper {
 	 * @return string CNAME value.
 	 */
 	static public function get_cname() {
-		return untrailingslashit( strtolower( get_option( 'cname' ) ) );
+		return untrailingslashit( strtolower( defined( 'MICROSOFT_AZURE_CNAME' ) ? MICROSOFT_AZURE_CNAME : get_option( 'cname' ) ) );
+	}
+
+	/**
+	 * Returns a flag which determines whether or not to use this for default upload.
+	 *
+	 * @since 4.2.0
+	 *
+	 * @static
+	 * @access public
+	 * @return boolean
+	 */
+	static public function get_use_for_default_upload() {
+		$use_for_default_upload = defined( 'MICROSOFT_AZURE_USE_FOR_DEFAULT_UPLOAD' )
+			? MICROSOFT_AZURE_USE_FOR_DEFAULT_UPLOAD
+			: get_option( 'azure_storage_use_for_default_upload' );
+
+		return filter_var( $use_for_default_upload, FILTER_VALIDATE_BOOLEAN );
 	}
 
 	/**
@@ -164,7 +185,9 @@ class Windows_Azure_Helper {
 	 * @return mixed|void Default container name.
 	 */
 	static public function get_default_container() {
-		return get_option( 'default_azure_storage_account_container_name' );
+		return defined( 'MICROSOFT_AZURE_CONTAINER' )
+			? MICROSOFT_AZURE_CONTAINER
+			: get_option( 'default_azure_storage_account_container_name' );
 	}
 
 	/**
@@ -203,16 +226,18 @@ class Windows_Azure_Helper {
 	static public function get_cache_ttl() {
 		return (int) get_option( 'azure_browse_cache_results', 15 );
 	}
-	
+
 	/**
 	 * Returns cache-control.
-	 * 
+	 *
 	 * @since 4.1.0
-	 * 
+	 *
 	 * @return int Cache-control.
 	 */
 	static public function get_cache_control() {
-		return (int) get_option( 'azure_cache_control', 600 );
+		return defined( 'MICROSOFT_AZURE_CACHE_CONTROL' )
+			? MICROSOFT_AZURE_CACHE_CONTROL
+			: (int) get_option( 'azure_cache_control', 600 );
 	}
 
 	/**
@@ -392,7 +417,7 @@ class Windows_Azure_Helper {
 		$finfo     = finfo_open( FILEINFO_MIME_TYPE );
 		$mime_type = finfo_file( $finfo, $local_path );
 		finfo_close( $finfo );
-		
+
 		$rest_api_client->put_blob_properties( $container_name, $remote_path, array(
 			Windows_Azure_Rest_Api_Client::API_HEADER_MS_BLOB_CONTENT_TYPE => $mime_type,
 			Windows_Azure_Rest_Api_Client::API_HEADER_CACHE_CONTROL        => sprintf( "max-age=%d, must-revalidate", Windows_Azure_Helper::get_cache_control() ),
@@ -451,7 +476,6 @@ class Windows_Azure_Helper {
 	 * @return bool|string|WP_Error False or WP_Error on failure URI on success.
 	 */
 	static public function put_media_to_blob_storage( $container_name, $blob_name, $local_path, $mime_type, $account_name = '', $account_key = '' ) {
-
 		list( $account_name, $account_key ) = self::get_api_credentials( $account_name, $account_key );
 		$rest_api_client = new Windows_Azure_Rest_Api_Client( $account_name, $account_key );
 
@@ -526,15 +550,15 @@ class Windows_Azure_Helper {
 	static public function unlink_file( $relative_path ) {
 		/** @var $wp_filesystem \WP_Filesystem_Base */
 		global $wp_filesystem;
-		
+
 		$result = false;
-		
+
 		if ( WP_Filesystem() ) {
-			$upload_dir = wp_upload_dir();
-			$filename   = trailingslashit( $upload_dir['basedir'] ) . $relative_path;
+			$upload_dir = self::wp_upload_dir();
+			$filename   = $upload_dir['uploads'] . DIRECTORY_SEPARATOR . $relative_path;
 			$result     = $wp_filesystem->delete( $filename, false, 'f' );
 		}
-		
+
 		return apply_filters( 'windows_azure_storage_unlink_file', $result, $relative_path );
 	}
 
@@ -550,15 +574,48 @@ class Windows_Azure_Helper {
 	static public function file_exists( $relative_path ) {
 		/** @var $wp_filesystem \WP_Filesystem_Base */
 		global $wp_filesystem;
-		
+
 		$exist = false;
-		
+
 		if ( WP_Filesystem() ) {
-			$upload_dir = wp_upload_dir();
-			$filename   = trailingslashit( $upload_dir['basedir'] ) . $relative_path;
+			$upload_dir = self::wp_upload_dir();
+			$filename   = $upload_dir['uploads'] . DIRECTORY_SEPARATOR . $relative_path;
 			$exist = $wp_filesystem->exists( $filename, false, 'f' );
 		}
-		
+
 		return apply_filters( 'windows_azure_storage_file_exist', $exist, $relative_path );
 	}
+
+	/**
+	 * Returns an array containing the current upload directory's path and url.
+	 *
+	 * @since 4.2.0
+	 *
+	 * @static
+	 * @access public
+	 * @return array
+	 */
+	static public function wp_upload_dir() {
+		static $wp_upload_dir = array();
+
+		$blog_id = get_current_blog_id();
+		if ( empty( $wp_upload_dir[ $blog_id ] ) ) {
+			$dir = $upload_path = trim( get_option( 'upload_path' ) );
+			if ( empty( $upload_path ) || 'wp-content/uploads' == $upload_path ) {
+				$dir = WP_CONTENT_DIR . '/uploads';
+			} elseif ( 0 !== strpos( $upload_path, ABSPATH ) ) {
+				// $dir is absolute, $upload_path is (maybe) relative to ABSPATH
+				$dir = path_join( ABSPATH, $upload_path );
+			}
+
+			$dir = rtrim( $dir, DIRECTORY_SEPARATOR );
+
+			$wp_upload_dir[ $blog_id ] = call_user_func_array( 'wp_upload_dir', func_get_args() );
+			$wp_upload_dir[ $blog_id ]['reldir'] = substr( $wp_upload_dir[ $blog_id ]['basedir'], strlen( $dir ) );
+			$wp_upload_dir[ $blog_id ]['uploads'] = $dir;
+		}
+
+		return $wp_upload_dir[ $blog_id ];
+	}
+
 }

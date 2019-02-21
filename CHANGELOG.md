@@ -1,7 +1,14 @@
+4.2.0 / 2018-05-04
+=================
+  * Added ability to setup Azure settings using constants in wp-config.php file
+  * Fixed images uploading issue in the multisite environment, now it doesn't strip "sites/{id}" from filename
+  * Fixed srcset issue for images uploaded before 4.2.0 version
+  * Fix issue with special characters in filenames with url encoding
+
 4.1.1 / 2018-01-30
 =================
-* Removed build tools from the plugin repository
-* Updated authors list
+  * Removed build tools from the plugin repository
+  * Updated authors list
 
 4.1.0 / 2017-11
 =================
