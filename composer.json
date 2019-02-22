@@ -1,0 +1,5 @@
+{
+  "name": "10up/windows-azure-storage",
+  "description": "Microsoft Azure Storage service as remote media library with this WordPress plugin.",
+  "type": "wordpress-plugin"
+}
