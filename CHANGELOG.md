@@ -144,3 +144,25 @@ All notable changes to this project will be documented in this file, per [the Ke
 
 ## [1.0] - 2010-05-20
 - First release of Microsoft Azure Storage plugin for WordPress
+
+[4.1.1]: https://plugins.trac.wordpress.org/changeset/1812783/windows-azure-storage
+[4.1.0]: https://github.com/10up/windows-azure-storage/compare/4.0.3...4.1.0
+[4.0.3]: https://github.com/10up/windows-azure-storage/releases/tag/4.0.3
+[4.0.2]: https://plugins.trac.wordpress.org/changeset/1606680/windows-azure-storage
+[4.0.1]: https://github.com/10up/windows-azure-storage/compare/4.0.0...4.0.1
+[4.0.0]: https://github.com/10up/windows-azure-storage/compare/3.0.1...4.0.0
+[3.0.1]: https://github.com/10up/windows-azure-storage/compare/3.0.0...3.0.1
+[3.0.0]: https://github.com/10up/windows-azure-storage/compare/2.2.0...3.0.0
+[2.2.0]: https://github.com/10up/windows-azure-storage/compare/2.1.0...2.2.0
+[2.1.0]: https://github.com/10up/windows-azure-storage/compare/2.0.0...2.1.0
+[2.0.0]: https://github.com/10up/windows-azure-storage/releases/tag/2.0.0
+[1.9]: https://plugins.trac.wordpress.org/changeset/485888/windows-azure-storage
+[1.8]: https://plugins.trac.wordpress.org/changeset/485513/windows-azure-storage
+[1.7]: https://plugins.trac.wordpress.org/changeset/484894/windows-azure-storage
+[1.6]: https://plugins.trac.wordpress.org/changeset/484891/windows-azure-storage
+[1.5]: https://plugins.trac.wordpress.org/changeset/484791/windows-azure-storage
+[1.4]: https://plugins.trac.wordpress.org/changeset/428894/windows-azure-storage
+[1.3]: https://plugins.trac.wordpress.org/changeset/424458/windows-azure-storage
+[1.2]: https://plugins.trac.wordpress.org/changeset/392854/windows-azure-storage
+[1.1]: https://plugins.trac.wordpress.org/changeset/354932/windows-azure-storage
+[1.0]: https://plugins.trac.wordpress.org/changeset/243465/windows-azure-storage
