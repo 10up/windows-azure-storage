@@ -29,6 +29,9 @@ For more details on Microsoft Azure Storage, please visit the <a href="https://a
 This release features several security fixes and enhancements.
 It is highly recommended that all users upgrade immediately.
 
+## Support Level
+**Stable:** 10up is not planning to develop any new features for this, but will still respond to bug reports and security concerns.  We welcome PRs, but any that include new features should be small and easy to integrate and should not include breaking changes.  We otherwise intend to keep this tested up to the most recent version of WordPress.
+
 ## Known Issues
 
 ### Storage Account Versions
