@@ -23,6 +23,14 @@ For more details on Microsoft Azure Storage, please visit the <a href="https://a
 1. Activate the plugin through the 'Plugins' screen in WordPress.
 1. Use the Settings->Microsoft Azure screen to configure the plugin.
 
+## Setup
+
+In order for uploads to properly make it to Azure Storage, the following needs to be added to the wp-config.php file:
+```
+define( 'FS_METHOD', 'direct' );
+define( 'DISALLOW_FILE_MODS', 'true' );
+```
+
 ## Upgrade Notice
 
 ### 3.0.0
