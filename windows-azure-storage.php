@@ -331,7 +331,7 @@ function windows_azure_storage_new_media_object( $args ) {
  *
  * @return string Returns metadata url.
  */
-function edwards_azure_storage_wp_get_attachment_url( $url, $post_id ) {
+function windows_azure_storage_wp_get_attachment_url( $url, $post_id ) {
 	$media_info = get_post_meta( $post_id, 'windows_azure_storage_info', true );
 
 	if ( ! empty( $media_info ) && isset( $media_info['url'] ) ) {
