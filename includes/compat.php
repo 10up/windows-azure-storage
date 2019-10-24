@@ -42,7 +42,7 @@ function restore_original_image( $file, $attachment_id ) {
 	/*
 	 * Next, ensure we're using WP-CLI's `media regenerate` command: `wp media regenerate`.
 	 */
-	if ( ! in_array( 'media', $argv, true ) || ! in_ array( 'regenerate', $argv, true ) ) {
+	if ( ! in_array( 'media', $argv, true ) || ! in_array( 'regenerate', $argv, true ) ) {
 		return $file;
 	}
 
