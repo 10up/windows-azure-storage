@@ -52,6 +52,21 @@ function restore_original_image( $file, $attachment_id ) {
 	}
 
 	// If not, we'll need to retrieve it.
+	// Check if folder is writtable if not create it before calling wp_remote_get.
+	$dirname = dirname( $file );
+	if ( ! wp_is_writable( $dirname ) ) {
+		preg_match_all( '/([0-9]{4})\/([0-9]{2})/', $dirname, $matches );
+		$folder_name = end( $matches[0] ); // YYYY/MM format
+		// create folder.
+		$uploads = wp_upload_dir( $folder_name );
+		if ( true === $uploads['error'] ) {
+			error_log( esc_html( sprintf(
+				/* Translators: %1$s is the name of the folder */
+				__( 'Unable to create %1$s folder when restoring original image.', 'windows-azure-storage' ),
+				$folder_name
+			) ) );
+		}
+	}
 	$url      = wp_get_attachment_url( $attachment_id );
 	$response = wp_remote_get( $url, array(
 		'timeout'  => MINUTE_IN_SECONDS,
