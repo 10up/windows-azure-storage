@@ -47,7 +47,7 @@ function restore_original_image( $file, $attachment_id ) {
 	}
 
 	// Does the file exist?
-	if ( $file && file_exists( $file ) ) {
+	if ( $file && file_exists( $file ) && 0 !== filesize( $file ) ) {
 		return $file;
 	}
 
