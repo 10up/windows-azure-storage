@@ -369,11 +369,11 @@ function windows_azure_storage_setting_handle_uploads() {
 	}
 
 	echo '<label for="azure_storage_use_for_default_upload">';
-		esc_html_e( 'Use Microsoft Azure Storage when uploading via WordPress\' upload tab.', 'windows-azure-storage' );
+		esc_html_e( 'Use Microsoft Azure Storage for all media uploads on this site.', 'windows-azure-storage' );
 	echo '</label>';
 
 	echo '<p>';
-		_e( 'Note: Uncheck this to revert back to using your own web host for storage at anytime. You can define <code>MICROSOFT_AZURE_USE_FOR_DEFAULT_UPLOAD</code> to override it.', 'windows-azure-storage' );
+		_e( 'Note: Uncheck this to store uploads on your web server by default. This setting can be overriden using the <code>MICROSOFT_AZURE_USE_FOR_DEFAULT_UPLOAD</code> PHP constant.', 'windows-azure-storage' );
 	echo '</p>';
 }
 
