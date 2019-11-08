@@ -1,6 +1,8 @@
 # Microsoft Azure Storage for WordPress
 
-Use the Microsoft Azure Storage service to host your website's media files.
+> Use the Microsoft Azure Storage service to host your website's media files.
+
+[![Support Level](https://img.shields.io/badge/support-stable-blue.svg)](#support-level)
 
 **Contributors:** [msopentech](https://profiles.wordpress.org/msopentech), [10up](https://profiles.wordpress.org/10up), [morganestes](https://profiles.wordpress.org/morganestes), [stevegrunwell](https://profiles.wordpress.org/stevegrunwell), [lpawlik](https://profiles.wordpress.org/lpawlik), [rittesh.patel](https://profiles.wordpress.org/rittesh.patel)
 **Tags:** [Microsoft](https://wordpress.org/plugins/tags/microsoft), [Microsoft Open Technologies](https://wordpress.org/plugins/tags/microsoft-open-technologies), [Microsoft Azure](https://wordpress.org/plugins/tags/windows-azure), [Microsoft Azure Storage](https://wordpress.org/plugins/tags/windows-azure-storage), [Media Files](https://wordpress.org/plugins/tags/media-files), [Upload](https://wordpress.org/plugins/tags/upload), [CDN](https://wordpress.org/plugins/tags/cdn), [blob storage](https://wordpress.org/plugins/tags/blob-storage)
@@ -9,7 +11,7 @@ Use the Microsoft Azure Storage service to host your website's media files.
 **Stable tag:** 4.2.0
 **License:** [BSD 2-Clause](http://www.opensource.org/licenses/bsd-license.php)
 
-## Description ##
+## Description
 
 This WordPress plugin allows you to use Microsoft Azure Storage Service to host
 your media and uploads for your WordPress powered website. Microsoft Azure Storage is an effective way
@@ -17,7 +19,7 @@ to infinitely scale storage of your site and leverage Azure's global infrastruct
 
 For more details on Microsoft Azure Storage, please visit the <a href="https://azure.microsoft.com/en-us/services/storage/">Microsoft Azure website</a>.
 
-## Installation ##
+## Installation
 
 1. Upload the plugin files to the `/wp-content/plugins/windows-azure-storage` directory, or install the plugin through the WordPress plugins screen directly.
 1. Activate the plugin through the 'Plugins' screen in WordPress.
@@ -123,9 +125,9 @@ This release features several security fixes and enhancements.
 It is highly recommended that all users upgrade immediately.
 
 
-## Known Issues ##
+## Known Issues
 
-### Storage Account Versions ###
+### Storage Account Versions
 Storage accounts can be created via CLI, classic Azure portal, or the new Azure portal,
 with varying results.
 
@@ -133,8 +135,12 @@ If a Storage account is created with the new Azure portal, authentication will f
 resulting in the inability to view/add containers or files. Creating a Storage account
 with the Azure CLI should allow the plugin to work with new Storage accounts.
 
-### Responsive Images in WordPress 4.4 ###
+### Responsive Images in WordPress 4.4
 Images uploaded to the Azure Storage service will not automatically receive responsive versions.
 Images added through the WordPress Media Loader *should* get automatically converted to responsive
 images when inserted into a post or page.
 We are investigating options for full support of responsive images in the plugin.
+
+## Support Level
+
+**Stable:** 10up is not planning to develop any new features for this, but will still respond to bug reports and security concerns. We welcome PRs, but any that include new features should be small and easy to integrate and should not include breaking changes. We otherwise intend to keep this tested up to the most recent version of WordPress.
