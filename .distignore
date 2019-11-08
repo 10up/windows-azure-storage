@@ -1,0 +1,16 @@
+/.github
+/bin
+/node_modules
+/tasks
+
+.DS_Store
+.eslintrc.json
+.distignore
+.gitignore
+CHANGELOG.md
+CREDITS.md
+Gruntfile.js
+LICENSE
+package.json
+package-lock.json
+README.md
