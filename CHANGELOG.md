@@ -6,9 +6,10 @@
   * Fix issue with special characters in filenames with url encoding
 
 4.1.1 / 2018-01-30
-=================
   * Removed build tools from the plugin repository
   * Updated authors list
+=======
+  * Added ability to filter cache-control option for blob files and enter arbitrary cache-control value in the settings
 
 4.1.0 / 2017-11
 =================
