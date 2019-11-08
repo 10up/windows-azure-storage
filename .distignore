@@ -1,4 +1,6 @@
 /.github
+/.git
+/.wordpress-rg
 /bin
 /node_modules
 /tasks
@@ -8,7 +10,6 @@
 .distignore
 .gitignore
 CHANGELOG.md
-CREDITS.md
 Gruntfile.js
 LICENSE
 package.json
