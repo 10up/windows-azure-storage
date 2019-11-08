@@ -122,7 +122,7 @@ function windows_azure_storage_plugin_register_settings() {
 	}
 
 	if ( ! defined( 'MICROSOFT_AZURE_CACHE_CONTROL' ) ) {
-		register_setting( 'windows-azure-storage-settings-group', 'azure_cache_control', 'intval' );
+		register_setting( 'windows-azure-storage-settings-group', 'azure_cache_control', 'sanitize_text_field' );
 	}
 
 	/**
@@ -426,13 +426,13 @@ function windows_azure_cache_control() {
 	$cache_control = Windows_Azure_Helper::get_cache_control();
 
 	if ( defined( 'MICROSOFT_AZURE_CACHE_CONTROL' ) ) {
-		echo '<input type="number" class="regular-text" value="', esc_attr( $cache_control ), '" readonly disabled>';
+		echo '<input type="text" class="regular-text" value="', esc_attr( $cache_control ), '" readonly disabled>';
 	} else {
-		echo '<input type="number" name="azure_cache_control" class="regular-text" value="', esc_attr( $cache_control ), '">';
+		echo '<input type="text" name="azure_cache_control" class="regular-text" value="', esc_attr( $cache_control ), '">';
 	}
 
 	echo '<p>';
-		_e( 'Setting Cache-Control on publicly accessible Microsoft Azure Blobs can help reduce bandwidth by preventing consumers from having to continuously download resources. Specify a relative amount of time in seconds to cache data after it was received. You can define <code>MICROSOFT_AZURE_CACHE_CONTROL</code> constant to override it.', 'windows-azure-storage' );
+		_e( 'Setting Cache-Control on publicly accessible Microsoft Azure Blobs can help reduce bandwidth by preventing consumers from having to continuously download resources. Specify a relative amount of time in seconds to cache data after it was received or enter exact cache-control value which you want to use for your assets. You can define <code>MICROSOFT_AZURE_CACHE_CONTROL</code> constant to override it.', 'windows-azure-storage' );
 	echo '</p>';
 }
 

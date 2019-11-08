@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Windows Azure Storage for WordPress 4.0.3\n"
-"POT-Creation-Date: 2018-01-22 14:34+0200\n"
+"POT-Creation-Date: 2018-01-23 13:14+0200\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -212,7 +212,7 @@ msgid "Note: If you want to disable azure file list caching please set this valu
 msgstr ""
 
 #: windows-azure-storage-settings.php:436
-msgid "Setting Cache-Control on publicly accessible Microsoft Azure Blobs can help reduce bandwidth by preventing consumers from having to continuously download resources. Specify a relative amount of time in seconds to cache data after it was received. You can define <code>MICROSOFT_AZURE_CACHE_CONTROL</code> constant to override it."
+msgid "Setting Cache-Control on publicly accessible Microsoft Azure Blobs can help reduce bandwidth by preventing consumers from having to continuously download resources. Specify a relative amount of time in seconds to cache data after it was received or enter exact cache-control value which you want to use for your assets. You can define <code>MICROSOFT_AZURE_CACHE_CONTROL</code> constant to override it."
 msgstr ""
 
 #: windows-azure-storage-settings.php:456
