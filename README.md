@@ -45,17 +45,7 @@ This plugin is free software licensed under the [BSD 2-Clause](http://www.openso
 
 ### 4.2.0 ###
 * Added ability to setup Azure settings using constants in wp-config.php file
-<<<<<<< HEAD
-* Fixed images uploading issue in the multisite environment, now it doesn't strip "sites/{id}" from filename
-* Fixed srcset issue for images uploaded before 4.2.0 version
-* Fix issue with special characters in filenames with url encoding
-
-### 4.1.1 ###
-* Removed build tools from the plugin repository
-* Updated authors list
-=======
 * Added ability to filter cache-control option for blob files and enter arbitrary cache-control value in the settings
->>>>>>> develop
 
 ### 4.1.0 ###
 * Added error message when SimpleXML library is not found
