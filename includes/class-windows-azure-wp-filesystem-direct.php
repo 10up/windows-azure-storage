@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Windows Azure Storage REST API client.
+ * Microsoft Azure Storage REST API client.
  *
  * Version: 4.0.0
  *

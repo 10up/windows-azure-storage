@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Windows Azure Storage config provider.
+ * Microsoft Azure Storage config provider.
  *
  * Version: 4.0.0
  *

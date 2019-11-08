@@ -1,13 +1,15 @@
 <?php
 /**
- * Plugin Name: Windows Azure Storage for WordPress
+ * Plugin Name: Microsoft Azure Storage for WordPress
  * Plugin URI: https://wordpress.org/plugins/windows-azure-storage/
- * Description: Use the Windows Azure Storage service to host your website's media files.
- * Version: 4.0.2
+ * Description: Use the Microsoft Azure Storage service to host your website's media files.
+ * Version: 4.2.0
  * Author: 10up, Microsoft Open Technologies
  * Author URI: http://10up.com/
  * License: BSD 2-Clause
  * License URI: http://www.opensource.org/licenses/bsd-license.php
+ * Text Domain: windows-azure-storage
+ * Domain Path: /languages
  */
 
 /*
@@ -47,10 +49,10 @@
  */
 
 /*
- * 'Windows Azure SDK for PHP v0.4.0' and its dependencies are included
+ * 'Microsoft Azure SDK for PHP v0.4.0' and its dependencies are included
  * in the library directory. If another version of the SDK is installed
  * and USESDKINSTALLEDGLOBALLY is defined, that version will be used instead.
- * 'Windows Azure SDK for PHP' provides access to the Windows Azure
+ * 'Microsoft Azure SDK for PHP' provides access to the Microsoft Azure
  * Blob Storage service that this plugin enables for WordPress.
  * See https://github.com/windowsazure/azure-sdk-for-php/ for updates to the SDK.
  */
@@ -58,7 +60,7 @@
 define( 'MSFT_AZURE_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'MSFT_AZURE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'MSFT_AZURE_PLUGIN_LEGACY_MEDIA_URL', get_admin_url( get_current_blog_id(), 'media-upload.php' ) );
-define( 'MSFT_AZURE_PLUGIN_VERSION', '4.0.0' );
+define( 'MSFT_AZURE_PLUGIN_VERSION', '4.2.0' );
 
 require_once MSFT_AZURE_PLUGIN_PATH . 'windows-azure-storage-settings.php';
 require_once MSFT_AZURE_PLUGIN_PATH . 'windows-azure-storage-dialog.php';
@@ -83,6 +85,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 // Check prerequisite for plugin.
 register_activation_hook( __FILE__, 'windows_azure_plugin_check_prerequisite' );
 
+add_action( 'plugins_loaded', 'windows_azure_storage_load_textdomain' );
 add_action( 'admin_menu', 'windows_azure_storage_plugin_menu' );
 add_filter( 'media_buttons_context', 'windows_azure_storage_media_buttons_context' );
 add_action( 'load-settings_page_windows-azure-storage-plugin-options', 'windows_azure_storage_load_settings_page' );
@@ -110,17 +113,12 @@ function azure_storage_media_menu( $tabs ) {
 // Hook for adding tabs.
 add_filter( 'media_upload_tabs', 'azure_storage_media_menu' );
 
-// Add callback for three tabs in the Windows Azure Storage Dialog.
+// Add callback for three tabs in the Microsoft Azure Storage Dialog.
 add_action( 'media_upload_browse', 'windows_azure_browse_tab' );
 
 // Hooks for handling default file uploads.
-if ( (bool) get_option( 'azure_storage_use_for_default_upload' ) ) {
-	add_filter(
-		'wp_update_attachment_metadata',
-		'windows_azure_storage_wp_update_attachment_metadata',
-		9,
-		2
-	);
+if ( Windows_Azure_Helper::get_use_for_default_upload() ) {
+	add_filter( 'wp_update_attachment_metadata', 'windows_azure_storage_wp_update_attachment_metadata', 9, 2 );
 
 	// Hook for handling blog posts via xmlrpc. This is not full proof check.
 	add_filter( 'content_save_pre', 'windows_azure_storage_content_save_pre' );
@@ -135,20 +133,10 @@ if ( (bool) get_option( 'azure_storage_use_for_default_upload' ) ) {
 }
 
 // Hook for acecssing attachment (media file) URL.
-add_filter(
-	'wp_get_attachment_url',
-	'windows_azure_storage_wp_get_attachment_url',
-	9,
-	2
-);
+add_filter( 'wp_get_attachment_url', 'windows_azure_storage_wp_get_attachment_url', 9, 2 );
 
 // Hook for acecssing metadata about attachment (media file).
-add_filter(
-	'wp_get_attachment_metadata',
-	'windows_azure_storage_wp_get_attachment_metadata',
-	9,
-	2
-);
+add_filter( 'wp_get_attachment_metadata', 'windows_azure_storage_wp_get_attachment_metadata', 9, 2 );
 
 // Hook for handling deleting media files from standard WordpRess dialog.
 add_action( 'delete_attachment', 'windows_azure_storage_delete_attachment' );
@@ -156,6 +144,15 @@ add_action( 'delete_attachment', 'windows_azure_storage_delete_attachment' );
 // Filter the 'srcset' attribute in 'the_content' introduced in WP 4.4.
 if ( function_exists( 'wp_calculate_image_srcset' ) ) {
 	add_filter( 'wp_calculate_image_srcset', 'windows_azure_storage_wp_calculate_image_srcset', 9, 5 );
+}
+
+/**
+ * Loads text domain.
+ *
+ * @since 4.0.3
+ */
+function windows_azure_storage_load_textdomain() {
+	load_plugin_textdomain( 'windows-azure-storage', false, basename( dirname( __FILE__ ) ) . '/languages' );
 }
 
 /**
@@ -169,12 +166,12 @@ function windows_azure_plugin_check_prerequisite() {
 	$php_compat  = version_compare( $php_version, '5.3.0', '>=' );
 	if ( ! $php_compat ) {
 		deactivate_plugins( plugin_basename( __FILE__ ) );
-		wp_die( __( 'Windows Azure Storage for WordPress requires at least PHP 5.3.0', 'windows-azure-storage' ) );
+		wp_die( __( 'Microsoft Azure Storage for WordPress requires at least PHP 5.3.0', 'windows-azure-storage' ) );
 	}
 	$wp_compat = version_compare( $wp_version, '4.0', '>=' );
 	if ( ! $wp_compat ) {
 		deactivate_plugins( plugin_basename( __FILE__ ) );
-		wp_die( __( 'Windows Azure Storage for WordPress requires at least WordPress 4.0', 'windows-azure-storage' ) );
+		wp_die( __( 'Microsoft Azure Storage for WordPress requires at least WordPress 4.0', 'windows-azure-storage' ) );
 	}
 }
 
@@ -377,12 +374,10 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 	$default_azure_storage_account_container_name = \Windows_Azure_Helper::get_default_container();
 	$delete_local_file                            = \Windows_Azure_Helper::delete_local_file();
 	$upload_file_name                             = get_attached_file( $post_id, true );
-	
+
 	// Get upload directory.
 	$upload_dir = wp_upload_dir();
-	if ( '/' === $upload_dir['subdir']{0} ) {
-		$upload_dir['subdir'] = substr( $upload_dir['subdir'], 1 );
-	}
+	$upload_dir['subdir'] = ltrim( $upload_dir['subdir'], '/' );
 
 	// Prepare blob name.
 	$relative_file_name = ( '' === $upload_dir['subdir'] ) ?
@@ -408,12 +403,16 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 				$data['sizes'] = array();
 			}
 			set_transient( $azure_progress_key, array( 'current' => ++$current, 'total' => count( $data['sizes'] ) + 1 ), 5 * MINUTE_IN_SECONDS );
-			$result = \Windows_Azure_Helper::put_media_to_blob_storage(
-				$default_azure_storage_account_container_name,
-				$relative_file_name,
-				$relative_file_name,
-				$mime_type
-			);
+
+			// only upload file if file exists locally
+			if (Windows_Azure_Helper::file_exists($relative_file_name)) {
+				$result = \Windows_Azure_Helper::put_media_to_blob_storage(
+					$default_azure_storage_account_container_name,
+					$relative_file_name,
+					$relative_file_name,
+					$mime_type
+				);
+			}
 
 		} catch ( Exception $e ) {
 			echo '<p>' . sprintf( __( 'Error in uploading file. Error: %s', 'windows-azure-storage' ), esc_html( $e->getMessage() ) ) . '</p><br/>';
@@ -432,7 +431,9 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 		// Handle thumbnail and medium size files.
 		$thumbnails = array();
 		if ( ! empty( $data['sizes'] ) ) {
-			$file_upload_dir = substr( $relative_file_name, 0, strripos( $relative_file_name, '/' ) );
+			$file_upload_dir = strpos( $relative_file_name, '/' ) !== false
+				? substr( $relative_file_name, 0, strrpos( $relative_file_name, '/' ) )
+				: '';
 
 			foreach ( $data['sizes'] as $size ) {
 				// Do not prefix file name with wordpress upload folder path.
@@ -441,11 +442,17 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 				// Move only if file exists. Some theme may use same file name for multiple sizes.
 				if ( Windows_Azure_Helper::file_exists( trailingslashit( $file_upload_dir ) . $size['file'] ) ) {
 					$blob_name = ( '' === $file_upload_dir ) ? $size['file'] : $file_upload_dir . '/' . $size['file'];
-					set_transient( $azure_progress_key, array( 'current' => ++$current, 'total' => count( $data['sizes'] ) + 1 ), 5 * MINUTE_IN_SECONDS );
+
+					set_transient(
+						$azure_progress_key,
+						array( 'current' => ++$current, 'total' => count( $data['sizes'] ) + 1 ),
+						5 * MINUTE_IN_SECONDS
+					);
+
 					\Windows_Azure_Helper::put_media_to_blob_storage(
 						$default_azure_storage_account_container_name,
 						$blob_name,
-						trailingslashit( $file_upload_dir ) . $size['file'],
+						( '' === $file_upload_dir ) ? $size['file'] : trailingslashit( $file_upload_dir ) . $size['file'],
 						$mime_type
 					);
 
@@ -506,9 +513,7 @@ function windows_azure_storage_wp_handle_upload_prefilter( $file ) {
 	$container = \Windows_Azure_Helper::get_default_container();
 
 	$upload_dir = wp_upload_dir();
-	if ( '/' === $upload_dir['subdir'][0] ) {
-		$upload_dir['subdir'] = substr( $upload_dir['subdir'], 1 );
-	}
+	$upload_dir['subdir'] = ltrim( $upload_dir['subdir'], '/' );
 
 	// Prepare blob name.
 	$blob_name = ( '' === $upload_dir['subdir'] ) ? $file['name'] : $upload_dir['subdir'] . '/' . $file['name'];
@@ -540,7 +545,7 @@ function windows_azure_storage_wp_handle_upload( $uploads ) {
 
 /**
  * Common function to replace wordpress file uplaod url with
- * Windows Azure Storage URLs
+ * Microsoft Azure Storage URLs
  *
  * @param string $url Original upload URL.
  *
@@ -548,8 +553,8 @@ function windows_azure_storage_wp_handle_upload( $uploads ) {
  */
 function get_updated_upload_url( $url ) {
 	$wp_upload_dir      = wp_upload_dir();
-	$upload_dir_url     = $wp_upload_dir['baseurl'];
-	$storage_url_prefix = WindowsAzureStorageUtil::get_storage_url_base();
+	$upload_dir_url     = untrailingslashit( $wp_upload_dir['baseurl'] );
+	$storage_url_prefix = untrailingslashit( WindowsAzureStorageUtil::get_storage_url_base() );
 
 	return str_replace( $upload_dir_url, $storage_url_prefix, $url );
 }
@@ -652,8 +657,8 @@ function windows_azure_storage_media_buttons_context( $context ) {
 		'<a id="windows-azure-storage-media-button" role="button" href="javascript:void(0)" class="button" data-editor="content"
 title="%2$s"><img src="%3$s" alt="%2$s" role="img" class="windows-azure-storage-media-icon" />%4$s</a>',
 		esc_url( $browse_iframe_src ),
-		esc_attr__( 'Windows Azure Storage', 'windows-azure-storage' ),
-		esc_url( MSFT_AZURE_PLUGIN_URL . 'images/WindowsAzure.jpg' ),
+		esc_attr__( 'Microsoft Azure Storage', 'windows-azure-storage' ),
+		esc_url( MSFT_AZURE_PLUGIN_URL . 'images/azure-icon.png' ),
 		esc_html__( 'Add Media From Azure', 'windows-azure-storage' )
 	);
 
@@ -661,15 +666,15 @@ title="%2$s"><img src="%3$s" alt="%2$s" role="img" class="windows-azure-storage-
 }
 
 /**
- * Add option page for Windows Azure Storage Plugin.
+ * Add option page for Microsoft Azure Storage Plugin.
  *
  * @return void
  */
 function windows_azure_storage_plugin_menu() {
 	if ( current_user_can( 'manage_options' ) ) {
 		add_options_page(
-			__( 'Windows Azure Storage Plugin Settings', 'windows-azure-storage' ),
-			__( 'Windows Azure', 'windows-azure-storage' ),
+			__( 'Microsoft Azure Storage Plugin Settings', 'windows-azure-storage' ),
+			__( 'Microsoft Azure', 'windows-azure-storage' ),
 			'manage_options',
 			'windows-azure-storage-plugin-options',
 			'windows_azure_storage_plugin_options_page'
@@ -720,11 +725,11 @@ function windows_azure_storage_wp_calculate_image_srcset( $sources, $size_array,
 		foreach ( $sources as &$source ) {
 			$img_filename = substr( $source['url'], strrpos( $source['url'], '/' ) + 1 );
 
-			if ( substr( $media_info['blob'], strrpos( $media_info['blob'], '/' ) + 1 ) === $img_filename ) {
+			if ( basename( $media_info['blob'] ) === $img_filename ) {
 				$source['url'] = esc_url( $base_url . $media_info['blob'], $esc_url_protocols );
 			} else {
 				foreach ( $media_info['thumbnails'] as $thumbnail ) {
-					if ( substr( $thumbnail, strrpos( $thumbnail, '/' ) + 1 ) === $img_filename ) {
+					if ( basename( $thumbnail ) === $img_filename ) {
 						$source['url'] = esc_url( $base_url . $thumbnail, $esc_url_protocols );
 						break;
 					}
@@ -762,11 +767,11 @@ function windows_azure_storage_query_azure_attachments() {
 		'posts_per_page' => Windows_Azure_Rest_Api_Client::API_REQUEST_BULK_SIZE,
 		'paged'          => 1,
 	) );
-	if ( 1 === (int) $query['paged'] ) {
-		$next_marker = false;
-	} else {
-		$next_marker = sanitize_text_field( wp_unslash( $_COOKIE['azure_next_marker'] ) );
-	}
+
+	$next_marker = 1 === (int) $query['paged'] || empty( $_COOKIE['azure_next_marker'] )
+		? false
+		: sanitize_text_field( wp_unslash( $_COOKIE['azure_next_marker'] ) );
+
 	$cache_key = 'wasr_' . md5( json_encode( $query ) );
 	if ( $cache_ttl > 0 && $posts = wp_cache_get( $cache_key ) ) {
 		wp_send_json_success( $posts );
@@ -887,7 +892,7 @@ function windows_azure_no_filesystem_access_notice() {
 		?>
 		<div class="notice notice-error">
 			<p>
-				<?php esc_html_e( 'Windows Azure Storage requires direct filesystem access in order to work.', 'windows-azure-storage' ) ?>
+				<?php esc_html_e( 'Microsoft Azure Storage requires direct filesystem access in order to work.', 'windows-azure-storage' ) ?>
 			</p>
 		</div>
 		<?php

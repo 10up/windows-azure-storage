@@ -1,6 +1,6 @@
 <?php
 /**
- * Various utility functions for accessing Windows Azure Storage
+ * Various utility functions for accessing Microsoft Azure Storage
  *
  * Version: 3.0.1
  *
@@ -41,7 +41,7 @@
  */
 
 /**
- * Used for performing operations on Windows Azure Blob Storage
+ * Used for performing operations on Microsoft Azure Blob Storage
  *
  * @category  WordPress_Plugin
  * @package   Windows_Azure_Storage_For_WordPress
@@ -62,7 +62,7 @@ class WindowsAzureStorageUtil {
 	const MAX_BLOB_TRANSFER_SIZE = 4194304;
 
 	/**
-	 * Get Windows Azure Storage host name defined as per plugin settings
+	 * Get Microsoft Azure Storage host name defined as per plugin settings
 	 *
 	 * @deprecated 4.0
 	 *
@@ -75,7 +75,7 @@ class WindowsAzureStorageUtil {
 	}
 
 	/**
-	 * Get Windows Azure Storage account name defined in plugin settings
+	 * Get Microsoft Azure Storage account name defined in plugin settings
 	 *
 	 * @deprecated 4.0 Use Windows_Azure_Helper::get_account_name()
 	 *
@@ -88,7 +88,7 @@ class WindowsAzureStorageUtil {
 	}
 
 	/**
-	 * Get Windows Azure Storage account key defined in plugin settings
+	 * Get Microsoft Azure Storage account key defined in plugin settings
 	 *
 	 * @deprecated 4.0 Use Windows_Azure_Helper::get_account_key()
 	 *
@@ -184,8 +184,8 @@ class WindowsAzureStorageUtil {
 	/**
 	 * Create blob storage client using Azure SDK for PHP
 	 *
-	 * @param string $account_name    Windows Azure Storage account name.
-	 * @param string $account_key     Windows Azure Storage account primary key.
+	 * @param string $account_name    Microsoft Azure Storage account name.
+	 * @param string $account_key     Microsoft Azure Storage account primary key.
 	 * @param string $proxy_host      Http proxy host.
 	 * @param string $proxy_port      Http proxy port.
 	 * @param string $proxy_user_name Http proxy user name.
@@ -469,8 +469,8 @@ class WindowsAzureStorageUtil {
 	/**
 	 * Create signature
 	 *
-	 * @param string  $account_name       Account name for Windows Azure.
-	 * @param string  $account_key        Account key for Windows Azure.
+	 * @param string  $account_name       Account name for Microsoft Azure.
+	 * @param string  $account_key        Account key for Microsoft Azure.
 	 * @param boolean $use_path_style_uri Use path-style URI's.
 	 * @param string  $path               Path.
 	 * @param string  $resource           Signed resource - container (c) - blob (b).
@@ -532,7 +532,7 @@ class WindowsAzureStorageUtil {
 	 *
 	 * @deprecated 4.0
 	 *
-	 * @return string Windows Azure Blob Storage block number
+	 * @return string Microsoft Azure Blob Storage block number
 	 */
 	protected static function _generateBlockId( $part = 0 ) {
 		_deprecated_function( __FUNCTION__, '4.0' );
