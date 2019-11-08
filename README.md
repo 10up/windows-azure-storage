@@ -2,7 +2,7 @@
 
 > Use the Microsoft Azure Storage service to host your website's media files.
 
-[![Support Level](https://img.shields.io/badge/support-stable-blue.svg)](#support-level) [![Release Version](https://img.shields.io/github/release/10up/windows-azure-storage.svg)](https://github.com/10up/windows-azure-storage/releases/latest)
+[![Support Level](https://img.shields.io/badge/support-stable-blue.svg)](#support-level) [![Release Version](https://img.shields.io/github/release/10up/windows-azure-storage.svg)](https://github.com/10up/windows-azure-storage/releases/latest) ![WordPress tested up to version](https://img.shields.io/badge/WordPress-v5.3%20tested-success.svg)
 
 **Contributors:** [msopentech](https://profiles.wordpress.org/msopentech), [10up](https://profiles.wordpress.org/10up), [morganestes](https://profiles.wordpress.org/morganestes), [stevegrunwell](https://profiles.wordpress.org/stevegrunwell), [lpawlik](https://profiles.wordpress.org/lpawlik), [rittesh.patel](https://profiles.wordpress.org/rittesh.patel)
 **Tags:** [Microsoft](https://wordpress.org/plugins/tags/microsoft), [Microsoft Open Technologies](https://wordpress.org/plugins/tags/microsoft-open-technologies), [Microsoft Azure](https://wordpress.org/plugins/tags/windows-azure), [Microsoft Azure Storage](https://wordpress.org/plugins/tags/windows-azure-storage), [Media Files](https://wordpress.org/plugins/tags/media-files), [Upload](https://wordpress.org/plugins/tags/upload), [CDN](https://wordpress.org/plugins/tags/cdn), [blob storage](https://wordpress.org/plugins/tags/blob-storage)
