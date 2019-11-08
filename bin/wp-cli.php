@@ -329,7 +329,7 @@ class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 	 * @subcommand blobs-list
 	 *
 	 * ## EXAMPLE
-	 * wp windows-azure-storage blobs-list test-container --prefix=demo
+	 * wp windows-azure-storage blobs-list --container=test-container --prefix=demo
 	 */
 	public function list_blobs( $args, $assoc_args ) {
 		$assoc_args = wp_parse_args( $assoc_args, array(
@@ -338,7 +338,7 @@ class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 		) );
 
 		if ( empty( $assoc_args['container'] ) ) {
-			WP_CLI::error( __( 'Container name amust be set.', 'windows-azure-storage' ) );
+			WP_CLI::error( __( 'Container name must be set.', 'windows-azure-storage' ) );
 			exit;
 		}
 
