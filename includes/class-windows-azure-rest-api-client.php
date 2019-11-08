@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Windows Azure Storage REST API client.
+ * Microsoft Azure Storage REST API client.
  *
  * Version: 4.0.0
  *
@@ -1047,20 +1047,23 @@ class Windows_Azure_Rest_Api_Client {
 		// Remove this filter once request is done.
 		remove_filter( 'http_request_args', array( $this, 'inject_authorization_header' ), PHP_INT_MAX );
 
-		$body = wp_remote_retrieve_body( $result );
-
 		if ( is_wp_error( $result ) ) {
 			return $result;
 		}
 
 		$response_code = (int) wp_remote_retrieve_response_code( $result );
-
 		if ( $response_code < 200 || $response_code > 299 ) {
 			return new WP_Error( $response_code, wp_remote_retrieve_response_message( $result ) );
 		}
 
-		$xml_structure = simplexml_load_string( $body );
+		$body = wp_remote_retrieve_body( $result );
 		if ( ! empty( $body ) ) {
+			if ( ! function_exists( 'simplexml_load_string' ) ) {
+				$message = __( "SimpleXML library hasn't been found. Please, check your PHP config.", 'windows-azure-storage' );
+				return new WP_Error( 'simplexml', $message );
+			}
+
+			$xml_structure = simplexml_load_string( $body );
 			return json_decode( json_encode( $xml_structure ), true );
 		} else {
 			return $result;

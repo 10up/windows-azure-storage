@@ -1,6 +1,6 @@
 <?php
 /**
- * Windows Azure Storage command line client.
+ * Microsoft Azure Storage command line client.
  *
  * Version: 4.0.0
  *

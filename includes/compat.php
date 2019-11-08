@@ -1,6 +1,6 @@
 <?php
 /**
- * Compatibility assistance for WordPress and Windows Azure Storage.
+ * Compatibility assistance for WordPress and Microsoft Azure Storage.
  */
 
 namespace Microsoft\Azure\BlobStorage\Helpers;
@@ -69,6 +69,7 @@ function restore_original_image( $file, $attachment_id ) {
 			__( 'Unable to download %1$s to %2$s for attachment ID %3$d: %4$s', 'windows-azure-storage' ),
 			$url,
 			$file,
+			$attachment_id,
 			$response->get_error_message()
 		) ) );
 

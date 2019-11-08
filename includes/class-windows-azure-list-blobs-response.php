@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Windows Azure Storage REST API list blobs response.
+ * Microsoft Azure Storage REST API list blobs response.
  *
  * Version: 4.0.0
  *

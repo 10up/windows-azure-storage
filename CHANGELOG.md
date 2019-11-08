@@ -1,3 +1,22 @@
+4.2.0 / 2017-
+=================
+  * Added ability to setup Azure settings using constants in wp-config.php file
+  * Added ability to filter cache-control option for blob files and enter arbitrary cache-control value in the settings
+
+4.1.0 / 2017-11
+=================
+  * Added error message when SimpleXML library is not found
+  * Added ability to enter Cache-Control property
+  * Renamed plugin to be Microsoft Azure Storage for WordPress
+  * Fixed trailing slash issue which led to double slashes in URLs
+  * Fixed minor warnings
+
+4.0.3 / 2017-10
+=================
+  * Fixed uploading issue when year/month based folders are not used
+  * Fixed CNAME issue in the srcset attribute when yar/month based folders are not used
+  * Added POT file and loaded text domain
+
 4.0.0 / 2016-05
 =================
   * Removed old PHP SDK and use WordPress HTTP API based client library.
@@ -190,10 +209,10 @@
   * Use the localized object in the Azure plugin JS
   * Add the stock WordPress JSHint ruleset
   * Enqueue the plugin script before localizing
-  * Localize the JS for the Windows Azure Storage plugin
+  * Localize the JS for the Microsoft Azure Storage plugin
   * Enqueue the plugin style directly without prior registration
   * Updated docs for windows_azure_storage_dialog_scripts
-  * Add a stylesheet to Windows Azure Storage plugin
+  * Add a stylesheet to Microsoft Azure Storage plugin
   * Enqueue JS and CSS instead of directly printing
   * Set constants for use throughout the plugin
   * Use absolute URLs for including assets
