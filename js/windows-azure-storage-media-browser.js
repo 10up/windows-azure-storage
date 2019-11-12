@@ -1,5 +1,5 @@
 /*!  - v4.2.0
- * https://github.com/lukaspawlik/windows-azure-storage#readme
+ * https://github.com/10up/windows-azure-storage#readme
  * Copyright (c) 2019; */
 window.wp = window.wp || {};
 (function ( $, window, _ ) {
