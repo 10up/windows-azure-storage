@@ -118,7 +118,11 @@ add_action( 'media_upload_browse', 'windows_azure_browse_tab' );
 
 // Hooks for handling default file uploads.
 if ( Windows_Azure_Helper::get_use_for_default_upload() ) {
-	add_filter( 'wp_update_attachment_metadata', 'windows_azure_storage_wp_update_attachment_metadata', 9, 2 );
+	add_filter( 'wp_generate_attachment_metadata', 'windows_azure_storage_wp_generate_attachment_metadata', 9, 2 );
+
+	if ( Windows_Azure_Helper::delete_local_file() ) {
+		add_filter( 'wp_generate_attachment_metadata', 'windows_azure_storage_delete_local_files', 9, 2 );
+	}
 
 	// Hook for handling blog posts via xmlrpc. This is not full proof check.
 	add_filter( 'content_save_pre', 'windows_azure_storage_content_save_pre' );
@@ -361,18 +365,15 @@ function windows_azure_storage_wp_get_attachment_metadata( $data, $post_id ) {
 }
 
 /**
- * Wordpress hook for wp_update_attachment_metadata, hook for handling
- * default media file upload in wordpress.
+ * Offload assets to Azure Blob Storage via wp_generate_attachment_metadata hook
  *
  * @param string  $data    Attachment data.
- *
- * @param integer $post_id Associated post id.
+ * @param integer $post_id Attachment post id.
  *
  * @return array data after updating information about blob storage URL and tags.
  */
-function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) {
+function windows_azure_storage_wp_generate_attachment_metadata( $data, $post_id ) {
 	$default_azure_storage_account_container_name = \Windows_Azure_Helper::get_default_container();
-	$delete_local_file                            = \Windows_Azure_Helper::delete_local_file();
 	$upload_file_name                             = get_attached_file( $post_id, true );
 
 	// Get upload directory.
@@ -390,8 +391,6 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 			'item_id' => $post_array['name'] . '_' . $post_array['_wpnonce'],
 		) );
 
-		$azure_progress_key = 'azure_progress_' . sanitize_text_field( trim( $post_array['item_id'] ) );
-		$current            = 0;
 		// Get full file path of uploaded file.
 		$data['file'] = $upload_file_name;
 
@@ -402,7 +401,6 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 			if ( ! isset( $data['sizes'] ) ) {
 				$data['sizes'] = array();
 			}
-			set_transient( $azure_progress_key, array( 'current' => ++$current, 'total' => count( $data['sizes'] ) + 1 ), 5 * MINUTE_IN_SECONDS );
 
 			// only upload file if file exists locally
 			if (Windows_Azure_Helper::file_exists($relative_file_name)) {
@@ -428,7 +426,7 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 		// Set new url in returned data.
 		$data['url'] = $url;
 
-		// Handle thumbnail and medium size files.
+		// Handle thumbnail and image sub-size files.
 		$thumbnails = array();
 		if ( ! empty( $data['sizes'] ) ) {
 			$file_upload_dir = strpos( $relative_file_name, '/' ) !== false
@@ -436,18 +434,9 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 				: '';
 
 			foreach ( $data['sizes'] as $size ) {
-				// Do not prefix file name with wordpress upload folder path.
-				$size_file_name = dirname( $data['file'] ) . '/' . $size['file'];
-
 				// Move only if file exists. Some theme may use same file name for multiple sizes.
 				if ( Windows_Azure_Helper::file_exists( trailingslashit( $file_upload_dir ) . $size['file'] ) ) {
 					$blob_name = ( '' === $file_upload_dir ) ? $size['file'] : $file_upload_dir . '/' . $size['file'];
-
-					set_transient(
-						$azure_progress_key,
-						array( 'current' => ++$current, 'total' => count( $data['sizes'] ) + 1 ),
-						5 * MINUTE_IN_SECONDS
-					);
 
 					\Windows_Azure_Helper::put_media_to_blob_storage(
 						$default_azure_storage_account_container_name,
@@ -457,12 +446,29 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 					);
 
 					$thumbnails[] = $blob_name;
-
-					// Delete the local thumbnail file.
-					if ( $delete_local_file ) {
-						Windows_Azure_Helper::unlink_file( trailingslashit( $file_upload_dir ) . $size['file'] );
-					}
 				}
+			}
+		}
+
+		// Handle original_image if scaled due to WP 5.3+ Big Image threshold
+		if ( ! empty( $data['original_image'] ) ) {
+			$file_upload_dir = strpos( $relative_file_name, '/' ) !== false
+				? substr( $relative_file_name, 0, strrpos( $relative_file_name, '/' ) )
+				: '';
+
+			// Move only if original_image file exists
+			if ( Windows_Azure_Helper::file_exists( trailingslashit( $file_upload_dir ) . $data['original_image'] ) ) {
+				$blob_name = ( '' === $file_upload_dir ) ? $data['original_image'] : $file_upload_dir . '/' . $data['original_image'];
+
+				\Windows_Azure_Helper::put_media_to_blob_storage(
+					$default_azure_storage_account_container_name,
+					$blob_name,
+					( '' === $file_upload_dir ) ? $data['original_image'] : trailingslashit( $file_upload_dir ) . $data['original_image'],
+					$mime_type
+				);
+
+				// Add original_image to thumbnails array to allow deletion later if needed
+				$thumbnails[] = $blob_name;
 			}
 		}
 
@@ -477,13 +483,51 @@ function windows_azure_storage_wp_update_attachment_metadata( $data, $post_id ) 
 				'thumbnails' => $thumbnails,
 			)
 		);
-
-		// Delete the local file.
-		if ( $delete_local_file ) {
-			Windows_Azure_Helper::unlink_file( $relative_file_name );
-		}
 	} catch ( Exception $e ) {
 		echo '<p>' . sprintf( __( 'Error in uploading file. Error: %s', 'windows-azure-storage' ), esc_html( $e->getMessage() ) ) . '</p><br/>';
+	}
+
+	return $data;
+}
+
+/**
+ * Delete local images after successfully offloading to Azure
+ *
+ * @param $data
+ * @param $attachment_id
+ *
+ * @return mixed
+ */
+function windows_azure_storage_delete_local_files( $data, $attachment_id ) {
+	$upload_file_name = get_attached_file( $attachment_id, true );
+	
+	// Get upload directory.
+	$upload_dir = wp_upload_dir();
+	$upload_dir['subdir'] = ltrim( $upload_dir['subdir'], '/' );
+	
+	// Prepare blob name.
+	$relative_file_name = ( '' === $upload_dir['subdir'] ) ?
+		basename( $upload_file_name ) :
+		str_replace( $upload_dir['basedir'] . '/', '', $upload_file_name );
+
+	// Delete local file
+	Windows_Azure_Helper::unlink_file( $relative_file_name );
+	
+	$file_upload_dir = strpos( $relative_file_name, '/' ) !== false
+		? substr( $relative_file_name, 0, strrpos( $relative_file_name, '/' ) )
+		: '';
+
+	// Delete local sub-sizes
+	if ( ! empty ( $data['sizes'] ) ) {
+		foreach ( $data['sizes'] as $size ) {
+			// Delete the local thumbnail file.
+			Windows_Azure_Helper::unlink_file( trailingslashit( $file_upload_dir ) . $size['file'] );
+		}
+	}
+
+	// Delete original image if scaled due WP 5.3 Big Image threshold
+	if ( ! empty( $data['original_image'] ) ) {
+		 Windows_Azure_Helper::unlink_file( trailingslashit( $file_upload_dir ) . $data['original_image'] );
 	}
 
 	return $data;
