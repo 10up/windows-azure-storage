@@ -1,6 +1,6 @@
-/*!  - v4.0.0
- * https://github.com/lukaspawlik/windows-azure-storage#readme
- * Copyright (c) 2016; */
+/*!  - v4.2.0
+ * https://github.com/10up/windows-azure-storage#readme
+ * Copyright (c) 2019; */
 (function ( $, window, undefined ) {
   'use strict';
   $( document ).ready( function () {

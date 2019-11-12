@@ -1,9 +1,9 @@
 === Microsoft Azure Storage for WordPress ===
-Contributors: msopentech, 10up, morganestes, stevegrunwell, lpawlik, rittesh.patel
+Contributors: 10up
 Tags: Microsoft, Microsoft Open Technologies, Microsoft Azure, Microsoft Azure Storage, Media Files, Upload, CDN, blob storage
 Requires at least: 4.0
-Tested up to: 4.9
-Stable tag: 4.1.0
+Tested up to: 5.0
+Stable tag: 4.2.0
 License: BSD 2-Clause
 License URI: http://www.opensource.org/licenses/bsd-license.php
 
@@ -11,9 +11,7 @@ Use the Microsoft Azure Storage service to host your website's media files.
 
 == Description ==
 
-This WordPress plugin allows you to use Microsoft Azure Storage Service to host
-your media and uploads for your WordPress powered website. Microsoft Azure Storage is an effective way
-to infinitely scale storage of your site and leverage Azure's global infrastructure.
+This WordPress plugin allows you to use Microsoft Azure Storage Service to host your media and uploads for your WordPress powered website. Microsoft Azure Storage is an effective way to infinitely scale storage of your site and leverage Azure's global infrastructure.
 
 For more details on Microsoft Azure Storage, please visit the <a href="https://azure.microsoft.com/en-us/services/storage/">Microsoft Azure website</a>.
 
@@ -26,6 +24,16 @@ For more details on Microsoft Azure Storage, please visit the <a href="https://a
 
 = 4.2.0 =
 * Added ability to setup Azure settings using constants in wp-config.php file
+* Fixed images uploading issue in the multisite environment, now it doesn't strip "sites/{id}" from filename
+* Fixed srcset issue for images uploaded before 4.2.0 version
+* Fix issue with special characters in filenames with url encoding
+
+= 4.1.2 =
+* Bug fix to support special characters in file names
+
+= 4.1.1 =
+* Removed build tools from the plugin repository
+* Updated authors list
 
 = 4.1.0 =
 * Added error message when SimpleXML library is not found

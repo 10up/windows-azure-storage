@@ -148,6 +148,7 @@ add_action( 'delete_attachment', 'windows_azure_storage_delete_attachment' );
 // Filter the 'srcset' attribute in 'the_content' introduced in WP 4.4.
 if ( function_exists( 'wp_calculate_image_srcset' ) ) {
 	add_filter( 'wp_calculate_image_srcset', 'windows_azure_storage_wp_calculate_image_srcset', 9, 5 );
+	add_filter( 'wp_calculate_image_srcset_meta', 'windows_azure_storage_image_srcset_meta', 9, 4 );
 }
 
 /**
@@ -265,8 +266,8 @@ function windows_azure_storage_new_media_object( $args ) {
 	// default azure storage container.
 	$container = \Windows_Azure_Helper::get_default_container();
 
-	$upload_dir = wp_upload_dir();
-	if ( '/' === $upload_dir['subdir'][0] ) {
+	$upload_dir = \Windows_Azure_Helper::wp_upload_dir();
+	if ( DIRECTORY_SEPARATOR === $upload_dir['subdir'][0] ) {
 		$upload_dir['subdir'] = substr( $upload_dir['subdir'], 1 );
 	}
 
@@ -377,20 +378,14 @@ function windows_azure_storage_wp_generate_attachment_metadata( $data, $post_id 
 	$upload_file_name                             = get_attached_file( $post_id, true );
 
 	// Get upload directory.
-	$upload_dir = wp_upload_dir();
-	$upload_dir['subdir'] = ltrim( $upload_dir['subdir'], '/' );
+	$upload_dir = \Windows_Azure_Helper::wp_upload_dir();
 
 	// Prepare blob name.
-	$relative_file_name = ( '' === $upload_dir['subdir'] ) ?
-		basename( $upload_file_name ) :
-		str_replace( $upload_dir['basedir'] . '/', '', $upload_file_name );
+	$relative_file_name = DIRECTORY_SEPARATOR === $upload_dir['subdir']
+		? basename( $upload_file_name )
+		: str_replace( $upload_dir['uploads'] . DIRECTORY_SEPARATOR, '', $upload_file_name );
 
 	try {
-		$post_array = wp_unslash( $_POST );
-		$post_array = wp_parse_args( $post_array, array(
-			'item_id' => $post_array['name'] . '_' . $post_array['_wpnonce'],
-		) );
-
 		// Get full file path of uploaded file.
 		$data['file'] = $upload_file_name;
 
@@ -403,17 +398,16 @@ function windows_azure_storage_wp_generate_attachment_metadata( $data, $post_id 
 			}
 
 			// only upload file if file exists locally
-			if (Windows_Azure_Helper::file_exists($relative_file_name)) {
-				$result = \Windows_Azure_Helper::put_media_to_blob_storage(
+			if ( \Windows_Azure_Helper::file_exists( $relative_file_name ) ) {
+				\Windows_Azure_Helper::put_media_to_blob_storage(
 					$default_azure_storage_account_container_name,
 					$relative_file_name,
 					$relative_file_name,
 					$mime_type
 				);
 			}
-
 		} catch ( Exception $e ) {
-			echo '<p>' . sprintf( __( 'Error in uploading file. Error: %s', 'windows-azure-storage' ), esc_html( $e->getMessage() ) ) . '</p><br/>';
+			echo '<p>', sprintf( __( 'Error in uploading file. Error: %s', 'windows-azure-storage' ), esc_html( $e->getMessage() ) ), '</p>';
 
 			return $data;
 		}
@@ -429,19 +423,21 @@ function windows_azure_storage_wp_generate_attachment_metadata( $data, $post_id 
 		// Handle thumbnail and image sub-size files.
 		$thumbnails = array();
 		if ( ! empty( $data['sizes'] ) ) {
-			$file_upload_dir = strpos( $relative_file_name, '/' ) !== false
-				? substr( $relative_file_name, 0, strrpos( $relative_file_name, '/' ) )
+			$file_upload_dir = strpos( $relative_file_name, DIRECTORY_SEPARATOR ) !== false
+				? substr( $relative_file_name, 0, strrpos( $relative_file_name, DIRECTORY_SEPARATOR ) )
 				: '';
 
 			foreach ( $data['sizes'] as $size ) {
 				// Move only if file exists. Some theme may use same file name for multiple sizes.
-				if ( Windows_Azure_Helper::file_exists( trailingslashit( $file_upload_dir ) . $size['file'] ) ) {
-					$blob_name = ( '' === $file_upload_dir ) ? $size['file'] : $file_upload_dir . '/' . $size['file'];
+				if ( Windows_Azure_Helper::file_exists( $file_upload_dir . DIRECTORY_SEPARATOR . $size['file'] ) ) {
+					$blob_name = '' === $file_upload_dir
+						? $size['file']
+						: $file_upload_dir . DIRECTORY_SEPARATOR . $size['file'];
 
 					\Windows_Azure_Helper::put_media_to_blob_storage(
 						$default_azure_storage_account_container_name,
 						$blob_name,
-						( '' === $file_upload_dir ) ? $size['file'] : trailingslashit( $file_upload_dir ) . $size['file'],
+						$blob_name,
 						$mime_type
 					);
 
@@ -452,18 +448,20 @@ function windows_azure_storage_wp_generate_attachment_metadata( $data, $post_id 
 
 		// Handle original_image if scaled due to WP 5.3+ Big Image threshold
 		if ( ! empty( $data['original_image'] ) ) {
-			$file_upload_dir = strpos( $relative_file_name, '/' ) !== false
-				? substr( $relative_file_name, 0, strrpos( $relative_file_name, '/' ) )
+			$file_upload_dir = strpos( $relative_file_name, DIRECTORY_SEPARATOR ) !== false
+				? substr( $relative_file_name, 0, strrpos( $relative_file_name, DIRECTORY_SEPARATOR ) )
 				: '';
 
 			// Move only if original_image file exists
 			if ( Windows_Azure_Helper::file_exists( trailingslashit( $file_upload_dir ) . $data['original_image'] ) ) {
-				$blob_name = ( '' === $file_upload_dir ) ? $data['original_image'] : $file_upload_dir . '/' . $data['original_image'];
+				$blob_name = '' === $file_upload_dir
+					? $data['original_image']
+					: $file_upload_dir . DIRECTORY_SEPARATOR . $data['original_image'];
 
 				\Windows_Azure_Helper::put_media_to_blob_storage(
 					$default_azure_storage_account_container_name,
 					$blob_name,
-					( '' === $file_upload_dir ) ? $data['original_image'] : trailingslashit( $file_upload_dir ) . $data['original_image'],
+					$blob_name,
 					$mime_type
 				);
 
@@ -474,17 +472,16 @@ function windows_azure_storage_wp_generate_attachment_metadata( $data, $post_id 
 
 		delete_post_meta( $post_id, 'windows_azure_storage_info' );
 
-		add_post_meta(
-			$post_id, 'windows_azure_storage_info',
-			array(
-				'container'  => $default_azure_storage_account_container_name,
-				'blob'       => $relative_file_name,
-				'url'        => $url,
-				'thumbnails' => $thumbnails,
-			)
-		);
+		add_post_meta( $post_id, 'windows_azure_storage_info', array(
+			'container'  => $default_azure_storage_account_container_name,
+			'blob'       => $relative_file_name,
+			'url'        => $url,
+			'thumbnails' => $thumbnails,
+			'version'    => MSFT_AZURE_PLUGIN_VERSION,
+		) );
+
 	} catch ( Exception $e ) {
-		echo '<p>' . sprintf( __( 'Error in uploading file. Error: %s', 'windows-azure-storage' ), esc_html( $e->getMessage() ) ) . '</p><br/>';
+		echo '<p>', sprintf( __( 'Error in uploading file. Error: %s', 'windows-azure-storage' ), esc_html( $e->getMessage() ) ), '</p>';
 	}
 
 	return $data;
@@ -556,11 +553,13 @@ function windows_azure_storage_wp_handle_upload_prefilter( $file ) {
 	// default azure storage container.
 	$container = \Windows_Azure_Helper::get_default_container();
 
-	$upload_dir = wp_upload_dir();
-	$upload_dir['subdir'] = ltrim( $upload_dir['subdir'], '/' );
+	$upload_dir = \Windows_Azure_Helper::wp_upload_dir();
+	$subdir = ltrim( $upload_dir['reldir'] . $upload_dir['subdir'], DIRECTORY_SEPARATOR );
 
 	// Prepare blob name.
-	$blob_name = ( '' === $upload_dir['subdir'] ) ? $file['name'] : $upload_dir['subdir'] . '/' . $file['name'];
+	$blob_name = '' === $subdir
+		? $file['name']
+		: $subdir . DIRECTORY_SEPARATOR . $file['name'];
 
 	$blob_name = \Windows_Azure_Helper::get_unique_blob_name( $container, $blob_name );
 
@@ -577,10 +576,12 @@ function windows_azure_storage_wp_handle_upload_prefilter( $file ) {
  * @return array Updated metadata.
  */
 function windows_azure_storage_wp_handle_upload( $uploads ) {
-	$wp_upload_dir  = wp_upload_dir();
-	$uploads['url'] = sprintf( '%1$s/%2$s/%3$s',
+	$wp_upload_dir  = \Windows_Azure_Helper::wp_upload_dir();
+
+	$uploads['url'] = sprintf(
+		'%1$s/%2$s/%3$s',
 		untrailingslashit( WindowsAzureStorageUtil::get_storage_url_base() ),
-		ltrim( $wp_upload_dir['subdir'], '/' ),
+		ltrim( $wp_upload_dir['reldir'] . $wp_upload_dir['subdir'], '/' ),
 		basename( $uploads['file'] )
 	);
 
@@ -596,9 +597,9 @@ function windows_azure_storage_wp_handle_upload( $uploads ) {
  * @return string Updated upload URL.
  */
 function get_updated_upload_url( $url ) {
-	$wp_upload_dir      = wp_upload_dir();
+	$wp_upload_dir      = \Windows_Azure_Helper::wp_upload_dir();
 	$upload_dir_url     = untrailingslashit( $wp_upload_dir['baseurl'] );
-	$storage_url_prefix = untrailingslashit( WindowsAzureStorageUtil::get_storage_url_base() );
+	$storage_url_prefix = untrailingslashit( WindowsAzureStorageUtil::get_storage_url_base() ) . untrailingslashit( $wp_upload_dir['reldir'] );
 
 	return str_replace( $upload_dir_url, $storage_url_prefix, $url );
 }
@@ -783,6 +784,29 @@ function windows_azure_storage_wp_calculate_image_srcset( $sources, $size_array,
 	}
 
 	return $sources;
+}
+
+/**
+ * Removes "sites/{id}" from filename for attachments uploaded before 4.2.0 to provide backward compatibility.
+ *
+ * @since 4.2.0
+ * @filter wp_calculate_image_srcset_meta
+ *
+ * @param array $image_meta The image meta data as returned by 'wp_get_attachment_metadata()'.
+ * @param array $size_array Array of width and height values in pixels (in that order).
+ * @param string $image_src The 'src' of the image.
+ * @param int $attachment_id The image attachment ID or 0 if not supplied.
+ * @return type
+ */
+function windows_azure_storage_image_srcset_meta( $image_meta, $size_array, $image_src, $attachment_id ) {
+	if ( is_multisite() && ! empty( $image_meta ) && ! empty( $image_meta['file'] ) ) {
+		$info = get_post_meta( $attachment_id, 'windows_azure_storage_info', true );
+		if ( empty( $info['version'] ) || version_compare( $info['version'], '4.2.0', '<' ) ) {
+			$image_meta['file'] = preg_replace( '/sites\/[0-9]+\//', '', $image_meta['file'] );
+		}
+	}
+
+	return $image_meta;
 }
 
 /**
