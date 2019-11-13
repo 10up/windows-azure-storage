@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file, per [the Keep a Changelog standard](http://keepachangelog.com/).
 
+## 4.3.0 - 2019-11-14
+- Added support for Media Library upload process change introduced in WordPress 5.3
+- Offload "original_image" file introduced in WordPress 5.3
+- Fix issue with special characters in filenames with url encoding
+- Fix issue with media regeneration via WP CLI
+
 ## [4.2.0] - 2018-05-04
 ### Added
 - Ability to setup Azure settings using constants in wp-config.php file
