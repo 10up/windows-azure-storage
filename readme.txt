@@ -20,6 +20,16 @@ For more details on Microsoft Azure Storage, please visit the <a href="https://a
 1. Activate the plugin through the 'Plugins' screen in WordPress.
 1. Use the Settings->Microsoft Azure screen to configure the plugin.
 
+For multisites or to enforce Azure Blob Storage settings, you can define the following constants in wp-config.php:
+
+* MICROSOFT_AZURE_ACCOUNT_NAME - Account Name
+* MICROSOFT_AZURE_ACCOUNT_KEY - Account Primary Access Key
+* MICROSOFT_AZURE_CONTAINER - Azure Blob Container
+* MICROSOFT_AZURE_CNAME - Domain: must start with http(s)://
+* MICROSOFT_AZURE_USE_FOR_DEFAULT_UPLOAD - boolean (default false)
+
+See Settings->Microsoft Azure for more information.
+
 == Changelog ==
 
 = 4.3.0 =
