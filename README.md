@@ -2,7 +2,7 @@
 
 > Use the Microsoft Azure Storage service to host your website's media files.
 
-[![Support Level](https://img.shields.io/badge/support-stable-blue.svg)](#support-level) [![Release Version](https://img.shields.io/github/release/10up/windows-azure-storage.svg)](https://github.com/10up/windows-azure-storage/releases/latest) ![WordPress tested up to version](https://img.shields.io/badge/WordPress-v4.9.2%20tested-success.svg) [![BSD 2-Clause License](https://img.shields.io/github/license/10up/windows-azure-storage.svg)](https://github.com/10up/windows-azure-storage/blob/master/LICENSE)
+[![Support Level](https://img.shields.io/badge/support-stable-blue.svg)](#support-level) [![Release Version](https://img.shields.io/github/release/10up/windows-azure-storage.svg)](https://github.com/10up/windows-azure-storage/releases/latest) ![WordPress tested up to version](https://img.shields.io/badge/WordPress-v5.3%20tested-success.svg) [![BSD 2-Clause License](https://img.shields.io/github/license/10up/windows-azure-storage.svg)](https://github.com/10up/windows-azure-storage/blob/master/LICENSE)
 
 ## Description
 
@@ -22,6 +22,17 @@ For more details on Microsoft Azure Storage, please visit the <a href="https://a
 1. Upload the plugin files to the `/wp-content/plugins/windows-azure-storage` directory, or install the plugin through the WordPress plugins screen directly.
 1. Activate the plugin through the 'Plugins' screen in WordPress.
 1. Use the Settings->Microsoft Azure screen to configure the plugin.
+
+For multisites or to enforce Azure Blob Storage settings, you can define the following constants in wp-config.php:
+
+* MICROSOFT_AZURE_ACCOUNT_NAME - Account Name
+* MICROSOFT_AZURE_ACCOUNT_KEY - Account Primary Access Key
+* MICROSOFT_AZURE_CONTAINER - Azure Blob Container
+* MICROSOFT_AZURE_CNAME - Domain: must start with http(s)://
+* MICROSOFT_AZURE_USE_FOR_DEFAULT_UPLOAD - boolean (default false)
+
+See Settings->Microsoft Azure for more information.
+
 
 ## Upgrade Notice
 
