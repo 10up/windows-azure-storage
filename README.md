@@ -53,6 +53,15 @@ If a Storage account is created with the new Azure portal, authentication will f
 ### Responsive Images in WordPress 4.4
 Images uploaded to the Azure Storage service will not automatically receive responsive versions. Images added through the WordPress Media Loader *should* get automatically converted to responsive images when inserted into a post or page. We are investigating options for full support of responsive images in the plugin.
 
+## Changelog
+
+A complete listing of all notable changes to Microsoft Azure Storage are documented in [CHANGELOG.md](https://github.com/10up/windows-azure-storage/blob/develop/CHANGELOG.md).
+
+## Contributing
+
+Please read [CODE_OF_CONDUCT.md](https://github.com/10up/windows-azure-storage/blob/develop/CODE_OF_CONDUCT.md) for details on our code of conduct, [CONTRIBUTING.md](https://github.com/10up/windows-azure-storage/blob/develop/CONTRIBUTING.md) for details on the process for submitting pull requests to us, and [CREDITS.md](https://github.com/10up/windows-azure-storage/blob/develop/CREDITS.md) for a listing of maintainers of, contributors to, and libraries used by Microsoft Azure Storage.
+
+
 ## Like what you see?
 
 <p align="center">
