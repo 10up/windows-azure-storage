@@ -48,26 +48,25 @@
  * @return void
  */
 function windows_azure_storage_plugin_settings_preamble() {
-	?>
-	<div class="wrap">
+	?><div class="wrap">
 		<h2>
 			<img src="<?php echo esc_url( MSFT_AZURE_PLUGIN_URL . 'images/azure-icon.png' ); ?>" alt="<?php esc_attr_e( 'Microsoft Azure', 'windows-azure-storage' ); ?>" style="width:32px">
 			<?php esc_html_e( 'Microsoft Azure Storage for WordPress', 'windows-azure-storage' ); ?>
 		</h2>
 
-		<?php esc_html_e(
-			'This WordPress plugin allows you to use Microsoft Azure Storage Service to host your media for your WordPress powered blog. Microsoft Azure provides storage in the cloud with authenticated access and triple replication to help keep your data safe. Applications work with data using REST conventions and standard HTTP operations to identify and expose data using URIs. This plugin allows you to easily upload, retrieve, and link to files stored on Microsoft Azure Storage service from within WordPress.',
-			'windows-azure-storage'
-		); ?>
-		<br/><br/>
-		<?php echo __( 'For more details on Microsoft Azure Storage Services, please visit the <a href="http://www.microsoft.com/azure/windowsazure.mspx">Microsoft Azure Platform web-site</a>.', 'windows-azure-storage' ); ?>
-		<br/>
+		<p>
+			<?php esc_html_e(
+				'This WordPress plugin allows you to use Microsoft Azure Storage Service to host your media for your WordPress powered blog. Microsoft Azure provides storage in the cloud with authenticated access and triple replication to help keep your data safe. Applications work with data using REST conventions and standard HTTP operations to identify and expose data using URIs. This plugin allows you to easily upload, retrieve, and link to files stored on Microsoft Azure Storage service from within WordPress.',
+				'windows-azure-storage'
+			); ?>
+		</p>
 
-		<b><?php esc_html_e( 'Plugin Web Site:', 'windows-azure-storage' ); ?></b>
-		<a href="http://wordpress.org/extend/plugins/windows-azure-storage/">http://wordpress.org/extend/plugins/windows-azure-storage/</a>
-		<br><br>
-	</div>
-	<?php
+		<p style="margin-bottom:4em">
+			<?php echo __( 'For more details on Microsoft Azure Storage Services, please visit the <a href="https://azure.microsoft.com/en-us/">Microsoft Azure Platform web-site</a>.', 'windows-azure-storage' ); ?><br>
+			<b><?php esc_html_e( 'Plugin Web Site:', 'windows-azure-storage' ); ?></b>
+			<a href="https://wordpress.org/plugins/windows-azure-storage/">https://wordpress.org/plugins/windows-azure-storage/</a>
+		</p>
+	</div><?php
 }
 
 /**
@@ -226,7 +225,7 @@ function windows_azure_storage_plugin_register_settings() {
  */
 function windows_azure_storage_plugin_settings_section() {
 	?>
-	<p><?php echo __( 'If you do not have Microsoft Azure Storage Account, please <a href="http://go.microsoft.com/fwlink/?LinkID=129453">register </a>for Microsoft Azure Services.', 'windows-azure-storage' ); ?></p>
+	<p><?php echo __( 'If you do not have Microsoft Azure Storage Account, please <a href="https://azure.microsoft.com/en-us/free/">register </a>for Microsoft Azure Services.', 'windows-azure-storage' ); ?></p>
 	<?php
 }
 
@@ -370,11 +369,11 @@ function windows_azure_storage_setting_handle_uploads() {
 	}
 
 	echo '<label for="azure_storage_use_for_default_upload">';
-		esc_html_e( 'Use Microsoft Azure Storage when uploading via WordPress\' upload tab.', 'windows-azure-storage' );
+		esc_html_e( 'Use Microsoft Azure Storage for all media uploads on this site.', 'windows-azure-storage' );
 	echo '</label>';
 
 	echo '<p>';
-		_e( 'Note: Uncheck this to revert back to using your own web host for storage at anytime. You can define <code>MICROSOFT_AZURE_USE_FOR_DEFAULT_UPLOAD</code> to override it.', 'windows-azure-storage' );
+		_e( 'Note: Uncheck this to store uploads on your web server by default. This setting can be overriden using the <code>MICROSOFT_AZURE_USE_FOR_DEFAULT_UPLOAD</code> PHP constant.', 'windows-azure-storage' );
 	echo '</p>';
 }
 

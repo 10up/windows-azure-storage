@@ -7,7 +7,7 @@ module.exports = {
 		options: {
 			banner: '',
 			mangle: {
-				except: ['jQuery']
+				reserved: ['jQuery']
 			}
 		}
 	}
