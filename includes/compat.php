@@ -40,13 +40,12 @@ function restore_original_image( $file, $attachment_id ) {
 	}
 
 	/*
-	 * Next, ensure we're using WP-CLI's `media regenerate` command: `wp media regenerate`.
+	 * Flip the array and check for the presence of media & regenerate.
 	 *
-	 * [0] will be the path to WP-CLI.
-	 * [1] should be "media".
-	 * [2] should be "regenerate".
+	 * Array flipping is faster and more performant than in_array twice, even w/ strict set to true.
 	 */
-	if ( 'media' !== $argv[1] || 'regenerate' !== $argv[2] ) {
+	$args = array_flip( $argv );
+	if ( ! isset( $args['media'], $args['regenerate'] ) ) {
 		return $file;
 	}
 
