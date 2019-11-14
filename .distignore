@@ -10,6 +10,9 @@
 .distignore
 .gitignore
 CHANGELOG.md
+CODE_OF_CONDUCT.md
+CONTRIBUTING.md
+CREDITS.md
 Gruntfile.js
 LICENSE
 package.json
