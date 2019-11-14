@@ -1,237 +1,174 @@
-4.2.0 / 2018-05-04
-=================
-  * Added ability to setup Azure settings using constants in wp-config.php file
-  * Fixed images uploading issue in the multisite environment, now it doesn't strip "sites/{id}" from filename
-  * Fixed srcset issue for images uploaded before 4.2.0 version
-  * Fix issue with special characters in filenames with url encoding
+# Changelog
 
-4.1.1 / 2018-01-30
-  * Removed build tools from the plugin repository
-  * Updated authors list
-=======
-  * Added ability to filter cache-control option for blob files and enter arbitrary cache-control value in the settings
+All notable changes to this project will be documented in this file, per [the Keep a Changelog standard](http://keepachangelog.com/).
 
-4.1.0 / 2017-11
-=================
-  * Added error message when SimpleXML library is not found
-  * Added ability to enter Cache-Control property
-  * Renamed plugin to be Microsoft Azure Storage for WordPress
-  * Fixed trailing slash issue which led to double slashes in URLs
-  * Fixed minor warnings
+## 4.3.0 - 2019-11-14
+- Added support for Media Library upload process change introduced in WordPress 5.3
+- Offload "original_image" file introduced in WordPress 5.3
+- Fix issue with special characters in filenames with url encoding
+- Fix issue with media regeneration via WP CLI
 
-4.0.3 / 2017-10
-=================
-  * Fixed uploading issue when year/month based folders are not used
-  * Fixed CNAME issue in the srcset attribute when yar/month based folders are not used
-  * Added POT file and loaded text domain
+## [4.2.0] - 2018-05-04
+### Added
+- Ability to setup Azure settings using constants in wp-config.php file
 
-4.0.0 / 2016-05
-=================
-  * Removed old PHP SDK and use WordPress HTTP API based client library.
-  * Added compatibility with API version 2015-12-11.
-  * Added compatibility with PHP 5.3+.
-  * Improved overall performance.
-  * L10N/I18N: Round 2 of preparing strings for translation.
-  * Refactored code to match WordPress standards.
-  * Better UX by adding more feedback during long operations.
-  * Integrated Azure Blob browser into WordPress Media Library.
-  * Added option to keep local files after uploading them to Azure Blob.
-  * Deduplicated code functionality.
-  * Security: validate, sanitize, and escape (allthethings).
-  * Introduced filter `azure_blob_operation_timeout` which defines REST operation timeout.
-  * Introduced filter `azure_blob_list_containers_max_results` which defines max size of containers listing per one request.
-  * Introduced filter `azure_blob_list_blobs_max_results` which defines max size of blobs listing per one request.
-  * Introduced filter `azure_blob_put_blob_headers` which defines headers used for creating new blob.
-  * Introduced filter `azure_blob_append_blob_headers` which defines headers used for appending created blob.
+### Fixed
+- Images uploading issue in the multisite environment, now it doesn't strip "sites/{id}" from filename
+- srcset issue for images uploaded before 4.2.0 version
+- Issue with special characters in filenames with url encoding
 
-3.0.1 / 2016-03-01
-==================
+## [4.1.1] - 2018-01-31
+### Changed
+- Updated authors list
 
-  * Fix upload nonce checks
-  * Media: fix the AYS checks on browse
+### Removed
+- Build tools from the plugin repository
 
-3.0.0 / 2016-01-28
-==================
+## [4.1.0] - 2017-11-22
+### Added
+- Error message when SimpleXML library is not found
+- Ability to enter Cache-Control property
 
-  * filter 'srcset' in WordPress 4.4
-  * let the browser validate CNAME input
-  * don't double up on containers in URLs
-  * rename constant to reference "legacy" media
-  * fix broken settings check for Azure override
-  * fix uploads permissions check
-  * use checked function in settings form
-  * check nonces for search form
-  * tell PHPCS that we're checking nonces differently
-  * escape (allthethings)
-  * PHPCS fixes: validate nonces for every request
-  * PHPCS fixes: escaping HTML output
-  * escape all variables before printing
-  * add logging to empty try...catch blocks
-  * add logging to empty try...catch blocks
-  * remove complex HTML element building
-  * better output escaping in dialogs
-  * Formatting: Yoda conditions
-  * escape attributes in elements
-  * escape inline JS in form input attributes
-  * build strings sanely and escape them
-  * use selected() to note selected options
-  * don't break lines inside a tag attribute
-  * move variable declaration higher up
-  * remove empty catch{} and its try{}
-  * reformat settings private container warning
-  * format code for readability
-  * escape HTML output
-  * check nonces early
-  * verify settings nonce when creating a container
-  * fix copy/paste error on settings page
-  * use predefined constants for paths
-  * misc PHPCS fixes
-  * escape plugin activation error message
-  * build the editor button element securely
-  * strict equality and Yoda conditions
-  * group constant definitions
-  * remove invalid namespaces
-  * remove overzealous escaping
-  * remove invalid assignment
-  * only show search results after a search
-  * sanitize and escape fields in the upload form
-  * verify nonces in upload form
-  * check nonce and permissions before uploading
-  * add permissions check for 'upload'
-  * sanitize post fields before using them
-  * add $post_id to the upload page
-  * don't use REQUEST_URI for form actions
-  * use esc_url for form actions
-  * escape error messages sanely
-  * add TODOs inline
-  * create and check nonces for container creation
-  * put conditional check in the right place
-  * fix logic error left behind from testing
-  * don't dismiss final error messages
-  * don't die() if error thrown during search
-  * sanitize $_POST values before use
-  * check permissions for creating containers
-  * only show settings page to authorized users
-  * use submit_button to generate markup
-  * inline docs updates for media tabs
-  * update the search form nonce name
-  * catch the search nonce failure
-  * check for a valid nonce from search
-  * clean up the conditional check for search
-  * use absolute URLs for form actions
-  * copy $post_id to the search iframe
-  * add a11y helpers to forms
-  * update the search form's action check
-  * use submit_button to generate markup
-  * don't show the delete link to everyone
-  * note to self about what this block is for
-  * remove_query_arg needs to modify a URL
-  * order matters when submitting a form
-  * remove broken inline styles from forms
-  * secure the container select element
-  * use semantic markup in forms
-  * update nonce name for browsing
-  * use core attributes when possible for markup
-  * remove broken inline styles
-  * add notice to delete_all_blobs error
-  * notify user if they can't delete a blob
-  * match actions to check with form values
-  * use the new constant to build URLs
-  * pass absolute URLs to form actions
-  * add new constant: MSFT_AZURE_PLUGIN_MEDIA_URL
-  * add some TODO items
-  * don't escape a single-char string
-  * don't offer the delete all button to everyone
-  * check permissions before deleting all blobs
-  * Put the new 'check_action_permissions' in the right class
-  * new utility method 'check_action_permissions'
-  * rename nonce and submit names
-  * add context to the DeleteAllBlobsForm submit button
-  * remove extra spacing from deleteAllBlobs
-  * remove extraneous hidden form input
-  * udpate delete all blobs nonce
-  * don't submit via JS when a "submit" will do
-  * update legacy media loader tabs filter
-  * update tabs filters for media
-  * remove empty anchor caused by typo
-  * remove remnants of 'deleteBlob'
-  * provide type hints for variables
-  * remove vestiges of the 'deleteBlob' query arg
-  * validate the nonce before deleting a file
-  * sanitize the deleteBlob URL
-  * get the post ID of the originating editor
-  * formatting updates in dialog screen
-  * fix the broken form action DeleteAllBlobsForm
-  * do something with the exception
-  * ask nicely to try again
-  * check before deleting large temp files
-  * fix typo in $blocks variable
-  * format deletion error message properly
-  * blobs are actually ListBlobsResult
-  * deprecate WindowsAzureStorage::blobExists()
-  * deprecate WindowsAzureStorage::blobExists()
-  * create methods to check for containers and blobs
-  * combine loops in putBlockBlob()
-  * '$blocks' isn't a real BlockList
-  * add inline docs to putBlockBlob for typing
-  * Fixes typo in variable name in putBlockBlob()
-  * update docs for putBlockBlob()
-  * Add nonces to each of the Azure media forms
-  * Cleanup Azure forms to use lowercase actions
-  * Avoid double trailing slashes in blob URLs
-  * Remove unnecessary 'containsSignature' variable from Azure
-  * Use lowercase action names in Azure upload form
-  * Localize submit button values in Azure JS
-  * Use Yoda conditional checks for strings
-  * Remove the settings page check for enqueing JS
-  * Use __newContainer__ for option value in Azure
-  * Add wp_kses() to the alternate CNAME notice in Azure
-  * Run Azure settings translation through wp_kses()
-  * Provide sanity check before returning generated URL
-  * Build Azure URLs with sprintf()
-  * Revert translated strings in Azure JS
-  * Remove commented-out code from Azure JS
-  * Set the includes path for the plugin
-  * Don't pass a boolean as a string
-  * Use Yoda conditions and strict comparisons
-  * Whitespace: align array items
-  * Add CNAME notice for Azure plugin settings
-  * Don't use strings when a constant is defined
-  * Use 'self' for the class name inside a class
-  * Avoid double-slashing URLs
-  * Use 'self' for static methods called inside a class
-  * Filter the blob URL protocol
-  * Rename getStorageUrlPrefix to get_storage_url_base
-  * Use WP standards for variable names
-  * Docblock update for getStorageUrlPrefix()
-  * Require strict equality, Yoda does
-  * Make make return strings easier to read
-  * Use 'https' for Azure blob URLs
-  * Update include_path for PEAR modules to load
-  * Move script block into external file in Azure
-  * JSHint fixes: tinyMCE is a global
-  * JSHint fixes: single quote strings in JS
-  * JS whitespace changes for Azure plugin
-  * Fix HTML div closing tag in the settings form
-  * Specify file-specific JSHint globals in the file
-  * Use the localized object in the Azure plugin JS
-  * Add the stock WordPress JSHint ruleset
-  * Enqueue the plugin script before localizing
-  * Localize the JS for the Microsoft Azure Storage plugin
-  * Enqueue the plugin style directly without prior registration
-  * Updated docs for windows_azure_storage_dialog_scripts
-  * Add a stylesheet to Microsoft Azure Storage plugin
-  * Enqueue JS and CSS instead of directly printing
-  * Set constants for use throughout the plugin
-  * Use absolute URLs for including assets
-  * Whitespace change on a missed file
-  * Use the correct textdomain for the plugin
-  * Set a sane limit on DB queries
-  * Check for valid data after a query
-  * Sanitize DB queries with prepare()
-  * Don't require more than you need
-  * Use full paths to include files
-  * Automated whitespace changes
-  * Remove closing PHP tags
-  * Sanitize inputs
-  * Escape output
+### Changed
+- Renamed plugin to be Microsoft Azure Storage for WordPress
+
+### Fixed
+- Trailing slash issue which led to double slashes in URLs
+- Minor warnings
+
+## [4.0.3] - 2017-10-19
+### Added
+- Added POT file and loaded text domain
+
+### Fixed
+- Uploading issue when year/month based folders are not used
+- CNAME issue in the srcset attribute when yar/month based folders are not used
+
+## [4.0.2] - 2017-03-02
+### Fixed
+- Bug fix for 0-byte uploads.
+
+## [4.0.1] - 2017-01-03
+### Fixed
+- Blob name while media file
+- Show admin notice if can't access files directly
+
+## [4.0.0] - 2016-11-10
+### Added
+- Compatibility with API version 2015-12-11.
+- Compatibility with PHP 5.3+.
+- L10N/I18N: Round 2 of preparing strings for translation.
+- Integrated Azure Blob browser into WordPress Media Library.
+- Option to keep local files after uploading them to Azure Blob.
+- Introduced filter `azure_blob_operation_timeout` which defines REST operation timeout.
+- Introduced filter `azure_blob_list_containers_max_results` which defines max size of containers listing per one request.
+- Introduced filter `azure_blob_list_blobs_max_results` which defines max size of blobs listing per one request.
+- Introduced filter `azure_blob_put_blob_headers` which defines headers used for creating new blob.
+- Introduced filter `azure_blob_append_blob_headers` which defines headers used for appending created blob.
+  
+### Changed
+- Removed old PHP SDK and use WordPress HTTP API based client library.
+- Improved overall performance.
+- Refactored code to match WordPress standards.
+- Better UX by adding more feedback during long operations.
+- Deduplicated code functionality.
+
+### Security
+- Validate, sanitize, and escape (allthethings).
+
+## [3.0.1] - 2016-03-01
+### Fixed
+- Upload nonce checks
+- Media: fix the AYS checks on browse
+
+## [3.0.0] - 2016-02-03
+### Added
+- L10N/I18N: Round 1 of preparing strings for translation.
+- `srcset` to images added through the Media Library when Azure is the default media handler. (Props @patricknami).
+
+### Changed
+- UI: Editor button more closely matches the WordPress Admin UI.
+
+### Security
+- Fixes a bug that could allow unauthorized deletion of remotely-stored media.
+- Validate, sanitize, and escape (allthethings).
+- Use `https://` URLs by default, and warn if an insecure CNAME is configured.
+- Introduce permissions checks for specific actions within the plugin.
+
+## [2.2.0] - 2016-02-02
+### Fixed
+- Network activation bug in WordPress multisite.
+- Issue with duplicate blob names in XML-RPC.
+
+## [2.1.0] - 2014-07-03
+### Fixed
+- Issue with duplicate blob names.
+- Bug in uploading video files to blob storage.
+- Bug with forward slash in front of image thumbnail filenames.
+- Bug with year and month getting trimmed for file system images.
+
+## [2.0.0] - 2014-07-03
+### Changed
+- Updated to use [Microsoft Azure SDK for PHP](https://github.com/WindowsAzure/azure-sdk-for-php)
+
+### Fixed
+- Compatibility with WordPress 3.4.1
+
+## [1.9] - 2012-01-06
+### Fixed
+- Case sensitivity error in file names on Linux
+
+## [1.8] - 2012-01-06
+### Fixed
+- Bug in generating blob storage URL when using Microsoft Azure Storage emulator
+
+## [1.7] - 2012-01-05
+### Added
+- Support to upload video files to blob storage
+
+## [1.6] - 2012-01-05
+
+## [1.5] - 2012-01-04
+### Added
+- Included Microsoft Azure SDK for PHP v4.1.0 with the plugin. Now setting mime-type for uploaded file to blob storage.
+
+## [1.4] - 2011-08-26
+### Added
+- Included Microsoft Azure SDK for PHP v4.0.2 with the plugin.
+
+## [1.3] - 2011-08-16
+### Added
+- Included Microsoft Azure SDK for PHP v4.0.1 with the plugin, so no need to install the SDK separetely. Also fixed thumbnail handling issue while uploading files when some specific theme is enabled.
+
+## [1.2] - 2011-06-03
+### Added
+- Compatibility with Microsoft Azure SDK for PHP v3.0.0. It also fixes issue with deleting media files when thumbnails are associated.
+
+## [1.1] - 2011-03-03
+### Added
+- Compatibility with Microsoft Azure SDK for PHP v2.1.0 and WordPress 3.1
+
+## [1.0] - 2010-05-20
+- First release of Microsoft Azure Storage plugin for WordPress
+
+[4.1.1]: https://plugins.trac.wordpress.org/changeset/1812783/windows-azure-storage
+[4.1.0]: https://github.com/10up/windows-azure-storage/compare/4.0.3...4.1.0
+[4.0.3]: https://github.com/10up/windows-azure-storage/releases/tag/4.0.3
+[4.0.2]: https://plugins.trac.wordpress.org/changeset/1606680/windows-azure-storage
+[4.0.1]: https://github.com/10up/windows-azure-storage/compare/4.0.0...4.0.1
+[4.0.0]: https://github.com/10up/windows-azure-storage/compare/3.0.1...4.0.0
+[3.0.1]: https://github.com/10up/windows-azure-storage/compare/3.0.0...3.0.1
+[3.0.0]: https://github.com/10up/windows-azure-storage/compare/2.2.0...3.0.0
+[2.2.0]: https://github.com/10up/windows-azure-storage/compare/2.1.0...2.2.0
+[2.1.0]: https://github.com/10up/windows-azure-storage/compare/2.0.0...2.1.0
+[2.0.0]: https://github.com/10up/windows-azure-storage/releases/tag/2.0.0
+[1.9]: https://plugins.trac.wordpress.org/changeset/485888/windows-azure-storage
+[1.8]: https://plugins.trac.wordpress.org/changeset/485513/windows-azure-storage
+[1.7]: https://plugins.trac.wordpress.org/changeset/484894/windows-azure-storage
+[1.6]: https://plugins.trac.wordpress.org/changeset/484891/windows-azure-storage
+[1.5]: https://plugins.trac.wordpress.org/changeset/484791/windows-azure-storage
+[1.4]: https://plugins.trac.wordpress.org/changeset/428894/windows-azure-storage
+[1.3]: https://plugins.trac.wordpress.org/changeset/424458/windows-azure-storage
+[1.2]: https://plugins.trac.wordpress.org/changeset/392854/windows-azure-storage
+[1.1]: https://plugins.trac.wordpress.org/changeset/354932/windows-azure-storage
+[1.0]: https://plugins.trac.wordpress.org/changeset/243465/windows-azure-storage
