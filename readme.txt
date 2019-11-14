@@ -1,9 +1,9 @@
 === Microsoft Azure Storage for WordPress ===
-Contributors: msopentech, 10up, morganestes, stevegrunwell, lpawlik, rittesh.patel
+Contributors: msopentech, 10up, morganestes, stevegrunwell, lpawlik, ritteshpatel, johnwatkins0, rickalee, eflorea, phyrax, ravichandra
 Tags: Microsoft, Microsoft Open Technologies, Microsoft Azure, Microsoft Azure Storage, Media Files, Upload, CDN, blob storage
 Requires at least: 4.0
-Tested up to: 4.9
-Stable tag: 4.1.0
+Tested up to: 5.3
+Stable tag: 4.3.0
 License: BSD 2-Clause
 License URI: http://www.opensource.org/licenses/bsd-license.php
 
@@ -11,9 +11,7 @@ Use the Microsoft Azure Storage service to host your website's media files.
 
 == Description ==
 
-This WordPress plugin allows you to use Microsoft Azure Storage Service to host
-your media and uploads for your WordPress powered website. Microsoft Azure Storage is an effective way
-to infinitely scale storage of your site and leverage Azure's global infrastructure.
+This WordPress plugin allows you to use Microsoft Azure Storage Service to host your media and uploads for your WordPress powered website. Microsoft Azure Storage is an effective way to infinitely scale storage of your site and leverage Azure's global infrastructure.
 
 For more details on Microsoft Azure Storage, please visit the <a href="https://azure.microsoft.com/en-us/services/storage/">Microsoft Azure website</a>.
 
@@ -22,10 +20,32 @@ For more details on Microsoft Azure Storage, please visit the <a href="https://a
 1. Activate the plugin through the 'Plugins' screen in WordPress.
 1. Use the Settings->Microsoft Azure screen to configure the plugin.
 
+For multisites or to enforce Azure Blob Storage settings, you can define the following constants in wp-config.php:
+
+* MICROSOFT_AZURE_ACCOUNT_NAME - Account Name
+* MICROSOFT_AZURE_ACCOUNT_KEY - Account Primary Access Key
+* MICROSOFT_AZURE_CONTAINER - Azure Blob Container
+* MICROSOFT_AZURE_CNAME - Domain: must start with http(s)://
+* MICROSOFT_AZURE_USE_FOR_DEFAULT_UPLOAD - boolean (default false)
+
+See Settings->Microsoft Azure for more information.
+
 == Changelog ==
+
+= 4.3.0 =
+* Added support for Media Library upload process change introduced in WordPress 5.3
+* Offload "original_image" file introduced in WordPress 5.3
+* Fix issue with special characters in filenames with url encoding
+* Fix issue with media regeneration via WP CLI
 
 = 4.2.0 =
 * Added ability to setup Azure settings using constants in wp-config.php file
+* Added ability to filter cache-control option for blob files and enter arbitrary cache-control value in the settings
+* Bug fix to support special characters in file names
+
+= 4.1.1 =
+* Removed build tools from the plugin repository
+* Updated authors list
 
 = 4.1.0 =
 * Added error message when SimpleXML library is not found
