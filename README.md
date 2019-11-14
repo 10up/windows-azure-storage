@@ -35,6 +35,7 @@ See Settings->Microsoft Azure for more information.
 
 
 ## Upgrade Notice
+
 ### 3.0.0
 This release features several security fixes and enhancements.
 It is highly recommended that all users upgrade immediately.
