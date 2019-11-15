@@ -1,7 +1,6 @@
 /.github
 /.git
 /.wordpress-org
-/bin
 /node_modules
 /tasks
 
