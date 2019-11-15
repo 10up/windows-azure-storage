@@ -499,13 +499,12 @@ function windows_azure_storage_delete_local_files( $data, $attachment_id ) {
 	$upload_file_name = get_attached_file( $attachment_id, true );
 	
 	// Get upload directory.
-	$upload_dir = wp_upload_dir();
-	$upload_dir['subdir'] = ltrim( $upload_dir['subdir'], '/' );
+	$upload_dir = Windows_Azure_Helper::wp_upload_dir();
+	$subdir = ltrim( $upload_dir['reldir'] . $upload_dir['subdir'], DIRECTORY_SEPARATOR );
 	
-	// Prepare blob name.
-	$relative_file_name = ( '' === $upload_dir['subdir'] ) ?
-		basename( $upload_file_name ) :
-		str_replace( $upload_dir['basedir'] . '/', '', $upload_file_name );
+	$relative_file_name = DIRECTORY_SEPARATOR === $subdir
+		? basename( $upload_file_name )
+		: str_replace( $upload_dir['uploads'] . DIRECTORY_SEPARATOR, '', $upload_file_name );
 
 	// Delete local file
 	Windows_Azure_Helper::unlink_file( $relative_file_name );
