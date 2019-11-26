@@ -619,6 +619,10 @@ class Windows_Azure_Helper {
 			$wp_upload_dir[ $blog_id ]['reldir'] = substr( $wp_upload_dir[ $blog_id ]['basedir'], strlen( $dir ) );
 			$wp_upload_dir[ $blog_id ]['uploads'] = $dir;
 		}
+		// normalize to path
+		foreach ( $wp_upload_dir[ $blog_id ] as &$value ) {
+			$value = str_replace( '\\', '/', $value );
+		}
 
 		return $wp_upload_dir[ $blog_id ];
 	}

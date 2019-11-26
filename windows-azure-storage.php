@@ -375,15 +375,15 @@ function windows_azure_storage_wp_get_attachment_metadata( $data, $post_id ) {
  */
 function windows_azure_storage_wp_generate_attachment_metadata( $data, $post_id ) {
 	$default_azure_storage_account_container_name = \Windows_Azure_Helper::get_default_container();
-	$upload_file_name                             = get_attached_file( $post_id, true );
+	$upload_file_name                             = str_replace( '\\', '/', get_attached_file( $post_id, true ) );
 
 	// Get upload directory.
 	$upload_dir = \Windows_Azure_Helper::wp_upload_dir();
 
 	// Prepare blob name.
-	$relative_file_name = DIRECTORY_SEPARATOR === $upload_dir['subdir']
-		? basename( $upload_file_name )
-		: str_replace( $upload_dir['uploads'] . DIRECTORY_SEPARATOR, '', $upload_file_name );
+	$relative_file_name = '/' === $upload_dir['subdir']
+		? str_replace( '\\', '/', basename( $upload_file_name ))
+		: str_replace( $upload_dir['uploads'] . '/', '', $upload_file_name );
 
 	try {
 		// Get full file path of uploaded file.
@@ -423,16 +423,16 @@ function windows_azure_storage_wp_generate_attachment_metadata( $data, $post_id 
 		// Handle thumbnail and image sub-size files.
 		$thumbnails = array();
 		if ( ! empty( $data['sizes'] ) ) {
-			$file_upload_dir = strpos( $relative_file_name, DIRECTORY_SEPARATOR ) !== false
-				? substr( $relative_file_name, 0, strrpos( $relative_file_name, DIRECTORY_SEPARATOR ) )
+			$file_upload_dir = strpos( $relative_file_name, '/' ) !== false
+				? substr( $relative_file_name, 0, strrpos( $relative_file_name, '/' ) )
 				: '';
 
 			foreach ( $data['sizes'] as $size ) {
 				// Move only if file exists. Some theme may use same file name for multiple sizes.
-				if ( Windows_Azure_Helper::file_exists( $file_upload_dir . DIRECTORY_SEPARATOR . $size['file'] ) ) {
+				if ( Windows_Azure_Helper::file_exists( $file_upload_dir . '/' . $size['file'] ) ) {
 					$blob_name = '' === $file_upload_dir
 						? $size['file']
-						: $file_upload_dir . DIRECTORY_SEPARATOR . $size['file'];
+						: $file_upload_dir . '/' . $size['file'];
 
 					\Windows_Azure_Helper::put_media_to_blob_storage(
 						$default_azure_storage_account_container_name,
@@ -448,15 +448,15 @@ function windows_azure_storage_wp_generate_attachment_metadata( $data, $post_id 
 
 		// Handle original_image if scaled due to WP 5.3+ Big Image threshold
 		if ( ! empty( $data['original_image'] ) ) {
-			$file_upload_dir = strpos( $relative_file_name, DIRECTORY_SEPARATOR ) !== false
-				? substr( $relative_file_name, 0, strrpos( $relative_file_name, DIRECTORY_SEPARATOR ) )
+			$file_upload_dir = strpos( $relative_file_name, '/' ) !== false
+				? substr( $relative_file_name, 0, strrpos( $relative_file_name, '/' ) )
 				: '';
 
 			// Move only if original_image file exists
 			if ( Windows_Azure_Helper::file_exists( trailingslashit( $file_upload_dir ) . $data['original_image'] ) ) {
 				$blob_name = '' === $file_upload_dir
 					? $data['original_image']
-					: $file_upload_dir . DIRECTORY_SEPARATOR . $data['original_image'];
+					: $file_upload_dir . '/' . $data['original_image'];
 
 				\Windows_Azure_Helper::put_media_to_blob_storage(
 					$default_azure_storage_account_container_name,
