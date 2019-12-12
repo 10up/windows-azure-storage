@@ -386,16 +386,27 @@ function windows_azure_storage_wp_generate_attachment_metadata( $data, $post_id 
 		: str_replace( $upload_dir['uploads'] . DIRECTORY_SEPARATOR, '', $upload_file_name );
 
 	try {
+		$post_array = wp_unslash( $_POST );
+		$post_array = wp_parse_args( $post_array, array(
+			 'item_id' => $post_array['name'] . '_' . $post_array['_wpnonce'],
+		) );
+		$azure_progress_key = 'azure_progress_' . sanitize_text_field( trim( $post_array['item_id'] ) );
+		$current            = 0;
 		// Get full file path of uploaded file.
 		$data['file'] = $upload_file_name;
 
 		// Get mime-type of the file.
 		$mime_type = get_post_mime_type( $post_id );
+		$total = 1;
+		if ( ! empty( $data['sizes'] ) ) {
+			$total = count( $data['sizes'] ) + 1;
+		}
+		if ( ! empty( $data['original_image'] ) ) {
+			$total++;
+		}
 
 		try {
-			if ( ! isset( $data['sizes'] ) ) {
-				$data['sizes'] = array();
-			}
+			set_transient( $azure_progress_key, array( 'current' => ++$current, 'total' => $total, 5 * MINUTE_IN_SECONDS ) );
 
 			// only upload file if file exists locally
 			if ( \Windows_Azure_Helper::file_exists( $relative_file_name ) ) {
@@ -434,6 +445,17 @@ function windows_azure_storage_wp_generate_attachment_metadata( $data, $post_id 
 						? $size['file']
 						: $file_upload_dir . DIRECTORY_SEPARATOR . $size['file'];
 
+					set_transient(
+						$azure_progress_key,
+						array( 'current' => ++$current, 'total' => $total ),
+						5 * MINUTE_IN_SECONDS
+					);
+
+					// Ensure PDF thumbnails are offloaded with JPEG mimetype instead of PDF
+					if ( 'application/pdf' === $mime_type ) {
+						$mime_type = 'image/jpeg';
+					}
+
 					\Windows_Azure_Helper::put_media_to_blob_storage(
 						$default_azure_storage_account_container_name,
 						$blob_name,
@@ -457,6 +479,12 @@ function windows_azure_storage_wp_generate_attachment_metadata( $data, $post_id 
 				$blob_name = '' === $file_upload_dir
 					? $data['original_image']
 					: $file_upload_dir . DIRECTORY_SEPARATOR . $data['original_image'];
+
+				set_transient(
+					$azure_progress_key,
+					array( 'current' => ++$current, 'total' => $total ),
+					5 * MINUTE_IN_SECONDS
+				);
 
 				\Windows_Azure_Helper::put_media_to_blob_storage(
 					$default_azure_storage_account_container_name,
