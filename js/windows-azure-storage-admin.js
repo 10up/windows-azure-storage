@@ -57,7 +57,6 @@
     } );
 
     function get_upload_progress( item_id, item ) {
-    	console.log( 'progress_' + item_id );
       $.post( window.ajaxurl, {
         action: 'get-azure-progress',
         data: {
