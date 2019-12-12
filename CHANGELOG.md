@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file, per [the Ke
 
 ## [Unreleased] - TBD
 
+## [4.3.1] - 2019-12-12
+### Fixed
+- Restore visual indicator of upload progress to Azure Blob Storage and account for "original_image" in count
+
 ## [4.3.0] - 2019-11-18
 ### Added
 - Support for Media Library upload process change introduced in WordPress 5.3

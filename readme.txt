@@ -32,6 +32,9 @@ See Settings->Microsoft Azure for more information.
 
 == Changelog ==
 
+= 4.3.1 =
+* Restore visual indicator of upload progress to Azure Blob Storage and account for "original_image" in count
+
 = 4.3.0 =
 * Added support for Media Library upload process change introduced in WordPress 5.3
 * Offload "original_image" file introduced in WordPress 5.3

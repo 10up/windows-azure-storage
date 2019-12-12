@@ -3,7 +3,7 @@
  * Plugin Name: Microsoft Azure Storage for WordPress
  * Plugin URI: https://wordpress.org/plugins/windows-azure-storage/
  * Description: Use the Microsoft Azure Storage service to host your website's media files.
- * Version: 4.3.0
+ * Version: 4.3.1
  * Author: 10up, Microsoft Open Technologies
  * Author URI: http://10up.com/
  * License: BSD 2-Clause
