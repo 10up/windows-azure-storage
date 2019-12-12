@@ -397,13 +397,16 @@ function windows_azure_storage_wp_generate_attachment_metadata( $data, $post_id 
 
 		// Get mime-type of the file.
 		$mime_type = get_post_mime_type( $post_id );
+		$total = 1;
+		if ( ! empty( $data['sizes'] ) ) {
+			$total = count( $data['sizes'] ) + 1;
+		}
+		if ( ! empty( $data['original_image'] ) ) {
+			$total++;
+		}
 
 		try {
-			if ( ! isset( $data['sizes'] ) ) {
-				$data['sizes'] = array();
-			}
-
-			set_transient( $azure_progress_key, array( 'current' => ++$current, 'total' => count( $data['sizes'] ) + 1 ), 5 * MINUTE_IN_SECONDS );
+			set_transient( $azure_progress_key, array( 'current' => ++$current, 'total' => $total, 5 * MINUTE_IN_SECONDS ) );
 
 			// only upload file if file exists locally
 			if ( \Windows_Azure_Helper::file_exists( $relative_file_name ) ) {
@@ -444,7 +447,7 @@ function windows_azure_storage_wp_generate_attachment_metadata( $data, $post_id 
 
 					set_transient(
 						$azure_progress_key,
-						array( 'current' => ++$current, 'total' => count( $data['sizes'] ) + 1 ),
+						array( 'current' => ++$current, 'total' => $total ),
 						5 * MINUTE_IN_SECONDS
 					);
 
@@ -476,6 +479,12 @@ function windows_azure_storage_wp_generate_attachment_metadata( $data, $post_id 
 				$blob_name = '' === $file_upload_dir
 					? $data['original_image']
 					: $file_upload_dir . DIRECTORY_SEPARATOR . $data['original_image'];
+
+				set_transient(
+					$azure_progress_key,
+					array( 'current' => ++$current, 'total' => $total ),
+					5 * MINUTE_IN_SECONDS
+				);
 
 				\Windows_Azure_Helper::put_media_to_blob_storage(
 					$default_azure_storage_account_container_name,
