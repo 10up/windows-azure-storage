@@ -6,12 +6,12 @@ All notable changes to this project will be documented in this file, per [the Ke
 
 ## [4.3.1] - 2020-02-12
 ### Fixed
-- Restore visual indicator of upload progress to Azure Blob Storage and account for "original_image" in count
+- Restore visual indicator of upload progress to Azure Blob Storage and account for `original_image` in count (props [@rickalee](https://github.com/rickalee), [@moraleida](https://github.com/moraleida) via [#110](https://github.com/10up/windows-azure-storage/pull/110), [#109](https://github.com/10up/windows-azure-storage/pull/109))
 
 ## [4.3.0] - 2019-11-18
 ### Added
 - Support for Media Library upload process change introduced in WordPress 5.3
-- Offload "original_image" file introduced in WordPress 5.3
+- Offload `original_image` file introduced in WordPress 5.3
 
 ### Fixed
 - Issue with special characters in filenames with url encoding
@@ -19,10 +19,10 @@ All notable changes to this project will be documented in this file, per [the Ke
 
 ## [4.2.0] - 2018-05-04
 ### Added
-- Ability to setup Azure settings using constants in wp-config.php file
+- Ability to setup Azure settings using constants in `wp-config.php`
 
 ### Fixed
-- Images uploading issue in the multisite environment, now it doesn't strip "sites/{id}" from filename
+- Images uploading issue in the multisite environment, now it doesn't strip `sites/{id}` from filename
 - srcset issue for images uploaded before 4.2.0 version
 - Issue with special characters in filenames with url encoding
 
