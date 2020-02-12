@@ -7,8 +7,8 @@ All notable changes to this project will be documented in this file, per [the Ke
 ## [4.3.1] - 2020-02-12
 ### Fixed
 - Restore visual indicator of upload progress to Azure Blob Storage and account for `original_image` in count (props [@rickalee](https://github.com/rickalee), [@moraleida](https://github.com/moraleida) via [#110](https://github.com/10up/windows-azure-storage/pull/110), [#109](https://github.com/10up/windows-azure-storage/pull/109)).
-- Ensure PDF thumbnails are offloaded with JPEG mimetype instead of PDF
-- Normalize file paths on Windows Server
+- Ensure PDF thumbnails are offloaded with JPEG mimetype instead of PDF (props [@rickalee](https://github.com/rickalee) via [#110](https://github.com/10up/windows-azure-storage/pull/110))
+- Normalize file paths on Windows Server (props [@nanasess](https://github.com/nanasess) via [#108](https://github.com/10up/windows-azure-storage/pull/108))
 
 ## [4.3.0] - 2019-11-18
 ### Added
