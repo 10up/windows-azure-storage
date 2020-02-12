@@ -3,7 +3,7 @@ Contributors: msopentech, 10up, morganestes, stevegrunwell, lpawlik, ritteshpate
 Tags: Microsoft, Microsoft Open Technologies, Microsoft Azure, Microsoft Azure Storage, Media Files, Upload, CDN, blob storage
 Requires at least: 4.0
 Tested up to: 5.3
-Stable tag: 4.3.0
+Stable tag: 4.3.1
 License: BSD 2-Clause
 License URI: http://www.opensource.org/licenses/bsd-license.php
 
@@ -32,106 +32,121 @@ See Settings->Microsoft Azure for more information.
 
 == Changelog ==
 
+= 4.3.1 =
+* **Fixed:** Restore visual indicator of upload progress to Azure Blob Storage and account for `original_image` in count (props [@rickalee](https://profiles.wordpress.org/rickalee/), [@moraleidame](https://profiles.wordpress.org/moraleidame/)).
+* **Fixed:** Ensure PDF thumbnails are offloaded with JPEG mimetype instead of PDF
+* **Fixed:** Normalize file paths on Windows Server
+
 = 4.3.0 =
-* Added support for Media Library upload process change introduced in WordPress 5.3
-* Offload "original_image" file introduced in WordPress 5.3
-* Fix issue with special characters in filenames with url encoding
-* Fix issue with media regeneration via WP CLI
+* **Added:** Support for Media Library upload process change introduced in WordPress 5.3.
+* **Added:** Offload `original_image` file introduced in WordPress 5.3.
+* **Fixed:** Issue with special characters in filenames with url encoding.
+* **Fixed:** Issue with media regeneration via WP CLI.
 
 = 4.2.0 =
-* Added ability to setup Azure settings using constants in wp-config.php file
-* Added ability to filter cache-control option for blob files and enter arbitrary cache-control value in the settings
-* Bug fix to support special characters in file names
+* **Added:** Ability to setup Azure settings using constants in `wp-config.php`.
+* **Fixed:** Images uploading issue in the multisite environment, now it doesn't strip `sites/{id}` from filename.
+* **Fixed:** `srcset` issue for images uploaded before 4.2.0 version.
+* **Fixed:** Issue with special characters in filenames with url encoding.
 
 = 4.1.1 =
-* Removed build tools from the plugin repository
-* Updated authors list
+* **Changed:** Updated authors list.
+* **Removed:** Build tools from the plugin repository.
 
 = 4.1.0 =
-* Added error message when SimpleXML library is not found
-* Added ability to enter Cache-Control property
-* Renamed plugin to be Microsoft Azure Storage for WordPress
-* Fixed trailing slash issue which led to double slashes in URLs
-* Fixed minor warnings
+* **Added:** Error message when SimpleXML library is not found.
+* **Added:** Ability to enter Cache-Control property.
+* **Changed:** Renamed plugin to be Microsoft Azure Storage for WordPress.
+* **Fixed:** Trailing slash issue which led to double slashes in URLs.
+* **Fixed:** Minor warnings.
 
 = 4.0.3 =
-* Fixed uploading issue when year/month based folders are not used
-* Fixed CNAME issue in the srcset attribute when yar/month based folders are not used
-* Added POT file and loaded text domain
+* **Added:** POT file and loaded text domain.
+* **Fixed:** Uploading issue when year/month based folders are not used.
+* **Fixed:** CNAME issue in the srcset attribute when yar/month based folders are not used.
 
 = 4.0.2 =
-* Bug fix for 0-byte uploads.
+* **Fixed:** Bug for 0-byte uploads.
 
 = 4.0.1 =
-* Fix blob name while media file
-* Show admin notice if can't access files directly
+* **Fixed:** Blob name while media file.
+* **Fixed:** Show admin notice if can't access files directly.
 
 = 4.0.0 =
-* Removed old PHP SDK and use WordPress HTTP API based client library.
-* Added compatibility with API version 2015-12-11.
-* Added compatibility with PHP 5.3+.
-* Improved overall performance.
-* L10N/I18N: Round 2 of preparing strings for translation.
-* Refactored code to match WordPress standards.
-* Better UX by adding more feedback during long operations.
-* Integrated Azure Blob browser into WordPress Media Library.
-* Added option to keep local files after uploading them to Azure Blob.
-* Exposed new developer filters.
-* Deduplicated code functionality.
-* Security: validate, sanitize, and escape (allthethings).
+* **Added:** Compatibility with API version 2015-12-11.
+* **Added:** Compatibility with PHP 5.3+.
+* **Added:** L10N/I18N: Round 2 of preparing strings for translation.
+* **Added:** Integrated Azure Blob browser into WordPress Media Library.
+* **Added:** Option to keep local files after uploading them to Azure Blob.
+* **Added:** Introduced filter `azure_blob_operation_timeout` which defines REST operation timeout.
+* **Added:** Introduced filter `azure_blob_list_containers_max_results` which defines max size of containers listing per one request.
+* **Added:** Introduced filter `azure_blob_list_blobs_max_results` which defines max size of blobs listing per one request.
+* **Added:** Introduced filter `azure_blob_put_blob_headers` which defines headers used for creating new blob.
+* **Added:** Introduced filter `azure_blob_append_blob_headers` which defines headers used for appending created blob.
+* **Changed:** Removed old PHP SDK and use WordPress HTTP API based client library.
+* **Changed:** Improved overall performance.
+* **Changed:** Refactored code to match WordPress standards.
+* **Changed:** Better UX by adding more feedback during long operations.
+* **Changed:** Deduplicated code functionality.
+* **Security:** Validate, sanitize, and escape (allthethings).
 
 = 3.0.1 =
-* Fix browsing and uploading caused by broken nonce checks.
-* Normalize the SDK path for activation checks.
+* **Fixed:** Upload nonce checks.
+* **Fixed:** Media: AYS checks on browse.
 
 = 3.0.0 =
-* Security: fixes a bug that could allow unauthorized deletion of remotely-stored media.
-* Security: validate, sanitize, and escape (allthethings).
-* Security: use `https://` URLs by default, and warn if an insecure CNAME is configured.
-* Security: introduce permissions checks for specific actions within the plugin.
-* L10N/I18N: Round 1 of preparing strings for translation.
-* UI: Editor button more closely matches the WordPress Admin UI.
-* Add `srcset` to images added through the Media Library when Azure is the default media handler. (Props @patricknami).
+* **Added:** L10N/I18N: Round 1 of preparing strings for translation.
+* **Added:** `srcset` to images added through the Media Library when Azure is the default media handler. (Props [@patricknami](https://profiles.wordpress.org/patricknami/)).
+* **Changed:** UI: Editor button more closely matches the WordPress Admin UI.
+* **Security:** Fixes a bug that could allow unauthorized deletion of remotely-stored media.
+* **Security:** Validate, sanitize, and escape (allthethings).
+* **Security:** Use `https://` URLs by default, and warn if an insecure CNAME is configured.
+* **Security:** Introduce permissions checks for specific actions within the plugin.
 
-= 2.2 =
-* Fixed network activation bug in WordPress multisite.
-* Fixed the issue with duplicate blob names in XML-RPC.
+= 2.2.0 =
+* **Fixed:** Network activation bug in WordPress multisite.
+* **Fixed:** Issue with duplicate blob names in XML-RPC.
 
-= 2.1 =
-* Fixed the issue with duplicate blob names.
-* Fixed the bug in uploading video files to blob storage.
-* Fixed the bug with forward slash in front of image thumbnail filenames.
-* Fixed the bug with year and month getting trimmed for file system images.
+= 2.1.0 =
+* **Fixed:** Issue with duplicate blob names.
+* **Fixed:** Bug in uploading video files to blob storage.
+* **Fixed:** Bug with forward slash in front of image thumbnail filenames.
+* **Fixed:** Bug with year and month getting trimmed for file system images.
 
-= 2.0 =
-* Updated to use Microsoft Azure SDK for PHP from https://github.com/WindowsAzure/azure-sdk-for-php and fixed to work with WordPress 3.4.1
+= 2.0.0 =
+* **Changed:** Updated to use [Microsoft Azure SDK for PHP](https://github.com/WindowsAzure/azure-sdk-for-php).
+* **Fixed:** Compatibility with WordPress 3.4.1.
 
-= 1.9 =
-* Fixed case sensitivity error in file names on Linux
+= 1.9.0 =
+* **Fixed:** Case sensitivity error in file names on Linux.
 
-= 1.8 =
-* Bug fixed in generating blob storage URL when using Microsoft Azure Storage emulator
+= 1.8.0 =
+* **Fixed:** Bug in generating blob storage URL when using Microsoft Azure Storage emulator.
 
-= 1.7 =
-* Added support to upload video files to blob storage
+= 1.7.0 =
+* **Added:** Support to upload video files to blob storage.
 
-= 1.5 =
-* Included Microsoft Azure SDK for PHP v4.1.0 with the plugin. Now setting mime-type for uploaded file to blob storage.
+= 1.6.0 =
 
-= 1.4 =
-* Included Microsoft Azure SDK for PHP v4.0.2 with the plugin.
+= 1.5.0 =
+* **Added:** Included Microsoft Azure SDK for PHP v4.1.0 with the plugin. Now setting mime-type for uploaded file to blob storage.
 
-= 1.3 =
-* Included Microsoft Azure SDK for PHP v4.0.1 with the plugin, so no need to install the SDK separetely. Also fixed thumbnail handling issue while uploading files when some specific theme is enabled.
+= 1.4.0 =
+* **Added:** Included Microsoft Azure SDK for PHP v4.0.2 with the plugin.
 
-= 1.2 =
-* This release is compatible with Microsoft Azure SDK for PHP v3.0.0. It also fixes issue with deleting media files when thumbnails are associated.
+= 1.3.0 =
+* **Added:** Included Microsoft Azure SDK for PHP v4.0.1 with the plugin, so no need to install the SDK separetely.
+* **Fixed:** Thumbnail handling issue while uploading files when some specific theme is enabled.
 
-= 1.1 =
-* This release is compatible with Microsoft Azure SDK for PHP v2.1.0 and WordPress 3.1
+= 1.2.0 =
+* **Added:** Compatibility with Microsoft Azure SDK for PHP v3.0.0.
+* **Fixed:** Issue with deleting media files when thumbnails are associated.
 
-= 1.0 =
-* First release of Microsoft Azure Storage plugin for WordPress
+= 1.1.0 =
+* **Added:** Compatibility with Microsoft Azure SDK for PHP v2.1.0 and WordPress 3.1.
+
+= 1.0.0 =
+* First release of Microsoft Azure Storage plugin for WordPress.
 
 == Upgrade Notice ==
 
