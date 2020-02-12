@@ -3,7 +3,7 @@ Contributors: msopentech, 10up, morganestes, stevegrunwell, lpawlik, ritteshpate
 Tags: Microsoft, Microsoft Open Technologies, Microsoft Azure, Microsoft Azure Storage, Media Files, Upload, CDN, blob storage
 Requires at least: 4.0
 Tested up to: 5.3
-Stable tag: 4.3.0
+Stable tag: 4.3.1
 License: BSD 2-Clause
 License URI: http://www.opensource.org/licenses/bsd-license.php
 
