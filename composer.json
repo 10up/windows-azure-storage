@@ -1,7 +1,7 @@
 {
   "name": "10up/windows-azure-storage",
   "description": "Use the Microsoft Azure Storage service to host your website's media files.",
-  "version": "4.3.0",
+  "version": "4.3.1",
   "type": "wordpress-plugin",
   "keywords": [],
   "homepage": "https://10up.com",
