@@ -34,6 +34,8 @@ See Settings->Microsoft Azure for more information.
 
 = 4.3.1 =
 * **Fixed:** Restore visual indicator of upload progress to Azure Blob Storage and account for `original_image` in count (props [@rickalee](https://profiles.wordpress.org/rickalee/), [@moraleidame](https://profiles.wordpress.org/moraleidame/)).
+* **Fixed:** Ensure PDF thumbnails are offloaded with JPEG mimetype instead of PDF
+* **Fixed:** Normalize file paths on Windows Server
 
 = 4.3.0 =
 * **Added:** Support for Media Library upload process change introduced in WordPress 5.3.
