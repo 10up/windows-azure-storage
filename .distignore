@@ -1,9 +1,11 @@
+# Directories
 /.github
 /.git
 /.wordpress-org
 /node_modules
 /tasks
 
+# Files
 .DS_Store
 .eslintrc.json
 .distignore
@@ -14,6 +16,7 @@ CONTRIBUTING.md
 CREDITS.md
 Gruntfile.js
 LICENSE
-package.json
-package-lock.json
 README.md
+composer.json
+package-lock.json
+package.json
