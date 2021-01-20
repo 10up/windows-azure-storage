@@ -598,13 +598,16 @@ class Windows_Azure_Helper {
 	 *
 	 * @static
 	 * @access public
+	 *
+	 * @param string $time Optional. Time formatted in 'yyyy/mm'. Default null.
+	 *
 	 * @return array
 	 */
-	static public function wp_upload_dir() {
+	static public function wp_upload_dir( $time = null ) {
 		static $wp_upload_dir = array();
 
 		$blog_id = get_current_blog_id();
-		if ( empty( $wp_upload_dir[ $blog_id ] ) ) {
+		if ( empty( $wp_upload_dir[ $blog_id ] ) || ! is_null( $time ) ) {
 			$dir = $upload_path = trim( get_option( 'upload_path' ) );
 			if ( empty( $upload_path ) || 'wp-content/uploads' == $upload_path ) {
 				$dir = WP_CONTENT_DIR . '/uploads';
@@ -615,12 +618,11 @@ class Windows_Azure_Helper {
 
 			$dir = rtrim( $dir, DIRECTORY_SEPARATOR );
 
-			$wp_upload_dir[ $blog_id ] = call_user_func_array( 'wp_upload_dir', func_get_args() );
+			$wp_upload_dir[ $blog_id ] = call_user_func_array( 'wp_upload_dir', array( $time ) );
 			$wp_upload_dir[ $blog_id ]['reldir'] = substr( $wp_upload_dir[ $blog_id ]['basedir'], strlen( $dir ) );
 			$wp_upload_dir[ $blog_id ]['uploads'] = $dir;
 		}
 
 		return $wp_upload_dir[ $blog_id ];
 	}
-
 }
