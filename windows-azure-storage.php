@@ -375,9 +375,18 @@ function windows_azure_storage_wp_get_attachment_metadata( $data, $post_id ) {
  */
 function windows_azure_storage_wp_generate_attachment_metadata( $data, $post_id ) {
 	$default_azure_storage_account_container_name = \Windows_Azure_Helper::get_default_container();
-	
+
+	$post = get_post( wp_get_post_parent_id( $post_id ) );
+	$time = null;
+	if ( $post ) {
+		// The post date doesn't usually matter for pages, so don't backdate this upload.
+		if ( 'page' !== $post->post_type && substr( $post->post_date, 0, 4 ) > 0 ) {
+			$time = $post->post_date;
+		}
+	}
+
 	// Get upload directory.
-	$upload_dir = \Windows_Azure_Helper::wp_upload_dir();
+	$upload_dir = \Windows_Azure_Helper::wp_upload_dir( $time );
 
 	$upload_file_name = get_post_meta( $post_id, '_wp_attached_file', true );
 
@@ -522,7 +531,7 @@ function windows_azure_storage_wp_generate_attachment_metadata( $data, $post_id 
  */
 function windows_azure_storage_delete_local_files( $data, $attachment_id ) {
 	$upload_file_name = get_attached_file( $attachment_id, true );
-	
+
 	// Use core function introduced in 4.9.7 for deleting local files if available
 	if ( function_exists( 'wp_delete_attachment_files') ) {
 		$deleted = wp_delete_attachment_files( $attachment_id, $data, array(), $upload_file_name );
@@ -535,14 +544,14 @@ function windows_azure_storage_delete_local_files( $data, $attachment_id ) {
 	// Get upload directory.
 	$upload_dir = Windows_Azure_Helper::wp_upload_dir();
 	$subdir = ltrim( $upload_dir['reldir'] . $upload_dir['subdir'], DIRECTORY_SEPARATOR );
-	
+
 	$relative_file_name = DIRECTORY_SEPARATOR === $subdir
 		? basename( $upload_file_name )
 		: str_replace( $upload_dir['uploads'] . DIRECTORY_SEPARATOR, '', $upload_file_name );
 
 	// Delete local file
 	Windows_Azure_Helper::unlink_file( $relative_file_name );
-	
+
 	$file_upload_dir = strpos( $relative_file_name, '/' ) !== false
 		? substr( $relative_file_name, 0, strrpos( $relative_file_name, '/' ) )
 		: '';
