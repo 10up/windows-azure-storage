@@ -2,13 +2,11 @@
 
 > Use the Microsoft Azure Storage service to host your website's media files.
 
-[![Support Level](https://img.shields.io/badge/support-stable-blue.svg)](#support-level) [![Release Version](https://img.shields.io/github/release/10up/windows-azure-storage.svg)](https://github.com/10up/windows-azure-storage/releases/latest) ![WordPress tested up to version](https://img.shields.io/badge/WordPress-v5.3%20tested-success.svg) [![BSD 2-Clause License](https://img.shields.io/github/license/10up/windows-azure-storage.svg)](https://github.com/10up/windows-azure-storage/blob/master/LICENSE)
+[![Support Level](https://img.shields.io/badge/support-stable-blue.svg)](#support-level) [![Release Version](https://img.shields.io/github/release/10up/windows-azure-storage.svg)](https://github.com/10up/windows-azure-storage/releases/latest) ![WordPress tested up to version](https://img.shields.io/badge/WordPress-v5.6%20tested-success.svg) [![BSD 2-Clause License](https://img.shields.io/github/license/10up/windows-azure-storage.svg)](https://github.com/10up/windows-azure-storage/blob/trunk/LICENSE)
 
 ## Description
 
-This WordPress plugin allows you to use Microsoft Azure Storage Service to host
-your media and uploads for your WordPress powered website. Microsoft Azure Storage is an effective way
-to infinitely scale storage of your site and leverage Azure's global infrastructure.
+This WordPress plugin allows you to use Microsoft Azure Storage Service to host your media and uploads for your WordPress powered website. Microsoft Azure Storage is an effective way to infinitely scale storage of your site and leverage Azure's global infrastructure.
 
 For more details on Microsoft Azure Storage, please visit the <a href="https://azure.microsoft.com/en-us/services/storage/">Microsoft Azure website</a>.
 
@@ -32,7 +30,6 @@ For multisites or to enforce Azure Blob Storage settings, you can define the fol
 * MICROSOFT_AZURE_USE_FOR_DEFAULT_UPLOAD - boolean (default false)
 
 See Settings->Microsoft Azure for more information.
-
 
 ## Upgrade Notice
 
@@ -61,9 +58,8 @@ A complete listing of all notable changes to Microsoft Azure Storage are documen
 
 Please read [CODE_OF_CONDUCT.md](https://github.com/10up/windows-azure-storage/blob/develop/CODE_OF_CONDUCT.md) for details on our code of conduct, [CONTRIBUTING.md](https://github.com/10up/windows-azure-storage/blob/develop/CONTRIBUTING.md) for details on the process for submitting pull requests to us, and [CREDITS.md](https://github.com/10up/windows-azure-storage/blob/develop/CREDITS.md) for a listing of maintainers of, contributors to, and libraries used by Microsoft Azure Storage.
 
-
 ## Like what you see?
 
 <p align="center">
-<a href="http://10up.com/contact/"><img src="https://10updotcom-wpengine.s3.amazonaws.com/uploads/2016/10/10up-Github-Banner.png" width="850"></a>
+<a href="http://10up.com/contact/"><img src="https://10up.com/uploads/2016/10/10up-Github-Banner.png" width="850"></a>
 </p>
