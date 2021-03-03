@@ -1,23 +1,24 @@
 {
 	"name": "windows-azure-storage",
-	"version": "4.3.1",
-	"description": "Microsoft Azure Storage for WordPress",
-	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
+	"version": "4.3.2",
+	"description": "Use the Microsoft Azure Storage service to host your website's media files.",
+	"homepage": "https://github.com/10up/windows-azure-storage#readme",
+	"bugs": {
+		"url": "https://github.com/10up/windows-azure-storage/issues"
+	},
+	"license": "BSD-2-Clause",
+	"author": {
+		"name": "10up",
+		"email": "opensource@10up.com",
+		"url": "https://10up.com"
 	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/10up/windows-azure-storaget"
 	},
-	"author": {
-		"name": "10up",
-		"email": "info@10up.com",
-		"url": "http://10up.com"
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
 	},
-	"bugs": {
-		"url": "https://github.com/10up/windows-azure-storage"
-	},
-	"homepage": "https://github.com/10up/windows-azure-storage#readme",
 	"dependencies": {
 		"grunt": "^1.0.4",
 		"grunt-contrib-concat": "^1.0.1",

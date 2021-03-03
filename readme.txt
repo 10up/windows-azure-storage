@@ -1,11 +1,12 @@
 === Microsoft Azure Storage for WordPress ===
-Contributors: msopentech, 10up, morganestes, stevegrunwell, lpawlik, ritteshpatel, johnwatkins0, rickalee, eflorea, phyrax, ravichandra
-Tags: Microsoft, Microsoft Open Technologies, Microsoft Azure, Microsoft Azure Storage, Media Files, Upload, CDN, blob storage
+Contributors:      msopentech, 10up, morganestes, stevegrunwell, lpawlik, ritteshpatel, johnwatkins0, rickalee, eflorea, phyrax, ravichandra
+Tags:              Microsoft, Microsoft Open Technologies, Microsoft Azure, Microsoft Azure Storage, Media Files, Upload, CDN, blob storage
 Requires at least: 4.0
-Tested up to: 5.3
-Stable tag: 4.3.1
-License: BSD 2-Clause
-License URI: http://www.opensource.org/licenses/bsd-license.php
+Tested up to:      5.3
+Requires PHP:      5.6
+Stable tag:        4.3.2
+License:           BSD 2-Clause
+License URI:       http://www.opensource.org/licenses/bsd-license.php
 
 Use the Microsoft Azure Storage service to host your website's media files.
 
