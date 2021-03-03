@@ -2,7 +2,7 @@
 Contributors:      msopentech, 10up, morganestes, stevegrunwell, lpawlik, ritteshpatel, johnwatkins0, rickalee, eflorea, phyrax, ravichandra
 Tags:              Microsoft, Microsoft Open Technologies, Microsoft Azure, Microsoft Azure Storage, Media Files, Upload, CDN, blob storage
 Requires at least: 4.0
-Tested up to:      5.3
+Tested up to:      5.6
 Requires PHP:      5.6
 Stable tag:        4.3.2
 License:           BSD 2-Clause
@@ -128,6 +128,7 @@ See Settings->Microsoft Azure for more information.
 * **Added:** Support to upload video files to blob storage.
 
 = 1.6.0 =
+* **Added:** support to upload video files to blob storage.
 
 = 1.5.0 =
 * **Added:** Included Microsoft Azure SDK for PHP v4.1.0 with the plugin. Now setting mime-type for uploaded file to blob storage.
