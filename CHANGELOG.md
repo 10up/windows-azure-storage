@@ -168,7 +168,7 @@ All notable changes to this project will be documented in this file, per [the Ke
 ## [1.0.0] - 2010-05-20
 - First release of Microsoft Azure Storage plugin for WordPress.
 
-[Unreleased]: https://github.com/10up/windows-azure-storage/compare/master...develop
+[Unreleased]: https://github.com/10up/windows-azure-storage/compare/trunk...develop
 [4.3.1]: https://github.com/10up/windows-azure-storage/compare/4.3.0...4.3.1
 [4.3.0]: https://github.com/10up/windows-azure-storage/compare/013bb82...4.3.0
 [4.2.0]: https://github.com/10up/windows-azure-storage/compare/69fb174...013bb82
