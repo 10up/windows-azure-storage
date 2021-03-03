@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file, per [the Ke
 
 ## [Unreleased] - TBD
 
+## [4.3.2] - 2021-03-03
+### Changed
+- Bump WordPress version "tested up to" 5.6 (props [@davidegreenwald](https://github.com/davidegreenwald), [@ShahAaron](https://github.com/ShahAaron), [@lostfields](https://github.com/lostfields)).
+
+### Fixed
+- Image sizes when uploading to a post that is not in current month (props [@eflorea](https://github.com/eflorea), [@mmcachran](https://github.com/mmcachran), [@ShadowXVII](https://github.com/ShadowXVII) via [#118](https://github.com/10up/windows-azure-storage/pull/118)).
+- Upload date in image metadata on back date posts (props [@colegeissinger](https://github.com/colegeissinger), [@rickalee](https://github.com/rickalee), [@cally423](https://github.com/cally423), [@FreuxF](https://github.com/FreuxF) via [#131](https://github.com/10up/windows-azure-storage/pull/131)).
+
+### Security
+- Bump `websocket-extensions` from 0.1.3 to 0.1.4 (props [@dependabot](https://github.com/apps/dependabot) via [#123](https://github.com/10up/windows-azure-storage/pull/123)).
+- Bump `lodash` from 4.17.15 to 4.17.19 (props [@dependabot](https://github.com/apps/dependabot) via [#124](https://github.com/10up/windows-azure-storage/pull/124)).
+
 ## [4.3.1] - 2020-02-12
 ### Fixed
 - Restore visual indicator of upload progress to Azure Blob Storage and account for `original_image` in count (props [@rickalee](https://github.com/rickalee), [@moraleida](https://github.com/moraleida) via [#110](https://github.com/10up/windows-azure-storage/pull/110), [#109](https://github.com/10up/windows-azure-storage/pull/109)).
@@ -138,6 +150,7 @@ All notable changes to this project will be documented in this file, per [the Ke
 - Support to upload video files to blob storage.
 
 ## [1.6.0] - 2012-01-05
+- Added support to upload video files to blob storage.
 
 ## [1.5.0] - 2012-01-04
 ### Added
@@ -168,7 +181,8 @@ All notable changes to this project will be documented in this file, per [the Ke
 ## [1.0.0] - 2010-05-20
 - First release of Microsoft Azure Storage plugin for WordPress.
 
-[Unreleased]: https://github.com/10up/windows-azure-storage/compare/master...develop
+[Unreleased]: https://github.com/10up/windows-azure-storage/compare/trunk...develop
+[4.3.2]: https://github.com/10up/windows-azure-storage/compare/4.3.1...4.3.2
 [4.3.1]: https://github.com/10up/windows-azure-storage/compare/4.3.0...4.3.1
 [4.3.0]: https://github.com/10up/windows-azure-storage/compare/013bb82...4.3.0
 [4.2.0]: https://github.com/10up/windows-azure-storage/compare/69fb174...013bb82

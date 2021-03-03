@@ -1,11 +1,12 @@
 === Microsoft Azure Storage for WordPress ===
-Contributors: msopentech, 10up, morganestes, stevegrunwell, lpawlik, ritteshpatel, johnwatkins0, rickalee, eflorea, phyrax, ravichandra
-Tags: Microsoft, Microsoft Open Technologies, Microsoft Azure, Microsoft Azure Storage, Media Files, Upload, CDN, blob storage
+Contributors:      msopentech, 10up, morganestes, stevegrunwell, lpawlik, ritteshpatel, johnwatkins0, rickalee, eflorea, phyrax, ravichandra
+Tags:              Microsoft, Microsoft Open Technologies, Microsoft Azure, Microsoft Azure Storage, Media Files, Upload, CDN, blob storage
 Requires at least: 4.0
-Tested up to: 5.3
-Stable tag: 4.3.1
-License: BSD 2-Clause
-License URI: http://www.opensource.org/licenses/bsd-license.php
+Tested up to:      5.6
+Requires PHP:      5.6
+Stable tag:        4.3.2
+License:           BSD 2-Clause
+License URI:       http://www.opensource.org/licenses/bsd-license.php
 
 Use the Microsoft Azure Storage service to host your website's media files.
 
@@ -31,6 +32,13 @@ For multisites or to enforce Azure Blob Storage settings, you can define the fol
 See Settings->Microsoft Azure for more information.
 
 == Changelog ==
+
+= 4.3.2 =
+* **Changed:** Bump WordPress version "tested up to" 5.6 (props [@davidegreenwald](https://profiles.wordpress.org/davidegreenwald/), [@shahaaron](https://profiles.wordpress.org/shahaaron/), [@lostfields](https://github.com/lostfields)).
+* **Fixed:** Image sizes when uploading to a post that is not in current month (props [@eflorea](https://profiles.wordpress.org/eflorea/), [@mmcachran](https://profiles.wordpress.org/mmcachran/), [@shadowxvii](https://profiles.wordpress.org/shadowxvii/)).
+* **Fixed:** Upload date in image metadata on back date posts (props [@brainfestation](https://profiles.wordpress.org/brainfestation/), [@rickalee](https://profiles.wordpress.org/rickalee/), [@cally423](https://github.com/cally423), [@FreuxF](https://github.com/FreuxF)).
+* **Security:** Bump `websocket-extensions` from 0.1.3 to 0.1.4 (props [@dependabot](https://github.com/apps/dependabot)).
+* **Security:** Bump `lodash` from 4.17.15 to 4.17.19 (props [@dependabot](https://github.com/apps/dependabot)).
 
 = 4.3.1 =
 * **Fixed:** Restore visual indicator of upload progress to Azure Blob Storage and account for `original_image` in count (props [@rickalee](https://profiles.wordpress.org/rickalee/), [@moraleidame](https://profiles.wordpress.org/moraleidame/)).
@@ -127,6 +135,7 @@ See Settings->Microsoft Azure for more information.
 * **Added:** Support to upload video files to blob storage.
 
 = 1.6.0 =
+* **Added:** support to upload video files to blob storage.
 
 = 1.5.0 =
 * **Added:** Included Microsoft Azure SDK for PHP v4.1.0 with the plugin. Now setting mime-type for uploaded file to blob storage.

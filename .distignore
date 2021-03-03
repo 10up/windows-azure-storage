@@ -12,11 +12,11 @@
 .gitignore
 CHANGELOG.md
 CODE_OF_CONDUCT.md
+composer.json
 CONTRIBUTING.md
 CREDITS.md
 Gruntfile.js
 LICENSE
-README.md
-composer.json
 package-lock.json
 package.json
+README.md
