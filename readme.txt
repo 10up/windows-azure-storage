@@ -33,6 +33,13 @@ See Settings->Microsoft Azure for more information.
 
 == Changelog ==
 
+= 4.3.2 =
+* **Changed:** Bump WordPress version "tested up to" 5.6 (props [@davidegreenwald](https://profiles.wordpress.org/davidegreenwald/), [@shahaaron](https://profiles.wordpress.org/shahaaron/), [@lostfields](https://github.com/lostfields)).
+* **Fixed:** Image sizes when uploading to a post that is not in current month (props [@eflorea](https://profiles.wordpress.org/eflorea/), [@mmcachran](https://profiles.wordpress.org/mmcachran/), [@shadowxvii](https://profiles.wordpress.org/shadowxvii/)).
+* **Fixed:** Upload date in image metadata on back date posts (props [@brainfestation](https://profiles.wordpress.org/brainfestation/), [@rickalee](https://profiles.wordpress.org/rickalee/), [@cally423](https://github.com/cally423), [@FreuxF](https://github.com/FreuxF)).
+* **Security:** Bump `websocket-extensions` from 0.1.3 to 0.1.4 (props [@dependabot](https://github.com/apps/dependabot)).
+* **Security:** Bump `lodash` from 4.17.15 to 4.17.19 (props [@dependabot](https://github.com/apps/dependabot)).
+
 = 4.3.1 =
 * **Fixed:** Restore visual indicator of upload progress to Azure Blob Storage and account for `original_image` in count (props [@rickalee](https://profiles.wordpress.org/rickalee/), [@moraleidame](https://profiles.wordpress.org/moraleidame/)).
 * **Fixed:** Ensure PDF thumbnails are offloaded with JPEG mimetype instead of PDF (props [@rickalee](https://profiles.wordpress.org/rickalee/))
