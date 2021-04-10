@@ -17,7 +17,7 @@
 		"url": "git+https://github.com/10up/windows-azure-storaget"
 	},
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"build": "grunt"
 	},
 	"dependencies": {
 		"grunt": "^1.0.4",
