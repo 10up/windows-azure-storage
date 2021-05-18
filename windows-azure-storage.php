@@ -344,10 +344,13 @@ function windows_azure_storage_wp_get_attachment_url( $url, $post_id ) {
 	if ( ! empty( $media_info ) && isset( $media_info['url'] ) ) {
 		return $media_info['url'];
 	} else {
+		$wp_upload_dir      = wp_upload_dir();
+		$upload_dir_url     = untrailingslashit( $wp_upload_dir['baseurl'] );
+		$storage_url_prefix = untrailingslashit( WindowsAzureStorageUtil::get_storage_url_base() );
+		$url = str_replace( $upload_dir_url, $storage_url_prefix, $url );
 		return $url;
 	}
 }
-
 /**
  * Wordpress hook for wp_get_attachment_metadata. Cache mediainfo for
  * further reference.
