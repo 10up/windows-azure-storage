@@ -400,7 +400,13 @@ function windows_azure_storage_wp_generate_attachment_metadata( $data, $post_id 
 	$file_path = ltrim( $upload_path, '/' ) . $upload_file_name;
 
 	// Upload path for remaining files.
-	$upload_folder_path = trailingslashit( ltrim( $upload_dir['reldir'] . ( ! empty( $upload_file_path_info['dirname'] ) ? '/' . $upload_file_path_info['dirname'] : '' ), '/' ) );
+	$upload_folder_path = trailingslashit(
+		sprintf(
+			'%s%s',
+			trailingslashit( ltrim( $upload_dir['reldir'], '/' ) ),
+			ltrim( ( ! empty( $upload_file_path_info['dirname'] ) ? $upload_file_path_info['dirname'] : '' ), '/' )
+		)
+	);
 
 	try {
 		$post_array = wp_unslash( $_POST );
