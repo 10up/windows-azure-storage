@@ -582,6 +582,9 @@ class Windows_Azure_Helper {
 
 		$exist = false;
 
+		// Ensure WP_Filesystem() is available in REST API calls.
+		require_once ABSPATH . 'wp-admin/includes/file.php';
+
 		if ( WP_Filesystem() ) {
 			$upload_dir = self::wp_upload_dir();
 			$filename   = $upload_dir['uploads'] . DIRECTORY_SEPARATOR . $relative_path;
