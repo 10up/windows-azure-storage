@@ -84,6 +84,8 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	require_once MSFT_AZURE_PLUGIN_PATH . 'includes/compat.php';
 }
 
+require_once MSFT_AZURE_PLUGIN_PATH . 'vendor/autoload.php';
+
 // Check prerequisite for plugin.
 register_activation_hook( __FILE__, 'windows_azure_plugin_check_prerequisite' );
 

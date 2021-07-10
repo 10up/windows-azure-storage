@@ -41,6 +41,9 @@
  * @link      http://www.microsoft.com
  * @since     4.0.0
  */
+
+use MicrosoftAzure\Storage\Blob\BlobRestProxy;
+
 class Windows_Azure_Rest_Api_Client {
 
 	/**
@@ -422,6 +425,15 @@ class Windows_Azure_Rest_Api_Client {
 	protected $_access_key;
 
 	/**
+	 * Azure Storage connection string.
+	 *
+	 * @since 4.4.0
+	 *
+	 * @var null|string
+	 */
+	protected $_connection_string;
+
+	/**
 	 * URL which is currently being requested.
 	 *
 	 * @since 4.0.0
@@ -463,6 +475,7 @@ class Windows_Azure_Rest_Api_Client {
 			'If-Unmodified-Since',
 			'Range',
 		);
+		$this->set_connection_string();
 	}
 
 	/**
@@ -511,6 +524,23 @@ class Windows_Azure_Rest_Api_Client {
 	 */
 	public function set_access_key( $access_key ) {
 		$this->_access_key = $access_key;
+	}
+
+	/**
+	 * Set storage access key.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param null|string $access_key Storage access key.
+	 *
+	 * @return void
+	 */
+	public function set_connection_string() {
+		$this->_connection_string = sprintf(
+			'DefaultEndpointsProtocol=https;AccountName=%s;AccountKey=%s',
+			$this->_account_name,
+			$this->_access_key
+		);
 	}
 
 	/**
@@ -580,13 +610,13 @@ class Windows_Azure_Rest_Api_Client {
 			$query_args['marker'] = $next_marker;
 		}
 
-		$result = $this->_send_request( 'GET', $query_args );
-
-		if ( is_wp_error( $result ) ) {
-			return $result;
+		try {
+			$blobClient      = BlobRestProxy::createBlobService( $this->_connection_string, $query_args );
+			$containers_list = $blobClient->listContainers();
+			return new Windows_Azure_List_Containers_Response( $containers_list->getContainers(), $this, $prefix, $max_results );
+		} catch ( GuzzleHttp\Exception\ConnectException $exception ) {
+			return new \WP_Error( 401, $exception->getMessage() );
 		}
-
-		return new Windows_Azure_List_Containers_Response( $result, $this, $prefix, $max_results );
 	}
 
 	/**
