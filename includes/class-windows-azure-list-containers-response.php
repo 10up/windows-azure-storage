@@ -46,26 +46,19 @@ class Windows_Azure_List_Containers_Response extends Windows_Azure_Generic_List_
 	/**
 	 * Windows_Azure_List_Containers_Response constructor.
 	 *
+	 * @param array $containers Container response.
+	 * @param string $prefix Search prefix.
+	 * @param int $max_results Max results per one request.
+	 * @param string $path Unused.
+	 *
 	 * @since 4.0.0
 	 *
-	 * @param array                         $rest_response Rest response.
-	 * @param Windows_Azure_Rest_Api_Client $client        REST client.
-	 * @param string                        $prefix        Search prefix.
-	 * @param int                           $max_results   Max results per one request.
-	 * @param string                        $path          Unused.
 	 */
-	public function __construct( array $rest_response, Windows_Azure_Rest_Api_Client $client, $prefix = '', $max_results = Windows_Azure_Rest_Api_Client::API_REQUEST_BULK_SIZE, $path = '' ) {
-		parent::__construct( $rest_response, $client, $prefix, $max_results, $path );
+	public function __construct( array $containers, $prefix = '', $max_results = Windows_Azure_Rest_Api_Client::API_REQUEST_BULK_SIZE, $path = '' ) {
+		parent::__construct( $containers, $prefix, $max_results, $path );
 
-		if ( isset( $rest_response['Containers']['Container'] ) && ! empty( $rest_response['Containers']['Container'] ) ) {
-			if ( isset( $rest_response['Containers']['Container']['Name'] ) ) {
-				$single_container                           = $rest_response['Containers']['Container'];
-				$rest_response['Containers']['Container']   = array();
-				$rest_response['Containers']['Container'][] = $single_container;
-			}
-			foreach ( $rest_response['Containers']['Container'] as $container ) {
-				$this->_items[] = $container;
-			}
+		foreach ( $containers as $container ) {
+			$this->_items[] = [ 'Name' => $container->getName() ];
 		}
 	}
 
