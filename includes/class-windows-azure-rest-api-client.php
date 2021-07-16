@@ -688,11 +688,11 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Get container ACL.
 	 *
-	 * @since 4.0.0
-	 *
 	 * @param string $name Container name.
 	 *
 	 * @return string|WP_Error Container ACL string or WP_Error on failure.
+	 * @since 4.0.0
+	 *
 	 */
 	public function get_container_acl( $name ) {
 		$query_args = array(
@@ -700,13 +700,14 @@ class Windows_Azure_Rest_Api_Client {
 			'comp'    => 'acl',
 		);
 
-		$result = $this->_send_request( 'HEAD', $query_args, array(), '', $name );
-
-		if ( is_wp_error( $result ) ) {
-			return $result;
+		try {
+			$blobClient = BlobRestProxy::createBlobService( $this->_connection_string, $query_args );
+			$result     = $blobClient->getContainerProperties( $name );
+		} catch ( GuzzleHttp\Exception\ConnectException $exception ) {
+			return new \WP_Error( 401, $exception->getMessage() );
 		}
 
-		$acl_header = wp_remote_retrieve_header( $result, 'x-ms-blob-public-access' );
+		$acl_header = $result->getPublicAccess();
 		if ( empty( $acl_header ) ) {
 			$acl_header = self::CONTAINER_VISIBILITY_PRIVATE;
 		}
