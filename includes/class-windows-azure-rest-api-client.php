@@ -43,6 +43,7 @@
  */
 
 use MicrosoftAzure\Storage\Blob\BlobRestProxy;
+use MicrosoftAzure\Storage\Blob\Models\CreateContainerOptions;
 
 class Windows_Azure_Rest_Api_Client {
 
@@ -622,33 +623,33 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Create new container.
 	 *
-	 * @since 4.0.0
-	 *
-	 * @param string $name       Container name.
+	 * @param string $name Container name.
 	 * @param string $visibility Container visibility.
 	 *
 	 * @return string|WP_Error New container name or WP_Error on failure.
+	 * @since 4.0.0
+	 *
 	 */
 	public function create_container( $name, $visibility = self::CONTAINER_VISIBILITY_BLOB ) {
 		$query_args = array(
 			'restype' => 'container',
 		);
 
-		$name = sanitize_title_with_dashes( $name );
-
-		$headers = array();
+		$name    = sanitize_title_with_dashes( $name );
+		$options = new CreateContainerOptions();
 
 		switch ( $visibility ) {
 			case self::CONTAINER_VISIBILITY_BLOB:
 			case self::CONTAINER_VISIBILITY_CONTAINER:
-				$headers[ self::API_HEADER_BLOB_PUBLIC_ACCESS ] = $visibility;
+				$options->setPublicAccess( $visibility );
 				break;
 		}
 
-		$result = $this->_send_request( 'PUT', $query_args, $headers, '', $name );
-
-		if ( is_wp_error( $result ) ) {
-			return $result;
+		try {
+			$blobClient = BlobRestProxy::createBlobService( $this->_connection_string, $query_args );
+			$blobClient->createContainer( $name, $options );
+		} catch ( GuzzleHttp\Exception\ConnectException $exception ) {
+			return new \WP_Error( 401, $exception->getMessage() );
 		}
 
 		return $name;
