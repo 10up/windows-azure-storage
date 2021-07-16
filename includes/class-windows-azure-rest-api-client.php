@@ -658,29 +658,29 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Get container properties.
 	 *
-	 * @since 4.0.0
-	 *
 	 * @param string $name Container name.
 	 *
 	 * @return array|WP_Error Container properties array of WP_Error on failure.
+	 * @since 4.0.0
+	 *
 	 */
 	public function get_container_properties( $name ) {
 		$query_args = array(
 			'restype' => 'container',
 		);
 
-		$result = $this->_send_request( 'HEAD', $query_args, array(), '', $name );
-
-		if ( is_wp_error( $result ) ) {
-			return $result;
+		try {
+			$blobClient = BlobRestProxy::createBlobService( $this->_connection_string, $query_args );
+			$result     = $blobClient->getContainerProperties( $name );
+		} catch ( GuzzleHttp\Exception\ConnectException $exception ) {
+			return new \WP_Error( 401, $exception->getMessage() );
 		}
 
-		$headers    = array( self::API_HEADER_LAST_MODIFIED, 'etag', 'x-ms-lease-status', 'x-ms-lease-state', 'x-ms-lease-duration' );
-		$properties = array();
-
-		foreach ( $headers as $header ) {
-			$properties[ $header ] = wp_remote_retrieve_header( $result, $header );
-		}
+		$properties[ self::API_HEADER_LAST_MODIFIED ] = sprintf( '%s %s', date_i18n( 'D, j M Y H:i:s', $result->getLastModified()->getTimestamp() ), $result->getLastModified()->getTimezone()->getName() );
+		$properties['etag']                           = $result->getETag();
+		$properties['x-ms-lease-status']              = $result->getLeaseStatus();
+		$properties['x-ms-lease-state']               = $result->getLeaseState();
+		$properties['x-ms-lease-duration']            = $result->getLeaseDuration();
 
 		return $properties;
 	}
