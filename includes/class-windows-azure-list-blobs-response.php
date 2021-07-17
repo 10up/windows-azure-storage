@@ -45,40 +45,33 @@ class Windows_Azure_List_Blobs_Response extends Windows_Azure_Generic_List_Respo
 	/**
 	 * Windows_Azure_List_Containers_Response constructor.
 	 *
+	 * @param array $blobs Array of blobs.
+	 * @param Windows_Azure_Rest_Api_Client $client REST client.
+	 * @param int $max_results Max results per one request.
+	 * @param string $path Container name.
+	 *
 	 * @since 4.0.0
 	 *
-	 * @param array                         $rest_response Rest response.
-	 * @param Windows_Azure_Rest_Api_Client $client        REST client.
-	 * @param string                        $prefix        Search prefix.
-	 * @param int                           $max_results   Max results per one request.
-	 * @param string                        $path          Container name.
 	 */
-	public function __construct( array $rest_response, Windows_Azure_Rest_Api_Client $client, $prefix = '', $max_results = Windows_Azure_Rest_Api_Client::API_REQUEST_BULK_SIZE, $path = '' ) {
-		parent::__construct( $rest_response, $client, $prefix, $max_results, $path );
+	public function __construct( array $blobs, $prefix = '', $max_results = Windows_Azure_Rest_Api_Client::API_REQUEST_BULK_SIZE, $path = '' ) {
+		parent::__construct( $blobs, $prefix, $max_results, $path );
 
-		if ( isset( $rest_response['Blobs']['Blob'] ) && ! empty( $rest_response['Blobs']['Blob'] ) ) {
-			if ( isset( $rest_response['Blobs']['Blob']['Name'] ) ) {
-				$blob                             = $rest_response['Blobs']['Blob'];
-				$rest_response['Blobs']['Blob']   = array();
-				$rest_response['Blobs']['Blob'][] = $blob;
-			}
-			foreach ( $rest_response['Blobs']['Blob'] as $container ) {
-				$this->_items[] = $container;
-			}
+		foreach ( $blobs as $blob ) {
+			$this->_items[] = [ 'Name' => $blob->getName() ];
 		}
 	}
 
 	/**
 	 * Lazy loading of blobs.
 	 *
-	 * @since 4.0.0
-	 *
-	 * @param string $prefix      Search prefix.
-	 * @param int    $max_results Max API listing results.
+	 * @param string $prefix Search prefix.
+	 * @param int $max_results Max API listing results.
 	 * @param string $next_marker Offset marker.
-	 * @param string $path        Container name.
+	 * @param string $path Container name.
 	 *
 	 * @return WP_Error|Windows_Azure_List_Blobs_Response Blobs list iterator class or WP_Error on failure.
+	 * @since 4.0.0
+	 *
 	 */
 	protected function _list_items( $prefix, $max_results, $next_marker, $path ) {
 		return $this->_rest_client->list_blobs( $path, $prefix, $max_results, $next_marker );

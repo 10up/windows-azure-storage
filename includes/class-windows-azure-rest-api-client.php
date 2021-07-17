@@ -44,6 +44,8 @@
 
 use MicrosoftAzure\Storage\Blob\BlobRestProxy;
 use MicrosoftAzure\Storage\Blob\Models\CreateContainerOptions;
+use MicrosoftAzure\Storage\Blob\Models\ListBlobsOptions;
+use MicrosoftAzure\Storage\Blob\Models\ListContainersOptions;
 
 class Windows_Azure_Rest_Api_Client {
 
@@ -589,13 +591,13 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * List containers.
 	 *
-	 * @since 4.0.0
-	 *
-	 * @param string $prefix      List containers which names start with this prefix.
-	 * @param int    $max_results Max containers to return.
-	 * @param bool   $next_marker Next collection marker.
+	 * @param string $prefix List containers which names start with this prefix.
+	 * @param int $max_results Max containers to return.
+	 * @param bool $next_marker Next collection marker.
 	 *
 	 * @return Windows_Azure_List_Containers_Response|WP_Error List of containers of WP_Error on failure.
+	 * @since 4.0.0
+	 *
 	 */
 	public function list_containers( $prefix = '', $max_results = self::API_REQUEST_BULK_SIZE, $next_marker = false ) {
 		$query_args = array(
@@ -603,8 +605,9 @@ class Windows_Azure_Rest_Api_Client {
 			'maxresults' => apply_filters( 'azure_blob_list_containers_max_results', $max_results ),
 		);
 
+		$options = new ListContainersOptions();
 		if ( ! empty( $prefix ) ) {
-			$query_args['prefix'] = rawurlencode( $prefix );
+			$options->setPrefix( rawurlencode( $prefix ) );
 		}
 
 		if ( $next_marker ) {
@@ -613,8 +616,9 @@ class Windows_Azure_Rest_Api_Client {
 
 		try {
 			$blobClient      = BlobRestProxy::createBlobService( $this->_connection_string, $query_args );
-			$containers_list = $blobClient->listContainers();
-			return new Windows_Azure_List_Containers_Response( $containers_list->getContainers(), $this, $prefix, $max_results );
+			$containers_list = $blobClient->listContainers( $options );
+
+			return new Windows_Azure_List_Containers_Response( $containers_list->getContainers(), $prefix, $max_results );
 		} catch ( GuzzleHttp\Exception\ConnectException $exception ) {
 			return new \WP_Error( 401, $exception->getMessage() );
 		}
@@ -734,21 +738,23 @@ class Windows_Azure_Rest_Api_Client {
 			'restype'    => 'container',
 		);
 
+		$options = new ListBlobsOptions();
 		if ( ! empty( $prefix ) ) {
-			$query_args['prefix'] = rawurlencode( $prefix );
+			$options->setPrefix( rawurlencode( $prefix ) );
 		}
 
 		if ( $next_marker ) {
 			$query_args['marker'] = $next_marker;
 		}
 
-		$result = $this->_send_request( 'GET', $query_args, array(), '', $container );
-
-		if ( is_wp_error( $result ) ) {
-			return $result;
+		try {
+			$blobClient = BlobRestProxy::createBlobService( $this->_connection_string, $query_args );
+			$result     = $blobClient->listBlobs( $container, $options );
+		} catch ( GuzzleHttp\Exception\ConnectException $exception ) {
+			return new \WP_Error( 401, $exception->getMessage() );
 		}
 
-		return new Windows_Azure_List_Blobs_Response( $result, $this, $prefix, $max_results, $container );
+		return new Windows_Azure_List_Blobs_Response( $result->getBlobs(), $prefix, $max_results, $container );
 	}
 
 	/**

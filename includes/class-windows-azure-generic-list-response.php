@@ -111,12 +111,12 @@ abstract class Windows_Azure_Generic_List_Response implements Iterator {
 	 *
 	 * @since 4.0.0
 	 *
-	 * @param array                         $containers Rest response.
+	 * @param array                         $items         Array of results.
 	 * @param string                        $prefix        Search prefix.
 	 * @param int                           $max_results   Max results per one request.
 	 * @param string                        $path          Optional request path.
 	 */
-	public function __construct( array $containers, $prefix = '', $max_results = Windows_Azure_Rest_Api_Client::API_REQUEST_BULK_SIZE, $path = '' ) {
+	public function __construct( array $items, $prefix = '', $max_results = Windows_Azure_Rest_Api_Client::API_REQUEST_BULK_SIZE, $path = '' ) {
 		$this->_position    = 0;
 		$this->_items       = array();
 		$this->_max_results = $max_results;
