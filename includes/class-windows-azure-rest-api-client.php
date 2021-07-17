@@ -754,19 +754,19 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Delete blob from container.
 	 *
-	 * @since 4.0.0
-	 *
-	 * @param string $container   Container name.
+	 * @param string $container Container name.
 	 * @param string $remote_path Remote blob path.
 	 *
 	 * @return bool|WP_Error True on success or WP_Error on failure.
+	 * @since 4.0.0
+	 *
 	 */
 	public function delete_blob( $container, $remote_path ) {
-		$container = trailingslashit( $container );
-		$result    = $this->_send_request( 'DELETE', array(), array(), '', $container . $remote_path );
-
-		if ( is_wp_error( $result ) ) {
-			return $result;
+		try {
+			$blobClient = BlobRestProxy::createBlobService( $this->_connection_string );
+			$blobClient->deleteBlob( $container, $remote_path );
+		} catch ( Exception $exception ) {
+			return new \WP_Error( 401, $exception->getMessage() );
 		}
 
 		return true;
