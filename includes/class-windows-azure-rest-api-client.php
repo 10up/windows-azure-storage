@@ -676,11 +676,11 @@ class Windows_Azure_Rest_Api_Client {
 			return new \WP_Error( 401, $exception->getMessage() );
 		}
 
-		$properties[ self::API_HEADER_LAST_MODIFIED ] = sprintf( '%s %s', date_i18n( 'D, j M Y H:i:s', $result->getLastModified()->getTimestamp() ), $result->getLastModified()->getTimezone()->getName() );
-		$properties['etag']                           = $result->getETag();
-		$properties['x-ms-lease-status']              = $result->getLeaseStatus();
-		$properties['x-ms-lease-state']               = $result->getLeaseState();
-		$properties['x-ms-lease-duration']            = $result->getLeaseDuration();
+		$properties[ self::API_HEADER_LAST_MODIFIED ]  = sprintf( '%s %s', date_i18n( 'D, j M Y H:i:s', $result->getLastModified()->getTimestamp() ), $result->getLastModified()->getTimezone()->getName() );
+		$properties[ self::API_HEADER_ETAG ]           = $result->getETag();
+		$properties[ self::API_HEADER_LEASE_STATUS ]   = $result->getLeaseStatus();
+		$properties[ self::API_HEADER_LEASE_STATE ]    = $result->getLeaseState();
+		$properties[ self::API_HEADER_LEASE_DURATION ] = $result->getLeaseDuration();
 
 		return $properties;
 	}
@@ -775,50 +775,43 @@ class Windows_Azure_Rest_Api_Client {
 	/**
 	 * Get blob properties.
 	 *
-	 * @since 4.0.0
-	 *
-	 * @param string $container   Container name.
+	 * @param string $container Container name.
 	 * @param string $remote_path Remote blob path.
 	 *
 	 * @return array|WP_Error Blob properties array or WP_Error on failure.
+	 * @since 4.0.0
+	 *
 	 */
 	public function get_blob_properties( $container, $remote_path ) {
-		$container = trailingslashit( $container );
-		$result    = $this->_send_request( 'HEAD', array(), array(), '', $container . $remote_path );
-
-		if ( is_wp_error( $result ) ) {
-			return $result;
+		try {
+			$blobClient = BlobRestProxy::createBlobService( $this->_connection_string );
+			$result     = $blobClient->getBlobProperties( $container, $remote_path );
+		} catch ( GuzzleHttp\Exception\ConnectException $exception ) {
+			return new \WP_Error( 401, $exception->getMessage() );
 		}
 
-		$headers    = array(
-			self::API_HEADER_LAST_MODIFIED,
-			self::API_HEADER_BLOB_TYPE,
-			self::API_HEADER_COPY_COMPLETION_TIME,
-			self::API_HEADER_COPY_STATUS_DESCRIPTION,
-			self::API_HEADER_COPY_ID,
-			self::API_HEADER_COPY_PROGRESS,
-			self::API_HEADER_COPY_SOURCE,
-			self::API_HEADER_COPY_STATUS,
-			self::API_HEADER_LEASE_DURATION,
-			self::API_HEADER_LEASE_STATE,
-			self::API_HEADER_LEASE_STATUS,
-			self::API_HEADER_CONTENT_LENGTH,
-			self::API_HEADER_CONTENT_TYPE,
-			self::API_HEADER_ETAG,
-			self::API_HEADER_CONTENT_MD5,
-			self::API_HEADER_CONTENT_ENCODING,
-			self::API_HEADER_CONTENT_LANGUAGE,
-			self::API_HEADER_CONTENT_DISPOSITION,
-			self::API_HEADER_CACHE_CONTROL,
-			self::API_HEADER_BLOB_SEQUENCE_NUMBER,
-			self::API_HEADER_ACCEPT_RANGES,
-			self::API_HEADER_BLOB_COMMITED_BLOCK_COUNT,
-		);
-		$properties = array();
-
-		foreach ( $headers as $header ) {
-			$properties[ $header ] = wp_remote_retrieve_header( $result, $header );
-		}
+		$blob_properties                                          = $result->getProperties();
+		$properties[ self::API_HEADER_LAST_MODIFIED ]             = sprintf( '%s %s', date_i18n( 'D, j M Y H:i:s', $result->getLastModified()->getTimestamp() ), $result->getLastModified()->getTimezone()->getName() );
+		$properties[ self::API_HEADER_BLOB_TYPE ]                 = $blob_properties->getBlobType();
+		$properties[ self::API_HEADER_COPY_COMPLETION_TIME ]      = $blob_properties->getCopyState()->getCompletionTime();
+		$properties[ self::API_HEADER_COPY_STATUS_DESCRIPTION ]   = $blob_properties->getCopyState()->getStatusDescription();
+		$properties[ self::API_HEADER_COPY_ID ]                   = $blob_properties->getCopyState()->getCopyId();
+		$properties[ self::API_HEADER_COPY_PROGRESS ]             = sprintf( '%s/%s', $blob_properties->getCopyState()->getBytesCopied(), $blob_properties->getCopyState()->getTotalBytes() );
+		$properties[ self::API_HEADER_COPY_SOURCE ]               = $blob_properties->getCopyState()->getSource();
+		$properties[ self::API_HEADER_COPY_STATUS ]               = $blob_properties->getCopyState()->getStatus();
+		$properties[ self::API_HEADER_LEASE_DURATION ]            = $blob_properties->getLeaseDuration();
+		$properties[ self::API_HEADER_LEASE_STATE ]               = $blob_properties->getLeaseState();
+		$properties[ self::API_HEADER_LEASE_STATUS ]              = $blob_properties->getLeaseStatus();
+		$properties[ self::API_HEADER_CONTENT_LENGTH ]            = $blob_properties->getContentLength();
+		$properties[ self::API_HEADER_CONTENT_TYPE ]              = $blob_properties->getContentType();
+		$properties[ self::API_HEADER_ETAG ]                      = $blob_properties->getETag();
+		$properties[ self::API_HEADER_CONTENT_MD5 ]               = $blob_properties->getContentMD5();
+		$properties[ self::API_HEADER_CONTENT_ENCODING ]          = $blob_properties->getContentEncoding();
+		$properties[ self::API_HEADER_CONTENT_LANGUAGE ]          = $blob_properties->getContentLanguage();
+		$properties[ self::API_HEADER_CONTENT_DISPOSITION ]       = $blob_properties->getContentDisposition();
+		$properties[ self::API_HEADER_CACHE_CONTROL ]             = $blob_properties->getCacheControl();
+		$properties[ self::API_HEADER_BLOB_SEQUENCE_NUMBER ]      = $blob_properties->getSequenceNumber();
+		$properties[ self::API_HEADER_BLOB_COMMITED_BLOCK_COUNT ] = $blob_properties->getCommittedBlockCount();
 
 		return $properties;
 	}
