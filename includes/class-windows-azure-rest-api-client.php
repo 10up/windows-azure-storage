@@ -619,7 +619,7 @@ class Windows_Azure_Rest_Api_Client {
 			$containers_list = $blobClient->listContainers( $options );
 
 			return new Windows_Azure_List_Containers_Response( $containers_list->getContainers(), $prefix, $max_results );
-		} catch ( GuzzleHttp\Exception\ConnectException $exception ) {
+		} catch ( Exception $exception ) {
 			return new \WP_Error( 401, $exception->getMessage() );
 		}
 	}
@@ -652,7 +652,7 @@ class Windows_Azure_Rest_Api_Client {
 		try {
 			$blobClient = BlobRestProxy::createBlobService( $this->_connection_string, $query_args );
 			$blobClient->createContainer( $name, $options );
-		} catch ( GuzzleHttp\Exception\ConnectException $exception ) {
+		} catch ( Exception $exception ) {
 			return new \WP_Error( 401, $exception->getMessage() );
 		}
 
@@ -676,7 +676,7 @@ class Windows_Azure_Rest_Api_Client {
 		try {
 			$blobClient = BlobRestProxy::createBlobService( $this->_connection_string, $query_args );
 			$result     = $blobClient->getContainerProperties( $name );
-		} catch ( GuzzleHttp\Exception\ConnectException $exception ) {
+		} catch ( Exception $exception ) {
 			return new \WP_Error( 401, $exception->getMessage() );
 		}
 
@@ -707,7 +707,7 @@ class Windows_Azure_Rest_Api_Client {
 		try {
 			$blobClient = BlobRestProxy::createBlobService( $this->_connection_string, $query_args );
 			$result     = $blobClient->getContainerProperties( $name );
-		} catch ( GuzzleHttp\Exception\ConnectException $exception ) {
+		} catch ( Exception $exception ) {
 			return new \WP_Error( 401, $exception->getMessage() );
 		}
 
@@ -750,7 +750,7 @@ class Windows_Azure_Rest_Api_Client {
 		try {
 			$blobClient = BlobRestProxy::createBlobService( $this->_connection_string, $query_args );
 			$result     = $blobClient->listBlobs( $container, $options );
-		} catch ( GuzzleHttp\Exception\ConnectException $exception ) {
+		} catch ( Exception $exception ) {
 			return new \WP_Error( 401, $exception->getMessage() );
 		}
 
