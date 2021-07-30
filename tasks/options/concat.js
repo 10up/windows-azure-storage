@@ -7,6 +7,12 @@ module.exports = {
 
 		' */\n'
 	},
+	webp: {
+		src: [
+			'js/src/windows-azure-storage-webp.js'
+		],
+		dest: 'js/windows-azure-storage-webp.js'
+	},
 	mediabrowser: {
 		src: [
 			'js/src/windows-azure-storage-media-browser.js'

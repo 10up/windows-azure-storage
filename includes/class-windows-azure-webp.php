@@ -214,7 +214,7 @@ class Windows_Azure_Webp {
 	 * @filter wp_get_attachment_image_src
 	 *
 	 * @param bool|array   $image         Either array with src, width & height, icon src, or false.
-	 * @param int          $attachment_id Image attachment ID.
+	 * @param int|string   $attachment_id Image attachment ID.
 	 * @param string|array $size          Size of image. Image size or array of width and height values
 	 *                                    (in that order). Default 'thumbnail'.
 	 * @param bool         $icon          Whether the image should be treated as an icon. Default false.
@@ -222,7 +222,7 @@ class Windows_Azure_Webp {
 	 * @return array|bool
 	 */
 	public function webp_attachment_image_src( $image, $attachment_id, $size, $icon ) {
-		if ( ! is_array( $image ) ) {
+		if ( is_array( $image ) ) {
 			$webp_meta = get_post_meta( $attachment_id, 'webp_attachment_details', true );
 			if ( $webp_meta ) {
 				// Convert our $size variable into a string if it is an array.
@@ -276,17 +276,17 @@ class Windows_Azure_Webp {
 	 *
 	 * @filter wp_get_attachment_image_attributes
 	 *
-	 * @param array  $attr       Array of attributes.
-	 * @param object $attachment Object.
-	 * @param string $size       Size.
+	 * @param array        $attr       Array of attributes.
+	 * @param object       $attachment Object.
+	 * @param array|string $size       Size.
 	 *
 	 * @return array
 	 */
-	function add_original_attributes( array $attr, object $attachment, string $size ): array {
+	function add_original_attributes( array $attr, object $attachment, $size ): array {
 		$webp_meta = get_post_meta( $attachment->ID, 'webp_attachment_details', true );
 
 		// Return the set attributes if no webp metadata was found.
-		if ( $webp_meta ) {
+		if ( false === $webp_meta || empty( $webp_meta ) ) {
 			return $attr;
 		}
 
