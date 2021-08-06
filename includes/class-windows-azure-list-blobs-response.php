@@ -1,5 +1,7 @@
 <?php
 
+use MicrosoftAzure\Storage\Blob\Models\ListBlobsResult;
+
 /**
  * Microsoft Azure Storage REST API list blobs response.
  *
@@ -45,7 +47,7 @@ class Windows_Azure_List_Blobs_Response extends Windows_Azure_Generic_List_Respo
 	/**
 	 * Windows_Azure_List_Containers_Response constructor.
 	 *
-	 * @param array $blobs Array of blobs.
+	 * @param ListBlobsResult $blobs Array of blobs.
 	 * @param Windows_Azure_Rest_Api_Client $client REST client.
 	 * @param int $max_results Max results per one request.
 	 * @param string $path Container name.
@@ -53,9 +55,10 @@ class Windows_Azure_List_Blobs_Response extends Windows_Azure_Generic_List_Respo
 	 * @since 4.0.0
 	 *
 	 */
-	public function __construct( array $blobs, $prefix = '', $max_results = Windows_Azure_Rest_Api_Client::API_REQUEST_BULK_SIZE, $path = '' ) {
+	public function __construct( ListBlobsResult $blobs, $prefix = '', $max_results = Windows_Azure_Rest_Api_Client::API_REQUEST_BULK_SIZE, $path = '' ) {
 		parent::__construct( $blobs, $prefix, $max_results, $path );
 
+		$blobs = $blobs->getBlobs();
 		foreach ( $blobs as $blob ) {
 			$this->_items[] = [ 'Name' => $blob->getName() ];
 		}

@@ -601,24 +601,25 @@ class Windows_Azure_Rest_Api_Client {
 	 */
 	public function list_containers( $prefix = '', $max_results = self::API_REQUEST_BULK_SIZE, $next_marker = false ) {
 		$query_args = array(
-			'comp'       => 'list',
-			'maxresults' => apply_filters( 'azure_blob_list_containers_max_results', $max_results ),
+			'comp' => 'list',
 		);
 
 		$options = new ListContainersOptions();
+		$options->setMaxResults( apply_filters( 'azure_blob_list_containers_max_results', $max_results ) );
+
 		if ( ! empty( $prefix ) ) {
 			$options->setPrefix( rawurlencode( $prefix ) );
 		}
 
 		if ( $next_marker ) {
-			$query_args['marker'] = $next_marker;
+			$options->setMarker( $next_marker );
 		}
 
 		try {
 			$blobClient      = BlobRestProxy::createBlobService( $this->_connection_string, $query_args );
 			$containers_list = $blobClient->listContainers( $options );
 
-			return new Windows_Azure_List_Containers_Response( $containers_list->getContainers(), $prefix, $max_results );
+			return new Windows_Azure_List_Containers_Response( $containers_list, $prefix, $max_results );
 		} catch ( Exception $exception ) {
 			return new \WP_Error( 401, $exception->getMessage() );
 		}
@@ -733,12 +734,12 @@ class Windows_Azure_Rest_Api_Client {
 	 */
 	public function list_blobs( $container, $prefix = '', $max_results = self::API_REQUEST_BULK_SIZE, $next_marker = false ) {
 		$query_args = array(
-			'comp'       => 'list',
-			'maxresults' => apply_filters( 'azure_blob_list_blobs_max_results', $max_results ),
-			'restype'    => 'container',
+			'comp'    => 'list',
+			'restype' => 'container',
 		);
 
 		$options = new ListBlobsOptions();
+		$options->setMaxResults( apply_filters( 'azure_blob_list_blobs_max_results', $max_results ) );
 		if ( ! empty( $prefix ) ) {
 			$options->setPrefix( rawurlencode( $prefix ) );
 		}
@@ -749,12 +750,12 @@ class Windows_Azure_Rest_Api_Client {
 
 		try {
 			$blobClient = BlobRestProxy::createBlobService( $this->_connection_string, $query_args );
-			$result     = $blobClient->listBlobs( $container, $options );
+			$blobs     = $blobClient->listBlobs( $container, $options );
 		} catch ( Exception $exception ) {
 			return new \WP_Error( 401, $exception->getMessage() );
 		}
 
-		return new Windows_Azure_List_Blobs_Response( $result->getBlobs(), $prefix, $max_results, $container );
+		return new Windows_Azure_List_Blobs_Response( $blobs, $prefix, $max_results, $container );
 	}
 
 	/**

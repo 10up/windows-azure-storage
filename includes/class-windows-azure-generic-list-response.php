@@ -1,5 +1,8 @@
 <?php
 
+use MicrosoftAzure\Storage\Blob\Models\ListContainersResult;
+use MicrosoftAzure\Storage\Blob\Models\ListBlobsResult;
+
 /**
  * Microsoft Azure Storage REST API list containers response.
  *
@@ -109,14 +112,15 @@ abstract class Windows_Azure_Generic_List_Response implements Iterator {
 	/**
 	 * Windows_Azure_List_Containers_Response constructor.
 	 *
+	 * @param ListContainersResult | ListBlobsResult $items Array of results.
+	 * @param string $prefix Search prefix.
+	 * @param int $max_results Max results per one request.
+	 * @param string $path Optional request path.
+	 *
 	 * @since 4.0.0
 	 *
-	 * @param array                         $items         Array of results.
-	 * @param string                        $prefix        Search prefix.
-	 * @param int                           $max_results   Max results per one request.
-	 * @param string                        $path          Optional request path.
 	 */
-	public function __construct( array $items, $prefix = '', $max_results = Windows_Azure_Rest_Api_Client::API_REQUEST_BULK_SIZE, $path = '' ) {
+	public function __construct( $items, $prefix = '', $max_results = Windows_Azure_Rest_Api_Client::API_REQUEST_BULK_SIZE, $path = '' ) {
 		$this->_position    = 0;
 		$this->_items       = array();
 		$this->_max_results = $max_results;
