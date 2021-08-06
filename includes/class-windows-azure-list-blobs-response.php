@@ -58,10 +58,7 @@ class Windows_Azure_List_Blobs_Response extends Windows_Azure_Generic_List_Respo
 	public function __construct( ListBlobsResult $blobs, $prefix = '', $max_results = Windows_Azure_Rest_Api_Client::API_REQUEST_BULK_SIZE, $path = '' ) {
 		parent::__construct( $blobs, $prefix, $max_results, $path );
 
-		$blobs = $blobs->getBlobs();
-		foreach ( $blobs as $blob ) {
-			$this->_items[] = [ 'Name' => $blob->getName() ];
-		}
+		$this->_items = $blobs->getBlobs();
 	}
 
 	/**

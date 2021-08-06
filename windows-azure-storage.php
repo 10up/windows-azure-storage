@@ -91,7 +91,7 @@ register_activation_hook( __FILE__, 'windows_azure_plugin_check_prerequisite' );
 
 add_action( 'plugins_loaded', 'windows_azure_storage_load_textdomain' );
 add_action( 'admin_menu', 'windows_azure_storage_plugin_menu' );
-add_filter( 'media_buttons_context', 'windows_azure_storage_media_buttons_context' );
+add_filter( 'media_buttons', 'windows_azure_storage_media_buttons_context' );
 add_action( 'load-settings_page_windows-azure-storage-plugin-options', 'windows_azure_storage_load_settings_page' );
 add_action( 'load-settings_page_windows-azure-storage-plugin-options', 'windows_azure_storage_check_container_access_policy' );
 add_action( 'wp_ajax_query-azure-attachments', 'windows_azure_storage_query_azure_attachments' );
@@ -722,11 +722,9 @@ function windows_azure_storage_dialog_browse_tab() {
  * @since    3.0.0 Rewrote internals to only create a single element.
  * @internal Callback for 'media_buttons_context' filter.
  *
- * @param string $context Media buttons context.
- *
  * @return string Media buttons context with our button appended.
  */
-function windows_azure_storage_media_buttons_context( $context ) {
+function windows_azure_storage_media_buttons_context() {
 	global $post_ID, $temp_ID;
 
 	$uploading_iframe_id = (int) ( 0 === $post_ID ? $temp_ID : $post_ID );
@@ -753,7 +751,22 @@ title="%2$s"><img src="%3$s" alt="%2$s" role="img" class="windows-azure-storage-
 		esc_html__( 'Add Media From Azure', 'windows-azure-storage' )
 	);
 
-	return $context . $azure_image_button_element;
+	echo wp_kses( $azure_image_button_element, array(
+		'a'   => [
+			'id'          => 'windows-azure-storage-media-button',
+			'role'        => 'button',
+			'href'        => 'javascript:void(0)',
+			'class'       => 'button',
+			'data-editor' => 'content',
+			'title'       => true,
+		],
+		'img' => [
+			'src'   => true,
+			'alt'   => true,
+			'role'  => 'img',
+			'class' => 'windows-azure-storage-media-icon',
+		]
+	) );
 }
 
 /**
@@ -897,20 +910,23 @@ function windows_azure_storage_query_azure_attachments() {
 	$client      = new Windows_Azure_Rest_Api_Client( $credentials['account_name'], $credentials['account_key'] );
 	$blobs       = $client->list_blobs( Windows_Azure_Helper::get_default_container(), $query['s'], (int) $query['posts_per_page'], $next_marker );
 	setcookie( 'azure_next_marker', $blobs->get_next_marker() );
-	foreach ( $blobs->get_all() as $blob ) {
-		if ( '/' === $blob['Name'][ strlen( $blob['Name'] ) - 1 ] ) {
+	foreach ( $blobs as $blob ) {
+		$blob_name       = $blob->getName();
+		$blob_properties = $blob->getProperties();
+		if ( '/' === $blob_name[ strlen( $blob_name ) - 1 ] ) {
 			continue;
 		}
-		$is_image = ( false !== strpos( $blob['Properties']['Content-Type'], 'image/' ) );
+
+		$is_image = ( false !== strpos( $blob_properties->getContentType(), 'image/' ) );
 
 		$blob_info = array(
-			'id'                    => base64_encode( $blob['Name'] ),
+			'id'                    => base64_encode( $blob_name ),
 			'uploading'             => false,
-			'filename'              => $blob['Name'],
-			'dateFormatted'         => $blob['Properties']['Last-Modified'],
-			'icon'                  => $is_image ? Windows_Azure_Helper::get_full_blob_url( $blob['Name'] ) : wp_mime_type_icon( $blob['Properties']['Content-Type'] ),
-			'url'                   => Windows_Azure_Helper::get_full_blob_url( $blob['Name'] ),
-			'filesizeHumanReadable' => size_format( $blob['Properties']['Content-Length'] ),
+			'filename'              => $blob_name,
+			'dateFormatted'         => $blob_properties->getLastModified(),
+			'icon'                  => $is_image ? Windows_Azure_Helper::get_full_blob_url( $blob_name ) : wp_mime_type_icon( $blob_properties->getContentType() ),
+			'url'                   => Windows_Azure_Helper::get_full_blob_url( $blob_name ),
+			'filesizeHumanReadable' => size_format( $blob_properties->getContentLength() ),
 			'isImage'               => $is_image,
 		);
 
