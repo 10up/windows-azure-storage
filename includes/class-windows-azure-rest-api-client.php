@@ -799,7 +799,7 @@ class Windows_Azure_Rest_Api_Client {
 		}
 
 		$blob_properties                                          = $result->getProperties();
-		$properties[ self::API_HEADER_LAST_MODIFIED ]             = sprintf( '%s %s', date_i18n( 'D, j M Y H:i:s', $result->getLastModified()->getTimestamp() ), $result->getLastModified()->getTimezone()->getName() );
+		$properties[ self::API_HEADER_LAST_MODIFIED ]             = Windows_Azure_Helper::get_formatted_date_for_blob( $blob_properties );
 		$properties[ self::API_HEADER_BLOB_TYPE ]                 = $blob_properties->getBlobType();
 		$properties[ self::API_HEADER_COPY_COMPLETION_TIME ]      = $blob_properties->getCopyState()->getCompletionTime();
 		$properties[ self::API_HEADER_COPY_STATUS_DESCRIPTION ]   = $blob_properties->getCopyState()->getStatusDescription();

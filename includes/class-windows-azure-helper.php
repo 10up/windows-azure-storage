@@ -625,4 +625,15 @@ class Windows_Azure_Helper {
 
 		return $wp_upload_dir[ $blog_id ];
 	}
+
+	/**
+	 * Return formatted string for given blob.
+	 *
+	 * @param \MicrosoftAzure\Storage\Blob\Models\BlobProperties $blob_properties
+	 *
+	 * @return string
+	 */
+	public static function get_formatted_date_for_blob( $blob_properties ) {
+		return sprintf( '%s %s', date_i18n( 'D, j M Y H:i:s',  $blob_properties->getLastModified()->getTimestamp() ), $blob_properties->getLastModified()->getTimezone()->getName() );
+	}
 }

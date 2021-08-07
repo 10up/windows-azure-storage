@@ -923,7 +923,7 @@ function windows_azure_storage_query_azure_attachments() {
 			'id'                    => base64_encode( $blob_name ),
 			'uploading'             => false,
 			'filename'              => $blob_name,
-			'dateFormatted'         => $blob_properties->getLastModified(),
+			'dateFormatted'         => Windows_Azure_Helper::get_formatted_date_for_blob( $blob_properties ),
 			'icon'                  => $is_image ? Windows_Azure_Helper::get_full_blob_url( $blob_name ) : wp_mime_type_icon( $blob_properties->getContentType() ),
 			'url'                   => Windows_Azure_Helper::get_full_blob_url( $blob_name ),
 			'filesizeHumanReadable' => size_format( $blob_properties->getContentLength() ),
