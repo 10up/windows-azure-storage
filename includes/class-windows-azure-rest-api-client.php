@@ -46,7 +46,8 @@ use MicrosoftAzure\Storage\Blob\BlobRestProxy;
 use MicrosoftAzure\Storage\Blob\Models\CreateContainerOptions;
 use MicrosoftAzure\Storage\Blob\Models\ListBlobsOptions;
 use MicrosoftAzure\Storage\Blob\Models\ListContainersOptions;
-use MicrosoftAzure\Storage\Blob\Models\ListBlobsResult;
+use MicrosoftAzure\Storage\Blob\Models\SetBlobPropertiesOptions;
+use MicrosoftAzure\Storage\Blob\Models\BlobProperties;
 
 class Windows_Azure_Rest_Api_Client {
 
@@ -548,48 +549,6 @@ class Windows_Azure_Rest_Api_Client {
 	}
 
 	/**
-	 * Filter hook for http_request_args.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @param array  $args Request arguments.
-	 * @param string $url  Request URL.
-	 *
-	 * @return array Modified request arguments.
-	 */
-	public function inject_authorization_header( array $args, $url ) {
-
-		// Only handle our known urls.
-		if ( $url !== $this->_current_url ) {
-			return $url;
-		}
-
-		$args = wp_parse_args( $args, array(
-			'method'  => 'GET',
-			'headers' => array(),
-		) );
-
-		$signature_data   = array();
-		$signature_data[] = strtoupper( $args['method'] );
-
-		foreach ( $this->_signature_headers as $header ) {
-			$signature_data[] = isset( $args['headers'][ $header ] ) ? $args['headers'][ $header ] : null;
-		}
-
-		$signature_data[] = implode( "\n", $this->_build_canonicalized_headers( $args['headers'] ) );
-		$signature_data[] = $this->_build_canonicalized_resource( $url, $this->_account_name );
-
-		$string_to_sign                   = implode( "\n", $signature_data );
-		$signature                        = 'SharedKey ' . $this->get_account_name() . ':' . base64_encode( hash_hmac( 'sha256', $string_to_sign, base64_decode( $this->get_access_key() ), true ) );
-		$args['headers']['Authorization'] = $signature;
-		if ( array_key_exists( 'Content-Length', $args['headers'] ) ) {
-			$args['headers']['Content-Length'] = (int)$args['headers']['Content-Length'];
-		}
-
-		return $args;
-	}
-
-	/**
 	 * List containers.
 	 *
 	 * @param string $prefix List containers which names start with this prefix.
@@ -825,43 +784,92 @@ class Windows_Azure_Rest_Api_Client {
 	}
 
 	/**
-	 * Put blob properties.
+	 * Filter hook for http_request_args.
 	 *
 	 * @since 4.0.0
 	 *
-	 * @param string $container   Container name.
-	 * @param string $remote_path Remote blob path.
-	 * @param array  $properties  Array with properties.
+	 * @param array  $args Request arguments.
+	 * @param string $url  Request URL.
 	 *
-	 * @return bool|WP_Error True on success or WP_Error on failure.
+	 * @return array Modified request arguments.
 	 */
-	public function put_blob_properties( $container, $remote_path, array $properties = array() ) {
-		$container  = trailingslashit( $container );
-		$query_args = array(
-			'comp' => 'properties',
-		);
-		$properties = apply_filters( 'windows_azure_storage_blob_properties', $properties, $container, $remote_path );
+	public function inject_authorization_header( array $args, $url ) {
 
-		$allowed_properties  = array(
-			self::API_HEADER_MS_BLOB_CACHE_CONTROL,
-			self::API_HEADER_MS_BLOB_CONTENT_TYPE,
-			self::API_HEADER_MS_BLOB_CONTENT_MD5,
-			self::API_HEADER_MS_BLOB_CONTENT_ENCODING,
-			self::API_HEADER_MS_BLOB_CONTENT_LANGUAGE,
-			self::API_HEADER_MS_BLOB_CONTENT_DISPOSITION,
-		);
-		$filtered_properties = array();
-
-		foreach ( $allowed_properties as $allowed_property ) {
-			if ( isset( $properties[ $allowed_property ] ) ) {
-				$filtered_properties[ $allowed_property ] = $properties[ $allowed_property ];
-			}
+		// Only handle our known urls.
+		if ( $url !== $this->_current_url ) {
+			return $url;
 		}
 
-		$result = $this->_send_request( 'PUT', $query_args, $filtered_properties, '', $container . $remote_path );
+		$args = wp_parse_args( $args, array(
+			'method'  => 'GET',
+			'headers' => array(),
+		) );
 
-		if ( is_wp_error( $result ) ) {
-			return $result;
+		$signature_data   = array();
+		$signature_data[] = strtoupper( $args['method'] );
+
+		foreach ( $this->_signature_headers as $header ) {
+			$signature_data[] = isset( $args['headers'][ $header ] ) ? $args['headers'][ $header ] : null;
+		}
+
+		$signature_data[] = implode( "\n", $this->_build_canonicalized_headers( $args['headers'] ) );
+		$signature_data[] = $this->_build_canonicalized_resource( $url, $this->_account_name );
+
+		$string_to_sign                   = implode( "\n", $signature_data );
+		$signature                        = 'SharedKey ' . $this->get_account_name() . ':' . base64_encode( hash_hmac( 'sha256', $string_to_sign, base64_decode( $this->get_access_key() ), true ) );
+		$args['headers']['Authorization'] = $signature;
+		if ( array_key_exists( 'Content-Length', $args['headers'] ) ) {
+			$args['headers']['Content-Length'] = (int)$args['headers']['Content-Length'];
+		}
+
+		return $args;
+	}
+
+	/**
+	 * Put blob properties.
+	 *
+	 * @param string $container Container name.
+	 * @param string $remote_path Remote blob path.
+	 * @param array $properties Array with properties.
+	 *
+	 * @return bool|WP_Error True on success or WP_Error on failure.
+	 * @since 4.0.0
+	 *
+	 */
+	public function put_blob_properties( $container, $remote_path, array $properties = array() ) {
+		$properties = apply_filters( 'windows_azure_storage_blob_properties', $properties, $container, $remote_path );
+		try {
+			$blobClient      = BlobRestProxy::createBlobService( $this->_connection_string );
+			$blob_properties = new SetBlobPropertiesOptions();
+
+			if ( isset( $properties[ self::API_HEADER_MS_BLOB_CACHE_CONTROL ] ) ) {
+				$blob_properties->setCacheControl( $properties[ self::API_HEADER_MS_BLOB_CACHE_CONTROL ] );
+			}
+
+			if ( isset( $properties[ self::API_HEADER_MS_BLOB_CONTENT_TYPE ] ) ) {
+				$blob_properties->setContentType( $properties[ self::API_HEADER_MS_BLOB_CONTENT_TYPE ] );
+			}
+
+			if ( isset( $properties[ self::API_HEADER_MS_BLOB_CONTENT_MD5 ] ) ) {
+				$blob_properties->setContentMD5( $properties[ self::API_HEADER_MS_BLOB_CONTENT_MD5 ] );
+			}
+
+			if ( isset( $properties[ self::API_HEADER_MS_BLOB_CONTENT_ENCODING ] ) ) {
+				$blob_properties->setContentEncoding( $properties[ self::API_HEADER_MS_BLOB_CONTENT_ENCODING ] );
+			}
+
+			if ( isset( $properties[ self::API_HEADER_MS_BLOB_CONTENT_LANGUAGE ] ) ) {
+				$blob_properties->setContentLanguage( $properties[ self::API_HEADER_MS_BLOB_CONTENT_LANGUAGE ] );
+			}
+
+			if ( isset( $properties[ self::API_HEADER_MS_BLOB_CONTENT_DISPOSITION ] ) ) {
+				$blob_properties->setContentDisposition( $properties[ self::API_HEADER_MS_BLOB_CONTENT_DISPOSITION ] );
+			}
+
+			$blobClient->setBlobProperties( $container, $remote_path, $blob_properties );
+
+		} catch ( Exception $exception ) {
+			return new \WP_Error( $exception->getMessage() );
 		}
 
 		return true;
@@ -966,144 +974,24 @@ class Windows_Azure_Rest_Api_Client {
 	 * @return bool|string|WP_Error Newly put blob URI or WP_Error|false on failure.
 	 */
 	public function put_blob( $container, $local_path, $remote_path, $force_direct_file_access = false ) {
-		$container  = trailingslashit( $container );
-		$query_args = array();
-		$headers    = apply_filters( 'azure_blob_put_blob_headers', array() );
-
-		// overwrite blob type.
-		$headers[ self::API_HEADER_BLOB_TYPE ] = self::APPEND_BLOB_TYPE;
-
-		$result = $this->_send_request( 'PUT', $query_args, $headers, '', $container . $remote_path );
-		if ( is_wp_error( $result ) ) {
-			return $result;
-		}
-
-		$contents_provider = new Windows_Azure_File_Contents_Provider( $local_path, null, $force_direct_file_access );
+		$blobClient        = BlobRestProxy::createBlobService( $this->_connection_string );
+		$contents_provider = new Windows_Azure_File_Contents_Provider( $local_path, null );
 		$is_valid          = $contents_provider->is_valid();
+
 		if ( ! $is_valid || is_wp_error( $is_valid ) ) {
 			return $is_valid;
 		}
-		do {
-			$chunk = $contents_provider->get_chunk();
-			if ( $chunk ) {
-				$result = $this->_append_blob( $container, $remote_path, $chunk );
-			}
-		} while ( false !== $chunk && true === $result );
 
-		$contents_provider->close();
+		$blob_content = fopen( $contents_provider->get_file_path(), 'r' );
 
-		if ( is_wp_error( $result ) ) {
-			return $result;
+		//Upload blob.
+		try {
+			$blobClient->createBlockBlob( $container, $remote_path, $blob_content );
+		} catch ( Exception $exception ) {
+			return new \WP_Error( $exception->getMessage() );
 		}
 
 		return $this->_build_api_endpoint_url( $container . $remote_path );
-	}
-
-	/**
-	 * Append blob operation.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @param string $container   Container.
-	 * @param string $remote_path Remote path.
-	 * @param string $content     Content to append.
-	 *
-	 * @return bool|WP_Error True on success or WP_Error on failure.
-	 */
-	protected function _append_blob( $container, $remote_path, $content ) {
-		$container  = trailingslashit( $container );
-		$query_args = array(
-			'comp' => 'appendblock',
-		);
-		$headers    = apply_filters( 'azure_blob_append_blob_headers', array(), $container, $remote_path, $content, $this );
-		$result     = $this->_send_request( 'PUT', $query_args, $headers, $content, $container . $remote_path );
-		if ( is_wp_error( $result ) ) {
-			return $result;
-		}
-
-		return true;
-	}
-
-	/**
-	 * Send REST request and return response.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @param string       $method     HTTP verb.
-	 * @param array        $query_args Request query args.
-	 * @param array        $headers    Request headers.
-	 * @param string|array $body       Request body.
-	 * @param string       $path       REST API endpoint path.
-	 *
-	 * @return array|WP_Error Response structure on success or WP_Error on failure.
-	 */
-	protected function _send_request( $method, array $query_args = array(), array $headers = array(), $body = '', $path = '' ) {
-
-		$query_args = wp_parse_args( $query_args, array(
-			'timeout' => apply_filters( 'azure_blob_operation_timeout', self::API_REQUEST_TIMEOUT ),
-		) );
-
-		// Encode filename to support special characters
-		$path = urlencode( $path );
-
-		$endpoint_url = $this->_build_api_endpoint_url( $path );
-
-		if ( is_wp_error( $endpoint_url ) ) {
-			return $endpoint_url;
-		}
-
-		$endpoint_url = add_query_arg( $query_args, $endpoint_url );
-
-		if ( is_array( $body ) ) {
-			$body = http_build_query( $body, null, '&' );
-		}
-
-		$headers = array_merge( $headers, array(
-			self::API_HEADER_MS_VERSION => self::API_VERSION,
-			self::API_HEADER_MS_DATE    => get_gmt_from_date( current_time( 'mysql', 0 ), 'D, d M Y H:i:s' ) . ' GMT',
-			'Content-Length'            => strlen( $body ) > 0 ? strlen( $body ) : null,
-			'Content-Type'              => 'text/plain',
-		) );
-
-		// Add this filter to be able to inject authorization header.
-		add_filter( 'http_request_args', array( $this, 'inject_authorization_header' ), PHP_INT_MAX, 2 );
-
-		$this->_current_url = $endpoint_url;
-
-		$result = wp_remote_request( $endpoint_url, array(
-			'method'      => $method,
-			'headers'     => $headers,
-			'body'        => $body,
-			'timeout'     => $query_args['timeout'],
-			'httpversion' => '1.1',
-		) );
-
-		$this->_current_url = null;
-
-		// Remove this filter once request is done.
-		remove_filter( 'http_request_args', array( $this, 'inject_authorization_header' ), PHP_INT_MAX );
-
-		if ( is_wp_error( $result ) ) {
-			return $result;
-		}
-
-		$response_code = (int) wp_remote_retrieve_response_code( $result );
-		if ( $response_code < 200 || $response_code > 299 ) {
-			return new WP_Error( $response_code, wp_remote_retrieve_response_message( $result ) );
-		}
-
-		$body = wp_remote_retrieve_body( $result );
-		if ( ! empty( $body ) ) {
-			if ( ! function_exists( 'simplexml_load_string' ) ) {
-				$message = __( "SimpleXML library hasn't been found. Please, check your PHP config.", 'windows-azure-storage' );
-				return new WP_Error( 'simplexml', $message );
-			}
-
-			$xml_structure = simplexml_load_string( $body );
-			return json_decode( json_encode( $xml_structure ), true );
-		} else {
-			return $result;
-		}
 	}
 
 	/**
