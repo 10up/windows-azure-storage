@@ -47,7 +47,7 @@ use MicrosoftAzure\Storage\Blob\Models\CreateContainerOptions;
 use MicrosoftAzure\Storage\Blob\Models\ListBlobsOptions;
 use MicrosoftAzure\Storage\Blob\Models\ListContainersOptions;
 use MicrosoftAzure\Storage\Blob\Models\SetBlobPropertiesOptions;
-use MicrosoftAzure\Storage\Blob\Models\BlobProperties;
+use MicrosoftAzure\Storage\Blob\Models\SetBlobTierOptions;
 
 class Windows_Azure_Rest_Api_Client {
 
@@ -365,6 +365,15 @@ class Windows_Azure_Rest_Api_Client {
 	 * @const string
 	 */
 	const API_HEADER_MS_BLOB_CONTENT_DISPOSITION = 'x-ms-blob-content-disposition';
+
+	/**
+	 * Azure API blob tier.
+	 *
+	 * @since 4.4.0
+	 *
+	 * @const string
+	 */
+	const API_HEADER_MS_ACCESS_TIER = 'x-ms-access-tier';
 
 	/**
 	 * Accept-Ranges header name.
@@ -864,6 +873,12 @@ class Windows_Azure_Rest_Api_Client {
 
 			if ( isset( $properties[ self::API_HEADER_MS_BLOB_CONTENT_DISPOSITION ] ) ) {
 				$blob_properties->setContentDisposition( $properties[ self::API_HEADER_MS_BLOB_CONTENT_DISPOSITION ] );
+			}
+
+			if ( isset( $properties[ self::API_HEADER_MS_ACCESS_TIER ] ) ) {
+				$options = new SetBlobTierOptions();
+				$options->setAccessTier( $properties[ self::API_HEADER_MS_ACCESS_TIER ] );
+				$blobClient->setBlobTier( $container, $remote_path, $options );
 			}
 
 			$blobClient->setBlobProperties( $container, $remote_path, $blob_properties );
