@@ -241,6 +241,8 @@ class Windows_Azure_File_Contents_Provider {
 	 * Return file path for given file content path.
 	 *
 	 * @return string
+	 *
+	 * @since 4.4.0
 	 */
 	public function get_file_path() {
 		return $this->_file_path;

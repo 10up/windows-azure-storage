@@ -633,6 +633,8 @@ class Windows_Azure_Helper {
 	 * @param \MicrosoftAzure\Storage\Blob\Models\BlobProperties $blob_properties
 	 *
 	 * @return string
+	 *
+	 * @since 4.4.0
 	 */
 	public static function get_formatted_date_for_blob( $blob_properties ) {
 		return sprintf( '%s %s', date_i18n( 'D, j M Y H:i:s',  $blob_properties->getLastModified()->getTimestamp() ), $blob_properties->getLastModified()->getTimezone()->getName() );
