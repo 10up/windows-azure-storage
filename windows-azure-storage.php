@@ -89,7 +89,7 @@ register_activation_hook( __FILE__, 'windows_azure_plugin_check_prerequisite' );
 
 add_action( 'plugins_loaded', 'windows_azure_storage_load_textdomain' );
 add_action( 'admin_menu', 'windows_azure_storage_plugin_menu' );
-add_filter( 'media_buttons_context', 'windows_azure_storage_media_buttons_context' );
+add_filter( 'media_buttons', 'windows_azure_storage_media_buttons_context' );
 add_action( 'load-settings_page_windows-azure-storage-plugin-options', 'windows_azure_storage_load_settings_page' );
 add_action( 'load-settings_page_windows-azure-storage-plugin-options', 'windows_azure_storage_check_container_access_policy' );
 add_action( 'wp_ajax_query-azure-attachments', 'windows_azure_storage_query_azure_attachments' );
@@ -718,13 +718,13 @@ function windows_azure_storage_dialog_browse_tab() {
  *
  * @since    1.0.0
  * @since    3.0.0 Rewrote internals to only create a single element.
- * @internal Callback for 'media_buttons_context' filter.
+ * @internal Callback for 'media_buttons' filter.
  *
  * @param string $context Media buttons context.
  *
  * @return string Media buttons context with our button appended.
  */
-function windows_azure_storage_media_buttons_context( $context ) {
+function windows_azure_storage_media_buttons( $context ) {
 	global $post_ID, $temp_ID;
 
 	$uploading_iframe_id = (int) ( 0 === $post_ID ? $temp_ID : $post_ID );
