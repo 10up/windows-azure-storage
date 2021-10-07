@@ -830,11 +830,11 @@ function windows_azure_storage_wp_calculate_image_srcset( $sources, $size_array,
 			$img_filename = substr( $source['url'], strrpos( $source['url'], '/' ) + 1 );
 
 			if ( basename( $media_info['blob'] ) === $img_filename ) {
-				$source['url'] = esc_url( $base_url . $media_info['blob'], $esc_url_protocols );
+				$source['url'] = esc_url( $base_url . urlencode( $media_info['blob'] ), $esc_url_protocols );
 			} else {
 				foreach ( $media_info['thumbnails'] as $thumbnail ) {
 					if ( basename( $thumbnail ) === $img_filename ) {
-						$source['url'] = esc_url( $base_url . $thumbnail, $esc_url_protocols );
+						$source['url'] = esc_url( $base_url . urlencode( $thumbnail ), $esc_url_protocols );
 						break;
 					}
 				}
