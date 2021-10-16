@@ -16,7 +16,7 @@
   "minimum-stability": "dev",
   "require": {
     "php": ">=5.6",
-    "microsoft/azure-storage-blob": "1.5.2",
-    "microsoft/azure-storage-common": "1.5.1"
+    "microsoft/azure-storage-blob": "1.5.3",
+    "microsoft/azure-storage-common": "1.5.2"
   }
 }

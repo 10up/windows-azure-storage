@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "dd881fcbd2d4f4582095bcbfb43002a5",
+    "content-hash": "4755302885504ad6521611c8549f3125",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -249,16 +249,16 @@
         },
         {
             "name": "microsoft/azure-storage-blob",
-            "version": "1.5.2",
+            "version": "1.5.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Azure/azure-storage-blob-php.git",
-                "reference": "2475330963372d519387cb8135d6a9cfd42272da"
+                "reference": "9aec3e152dab8cd9ec64fd89ed71129a0402c4be"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Azure/azure-storage-blob-php/zipball/2475330963372d519387cb8135d6a9cfd42272da",
-                "reference": "2475330963372d519387cb8135d6a9cfd42272da",
+                "url": "https://api.github.com/repos/Azure/azure-storage-blob-php/zipball/9aec3e152dab8cd9ec64fd89ed71129a0402c4be",
+                "reference": "9aec3e152dab8cd9ec64fd89ed71129a0402c4be",
                 "shasum": ""
             },
             "require": {
@@ -291,22 +291,22 @@
             ],
             "support": {
                 "issues": "https://github.com/Azure/azure-storage-blob-php/issues",
-                "source": "https://github.com/Azure/azure-storage-blob-php/tree/v1.5.2"
+                "source": "https://github.com/Azure/azure-storage-blob-php/tree/v1.5.3"
             },
-            "time": "2020-12-29T02:22:11+00:00"
+            "time": "2021-10-09T03:13:46+00:00"
         },
         {
             "name": "microsoft/azure-storage-common",
-            "version": "1.5.1",
+            "version": "1.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Azure/azure-storage-common-php.git",
-                "reference": "e5738035891546075bd369954e8af121d65ebd6d"
+                "reference": "8ca7b1bf4c9ca7c663e75a02a0035b05b37196a0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Azure/azure-storage-common-php/zipball/e5738035891546075bd369954e8af121d65ebd6d",
-                "reference": "e5738035891546075bd369954e8af121d65ebd6d",
+                "url": "https://api.github.com/repos/Azure/azure-storage-common-php/zipball/8ca7b1bf4c9ca7c663e75a02a0035b05b37196a0",
+                "reference": "8ca7b1bf4c9ca7c663e75a02a0035b05b37196a0",
                 "shasum": ""
             },
             "require": {
@@ -339,9 +339,9 @@
             ],
             "support": {
                 "issues": "https://github.com/Azure/azure-storage-common-php/issues",
-                "source": "https://github.com/Azure/azure-storage-common-php/tree/v1.5.1"
+                "source": "https://github.com/Azure/azure-storage-common-php/tree/v1.5.2"
             },
-            "time": "2020-12-28T07:59:51+00:00"
+            "time": "2021-10-09T03:03:47+00:00"
         },
         {
             "name": "psr/http-client",
