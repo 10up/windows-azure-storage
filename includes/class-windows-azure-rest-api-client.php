@@ -1114,10 +1114,10 @@ class Windows_Azure_Rest_Api_Client {
 
 		$needs_sanitization = array();
 		foreach ( $blobs as $blob ) {
-			if ( isset( $remote_paths[ $blob['Name'] ] ) ) {
-
-				$needs_sanitization[] = $blob['Name'];
-				unset( $remote_paths[ $blob['Name'] ] );
+			$blob_name = $blob->getName();
+			if ( isset( $remote_paths[ $blob_name ] ) ) {
+				$needs_sanitization[] = $blob_name;
+				unset( $remote_paths[ $blob_name ] );
 
 				// quit early as $blob is an Iterator instance with lazy loading.
 				if ( 0 === count( $remote_paths ) ) {
