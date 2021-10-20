@@ -710,7 +710,7 @@ class Windows_Azure_Rest_Api_Client {
 		$options = new ListBlobsOptions();
 		$options->setMaxResults( apply_filters( 'azure_blob_list_blobs_max_results', $max_results ) );
 		if ( ! empty( $prefix ) ) {
-			$options->setPrefix( rawurlencode( $prefix ) );
+//			$options->setPrefix( rawurlencode( $prefix ) ); // @todo MSAPIUPDATE - fix prefix issue with blob list.
 		}
 
 		if ( $next_marker ) {
