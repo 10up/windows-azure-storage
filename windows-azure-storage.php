@@ -89,7 +89,7 @@ register_activation_hook( __FILE__, 'windows_azure_plugin_check_prerequisite' );
 
 add_action( 'plugins_loaded', 'windows_azure_storage_load_textdomain' );
 add_action( 'admin_menu', 'windows_azure_storage_plugin_menu' );
-add_filter( 'media_buttons', 'windows_azure_storage_media_buttons_context' );
+add_filter( 'media_buttons', 'windows_azure_storage_media_buttons' );
 add_action( 'load-settings_page_windows-azure-storage-plugin-options', 'windows_azure_storage_load_settings_page' );
 add_action( 'load-settings_page_windows-azure-storage-plugin-options', 'windows_azure_storage_check_container_access_policy' );
 add_action( 'wp_ajax_query-azure-attachments', 'windows_azure_storage_query_azure_attachments' );
