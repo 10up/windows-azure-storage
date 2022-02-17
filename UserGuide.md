@@ -59,18 +59,18 @@ After activating the plugin, you need to configure it by providing your Windows 
 - All media files stored in Windows Azure Storage will have a URL like “http://<AccountName>.blob.core.windows.net/<ContainerName>/<MediaFileName>”. You can hide usage of the underlying Windows Azure Storage account by defining a CNAME entry in the “CNAME” text box and then clicking “Save Changes”. This CNAME must start with http(s) and you will have to update DNS entries appropriately to route requests back to blob.core.windows.net.
 - You can set Windows Azure Storage as the default location for storing all media file uploaded via “WordPress upload tab”. File uploads will be automatically saved into your Windows Azure storage account. Just check the “Use Windows Azure Storage as default upload” checkbox and click “Save Changes”.
   
-## Using the Plugin With Gutenberg
+## Using the Plugin with the Block Editor (aka Gutenberg)
 
 By default, the plugin is not set to upload all files. You can and should change this. There are two ways:
 
 - In the Azure settings, change the setting **Use For Default Upload** to true.
 - You can also set the constant `MICROSOFT_AZURE_USE_FOR_DEFAULT_UPLOAD` to true for the same effect in the wp-config file. This setting will override the setting in the Azure settings.
 
-It is recommended to set this to true if you plan on using Gutenberg. All files will then uplaod to Azure and you can see them in the media library.
+It is recommended to set this to true if you plan on using Gutenberg.  All files will then uplaod to Azure and you can see them in the media library.
 
-## Using the Plugin In Classic Mode
+## Using the Plugin with the Classic Editor
 
-If you are using classic mode, you can choose to leave the setting **Use For Default Upload** as false if you would like. There is a special Azure media upload button that can be used instead.  This button will allow you to view and upload images to your Azure container.
+If you are using the Classic Editor, you can choose to leave the setting **Use For Default Upload** as false if you would like.  There is a special Azure media upload button that can be used instead.  This button will allow you to view and upload images to your Azure container.
 
 ## Resources
 - For more details on Windows Azure Storage Services, please visit the [Azure Platform web-site](https://azure.microsoft.com/en-us/).
