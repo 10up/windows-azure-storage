@@ -42,7 +42,7 @@ it in the plugins directory of the WordPress installation.
 - To activate the plugin, log in into your WordPress site as an administrator and navigate to list of plugins. Check 
   the associated checkbox for the plugin and click **“Activate”**.
 
-![](userguide-activate-plugin.png)
+![](.github/screenshots/userguide-activate-plugin.png)
 
 ## Configure Windows Azure Storage Account
 After activating the plugin, you need to configure it by providing your Windows Azure Storage Account credentials:  
@@ -55,18 +55,18 @@ After activating the plugin, you need to configure it by providing your Windows 
 - After specifying **“Storage Account Name”**, **“Primary Access Key”** and proxy details you can create a container by 
   entering the container name in the **“Create New Container”** text box and clicking “Create”.
   
-![](userguide-user-settings.png)
+![](.github/screenshots/userguide-user-settings.png)
 
 - Once your Windows Azure Storage account details are set correctly, the page will be refreshed, and the “Default 
   Storage Container” dropdown will be populated with all available blob containers associated with the storage account.
   
-![](userguide-container.png)
+![](.github/screenshots/userguide-container.png)
 
 - Select the one container for storing your media files and click “Save Changes”. - If are no blob containers exist 
   in your Windows Azure Storage account, then you will still see the “Create New Container” text box where you can enter container name and click on “Create” to create a container.
 - If there are blob container(s) in the configured Windows Azure Storage account then you will not see the text box to create a new container. To create a new container select <Create New Container> option from the “Default Storage Container” drop down.
 
-![](userguide-new-container.png)
+![](.github/screenshots/userguide-new-container.png)
 
 - All media files stored in Windows Azure Storage will have a URL like “http://<AccountName>.blob.core.windows.net/<ContainerName>/<MediaFileName>”. You can hide usage of the underlying Windows Azure Storage account by defining a CNAME entry in the “CNAME” text box and then clicking “Save Changes”. This CNAME must start with http(s) and you will have to update DNS entries appropriately to route requests back to blob.core.windows.net.
 - You can set Windows Azure Storage as the default location for storing all media file uploaded via “WordPress 
