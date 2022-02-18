@@ -16,6 +16,8 @@ This WordPress plugin allows you to use Microsoft Azure Storage Service to host 
 
 For more details on Microsoft Azure Storage, please visit the <a href="https://azure.microsoft.com/en-us/services/storage/">Microsoft Azure website</a>.
 
+For more details on configuring a Micorsoft Azure Storage account and on using the plugin with the Block or Classic Editoros, please visit the [user guide](https://github.com/10up/windows-azure-storage/blob/develop/UserGuide.md).
+
 == Installation ==
 1. Upload the plugin files to the `/wp-content/plugins/windows-azure-storage` directory, or install the plugin through the WordPress plugins screen directly.
 1. Activate the plugin through the 'Plugins' screen in WordPress.
