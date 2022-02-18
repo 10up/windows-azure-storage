@@ -3,4 +3,4 @@ vendor/*
 !vendor/microsoft
 !vendor/guzzlehttp
 !vendor/psr
-!vendor/ralouphie 
+!vendor/ralouphie
