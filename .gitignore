@@ -1,2 +1,6 @@
 node_modules/
-vendor/
+vendor/*
+!vendor/microsoft
+!vendor/guzzlehttp
+!vendor/psr
+!vendor/ralouphie 
