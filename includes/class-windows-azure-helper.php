@@ -241,6 +241,17 @@ class Windows_Azure_Helper {
 	}
 
 	/**
+	 * Returns 0 or 1 if webp image generation is enabled.
+	 *
+	 * @since 4.4.0
+	 *
+	 * @return int
+	 */
+	static public function get_webp_setting() {
+		return (int) get_option( 'azure_enable_webp_images', 0 );
+	}
+
+	/**
 	 * Return container ACL.
 	 *
 	 * @since 4.0.0

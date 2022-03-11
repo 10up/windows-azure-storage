@@ -30,7 +30,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * PHP Version 5
+ * PHP Version 5.6
  *
  * @category  WordPress_Plugin
  * @package   Windows_Azure_Storage_For_WordPress
@@ -38,16 +38,28 @@
  * @copyright Microsoft Open Technologies, Inc.
  * @license   New BSD license, (http://www.opensource.org/licenses/bsd-license.php)
  * @link      http://www.microsoft.com
- * @since     4.3.3-dev
+ * @since     4.4.0
  */
 class Windows_Azure_Webp {
 
 	/**
 	 * Windows_Azure_Webp constructor.
+	 *
+	 * @access public
 	 */
 	public function __construct() {
 		// Check if imagewebp is available. PHP 5.4 is required at a minimum for webp support.
 		if ( ! function_exists( '\\imagewebp' ) ) {
+			return;
+		}
+
+		// Webp is only supported by the block editor.
+		if ( ! WindowsAzureStorageUtil::is_block_editor_enabled() ) {
+			return;
+		}
+
+		// Only run this if webp image generation is enabled.
+		if ( ! Windows_Azure_Helper::get_webp_setting() ) {
 			return;
 		}
 
@@ -57,31 +69,40 @@ class Windows_Azure_Webp {
 		// Clean up the image sizes created in the filter above for $this->handle_update_attachment_metadata.
 		add_filter( 'wp_generate_attachment_metadata', array( $this, 'remove_handle_update_attachment_metadata' ), 10, 2 );
 
+		// Filter the src attribute for images.
+		add_filter( 'wp_get_attachment_image_src', array( $this, 'webp_attachment_image_src' ), 10, 3 );
+
 		// Filter the srcset attribute for images.
 		add_filter( 'wp_calculate_image_srcset', array( $this, 'webp_calculate_image_srcset' ), 7, 5 );
-
-		// Filter the src attribute for images.
-		add_filter( 'wp_get_attachment_image_src', array( $this, 'webp_attachment_image_src' ), 10, 4 );
 
 		// Calculate image srcset meta.
 		add_filter( 'wp_calculate_image_srcset_meta', array( $this, 'webp_calculate_image_srcset_meta' ), 10, 4 );
 
-		add_filter( 'wp_get_attachment_image_attributes', array( $this, 'add_original_attributes' ), 10, 3 );
+		// Correct our image metadata if we have webp images.
+		add_filter( 'wp_get_attachment_metadata', array( $this, 'webp_attachment_metadata' ), 10, 2 );
+
+		// Convert core image blocks to support webp conversions. Run as early as we can to avoid other modifications
+		// down the filter chain.
+		add_filter( 'render_block', array( $this, 'webp_block_editor_images' ), 1, 2 );
+
+		// Webp is not support in open graph so remove in WPSEO.
+		add_filter( 'wpseo_opengraph_image', array( $this, 'get_original_image_og' ), 10, 2 );
+		add_filter( 'wpseo_twitter_image', array( $this, 'get_original_image_twitter' ), 10, 2 );
 	}
 
 	/**
 	 * Handles the generation of new webp images.
 	 *
+	 * @access public
 	 * @filter wp_generate_attachment_metadata
 	 *
-	 * @param array  $data    Attachment data.
-	 *
+	 * @param array   $data    Attachment data.
 	 * @param integer $post_id Associated post id.
 	 *
 	 * @return array
 	 */
-	public function handle_update_attachment_metadata( array $data, int $post_id ): array {
-		$mime_type         = get_post_mime_type( $post_id );
+	public function handle_update_attachment_metadata( $data, $post_id ) {
+		$mime_type          = get_post_mime_type( $post_id );
 		$allowed_mime_types = array(
 			'image/jpeg',
 			'image/jpg',
@@ -104,7 +125,7 @@ class Windows_Azure_Webp {
 
 		// Set the original image size for the new webp image.
 		$webp_sizes = array(
-			'original--webp' => array(
+			'full--webp' => array(
 				'width'     => $data['width'],
 				'height'    => $data['height'],
 				'file'      => $pathinfo['filename'] . '.webp',
@@ -145,14 +166,15 @@ class Windows_Azure_Webp {
 	/**
 	 * Cleans up the extra sizes added previously in $this->handle_update_attachment_metadata.
 	 *
+	 * @access public
 	 * @filter wp_generate_attachment_metadata
 	 *
-	 * @param string  $data    Attachment data.
+	 * @param array   $data    Attachment data.
 	 * @param integer $post_id Associated post id.
 	 *
-	 * @return string
+	 * @return array
 	 */
-	public function remove_handle_update_attachment_metadata( string $data, int $post_id ): string {
+	public function remove_handle_update_attachment_metadata( $data, $post_id ) {
 		$webp_meta = get_post_meta( $post_id, 'webp_attachment_details', true );
 		if ( $webp_meta && $data ) {
 			$data['sizes'] = array_diff_key( $data['sizes'], $webp_meta );
@@ -162,72 +184,29 @@ class Windows_Azure_Webp {
 	}
 
 	/**
-	 * Filters the 'srcset' attribute sources in an image.
-	 *
-	 * @filter wp_calculate_image_srcset
-	 *
-	 * @param array  $sources {
-	 *     One or more arrays of source data to include in the 'srcset'.
-	 *
-	 *     @type array $width {
-	 *         @type string $url        The URL of an image source.
-	 *         @type string $descriptor The descriptor type used in the image candidate string,
-	 *                                  either 'w' or 'x'.
-	 *         @type int    $value      The source width if paired with a 'w' descriptor, or a
-	 *                                  pixel density value if paired with an 'x' descriptor.
-	 *     }
-	 * }
-	 *
-	 * @param array $size_array     {
-	 *     An array of requested width and height values.
-	 *
-	 *     @type int $0 The width in pixels.
-	 *     @type int $1 The height in pixels.
-	 * }
-	 *
-	 * @param string $image_src     The 'src' of the image.
-	 * @param array  $image_meta    The image meta data as returned by 'wp_get_attachment_metadata()'.
-	 * @param int    $attachment_id Image attachment ID or 0.
-	 *
-	 * @return array
-	 */
-	public function webp_calculate_image_srcset( array $sources, array $size_array, string $image_src, array $image_meta, int $attachment_id ): array {
-		$webp_meta = get_post_meta( $attachment_id, 'webp_attachment_details', true );
-		if ( $webp_meta ) {
-			foreach ( $sources as &$source ) {
-				$url_pathinfo = pathinfo( $source['url'] );
-				foreach ( $webp_meta as $key => $details ) {
-					if ( $url_pathinfo['basename'] === $details['original'] ) {
-						// Update the file path to our webp image.
-						$source['url'] = $url_pathinfo['dirname'] . '/' . $details['file'];
-					}
-				}
-			}
-		}
-
-		return $sources;
-	}
-
-	/**
 	 * Filters the 'src' attribute in an image.
 	 *
+	 * @access public
 	 * @filter wp_get_attachment_image_src
 	 *
 	 * @param bool|array   $image         Either array with src, width & height, icon src, or false.
 	 * @param int|string   $attachment_id Image attachment ID.
 	 * @param string|array $size          Size of image. Image size or array of width and height values
-	 *                                    (in that order). Default 'thumbnail'.
-	 * @param bool         $icon          Whether the image should be treated as an icon. Default false.
 	 *
 	 * @return array|bool
 	 */
-	public function webp_attachment_image_src( $image, $attachment_id, $size, $icon ) {
+	public function webp_attachment_image_src( $image, $attachment_id, $size ) {
 		if ( is_array( $image ) ) {
-			$webp_meta = get_post_meta( $attachment_id, 'webp_attachment_details', true );
+			$webp_meta = $this->get_webp_meta( $attachment_id );
 			if ( $webp_meta ) {
 				// Convert our $size variable into a string if it is an array.
 				if ( is_array( $size ) ) {
 					$size = implode( '-', $size );
+				}
+
+				// If the size is "original", convert to "full".
+				if ( 'original' === $size ) {
+					$size = 'full';
 				}
 
 				// Update the file to webp if the size exists.
@@ -244,19 +223,65 @@ class Windows_Azure_Webp {
 	}
 
 	/**
+	 * Filters the 'srcset' attribute sources in an image.
+	 *
+	 * @access public
+	 * @filter wp_calculate_image_srcset
+	 *
+	 * @param array  $sources {
+	 *     One or more arrays of source data to include in the 'srcset'.
+	 *
+	 *     @type array $width {
+	 *         @type string $url        The URL of an image source.
+	 *         @type string $descriptor The descriptor type used in the image candidate string, either 'w' or 'x'.
+	 *         @type int    $value      The source width if paired with a 'w' descriptor, or a pixel density value if
+	 *                                  paired with an 'x' descriptor.
+	 *     }
+	 * }
+	 * @param array  $size_array {
+	 *     An array of requested width and height values.
+	 *
+	 *     @type int $0 The width in pixels.
+	 *     @type int $1 The height in pixels.
+	 * }
+	 * @param string $image_src     The 'src' of the image.
+	 * @param array  $image_meta    The image metadata as returned by 'wp_get_attachment_metadata()'.
+	 * @param int    $attachment_id Image attachment ID or 0.
+	 *
+	 * @return array
+	 */
+	public function webp_calculate_image_srcset( $sources, $size_array, $image_src, $image_meta, $attachment_id ) {
+		$webp_meta = $this->get_webp_meta( $attachment_id );
+		if ( $webp_meta ) {
+			foreach ( $sources as &$source ) {
+				$url_pathinfo = pathinfo( $source['url'] );
+				foreach ( $webp_meta as $key => $details ) {
+					if ( $url_pathinfo['basename'] === $details['original'] ) {
+						// Update the file path to our webp image.
+						$source['url'] = $url_pathinfo['dirname'] . '/' . $details['file'];
+					}
+				}
+			}
+		}
+
+		return $sources;
+	}
+
+	/**
 	 * Let plugins pre-filter the image meta to be able to fix inconsistencies in the stored data.
 	 *
+	 * @access public
 	 * @filter wp_calculate_image_srcset_meta
 	 *
-	 * @param array  $image_meta    The image meta data as returned by wp_get_attachment_metadata().
+	 * @param array  $image_meta    The image metadata as returned by wp_get_attachment_metadata().
 	 * @param array  $size_array    Array of width and height values in pixels (in that order).
 	 * @param string $image_src     The 'src' of the image.
 	 * @param int    $attachment_id The image attachment ID or 0 if not supplied.
 	 *
 	 * @return array A modified version of the meta.
 	 */
-	function webp_calculate_image_srcset_meta( array $image_meta, array $size_array, string $image_src, int $attachment_id ): array {
-		$webp_meta = get_post_meta( $attachment_id, 'webp_attachment_details', true );
+	public function webp_calculate_image_srcset_meta( $image_meta, $size_array, $image_src, $attachment_id ) {
+		$webp_meta = $this->get_webp_meta( $attachment_id );
 		if ( $webp_meta ) {
 			if ( isset( $image_meta['sizes'] ) ) {
 				foreach ( $image_meta['sizes'] as $size_name => $details ) {
@@ -272,72 +297,130 @@ class Windows_Azure_Webp {
 	}
 
 	/**
-	 * Add original attributes
+	 * Updates the attachment metadata to ensure it returns our .webp versions if it is set.
 	 *
-	 * @filter wp_get_attachment_image_attributes
+	 * @access public
+	 * @filter wp_get_attachment_metadata
 	 *
-	 * @param array        $attr       Array of attributes.
-	 * @param object       $attachment Object.
-	 * @param array|string $size       Size.
+	 * @param array $data          Array of metadata for the given attachment.
+	 * @param int   $attachment_id Attachment post ID.
 	 *
-	 * @return array
+	 * @return mixed
 	 */
-	function add_original_attributes( array $attr, object $attachment, $size ): array {
-		$webp_meta = get_post_meta( $attachment->ID, 'webp_attachment_details', true );
+	public function webp_attachment_metadata( $data, $attachment_id ) {
+		$webp_meta = $this->get_webp_meta( $attachment_id );
+		if ( $webp_meta ) {
+			$file_ext = pathinfo( $data['file'], PATHINFO_EXTENSION );
 
-		// Return the set attributes if no webp metadata was found.
-		if ( false === $webp_meta || empty( $webp_meta ) ) {
-			return $attr;
+			// Update the file name and the URL with our webp versions.
+			$data['file'] = str_replace( $file_ext, 'webp', $data['file'] );
+			$data['url']  = str_replace( $file_ext, 'webp', $data['url'] );
 		}
 
-		// Remove conflicting filters.
-		remove_filter( 'wp_calculate_image_srcset', array( $this, 'webp_calculate_image_srcset' ), 7 );
-		remove_filter( 'wp_get_attachment_image_src', array( $this, 'webp_attachment_image_src' ), 10 );
-		remove_filter( 'wp_calculate_image_srcset_meta', array( $this, 'webp_calculate_image_srcset_meta' ), 10 );
+		return $data;
+	}
 
-		// Fetch our image. If one isn't found, before returning early, re-add the filters we previously removed.
-		$image = wp_get_attachment_image_src( $attachment->ID, $size );
-		if ( ! $image ) {
-			add_filter( 'wp_calculate_image_srcset', array( $this, 'webp_calculate_image_srcset' ), 7, 5 );
-			add_filter( 'wp_get_attachment_image_src', array( $this, 'webp_attachment_image_src' ), 10, 4 );
-			add_filter( 'wp_calculate_image_srcset_meta', array( $this, 'webp_calculate_image_srcset_meta' ), 10, 4 );
-
-			return $attr;
-		}
-
-		// Assign variables from data in our $image array.
-		list( $src, $width, $height ) = $image;
-
-		// Fetch the image metadata. If found, assign sizes and srcset attributes.
-		$image_meta = wp_get_attachment_metadata( $attachment->ID );
-		if ( is_array( $image_meta ) ) {
-			$size_array = array( absint( $width ), absint( $height ) );
-			$srcset     = wp_calculate_image_srcset( $size_array, $src, $image_meta, $attachment->ID );
-			if ( $srcset ) {
-				$attr['data-orig-srcset'] = $srcset;
+	/**
+	 * Update the generated HTML of the block editor images to utilize webp images.
+	 *
+	 * @access public
+	 * @filter render_block
+	 *
+	 * @param string $block_content The string of HTML that is generated by the block editor for a particular block.
+	 * @param array  $block         An array of data that defines a single block.
+	 *
+	 * @return string
+	 */
+	public function webp_block_editor_images( $block_content, $block ) {
+		// Update the core/image block markup.
+		if ( 'core/image' === $block['blockName'] ) {
+			$attributes = $this->get_webp_image_atts( absint( $block['attrs']['id'] ), $block['attrs']['sizeSlug'] );
+			if ( ! $attributes ) {
+				return $block_content;
 			}
-			$attr['data-orig-src'] = $src;
+
+			$block_content = $this->update_block_content_image( $block_content, $attributes );
 		}
 
-		$attr['class'] .= ' webp-format';
+		// Update the core/media-text block markup.
+		if ( 'core/media-text' === $block['blockName'] ) {
+			$attributes = $this->get_webp_image_atts( absint( $block['attrs']['mediaId'] ) );
+			if ( ! $attributes ) {
+				return $block_content;
+			}
 
-		// Before wrapping up, re-add the filters we removed at the beginning.
-		add_filter( 'wp_calculate_image_srcset', __NAMESPACE__ . '\\webp_calculate_image_srcset', 7, 5 );
-		add_filter( 'wp_get_attachment_image_src', __NAMESPACE__ . '\\webp_attachment_image_src', 10, 4 );
-		add_filter( 'wp_calculate_image_srcset_meta', __NAMESPACE__ . '\\webp_calculate_image_srcset_meta', 10, 4 );
+			$block_content = $this->update_block_content_image( $block_content, $attributes );
+		}
 
-		return $attr;
+		// Update the core/cover block markup.
+		if ( 'core/cover' === $block['blockName'] ) {
+			$attributes = $this->get_webp_image_atts( absint( $block['attrs']['id'] ) );
+			if ( ! $attributes ) {
+				return $block_content;
+			}
+
+			$block_content = $this->update_block_content_image( $block_content, $attributes );
+		}
+
+		return $block_content;
+	}
+
+	/**
+	 * Ensure OpenGraph image is in original format and not webp.
+	 *
+	 * @access public
+	 * @filter wpseo_opengraph_image
+	 *
+	 * @param string $image_url image URL from yoast.
+	 * @param object $presenter Yoast SEO presenter.
+	 *
+	 * @return string
+	 */
+	public function get_original_image_og( $image_url, $presenter ) {
+		return $this->get_original_image( $image_url, $presenter, 'opengraph' );
+	}
+
+	/**
+	 * Ensure Twitter image is in original format and not webp.
+	 *
+	 * @access public
+	 * @filter wpseo_twitter_image
+	 *
+	 * @param string $image_url image URL from yoast.
+	 * @param object $presenter Yoast SEO presenter.
+	 *
+	 * @return string
+	 */
+	public function get_original_image_twitter( $image_url, $presenter ) {
+		return $this->get_original_image( $image_url, $presenter, 'twitter' );
+	}
+
+
+
+	/**
+	 * Helper method to fetch the webp metadata from post meta.
+	 *
+	 * @access private
+	 *
+	 * @param int $attachment_id The ID of the attachement (aka media/image).
+	 *
+	 * @return mixed
+	 */
+	private function get_webp_meta( $attachment_id ) {
+		return get_post_meta( $attachment_id, 'webp_attachment_details', true );
 	}
 
 	/**
 	 * Generate a webp version of an image.
+	 *
+	 * @access private
 	 *
 	 * @param string $source    File on disk to generate a webp image from.
 	 * @param string $mime_type The mime type.
 	 *
 	 * @return false|string
 	 */
-	private function convert_file( string $source, string $mime_type ) {
+	private function convert_file( $source, $mime_type ) {
 		$path_info = pathinfo( $source );
 		$folder    = $path_info['dirname'] . '/';
 		$file_name = $path_info['filename'];
@@ -360,7 +443,11 @@ class Windows_Azure_Webp {
 			}
 			$result = imagewebp( $source, $folder . $file_name . '.webp', (int) $image_quality );
 		} else {
-			$result = imagewebp( imagecreatefromjpeg( $source ), $folder . $file_name . '.webp', (int) $image_quality );
+			$result = imagewebp(
+				imagecreatefromjpeg( $source ),
+				$folder . $file_name . '.webp',
+				(int) $image_quality
+			);
 		}
 
 		if ( true === $result ) {
@@ -369,5 +456,217 @@ class Windows_Azure_Webp {
 
 		return false;
 	}
+
+	/**
+	 * Returns an array of all attributes needed to convert an image to use their webp versions.
+	 *
+	 * @access private
+	 *
+	 * @param int         $attachment_id The attachment ID of the image we want to get attributes for.
+	 * @param string|null $size          The size of the image. Default 'full'.
+	 *
+	 * @return array|false
+	 */
+	private function get_webp_image_atts( $attachment_id, $size = 'full' ) {
+		// Get the webp meta, and if we don't have any, return the block as it is.
+		$webp_meta = get_post_meta( $attachment_id, 'webp_attachment_details', true );
+		if ( ! $webp_meta ) {
+			return false;
+		}
+
+		// Get the webp version of the image if one is set.
+		$image = wp_get_attachment_image_src( $attachment_id, $size );
+		if ( ! $image ) {
+			return false;
+		}
+
+		// Disable our image_src filter so we can gather the original image source data.
+		remove_filter(
+			'wp_get_attachment_image_src',
+			array( $this, 'webp_attachment_image_src' )
+		);
+
+		$orig_image = wp_get_attachment_image_src( $attachment_id, $size );
+		if ( ! $orig_image ) {
+			return false;
+		}
+
+		add_filter( 'wp_get_attachment_image_src', array( $this, 'webp_attachment_image_src' ), 10, 3 );
+
+		// Break out our array values of the original image into separate variables.
+		list( $orig_src, $width, $height ) = $orig_image;
+
+		// Set up some variables and where we'll keep all the attribute info we'll update.
+		$attributes = array();
+		$size_array = array( absint( $width ), absint( $height ) );
+		$image_meta = wp_get_attachment_metadata( $attachment_id );
+
+		// Get the webp generated srcset.
+		// NOTE: This is needed as WordPress won't generate the srcset once we modify the block content.
+		$attributes['srcset'] = wp_calculate_image_srcset( $size_array, $image[0], $image_meta, $attachment_id );
+
+		// Disable some of our webp filters used to generate the original srcset attribute data.
+		remove_filter(
+			'wp_calculate_image_srcset',
+			array( $this, 'webp_calculate_image_srcset' ),
+			7
+		);
+		remove_filter(
+			'wp_calculate_image_srcset_meta',
+			array( $this, 'webp_calculate_image_srcset_meta' )
+		);
+		remove_filter(
+			'wp_get_attachment_metadata',
+			array( $this, 'webp_attachment_metadata' )
+		);
+
+		// Get the original srcset and image metadata.
+		$image_meta  = wp_get_attachment_metadata( $attachment_id );
+		$orig_srcset = wp_calculate_image_srcset( $size_array, $orig_src, $image_meta, $attachment_id );
+
+		// Turn back on the image srcset filters.
+		add_filter( 'wp_calculate_image_srcset', array( $this, 'webp_calculate_image_srcset' ), 7, 5 );
+		add_filter(
+			'wp_calculate_image_srcset_meta',
+			array( $this, 'webp_calculate_image_srcset_meta' ),
+			10,
+			4
+		);
+		add_filter( 'wp_get_attachment_metadata', array( $this, 'webp_attachment_metadata' ), 10, 2 );
+
+		// Add the original data to new data attributes for legacy browser fallback and update some preset attributes.
+		$attributes['class']    = ' webp-format';
+		$attributes['orig-src'] = $orig_src;
+		if ( $orig_srcset ) {
+			$attributes['orig-srcset'] = $orig_srcset;
+		}
+
+		return $attributes;
+	}
+
+	/**
+	 * Parses a string of HTML from the block editor and updates the images with the supplied attributes.
+	 *
+	 * @access private
+	 *
+	 * @param string $block_content The content contained with in a particular block.
+	 * @param array  $attributes    The attributes we wish to add/update on an image within the block content.
+	 *
+	 * @return string
+	 */
+	private function update_block_content_image( $block_content, $attributes ) {
+		// Parse the HTML string so we can modify the data.
+		$dom = new DOMDocument();
+
+		// Disable reporting as libxml will error on HTML5 markup.
+		libxml_use_internal_errors( true );
+		$dom->loadHTML(
+			mb_convert_encoding( $block_content, 'HTML-ENTITIES', 'UTF-8' ),
+			LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED
+		);
+		libxml_clear_errors();
+
+		$nodes = $dom->getElementsByTagName( 'img' );
+
+		foreach ( $nodes as $node ) {
+			$node->setAttribute( 'class', $node->getAttribute( 'class' ) . $attributes['class'] );
+			$node->setAttribute(
+				'src',
+				str_replace(
+					array( '.jpg', '.jpeg', '.png' ),
+					'.webp',
+					$node->getAttribute( 'src' )
+				)
+			);
+			$node->setAttribute( 'srcset', $attributes['srcset'] );
+			$node->setAttribute( 'data-orig-src', $attributes['orig-src'] );
+
+			if ( isset( $attributes['orig-srcset'] ) ) {
+				$node->setAttribute( 'data-orig-srcset', $attributes['orig-srcset'] );
+			}
+		}
+
+		return $dom->saveHTML();
+	}
+
+	/**
+	 * Ensure we return the original format for Yoast OG and Twitter social share and not webp.
+	 *
+	 * @access private
+	 *
+	 * @param string $image_url image URL from yoast.
+	 * @param object $presenter Yoast SEO presenter.
+	 * @param string $type      The type of data that is being filtered for from Yoast.
+	 *
+	 * @return string
+	 */
+	private function get_original_image( $image_url, $presenter, $type ) {
+		if ( empty( $image_url ) ) {
+			return $image_url;
+		}
+
+		$extension = pathinfo( $image_url, PATHINFO_EXTENSION );
+		if ( 'webp' !== $extension ) {
+			return $image_url;
+		}
+
+		// Set the default variable for our original image.
+		$new_url = '';
+
+		if ( 'opengraph' === $type ) {
+			// Fetch the image URL from Yoast OpenGraph post meta.
+			$new_url = get_post_meta( get_the_ID(), '_yoast_wpseo_opengraph-image', true );
+		} elseif ( 'twitter' === $type ) {
+			// Fetch the image URL from Yoast Twitter post meta.
+			$new_url = get_post_meta( get_the_ID(), '_yoast_wpseo_twitter-image', true );
+		}
+
+		if ( empty( $new_url ) ) {
+			$attachment_id = $presenter->model->open_graph_image_id;
+			$new_url       = $this->try_to_get_original_image_url( $attachment_id, $image_url );
+		}
+
+		return $new_url;
+	}
+
+
+	/**
+	 * Get attachment ID and lookup in the post meta to find the original image
+	 *
+	 * @access private
+	 *
+	 * @param int    $attachment_id ID of the attachment to lookup.
+	 * @param string $image_url     URL that comes from Yoast.
+	 *
+	 * @return string new url
+	 */
+	private function try_to_get_original_image_url( $attachment_id, $image_url ) {
+		// Sometimes Yoast can't give us the attachment_id, so we'll have to try our best to find it.
+		if ( is_null( $attachment_id ) ) {
+			$attachment_id = attachment_url_to_postid( $image_url );
+			if ( 0 === $attachment_id ) {
+				return ''; // Return empty as we couldn't find this photo.
+			}
+		}
+
+		$webp_meta = get_post_meta( $attachment_id, 'webp_attachment_details', true );
+		if ( empty( $webp_meta ) ) {
+			$attachment_meta = get_post_meta( $attachment_id, '_wp_attachment_metadata', true );
+			return $attachment_meta['url'];
+		}
+
+		if ( ! empty( $webp_meta['og_large--webp'] ) ) {
+			$new_image = $webp_meta['og_large--webp']['original'];
+		}
+
+		if ( empty( $new_image ) ) {
+			$new_image = $webp_meta['original--webp']['original'];
+		}
+
+		$old_url = explode( '/', $image_url );
+
+		return str_replace( end( $old_url ), $new_image, $image_url );
+	}
+
 }
 new Windows_Azure_Webp();

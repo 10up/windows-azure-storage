@@ -587,4 +587,13 @@ class WindowsAzureStorageUtil {
 
 		return false;
 	}
+
+	/**
+	 * Checks if the block editor is enabled.
+	 *
+	 * @return bool
+	 */
+	public static function is_block_editor_enabled() {
+		return ( function_exists( 'has_blocks' ) );
+	}
 }

@@ -2,7 +2,7 @@
 /**
  * Shows various settings for Microsoft Azure Storage Plugin
  *
- * Version: 3.0.1
+ * Version: 3.1.0
  *
  * Author: Microsoft Open Technologies, Inc.
  *
@@ -125,6 +125,8 @@ function windows_azure_storage_plugin_register_settings() {
 		register_setting( 'windows-azure-storage-settings-group', 'azure_cache_control', 'sanitize_text_field' );
 	}
 
+	register_setting( 'windows-azure-storage-settings-group', 'azure_enable_webp_images', 'wp_validate_boolean' );
+
 	/**
 	 * @since 4.0.0
 	 */
@@ -211,6 +213,16 @@ function windows_azure_storage_plugin_register_settings() {
 		'azure_cache_control',
 		__( 'Cache control in seconds', 'windows-azure-storage' ),
 		'windows_azure_cache_control',
+		'windows-azure-storage-plugin-options',
+		'windows-azure-storage-settings'
+	);
+	/**
+	 * @since 4.4.0
+	 */
+	add_settings_field(
+		'azure_enable_webp',
+		__( 'Enable webp images', 'windows-azure-storage' ),
+		'windows_azure_enable_webp',
 		'windows-azure-storage-plugin-options',
 		'windows-azure-storage-settings'
 	);
@@ -434,6 +446,27 @@ function windows_azure_cache_control() {
 	echo '<p>';
 		_e( 'Setting Cache-Control on publicly accessible Microsoft Azure Blobs can help reduce bandwidth by preventing consumers from having to continuously download resources. Specify a relative amount of time in seconds to cache data after it was received or enter exact cache-control value which you want to use for your assets. You can define <code>MICROSOFT_AZURE_CACHE_CONTROL</code> constant to override it.', 'windows-azure-storage' );
 	echo '</p>';
+}
+
+/**
+ * Displays enable webp setting.
+ *
+ * @since 4.4.0
+ *
+ * @return void
+ */
+function windows_azure_enable_webp() {
+	if ( ! WindowsAzureStorageUtil::is_block_editor_enabled() ) {
+		esc_html_e( 'Azure webp is only supported by WordPress Block Editor.', 'windows-azure-storage' );
+	} else {
+		$is_enabled = Windows_Azure_Helper::get_webp_setting();
+		?>
+		<input type="checkbox" name="azure_enable_webp_images" title="<?php esc_attr_e( 'Enable the generation of .webp images for all .jpg, .png images uploaded to WordPress.', 'windows-azure-storage' ) ?>" value="1" id="azure_enable_webp_images" <?php checked( (bool) $is_enabled ); ?> />
+		<label for="azure_enable_webp_images">
+			<?php esc_html_e( 'Enable the creation of .webp images for all .jpg, .png images uploaded to WordPress.', 'windows-azure-storage' ); ?>
+		</label>
+		<?php
+	}
 }
 
 /**
