@@ -63,6 +63,9 @@ class Windows_Azure_Webp {
 			return;
 		}
 
+		// Enqueue our fallback script for browsers that don't support webp.
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
+
 		// Hook into the process for generating attachment metadata.
 		add_filter( 'wp_generate_attachment_metadata', array( $this, 'handle_update_attachment_metadata' ), 7, 2 );
 
@@ -88,6 +91,22 @@ class Windows_Azure_Webp {
 		// Webp is not support in open graph so remove in WPSEO.
 		add_filter( 'wpseo_opengraph_image', array( $this, 'get_original_image_og' ), 10, 2 );
 		add_filter( 'wpseo_twitter_image', array( $this, 'get_original_image_twitter' ), 10, 2 );
+	}
+
+	/**
+	 * Enqueue front-end scripts.
+	 *
+	 * @return void
+	 */
+	public function enqueue_assets() {
+		$js_ext = ( ! defined( 'SCRIPT_DEBUG' ) || false === SCRIPT_DEBUG ) ? '.min.js' : '.js';
+		wp_enqueue_script(
+			'windows-azure-storage-webp',
+			MSFT_AZURE_PLUGIN_URL . 'js/windows-azure-storage-webp' . $js_ext,
+			array(),
+			MSFT_AZURE_PLUGIN_VERSION,
+			true
+		);
 	}
 
 	/**

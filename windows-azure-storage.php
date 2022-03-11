@@ -154,9 +154,6 @@ if ( function_exists( 'wp_calculate_image_srcset' ) ) {
 	add_filter( 'wp_calculate_image_srcset_meta', 'windows_azure_storage_image_srcset_meta', 9, 4 );
 }
 
-// Hook our assets (css/js) to the front-end.
-//add_action( 'wp_enqueue_scripts', 'windows_azure_storage_enqueue_assets' );
-
 /**
  * Loads text domain.
  *
@@ -184,22 +181,6 @@ function windows_azure_plugin_check_prerequisite() {
 		deactivate_plugins( plugin_basename( __FILE__ ) );
 		wp_die( __( 'Microsoft Azure Storage for WordPress requires at least WordPress 4.0', 'windows-azure-storage' ) );
 	}
-}
-
-/**
- * Enqueue front-end scripts and styles.
- *
- * @return void
- */
-function windows_azure_storage_enqueue_assets() {
-	$js_ext = ( ! defined( 'SCRIPT_DEBUG' ) || false === SCRIPT_DEBUG ) ? '.min.js' : '.js';
-    wp_enqueue_script(
-        'windows-azure-storage-webp',
-        MSFT_AZURE_PLUGIN_URL . 'js/windows-azure-storage-webp' . $js_ext,
-        array(),
-        MSFT_AZURE_PLUGIN_VERSION,
-        true
-    );
 }
 
 /**
