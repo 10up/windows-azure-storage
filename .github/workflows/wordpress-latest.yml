@@ -1,6 +1,6 @@
 name: "WordPress version checker"
 on:
-  push:
+  pull_request:
     branches:
       - develop
   schedule:
