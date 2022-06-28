@@ -52,6 +52,24 @@ If a Storage account is created with the new Azure portal, authentication will f
 ### Responsive Images in WordPress 4.4
 Images uploaded to the Azure Storage service will not automatically receive responsive versions. Images added through the WordPress Media Loader *should* get automatically converted to responsive images when inserted into a post or page. We are investigating options for full support of responsive images in the plugin.
 
+### Media Library Editor
+Media editing tools are currently not working. The edited images are not uploaded to Azure Storage. Will be fixed in future releases.
+
+### Azure Storage Account Migration
+At the moment, changing the Azure Storage account (and blob URLs) requires to manually update data in the WordPress database.
+
+Data should be updated in these tables:
+1. `wp_options` (or `wp-config.php` or Settings > Microsoft Azure): plugin settings
+2. `wp_posts`: 
+  - links in `post_content` of pages and posts (rows with `post_type` = `page` or `post`)
+  - `guid` of rows with `post_type` = `attachment`
+4. `wp_postmeta`: `meta_value` of rows with `meta_key` = `_wp_attachment_metadata` or `windows_azure_storage_info`
+
+**Note:** data in `wp_postmeta` is PHP serialized, it cannot be updated with simple search-and-replace. There are multiple ways to do it:
+1. Using WP-CLI, detailed instructions [here](https://dba.stackexchange.com/questions/64675/replace-string-within-serialized-data/239923#239923).
+2. Directly inside WordPress, using the [Better Search Replace plugin](https://wordpress.org/plugins/better-search-replace/).
+3. Using an external tool that supports PHP serialization, like [Search Replace DB](https://github.com/interconnectit/Search-Replace-DB).
+
 ## Changelog
 
 A complete listing of all notable changes to Microsoft Azure Storage are documented in [CHANGELOG.md](https://github.com/10up/windows-azure-storage/blob/develop/CHANGELOG.md).
