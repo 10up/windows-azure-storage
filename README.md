@@ -8,9 +8,9 @@
 
 This WordPress plugin allows you to use Microsoft Azure Storage Service to host your media and uploads for your WordPress powered website. Microsoft Azure Storage is an effective way to infinitely scale storage of your site and leverage Azure's global infrastructure.
 
-For more details on Microsoft Azure Storage, please visit the <a href="https://azure.microsoft.com/en-us/services/storage/">Microsoft Azure website</a>.
+For more details on Microsoft Azure Storage, please visit the [Microsoft Azure website](https://azure.microsoft.com/en-us/services/storage/).
 
-For more details on configuring a Micorsoft Azure Storage account and on using the plugin with the Block or Classic Editoros, please visit the [user guide](/UserGuide.md).
+For more details on configuring a Microsoft Azure Storage account and on using the plugin with the Block Editor or Classic Editor, please visit the [user guide](/UserGuide.md).
 
 ## Requirements
 
