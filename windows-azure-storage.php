@@ -3,7 +3,7 @@
  * Plugin Name:       Microsoft Azure Storage for WordPress
  * Plugin URI:        https://wordpress.org/plugins/windows-azure-storage/
  * Description:       Use the Microsoft Azure Storage service to host your website's media files.
- * Version:           4.3.2
+ * Version:           4.3.3
  * Requires at least: 4.0
  * Requires PHP:      5.6
  * Author:            10up, Microsoft Open Technologies
@@ -62,7 +62,7 @@
 define( 'MSFT_AZURE_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'MSFT_AZURE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'MSFT_AZURE_PLUGIN_LEGACY_MEDIA_URL', get_admin_url( get_current_blog_id(), 'media-upload.php' ) );
-define( 'MSFT_AZURE_PLUGIN_VERSION', '4.3.2' );
+define( 'MSFT_AZURE_PLUGIN_VERSION', '4.3.3' );
 
 require_once MSFT_AZURE_PLUGIN_PATH . 'windows-azure-storage-settings.php';
 require_once MSFT_AZURE_PLUGIN_PATH . 'windows-azure-storage-dialog.php';
@@ -89,7 +89,7 @@ register_activation_hook( __FILE__, 'windows_azure_plugin_check_prerequisite' );
 
 add_action( 'plugins_loaded', 'windows_azure_storage_load_textdomain' );
 add_action( 'admin_menu', 'windows_azure_storage_plugin_menu' );
-add_filter( 'media_buttons_context', 'windows_azure_storage_media_buttons_context' );
+add_filter( 'media_buttons', 'windows_azure_storage_media_buttons' );
 add_action( 'load-settings_page_windows-azure-storage-plugin-options', 'windows_azure_storage_load_settings_page' );
 add_action( 'load-settings_page_windows-azure-storage-plugin-options', 'windows_azure_storage_check_container_access_policy' );
 add_action( 'wp_ajax_query-azure-attachments', 'windows_azure_storage_query_azure_attachments' );
@@ -400,7 +400,13 @@ function windows_azure_storage_wp_generate_attachment_metadata( $data, $post_id 
 	$file_path = ltrim( $upload_path, '/' ) . $upload_file_name;
 
 	// Upload path for remaining files.
-	$upload_folder_path = trailingslashit( ltrim( $upload_dir['reldir'] . ( ! empty( $upload_file_path_info['dirname'] ) ? '/' . $upload_file_path_info['dirname'] : '' ), '/' ) );
+	$upload_folder_path = trailingslashit(
+		sprintf(
+			'%s%s',
+			trailingslashit( ltrim( $upload_dir['reldir'], '/' ) ),
+			ltrim( ( ! empty( $upload_file_path_info['dirname'] ) ? $upload_file_path_info['dirname'] : '' ), '/' )
+		)
+	);
 
 	try {
 		$post_array = wp_unslash( $_POST );
@@ -718,13 +724,13 @@ function windows_azure_storage_dialog_browse_tab() {
  *
  * @since    1.0.0
  * @since    3.0.0 Rewrote internals to only create a single element.
- * @internal Callback for 'media_buttons_context' filter.
+ * @internal Callback for 'media_buttons' filter.
  *
  * @param string $context Media buttons context.
  *
  * @return string Media buttons context with our button appended.
  */
-function windows_azure_storage_media_buttons_context( $context ) {
+function windows_azure_storage_media_buttons( $context ) {
 	global $post_ID, $temp_ID;
 
 	$uploading_iframe_id = (int) ( 0 === $post_ID ? $temp_ID : $post_ID );

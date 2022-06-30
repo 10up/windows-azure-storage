@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file, per [the Ke
 
 ## [Unreleased] - TBD
 
+## [4.3.3] - 2022-06-30
+### Added
+- New [user guide](https://github.com/10up/windows-azure-storage/blob/develop/UserGuide.md) (props [@saltnpixels](https://github.com/saltnpixels) via [#139](https://github.com/10up/windows-azure-storage/issues/139)).
+- Dependency security scanning (props [@jeffpaul](https://github.com/jeffpaul), [@peterwilsoncc](https://github.com/peterwilsoncc) via [#155](https://github.com/10up/windows-azure-storage/pull/155)).
+- GitHub action to auto-create issue if WordPress latest doesn't match plugin's "tested up to" (props [@cadic](https://github.com/cadic), [@jeffpaul](https://github.com/jeffpaul) via [#160](https://github.com/10up/windows-azure-storage/pull/160)).
+
+### Changed
+- Improve path generation for intermediary media sizes in multisite environments (props [@Clorith](https://github.com/Clorith), [@dinhtungdu](https://github.com/dinhtungdu) via [#141](https://github.com/10up/windows-azure-storage/issues/141)).
+- Update to use `media_buttons` instead of `media_buttons_context` hook (props [@debabratakarfa](https://github.com/debabratakarfa), [@colegeissinger](https://github.com/colegeissinger) via [#147](https://github.com/10up/windows-azure-storage/issues/147)).
+- Bump WordPress version "tested up to" 6.0 (props [@sudip-10up](https://github.com/sudip-10up), [@jeffpaul](https://github.com/jeffpaul), [@cadic](https://github.com/cadic) via [#152](https://github.com/10up/windows-azure-storage/issues/152), [#162](https://github.com/10up/windows-azure-storage/issues/162)).
+
+### Security
+- Bump `lodash` from 4.17.19 to 4.17.21 (props [@dependabot](https://github.com/apps/dependabot) via [#137](https://github.com/10up/windows-azure-storage/pull/137)).
+- Bump `grunt` from 1.0.4 to 1.5.3 (props [@dependabot](https://github.com/apps/dependabot) via [#138](https://github.com/10up/windows-azure-storage/pull/138), [#157](https://github.com/10up/windows-azure-storage/pull/157), [#158](https://github.com/10up/windows-azure-storage/pull/158)).
+- Bump `path-parse` from 1.0.6 to 1.0.7 (props [@dependabot](https://github.com/apps/dependabot) via [#146](https://github.com/10up/windows-azure-storage/pull/146)).
+- Bump `async` from 2.6.1 to 2.6.4 (props [@dependabot](https://github.com/apps/dependabot) via [#156](https://github.com/10up/windows-azure-storage/pull/156)).
+
 ## [4.3.2] - 2021-03-03
 ### Changed
 - Bump WordPress version "tested up to" 5.6 (props [@davidegreenwald](https://github.com/davidegreenwald), [@ShahAaron](https://github.com/ShahAaron), [@lostfields](https://github.com/lostfields)).
@@ -88,7 +105,7 @@ All notable changes to this project will be documented in this file, per [the Ke
 - Introduced filter `azure_blob_list_blobs_max_results` which defines max size of blobs listing per one request.
 - Introduced filter `azure_blob_put_blob_headers` which defines headers used for creating new blob.
 - Introduced filter `azure_blob_append_blob_headers` which defines headers used for appending created blob.
-  
+
 ### Changed
 - Removed old PHP SDK and use WordPress HTTP API based client library.
 - Improved overall performance.
@@ -182,6 +199,7 @@ All notable changes to this project will be documented in this file, per [the Ke
 - First release of Microsoft Azure Storage plugin for WordPress.
 
 [Unreleased]: https://github.com/10up/windows-azure-storage/compare/trunk...develop
+[4.3.3]: https://github.com/10up/windows-azure-storage/compare/4.3.2...4.3.3
 [4.3.2]: https://github.com/10up/windows-azure-storage/compare/4.3.1...4.3.2
 [4.3.1]: https://github.com/10up/windows-azure-storage/compare/4.3.0...4.3.1
 [4.3.0]: https://github.com/10up/windows-azure-storage/compare/013bb82...4.3.0
