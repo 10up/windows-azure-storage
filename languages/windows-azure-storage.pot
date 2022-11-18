@@ -276,7 +276,7 @@ msgid "Microsoft Azure Storage for WordPress requires at least PHP 5.3.0"
 msgstr ""
 
 #: windows-azure-storage.php:175
-msgid "Microsoft Azure Storage for WordPress requires at least WordPress 4.0"
+msgid "Microsoft Azure Storage for WordPress requires at least WordPress 5.7"
 msgstr ""
 
 #: windows-azure-storage.php:220
