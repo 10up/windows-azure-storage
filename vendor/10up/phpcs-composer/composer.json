@@ -1,0 +1,29 @@
+{
+    "name": "10up/phpcs-composer",
+    "type": "phpcodesniffer-standard",
+    "version": "dev-master",
+    "license": "MIT",
+    "require": {
+        "dealerdirect/phpcodesniffer-composer-installer": "*",
+        "phpcompatibility/phpcompatibility-wp": "^2",
+        "squizlabs/php_codesniffer" : "3.7.1",
+        "wp-coding-standards/wpcs": "*",
+         "automattic/vipwpcs": "^2.3"
+    },
+    "prefer-stable" : true,
+    "authors": [
+        {
+            "name": "Ephraim Gregor",
+            "email": "ephraim.gregor@10up.com"
+        }
+    ],
+    "scripts": {
+      "config-cs": [
+        "Dealerdirect\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\Plugin::run",
+        "\"vendor/bin/phpcs\" --config-set default_standard 10up-Default"
+      ],
+      "post-install-cmd": "@config-cs",
+      "post-update-cmd": "@config-cs",
+      "lint": "\"vendor/bin/phpcs\" . "
+    }
+}

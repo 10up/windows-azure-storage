@@ -16,5 +16,16 @@
   "minimum-stability": "dev",
   "require": {
     "php": ">=7.4"
+  },
+  "require-dev": {
+    "10up/phpcs-composer": "dev-master"
+  },
+  "scripts": {
+    "phpcs:compat": "vendor/bin/phpcs windows-azure-storage.php includes/ -p --standard=PHPCompatibilityWP --extensions=php --runtime-set testVersion 7.4-"
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
   }
 }
