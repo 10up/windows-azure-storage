@@ -1,9 +1,9 @@
 === Microsoft Azure Storage for WordPress ===
 Contributors:      msopentech, 10up, morganestes, stevegrunwell, lpawlik, ritteshpatel, johnwatkins0, rickalee, eflorea, phyrax, ravichandra
 Tags:              Microsoft, Microsoft Open Technologies, Microsoft Azure, Microsoft Azure Storage, Media Files, Upload, CDN, blob storage
-Requires at least: 4.0
+Requires at least: 5.7
 Tested up to:      6.0
-Requires PHP:      5.6
+Requires PHP:      7.4
 Stable tag:        4.3.3
 License:           BSD 2-Clause
 License URI:       http://www.opensource.org/licenses/bsd-license.php
