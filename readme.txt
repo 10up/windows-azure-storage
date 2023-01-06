@@ -4,7 +4,7 @@ Tags:              Microsoft, Microsoft Open Technologies, Microsoft Azure, Micr
 Requires at least: 5.7
 Tested up to:      6.1
 Requires PHP:      7.4
-Stable tag:        4.3.3
+Stable tag:        4.3.4
 License:           BSD 2-Clause
 License URI:       http://www.opensource.org/licenses/bsd-license.php
 
