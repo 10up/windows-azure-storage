@@ -38,9 +38,9 @@ See Settings->Microsoft Azure for more information.
 = 4.3.4 - 2023-01-10 =
 * **Note that this release bumps the WordPress minimum version from 4.0 to 5.7 and the PHP minimum version from 5.6 to 7.4.**
 
-* **Added:** Add automated PHPCS scanning (props [@csloisel](https://github.com/csloisel), [@Sidsector9](https://github.com/Sidsector9) via [#169](https://github.com/10up/windows-azure-storage/pull/169)).
-* **Changed:** Bump minimum WordPress version from 4.0 to 5.7 (props [@csloisel](https://github.com/csloisel), [@Sidsector9](https://github.com/Sidsector9) via [#169](https://github.com/10up/windows-azure-storage/pull/169)).
-* **Changed:** Bump minimum PHP version from 5.6 to 7.4 (props [@csloisel](https://github.com/csloisel), [@Sidsector9](https://github.com/Sidsector9) via [#169](https://github.com/10up/windows-azure-storage/pull/169)).
+* **Added:** Add automated PHPCS scanning (props [@csloisel](https://github.com/csloisel), [@Sidsector9](https://github.com/Sidsector9) via [#170](https://github.com/10up/windows-azure-storage/pull/170)).
+* **Changed:** Bump minimum WordPress version from 4.0 to 5.7 (props [@csloisel](https://github.com/csloisel), [@Sidsector9](https://github.com/Sidsector9) via [#170](https://github.com/10up/windows-azure-storage/pull/170)).
+* **Changed:** Bump minimum PHP version from 5.6 to 7.4 (props [@csloisel](https://github.com/csloisel), [@Sidsector9](https://github.com/Sidsector9) via [#170](https://github.com/10up/windows-azure-storage/pull/170)).
 * **Changed:** Bump WordPress version "tested up to" 6.1 (props [@jayedul](https://github.com/jayedul), [@dkotter](https://github.com/dkotter) via [#172](https://github.com/10up/windows-azure-storage/issues/172)).
 * **Fixed:** Address some PHP 8.1 deprecations (props [@superpowered](https://github.com/superpowered), [@faisal-alvi](https://github.com/faisal-alvi) via [#169](https://github.com/10up/windows-azure-storage/pull/169)).
 * **Security:** Bump `minimatch` from 3.0.4 to 3.0.8 (props [@dependabot](https://github.com/apps/dependabot) via [#171](https://github.com/10up/windows-azure-storage/pull/171)).
