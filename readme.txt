@@ -35,7 +35,7 @@ See Settings->Microsoft Azure for more information.
 
 == Changelog ==
 
-= 4.3.4 - 2023-01-10 =
+= 4.3.4 - 2023-01-12 =
 * **Note that this release bumps the WordPress minimum version from 4.0 to 5.7 and the PHP minimum version from 5.6 to 7.4.**
 
 * **Added:** Add automated PHPCS scanning (props [@csloisel](https://github.com/csloisel), [@Sidsector9](https://github.com/Sidsector9) via [#170](https://github.com/10up/windows-azure-storage/pull/170)).
