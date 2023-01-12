@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file, per [the Ke
 
 ## [Unreleased] - TBD
 
+## [4.3.4] - 2023-01-12
+**Note that this release bumps the WordPress minimum version from 4.0 to 5.7 and the PHP minimum version from 5.6 to 7.4.**
+
+### Added
+- Add automated PHPCS scanning (props [@csloisel](https://github.com/csloisel), [@Sidsector9](https://github.com/Sidsector9) via [#170](https://github.com/10up/windows-azure-storage/pull/170)).
+
+### Changed
+- Bump minimum WordPress version from 4.0 to 5.7 (props [@csloisel](https://github.com/csloisel), [@Sidsector9](https://github.com/Sidsector9) via [#170](https://github.com/10up/windows-azure-storage/pull/170)).
+- Bump minimum PHP version from 5.6 to 7.4 (props [@csloisel](https://github.com/csloisel), [@Sidsector9](https://github.com/Sidsector9) via [#170](https://github.com/10up/windows-azure-storage/pull/170)).
+- Bump WordPress version "tested up to" 6.1 (props [@jayedul](https://github.com/jayedul), [@dkotter](https://github.com/dkotter) via [#172](https://github.com/10up/windows-azure-storage/issues/172)).
+
+### Fixed
+- Address some PHP 8.1 deprecations (props [@superpowered](https://github.com/superpowered), [@faisal-alvi](https://github.com/faisal-alvi) via [#169](https://github.com/10up/windows-azure-storage/pull/169)).
+
+### Security
+- Bump `minimatch` from 3.0.4 to 3.0.8 (props [@dependabot](https://github.com/apps/dependabot) via [#171](https://github.com/10up/windows-azure-storage/pull/171)).
+- Bump `qs` from 6.6.0 to 6.11.0 (props [@dependabot](https://github.com/apps/dependabot) via [#173](https://github.com/10up/windows-azure-storage/pull/173)).
+
 ## [4.3.3] - 2022-06-30
 ### Added
 - New [user guide](https://github.com/10up/windows-azure-storage/blob/develop/UserGuide.md) (props [@saltnpixels](https://github.com/saltnpixels) via [#139](https://github.com/10up/windows-azure-storage/issues/139)).
@@ -199,6 +217,7 @@ All notable changes to this project will be documented in this file, per [the Ke
 - First release of Microsoft Azure Storage plugin for WordPress.
 
 [Unreleased]: https://github.com/10up/windows-azure-storage/compare/trunk...develop
+[4.3.4]: https://github.com/10up/windows-azure-storage/compare/4.3.3...4.3.4
 [4.3.3]: https://github.com/10up/windows-azure-storage/compare/4.3.2...4.3.3
 [4.3.2]: https://github.com/10up/windows-azure-storage/compare/4.3.1...4.3.2
 [4.3.1]: https://github.com/10up/windows-azure-storage/compare/4.3.0...4.3.1
