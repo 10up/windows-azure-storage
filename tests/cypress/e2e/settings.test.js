@@ -24,4 +24,4 @@ describe('Configure admin settings', () => {
         cy.visit('wp-admin/upload.php');
         cy.get('.thumbnail img').should('have.attr', 'src').should('include','azurethumbs');
     });
-})
+});
