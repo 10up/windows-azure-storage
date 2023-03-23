@@ -22,6 +22,6 @@ describe('Configure admin settings', () => {
     it( 'Upload file and verify location', () => {
         cy.uploadMedia( 'tests/cypress/fixtures/image.jpg' );
         cy.visit('wp-admin/upload.php');
-        cy.get('.thumbnail img').should('have.attr', 'src').should('include','azurethumbs');
+        cy.get('.thumbnail img').should('have.attr', 'src').should('include',Cypress.env('MICROSOFT_AZURE_ACCOUNT_NAME'));
     });
 });
