@@ -138,7 +138,8 @@ abstract class Windows_Azure_Generic_List_Response implements Iterator {
 	 *
 	 * @return mixed Can return any type.
 	 */
-	public function current(): mixed {
+	#[\ReturnTypeWillChange]
+	public function current() {
 		if ( ! isset( $this->_items[ $this->_position ] ) ) {
 			return null;
 		} else {
@@ -172,7 +173,8 @@ abstract class Windows_Azure_Generic_List_Response implements Iterator {
 	 *
 	 * @return mixed scalar on success, or null on failure.
 	 */
-	public function key(): mixed {
+	#[\ReturnTypeWillChange]
+	public function key() {
 		return $this->_position;
 	}
 
@@ -216,7 +218,8 @@ abstract class Windows_Azure_Generic_List_Response implements Iterator {
 	 *
 	 * @return null|string Next portion of data marker.
 	 */
-	public function get_next_marker(): mixed {
+	#[\ReturnTypeWillChange]
+	public function get_next_marker() {
 		return $this->_next_marker;
 	}
 
