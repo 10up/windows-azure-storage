@@ -136,6 +136,7 @@ abstract class Windows_Azure_Generic_List_Response implements Iterator {
 	 *
 	 * @return mixed Can return any type.
 	 */
+	#[\ReturnTypeWillChange]
 	public function current() {
 		if ( ! isset( $this->_items[ $this->_position ] ) ) {
 			return null;
@@ -151,7 +152,7 @@ abstract class Windows_Azure_Generic_List_Response implements Iterator {
 	 *
 	 * @return void
 	 */
-	public function next() {
+	public function next(): void {
 		if ( ! empty( $this->_next_marker ) && ( ( count( $this->_items ) - 1 ) === $this->_position ) ) {
 			$lazy_loaded = $this->_list_items( $this->_prefix, $this->_max_results, $this->_next_marker, $this->_path );
 			if ( $lazy_loaded instanceof Windows_Azure_Generic_List_Response ) {
@@ -170,6 +171,7 @@ abstract class Windows_Azure_Generic_List_Response implements Iterator {
 	 *
 	 * @return mixed scalar on success, or null on failure.
 	 */
+	#[\ReturnTypeWillChange]
 	public function key() {
 		return $this->_position;
 	}
@@ -181,7 +183,7 @@ abstract class Windows_Azure_Generic_List_Response implements Iterator {
 	 *
 	 * @return boolean The return value will be casted to boolean and then evaluated. Returns true on success or false on failure.
 	 */
-	public function valid() {
+	public function valid(): bool {
 		return isset( $this->_items[ $this->_position ] );
 	}
 
@@ -192,7 +194,7 @@ abstract class Windows_Azure_Generic_List_Response implements Iterator {
 	 *
 	 * @return void
 	 */
-	public function rewind() {
+	public function rewind(): void {
 		$this->_position = 0;
 	}
 
@@ -214,6 +216,7 @@ abstract class Windows_Azure_Generic_List_Response implements Iterator {
 	 *
 	 * @return null|string Next portion of data marker.
 	 */
+	#[\ReturnTypeWillChange]
 	public function get_next_marker() {
 		return $this->_next_marker;
 	}
@@ -225,7 +228,7 @@ abstract class Windows_Azure_Generic_List_Response implements Iterator {
 	 *
 	 * @return bool True or false.
 	 */
-	public function is_empty() {
+	public function is_empty(): bool {
 		return 0 === count( $this->_items );
 	}
 

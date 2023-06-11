@@ -3,9 +3,9 @@
  * Plugin Name:       Microsoft Azure Storage for WordPress
  * Plugin URI:        https://wordpress.org/plugins/windows-azure-storage/
  * Description:       Use the Microsoft Azure Storage service to host your website's media files.
- * Version:           4.3.2
- * Requires at least: 4.0
- * Requires PHP:      5.6
+ * Version:           4.3.4
+ * Requires at least: 5.7
+ * Requires PHP:      7.4
  * Author:            10up, Microsoft Open Technologies
  * Author URI:        https://10up.com/
  * License:           BSD 2-Clause
@@ -62,7 +62,7 @@
 define( 'MSFT_AZURE_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'MSFT_AZURE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'MSFT_AZURE_PLUGIN_LEGACY_MEDIA_URL', get_admin_url( get_current_blog_id(), 'media-upload.php' ) );
-define( 'MSFT_AZURE_PLUGIN_VERSION', '4.3.2' );
+define( 'MSFT_AZURE_PLUGIN_VERSION', '4.3.4' );
 
 require_once MSFT_AZURE_PLUGIN_PATH . 'windows-azure-storage-settings.php';
 require_once MSFT_AZURE_PLUGIN_PATH . 'windows-azure-storage-dialog.php';
@@ -172,15 +172,15 @@ function windows_azure_storage_load_textdomain() {
 function windows_azure_plugin_check_prerequisite() {
 	global $wp_version;
 	$php_version = phpversion();
-	$php_compat  = version_compare( $php_version, '5.3.0', '>=' );
+	$php_compat  = version_compare( $php_version, '7.4.0', '>=' );
 	if ( ! $php_compat ) {
 		deactivate_plugins( plugin_basename( __FILE__ ) );
-		wp_die( __( 'Microsoft Azure Storage for WordPress requires at least PHP 5.3.0', 'windows-azure-storage' ) );
+		wp_die( __( 'Microsoft Azure Storage for WordPress requires at least PHP 7.4.0', 'windows-azure-storage' ) );
 	}
-	$wp_compat = version_compare( $wp_version, '4.0', '>=' );
+	$wp_compat = version_compare( $wp_version, '5.7', '>=' );
 	if ( ! $wp_compat ) {
 		deactivate_plugins( plugin_basename( __FILE__ ) );
-		wp_die( __( 'Microsoft Azure Storage for WordPress requires at least WordPress 4.0', 'windows-azure-storage' ) );
+		wp_die( __( 'Microsoft Azure Storage for WordPress requires at least WordPress 5.7', 'windows-azure-storage' ) );
 	}
 }
 
@@ -402,7 +402,13 @@ function windows_azure_storage_wp_generate_attachment_metadata( $data, $post_id 
 	$file_path = ltrim( $upload_path, '/' ) . $upload_file_name;
 
 	// Upload path for remaining files.
-	$upload_folder_path = trailingslashit( ltrim( $upload_dir['reldir'] . ( ! empty( $upload_file_path_info['dirname'] ) ? '/' . $upload_file_path_info['dirname'] : '' ), '/' ) );
+	$upload_folder_path = trailingslashit(
+		sprintf(
+			'%s%s',
+			trailingslashit( ltrim( $upload_dir['reldir'], '/' ) ),
+			ltrim( ( ! empty( $upload_file_path_info['dirname'] ) ? $upload_file_path_info['dirname'] : '' ), '/' )
+		)
+	);
 
 	try {
 		$post_array = wp_unslash( $_POST );

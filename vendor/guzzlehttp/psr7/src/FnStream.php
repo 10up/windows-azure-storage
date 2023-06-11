@@ -12,6 +12,7 @@ use Psr\Http\Message\StreamInterface;
  * Allows for easy testing and extension of a provided stream without needing
  * to create a concrete class for a simple extension point.
  */
+#[\AllowDynamicProperties]
 final class FnStream implements StreamInterface
 {
     private const SLOTS = [
@@ -167,6 +168,11 @@ final class FnStream implements StreamInterface
         return call_user_func($this->_fn_getContents);
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @return mixed
+     */
     public function getMetadata($key = null)
     {
         return call_user_func($this->_fn_getMetadata, $key);
