@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => '10up/windows-azure-storage',
-        'pretty_version' => 'dev-trunk',
-        'version' => 'dev-trunk',
-        'reference' => '98611a7686782cf9f0f28c4ee5417d67ab36c1af',
+        'pretty_version' => 'dev-develop',
+        'version' => 'dev-develop',
+        'reference' => 'daf60ae0284e040b06d78c93feeeb6b99faa4a8e',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -22,9 +22,9 @@
             'dev_requirement' => true,
         ),
         '10up/windows-azure-storage' => array(
-            'pretty_version' => 'dev-trunk',
-            'version' => 'dev-trunk',
-            'reference' => '98611a7686782cf9f0f28c4ee5417d67ab36c1af',
+            'pretty_version' => 'dev-develop',
+            'version' => 'dev-develop',
+            'reference' => 'daf60ae0284e040b06d78c93feeeb6b99faa4a8e',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
