@@ -9,7 +9,7 @@ module.exports = {
 	},
 	mediabrowser: {
 		src: [
-			'js/src/windows-azure-storage-media-browser.js'
+			'js/src/windows-azure-storage-media-browser.js',
 		],
 		dest: 'js/windows-azure-storage-media-browser.js'
 	},
@@ -18,5 +18,11 @@ module.exports = {
 			'js/src/windows-azure-storage-admin.js'
 		],
 		dest: 'js/windows-azure-storage-admin.js'
+	},
+	mediareplace: {
+		src: [
+			'js/src/windows-azure-storage-media-replace.js'
+		],
+		dest: 'js/windows-azure-storage-media-replace.js'
 	}
 };

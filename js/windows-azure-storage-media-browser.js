@@ -1,6 +1,6 @@
 /*!  - v4.3.4
  * https://github.com/10up/windows-azure-storage#readme
- * Copyright (c) 2019; */
+ * Copyright (c) 2023; */
 window.wp = window.wp || {};
 (function ( $, window, _ ) {
   $( document ).ready( function () {
