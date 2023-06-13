@@ -39,14 +39,3 @@ var replaceMedia = function(attachmentID) {
   });
   mediaUploader.open();
 };
-
-(function ( $, window, undefined ) {
-  'use strict';
-  $( document ).ready( function () {
-    console.log($('#azure-media-replacement'));
-    $('#azure-media-replacement').on( 'click', function(event) {
-      event.preventDefault();
-      wp.media.editor.open();
-    } );
-  } );
-})( jQuery, this );
