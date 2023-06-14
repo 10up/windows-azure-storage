@@ -50,7 +50,6 @@ class Windows_Azure_Replace_Media {
 	public function __construct() {
 		// Add fields to attachment editor
 		add_filter( 'attachment_fields_to_edit', array( $this, 'register_azure_fields_attachment_editor' ), 10, 2 );
-		// Add meta box for attachment single
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_replace_media_script' ) );
 
 		//ajax event to replace media
