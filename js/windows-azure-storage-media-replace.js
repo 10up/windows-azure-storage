@@ -34,8 +34,9 @@ var replaceMedia = function(attachmentID) {
           var medium_image = full_path + replace_thumb;
           jQuery('.media-modal').find('.details-image').attr('src', result.attachment_data.url);
           jQuery('.attachments-wrapper').find('li[data-id="'+ result.ID +'"]').find('img').first().attr('src', medium_image);
-          jQuery('.attachments-wrapper').find('li[data-id="'+ result.old_ID +'"]').remove();
         }
+
+        jQuery('.attachments-wrapper').find('li[data-id="'+ result.old_ID +'"]').remove();
       }
     });
     

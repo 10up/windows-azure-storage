@@ -121,8 +121,8 @@ class Windows_Azure_Replace_Media {
 			return __( 'Cannot determine images IDs, aborting...', 'windows-azure-storage' );;
 		}
 
-		$source_file  = wp_get_original_image_path( $source_attachment_id );
-		$replace_file = wp_get_original_image_path( $media_to_replace_id );
+		$source_file  = get_attached_file( $source_attachment_id );
+		$replace_file = get_attached_file( $media_to_replace_id );
 
 		if ( empty( $source_file ) || empty( $replace_file ) ) {
 			return __( 'Path issues, aborting...', 'windows-azure-storage' );
