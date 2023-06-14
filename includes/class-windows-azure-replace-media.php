@@ -51,7 +51,6 @@ class Windows_Azure_Replace_Media {
 		// Add fields to attachment editor
 		add_filter( 'attachment_fields_to_edit', array( $this, 'register_azure_fields_attachment_editor' ), 10, 2 );
 		// Add meta box for attachment single
-		add_action( 'add_meta_boxes', array( $this, 'register_azure_storage_attachment_metabox' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_replace_media_script' ) );
 
 		//ajax event to replace media
@@ -76,14 +75,6 @@ class Windows_Azure_Replace_Media {
 		);
 	
 		return $form_fields;
-	}
-
-	public function register_azure_storage_attachment_metabox() {
-		add_meta_box( 'windows-azure-storage-replace-box', __( 'Replace Media', 'windows-azure-storage' ), 'replace_media_meta_box', 'attachment', 'side', 'low' );
-	}
-	
-	public function replace_media_meta_box( $post ) {
-		echo '<p><button class="button-secondary" id="azure-media-replacement">' . esc_html__( 'Replace this media', 'windows-azure-storage' ) . '</button></p>';
 	}
 
 	public function enqueue_replace_media_script() {
