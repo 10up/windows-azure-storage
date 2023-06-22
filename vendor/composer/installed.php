@@ -5,7 +5,7 @@
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '7494b238e5f0c67aac61bc2958268394ab88c6b0',
+        'reference' => '063f5bcf3a9dd2c13d0d36fbb4514ea3587d1c54',
         'name' => '10up/windows-azure-storage',
         'dev' => true,
     ),
@@ -27,7 +27,7 @@
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '7494b238e5f0c67aac61bc2958268394ab88c6b0',
+            'reference' => '063f5bcf3a9dd2c13d0d36fbb4514ea3587d1c54',
             'dev_requirement' => false,
         ),
         'automattic/vipwpcs' => array(
