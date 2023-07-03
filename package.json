@@ -1,6 +1,6 @@
 {
   "name": "windows-azure-storage",
-  "version": "4.3.4",
+  "version": "4.3.5",
   "description": "Use the Microsoft Azure Storage service to host your website's media files.",
   "homepage": "https://github.com/10up/windows-azure-storage#readme",
   "bugs": {
