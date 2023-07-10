@@ -35,7 +35,7 @@ See Settings->Microsoft Azure for more information.
 
 == Changelog ==
 
-= 4.3.5 - 2023-07-05 =
+= 4.3.5 - 2023-07-10 =
 * **Added:** Update docs with information on migrating to a new Azure Storage Account and compatibility issues with Media Library editing tools (props [@gioamato](https://github.com/gioamato), [@jeffpaul](https://github.com/jeffpaul), [@rickalee](https://github.com/rickalee), [@colegeissinger](https://github.com/colegeissinger) via [#163](https://github.com/10up/windows-azure-storage/issues/163)).
 * **Added:** Setup E2E tests on Cypress (props [@barneyjeffries](https://github.com/barneyjeffries), [@iamdharmesh](https://github.com/iamdharmesh), [@jeffpaul](https://github.com/jeffpaul) via [#179](https://github.com/10up/windows-azure-storage/issues/179)).
 * **Changed:** Bump WordPress version "tested up to" 6.2 (props [@Sidsector9](https://github.com/Sidsector9), [@jeffpaul](https://github.com/jeffpaul) via [#183](https://github.com/10up/windows-azure-storage/pull/183)).
