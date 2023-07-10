@@ -10,7 +10,7 @@ All notable changes to this project will be documented in this file, per [the Ke
 - Setup E2E tests on Cypress (props [@barneyjeffries](https://github.com/barneyjeffries), [@iamdharmesh](https://github.com/iamdharmesh), [@jeffpaul](https://github.com/jeffpaul) via [#179](https://github.com/10up/windows-azure-storage/issues/179)).
 
 ### Changed
-- Bump WordPress version "tested up to" 6.2 (props [@Sidsector9](https://github.com/Sidsector9), [@jeffpaul](https://github.com/jeffpaul) via [#172](https://github.com/10up/windows-azure-storage/issues/172)).
+- Bump WordPress version "tested up to" 6.2 (props [@Sidsector9](https://github.com/Sidsector9), [@jeffpaul](https://github.com/jeffpaul) via [#183](https://github.com/10up/windows-azure-storage/pull/183)).
 
 ### Fixed
 - Ensure things work properly on PHP 7.4 (props [@dkotter](https://github.com/dkotter), [@Sidsector9](https://github.com/Sidsector9), [@faisal-alvi](https://github.com/faisal-alvi) via [#177](https://github.com/10up/windows-azure-storage/pull/177)).
