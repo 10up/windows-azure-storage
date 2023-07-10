@@ -15,7 +15,7 @@ For more details on configuring a Microsoft Azure Storage account and on using t
 ## Requirements
 
 * PHP 7.4+
-* [WordPress](http://wordpress.org/ 5.7+
+* [WordPress](http://wordpress.org/) 5.7+
 
 ## Installation
 
@@ -60,7 +60,7 @@ At the moment, changing the Azure Storage account (and blob URLs) requires to ma
 
 Data should be updated in these tables:
 1. `wp_options` (or `wp-config.php` or Settings > Microsoft Azure): plugin settings
-2. `wp_posts`: 
+2. `wp_posts`:
   - links in `post_content` of pages and posts (rows with `post_type` = `page` or `post`)
   - `guid` of rows with `post_type` = `attachment`
 4. `wp_postmeta`: `meta_value` of rows with `meta_key` = `_wp_attachment_metadata` or `windows_azure_storage_info`
