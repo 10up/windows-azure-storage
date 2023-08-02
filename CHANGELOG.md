@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file, per [the Ke
 
 ## [Unreleased] - TBD
 
+## [4.3.5] - 2023-07-10
+### Added
+- Update docs with information on migrating to a new Azure Storage Account and compatibility issues with Media Library editing tools (props [@gioamato](https://github.com/gioamato), [@jeffpaul](https://github.com/jeffpaul), [@rickalee](https://github.com/rickalee), [@colegeissinger](https://github.com/colegeissinger) via [#163](https://github.com/10up/windows-azure-storage/issues/163)).
+- Setup E2E tests on Cypress (props [@barneyjeffries](https://github.com/barneyjeffries), [@iamdharmesh](https://github.com/iamdharmesh), [@jeffpaul](https://github.com/jeffpaul) via [#179](https://github.com/10up/windows-azure-storage/issues/179)).
+
+### Changed
+- Bump WordPress version "tested up to" 6.2 (props [@Sidsector9](https://github.com/Sidsector9), [@jeffpaul](https://github.com/jeffpaul) via [#183](https://github.com/10up/windows-azure-storage/pull/183)).
+
+### Fixed
+- Ensure things work properly on PHP 7.4 (props [@dkotter](https://github.com/dkotter), [@Sidsector9](https://github.com/Sidsector9), [@faisal-alvi](https://github.com/faisal-alvi) via [#177](https://github.com/10up/windows-azure-storage/pull/177)).
+
 ## [4.3.4] - 2023-01-12
 **Note that this release bumps the WordPress minimum version from 4.0 to 5.7 and the PHP minimum version from 5.6 to 7.4.**
 
@@ -217,6 +228,7 @@ All notable changes to this project will be documented in this file, per [the Ke
 - First release of Microsoft Azure Storage plugin for WordPress.
 
 [Unreleased]: https://github.com/10up/windows-azure-storage/compare/trunk...develop
+[4.3.5]: https://github.com/10up/windows-azure-storage/compare/4.3.4...4.3.5
 [4.3.4]: https://github.com/10up/windows-azure-storage/compare/4.3.3...4.3.4
 [4.3.3]: https://github.com/10up/windows-azure-storage/compare/4.3.2...4.3.3
 [4.3.2]: https://github.com/10up/windows-azure-storage/compare/4.3.1...4.3.2

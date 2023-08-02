@@ -4,12 +4,14 @@
 /.wordpress-org
 /node_modules
 /tasks
+/tests
 
 # Files
 .DS_Store
 .eslintrc.json
 .distignore
 .gitignore
+.wp-env.json
 CHANGELOG.md
 CODE_OF_CONDUCT.md
 composer.json
