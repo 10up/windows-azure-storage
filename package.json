@@ -1,6 +1,6 @@
 {
   "name": "windows-azure-storage",
-  "version": "4.3.4",
+  "version": "4.3.5",
   "description": "Use the Microsoft Azure Storage service to host your website's media files.",
   "homepage": "https://github.com/10up/windows-azure-storage#readme",
   "bugs": {
@@ -37,6 +37,11 @@
   "devDependencies": {
     "@10up/cypress-wp-utils": "^0.1.0",
     "@wordpress/env": "^5.13.0",
-    "cypress": "^10.11.0"
+    "cypress": "^11.2.0"
+  }, 
+  "overrides": {
+    "cypress": {
+      "semver": "7.5.2"
+    }
   }
 }
