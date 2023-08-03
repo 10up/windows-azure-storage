@@ -15,7 +15,7 @@
   ],
   "minimum-stability": "dev",
   "require": {
-    "php": ">=7.4",
+    "php": ">=8.0",
     "microsoft/azure-storage-blob": "1.5.3",
     "microsoft/azure-storage-common": "1.5.2"
   },
@@ -23,7 +23,7 @@
     "10up/phpcs-composer": "dev-master"
   },
   "scripts": {
-    "phpcs:compat": "vendor/bin/phpcs windows-azure-storage.php includes/ -p --standard=PHPCompatibilityWP --extensions=php --runtime-set testVersion 7.4-"
+    "phpcs:compat": "vendor/bin/phpcs windows-azure-storage.php includes/ -p --standard=PHPCompatibilityWP --extensions=php --runtime-set testVersion 8.0-"
   },
   "config": {
     "allow-plugins": {

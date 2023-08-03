@@ -14,7 +14,7 @@ For more details on configuring a Microsoft Azure Storage account and on using t
 
 ## Requirements
 
-* PHP 7.4+
+* PHP 8.0+ (For PHP 7.4 support you need to use 4.3.5)
 * [WordPress](http://wordpress.org/) 5.7+
 
 ## Installation
