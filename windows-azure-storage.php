@@ -64,6 +64,49 @@ define( 'MSFT_AZURE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'MSFT_AZURE_PLUGIN_LEGACY_MEDIA_URL', get_admin_url( get_current_blog_id(), 'media-upload.php' ) );
 define( 'MSFT_AZURE_PLUGIN_VERSION', '4.3.5' );
 
+/**
+ * Get the minimum version of PHP required by this plugin.
+ *
+ * @return string Minimum version required.
+ */
+function was_minimum_php_requirement() {
+	return '7.4';
+}
+
+/**
+ * Checks whether PHP installation meets the minimum requirements
+ *
+ * @return bool True if meets minimum requirements, false otherwise.
+ */
+function was_site_meets_php_requirements() {
+
+	return version_compare( phpversion(), was_minimum_php_requirement(), '>=' );
+}
+
+if ( ! was_site_meets_php_requirements() ) {
+	add_action(
+		'admin_notices',
+		function() {
+			?>
+			<div class="notice notice-error">
+				<p>
+					<?php
+					echo wp_kses_post(
+						sprintf(
+							/* translators: %s: Minimum required PHP version */
+							__( 'Microsoft Azure Storage for WordPress requires PHP version %s or later. Please upgrade PHP or disable the plugin.', 'windows-azure-storage' ),
+							esc_html( was_minimum_php_requirement() )
+						)
+					);
+					?>
+				</p>
+			</div>
+			<?php
+		}
+	);
+	return;
+}
+
 require_once MSFT_AZURE_PLUGIN_PATH . 'windows-azure-storage-settings.php';
 require_once MSFT_AZURE_PLUGIN_PATH . 'windows-azure-storage-dialog.php';
 require_once MSFT_AZURE_PLUGIN_PATH . 'windows-azure-storage-util.php';
