@@ -35,14 +35,8 @@
     "load-grunt-tasks": "^4.0.0"
   },
   "devDependencies": {
-    "@10up/cypress-wp-utils": "^0.1.0",
-    "@wordpress/env": "^5.13.0",
-    "cypress": "^11.2.0"
-  }, 
-  "overrides": {
-    "cypress": {
-      "semver": "7.5.2"
-    },
-    "@cypress/request": "3.0.1"
+    "@10up/cypress-wp-utils": "^0.2.0",
+    "@wordpress/env": "^8.7.0",
+    "cypress": "^13.1.0"
   }
 }
