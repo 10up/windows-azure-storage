@@ -42,6 +42,7 @@
   "overrides": {
     "cypress": {
       "semver": "7.5.2"
-    }
+    },
+    "@cypress/request": "3.0.1"
   }
 }
