@@ -359,7 +359,7 @@ class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 		}
 		$items = array();
 		foreach ( $blobs as $blob ) {
-			$items[] = $blob;
+			$items[] = [ 'Name' => $blob->getName() ];
 		}
 
 		if ( empty( $items ) ) {

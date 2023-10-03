@@ -1,2 +1,8 @@
 node_modules/
-vendor/
+vendor/*
+!vendor/autoload.php
+!vendor/composer
+!vendor/microsoft
+!vendor/guzzlehttp
+!vendor/psr
+!vendor/ralouphie
