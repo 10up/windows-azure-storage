@@ -70,7 +70,7 @@ define( 'MSFT_AZURE_PLUGIN_VERSION', '4.4.0' );
  * @return string Minimum version required.
  */
 function was_minimum_php_requirement() {
-	return '7.4';
+	return '8.0';
 }
 
 /**
