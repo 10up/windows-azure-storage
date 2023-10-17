@@ -4,7 +4,7 @@ Tags:              Microsoft, Microsoft Open Technologies, Microsoft Azure, Micr
 Requires at least: 5.7
 Tested up to:      6.3
 Requires PHP:      7.4
-Stable tag:        4.3.5
+Stable tag:        4.4.0
 License:           BSD 2-Clause
 License URI:       http://www.opensource.org/licenses/bsd-license.php
 
@@ -34,6 +34,15 @@ For multisites or to enforce Azure Blob Storage settings, you can define the fol
 See Settings->Microsoft Azure for more information.
 
 == Changelog ==
+
+= 4.4.0 - 2023-10-17 =
+**Note that this release bumps the minimum PHP version from 7.4 to 8.0**
+
+* **Added:** Check for minimum required PHP version before loading the plugin (props [@bmarshall511](https://github.com/bmarshall511), [@iamdharmesh](https://github.com/iamdharmesh) via [#200](https://github.com/10up/windows-azure-storage/pull/200)).
+* **Changed:** Update to the `2020-04-08` version of the Azure Blob Storage API (props [@thrijith](https://github.com/thrijith), [@colegeissinger](https://github.com/colegeissinger) via [#136](https://github.com/10up/windows-azure-storage/pull/136)).
+* **Changed:** Bump minimum PHP version from 7.4 to 8.0 (props [@thrijith](https://github.com/thrijith), [@colegeissinger](https://github.com/colegeissinger) via [#136](https://github.com/10up/windows-azure-storage/pull/136)).
+* **Changed:** Bump WordPress version "tested up to" 6.3 (props [@QAharshalkadu](https://github.com/QAharshalkadu), [@jeffpaul](https://github.com/jeffpaul), [@peterwilsoncc](https://github.com/peterwilsoncc) via [#192](https://github.com/10up/windows-azure-storage/pull/192), [#198](https://github.com/10up/windows-azure-storage/pull/198)).
+* **Changed:** Bump `cypress` from 10.11.0 to 13.1.0, `@10up/cypress-wp-utils` from 0.1.0 to 0.2.0 and `@wordpress/env` from 5.13.0 to 8.7.0, to ensure E2E tests work on the latest version of WordPress (props [@iamdharmesh](https://github.com/iamdharmesh), [@Sidsector9](https://github.com/Sidsector9) via [#199](https://github.com/10up/windows-azure-storage/pull/199)).
 
 = 4.3.5 - 2023-07-10 =
 * **Added:** Update docs with information on migrating to a new Azure Storage Account and compatibility issues with Media Library editing tools (props [@gioamato](https://github.com/gioamato), [@jeffpaul](https://github.com/jeffpaul), [@rickalee](https://github.com/rickalee), [@colegeissinger](https://github.com/colegeissinger) via [#163](https://github.com/10up/windows-azure-storage/issues/163)).
@@ -189,6 +198,9 @@ See Settings->Microsoft Azure for more information.
 * First release of Microsoft Azure Storage plugin for WordPress.
 
 == Upgrade Notice ==
+
+= 4.4.0 =
+Note that this version bumps the minimum PHP version from 7.4 to 8.0.
 
 = 4.3.4 =
 
