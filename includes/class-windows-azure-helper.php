@@ -492,6 +492,7 @@ class Windows_Azure_Helper {
 		$rest_api_client->put_blob_properties( $container_name, $blob_name, array(
 			Windows_Azure_Rest_Api_Client::API_HEADER_MS_BLOB_CONTENT_TYPE  => $mime_type,
 			Windows_Azure_Rest_Api_Client::API_HEADER_MS_BLOB_CACHE_CONTROL => apply_filters( 'windows_azure_blob_cache_control', $cache_control ),
+			Windows_Azure_Rest_Api_Client::API_HEADER_MS_ACCESS_TIER        => apply_filters( 'windows_azure_blob_access_tier', 'Hot' ),
 		) );
 
 		return $result;
@@ -582,6 +583,13 @@ class Windows_Azure_Helper {
 
 		$exist = false;
 
+		/**
+		 * Make sure function is available to use, avoid Fatal on image cropping.
+		 */
+		if ( ! function_exists( 'WP_Filesystem' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+		}
+
 		if ( WP_Filesystem() ) {
 			$upload_dir = self::wp_upload_dir();
 			$filename   = $upload_dir['uploads'] . DIRECTORY_SEPARATOR . $relative_path;
@@ -624,5 +632,18 @@ class Windows_Azure_Helper {
 		}
 
 		return $wp_upload_dir[ $blog_id ];
+	}
+
+	/**
+	 * Return formatted string for given blob.
+	 *
+	 * @param \MicrosoftAzure\Storage\Blob\Models\BlobProperties $blob_properties
+	 *
+	 * @return string
+	 *
+	 * @since 4.4.0
+	 */
+	public static function get_formatted_date_for_blob( $blob_properties ) {
+		return sprintf( '%s %s', date_i18n( 'D, j M Y H:i:s',  $blob_properties->getLastModified()->getTimestamp() ), $blob_properties->getLastModified()->getTimezone()->getName() );
 	}
 }
