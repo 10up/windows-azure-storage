@@ -35,7 +35,7 @@ See Settings->Microsoft Azure for more information.
 
 == Changelog ==
 
-= 4.4.0 - 2023-10-18 =
+= 4.4.0 - 2023-10-17 =
 **Note that this release bumps the minimum PHP version from 7.4 to 8.0**
 
 * **Added:** Check for minimum required PHP version before loading the plugin (props [@bmarshall511](https://github.com/bmarshall511), [@iamdharmesh](https://github.com/iamdharmesh) via [#200](https://github.com/10up/windows-azure-storage/pull/200)).

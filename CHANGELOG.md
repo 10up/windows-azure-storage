@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file, per [the Ke
 
 ## [Unreleased] - TBD
 
-## [4.4.0] - 2023-10-18
+## [4.4.0] - 2023-10-17
 **Note that this release bumps the minimum PHP version from 7.4 to 8.0**
 
 ### Added
