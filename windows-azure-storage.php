@@ -214,11 +214,9 @@ function windows_azure_storage_load_textdomain() {
  */
 function windows_azure_plugin_check_prerequisite() {
 	global $wp_version;
-	$php_version = phpversion();
-	$php_compat  = version_compare( $php_version, '8.0.0', '>=' );
-	if ( ! $php_compat ) {
+	if ( ! was_site_meets_php_requirements() ) {
 		deactivate_plugins( plugin_basename( __FILE__ ) );
-		wp_die( __( 'Microsoft Azure Storage for WordPress requires at least PHP 8.0.0', 'windows-azure-storage' ) );
+		wp_die( __( 'Microsoft Azure Storage for WordPress requires at least PHP ' . was_minimum_php_requirement(), 'windows-azure-storage' ) );
 	}
 	$wp_compat = version_compare( $wp_version, '5.7', '>=' );
 	if ( ! $wp_compat ) {
