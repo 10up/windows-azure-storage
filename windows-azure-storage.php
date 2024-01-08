@@ -3,7 +3,7 @@
  * Plugin Name:       Microsoft Azure Storage for WordPress
  * Plugin URI:        https://wordpress.org/plugins/windows-azure-storage/
  * Description:       Use the Microsoft Azure Storage service to host your website's media files.
- * Version:           4.4.0
+ * Version:           4.4.1
  * Requires at least: 5.7
  * Requires PHP:      8.0
  * Author:            10up, Microsoft Open Technologies
@@ -62,7 +62,7 @@
 define( 'MSFT_AZURE_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'MSFT_AZURE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'MSFT_AZURE_PLUGIN_LEGACY_MEDIA_URL', get_admin_url( get_current_blog_id(), 'media-upload.php' ) );
-define( 'MSFT_AZURE_PLUGIN_VERSION', '4.4.0' );
+define( 'MSFT_AZURE_PLUGIN_VERSION', '4.4.1' );
 
 /**
  * Get the minimum version of PHP required by this plugin.
@@ -214,11 +214,9 @@ function windows_azure_storage_load_textdomain() {
  */
 function windows_azure_plugin_check_prerequisite() {
 	global $wp_version;
-	$php_version = phpversion();
-	$php_compat  = version_compare( $php_version, '8.0.0', '>=' );
-	if ( ! $php_compat ) {
+	if ( ! was_site_meets_php_requirements() ) {
 		deactivate_plugins( plugin_basename( __FILE__ ) );
-		wp_die( __( 'Microsoft Azure Storage for WordPress requires at least PHP 8.0.0', 'windows-azure-storage' ) );
+		wp_die( __( 'Microsoft Azure Storage for WordPress requires at least PHP ' . was_minimum_php_requirement(), 'windows-azure-storage' ) );
 	}
 	$wp_compat = version_compare( $wp_version, '5.7', '>=' );
 	if ( ! $wp_compat ) {
@@ -879,11 +877,11 @@ function windows_azure_storage_wp_calculate_image_srcset( $sources, $size_array,
 			$img_filename = substr( $source['url'], strrpos( $source['url'], '/' ) + 1 );
 
 			if ( basename( $media_info['blob'] ) === $img_filename ) {
-				$source['url'] = esc_url( $base_url . urlencode( $media_info['blob'] ), $esc_url_protocols );
+				$source['url'] = esc_url( $base_url . $media_info['blob'], $esc_url_protocols );
 			} else {
 				foreach ( $media_info['thumbnails'] as $thumbnail ) {
 					if ( basename( $thumbnail ) === $img_filename ) {
-						$source['url'] = esc_url( $base_url . urlencode( $thumbnail ), $esc_url_protocols );
+						$source['url'] = esc_url( $base_url . $thumbnail, $esc_url_protocols );
 						break;
 					}
 				}

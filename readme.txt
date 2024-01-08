@@ -4,7 +4,7 @@ Tags:              Microsoft, Microsoft Open Technologies, Microsoft Azure, Micr
 Requires at least: 5.7
 Tested up to:      6.4
 Requires PHP:      7.4
-Stable tag:        4.4.0
+Stable tag:        4.4.1
 License:           BSD 2-Clause
 License URI:       http://www.opensource.org/licenses/bsd-license.php
 
@@ -34,6 +34,12 @@ For multisites or to enforce Azure Blob Storage settings, you can define the fol
 See Settings->Microsoft Azure for more information.
 
 == Changelog ==
+
+= 4.4.1 - 2024-01-08 =
+* **Added:** Support for the WordPress.org plugin preview (props [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul) via [#212](https://github.com/10up/windows-azure-storage/pull/212)).
+* **Changed:** Bump WordPress version "tested up to" 6.4 (props [@QAharshalkadu](https://github.com/QAharshalkadu), [@jeffpaul](https://github.com/jeffpaul) via [#208](https://github.com/10up/windows-azure-storage/pull/208), [#209](https://github.com/10up/windows-azure-storage/pull/209)).
+* **Changed:** Align our PHP minimum version checks to use new helper method (props [@radeno](https://github.com/radeno), [@ravinderk](https://github.com/ravinderk) via [#202](https://github.com/10up/windows-azure-storage/pull/202)).
+* **Fixed:** Remove urlencode from srcset calculation function (props [@hugosolar](https://github.com/hugosolar), [@rickalee](https://github.com/rickalee), [@Sidsector9](https://github.com/Sidsector9) via [#211](https://github.com/10up/windows-azure-storage/pull/211)).
 
 = 4.4.0 - 2023-10-17 =
 **Note that this release bumps the minimum PHP version from 7.4 to 8.0**
