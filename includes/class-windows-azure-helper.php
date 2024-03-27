@@ -499,6 +499,42 @@ class Windows_Azure_Helper {
 	}
 
 	/**
+	 * Copy media file into same Container.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $container_name   Container name.
+	 * @param string $destination_path Destination Path.
+	 * @param string $source_path      Local path.
+	 * @param string $account_name   Account name.
+	 * @param string $account_key    Account key.
+	 *
+	 * @return bool|string|WP_Error False or WP_Error on failure URI on success.
+	 */
+	static public function copy_media_to_blob_storage( $container_name, $destination_path, $source_path, $account_name = '', $account_key = '' ) {
+		list( $account_name, $account_key ) = self::get_api_credentials( $account_name, $account_key );
+		$rest_api_client = new Windows_Azure_Rest_Api_Client( $account_name, $account_key );
+
+		$result = $rest_api_client->copy_blob( $container_name, $destination_path, $source_path );
+		if ( ! $result || is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		$cache_control = Windows_Azure_Helper::get_cache_control();
+		if ( is_numeric( $cache_control ) ) {
+			$cache_control = sprintf( "max-age=%d, must-revalidate", $cache_control );
+		}
+
+		$rest_api_client->put_blob_properties( $container_name, $destination_path, array(
+			Windows_Azure_Rest_Api_Client::API_HEADER_MS_BLOB_CONTENT_TYPE  => $mime_type,
+			Windows_Azure_Rest_Api_Client::API_HEADER_MS_BLOB_CACHE_CONTROL => apply_filters( 'windows_azure_blob_cache_control', $cache_control ),
+			Windows_Azure_Rest_Api_Client::API_HEADER_MS_ACCESS_TIER        => apply_filters( 'windows_azure_blob_access_tier', 'Hot' ),
+		) );
+
+		return $result;
+	}
+
+	/**
 	 * Return API hostname.
 	 *
 	 * @since 4.0.0

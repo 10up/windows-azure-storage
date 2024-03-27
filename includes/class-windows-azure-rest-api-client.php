@@ -1010,6 +1010,30 @@ class Windows_Azure_Rest_Api_Client {
 	}
 
 	/**
+	 * Copy blob within same container on Azure Storage account.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $container                Container name.
+	 * @param string $source_path              Source path.
+	 * @param string $destination_path         Destination path.
+	 *
+	 * @return bool|string|WP_Error Newly put blob URI or WP_Error|false on failure.
+	 */
+	public function copy_blob( $container, $source_path, $destination_path ) {
+		$blobClient = BlobRestProxy::createBlobService( $this->_connection_string );
+
+		//Move blob.
+		try {
+			$blobClient->copyBlob( $container, $destination_path, $container, $source_path );
+		} catch ( Exception $exception ) {
+			return new \WP_Error( $exception->getMessage() );
+		}
+
+		return $this->_build_api_endpoint_url( $container . $destination_path );
+	}
+
+	/**
 	 * Return Blob API endpoint URL.
 	 *
 	 * @since 4.0.0

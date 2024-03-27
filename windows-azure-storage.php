@@ -121,6 +121,7 @@ require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php';
 require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
 require_once MSFT_AZURE_PLUGIN_PATH . 'includes/class-windows-azure-wp-filesystem-direct.php';
 require_once MSFT_AZURE_PLUGIN_PATH . 'includes/class-windows-azure-helper.php';
+require_once MSFT_AZURE_PLUGIN_PATH . 'includes/class-windows-azure-replace-media.php';
 
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	require_once MSFT_AZURE_PLUGIN_PATH . 'bin/wp-cli.php';
@@ -197,6 +198,9 @@ if ( function_exists( 'wp_calculate_image_srcset' ) ) {
 	add_filter( 'wp_calculate_image_srcset', 'windows_azure_storage_wp_calculate_image_srcset', 9, 5 );
 	add_filter( 'wp_calculate_image_srcset_meta', 'windows_azure_storage_image_srcset_meta', 9, 4 );
 }
+
+// Load media replace module
+new Windows_Azure_Replace_Media();
 
 /**
  * Loads text domain.
@@ -472,7 +476,7 @@ function windows_azure_storage_wp_generate_attachment_metadata( $data, $post_id 
 		}
 
 		try {
-			set_transient( $azure_progress_key, array( 'current' => ++$current, 'total' => $total, 5 * MINUTE_IN_SECONDS ) );
+			set_transient( $azure_progress_key, array( 'current' => ++$current, 'total' => $total ), 5 * MINUTE_IN_SECONDS );
 
 			// only upload file if file exists locally
 			if ( \Windows_Azure_Helper::file_exists( $file_path ) ) {
