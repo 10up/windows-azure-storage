@@ -62,12 +62,16 @@ class Windows_Azure_Replace_Media {
 		add_action( 'wp_ajax_nopriv_azure-storage-media-replace-set-transient', array(  $this, 'set_media_replacement_transient' ) );
 		add_action( 'wp_ajax_azure-storage-media-replace-set-transient', array(  $this, 'set_media_replacement_transient' ) );
 
-		// Add handler to fix media name prefilter
-		add_filter( 'wp_handle_upload_prefilter', 'windows_azure_storage_wp_handle_upload_prefilter' );
-
 	}
 
 
+	/**
+	 * Register replace media button
+	 *
+	 * @param array   $form_fields Form fields
+	 * @param WP_Post $post the post ID
+	 * @return array
+	 */
 	public function register_azure_fields_attachment_editor( $form_fields, $post ) {
 		if ( function_exists( 'get_current_screen' ) ) {
 			$screen = get_current_screen();
@@ -88,20 +92,34 @@ class Windows_Azure_Replace_Media {
 		return $form_fields;
 	}
 
+	/**
+	 * Enqueue media replace script
+	 *
+	 * @return void
+	 */
 	public function enqueue_replace_media_script() {
 		$js_ext  = ( ! defined( 'SCRIPT_DEBUG' ) || false === SCRIPT_DEBUG ) ? '.min.js' : '.js';
 		wp_enqueue_script( 'windows-azure-storage-media-replace', MSFT_AZURE_PLUGIN_URL . 'js/windows-azure-storage-media-replace' . $js_ext, array( 'jquery', 'media-editor' ), MSFT_AZURE_PLUGIN_VERSION, true );
 		
-		wp_localize_script( 'windows-azure-storage-media-replace', 'AzureMediaReplaceObject', array(
-			'ajaxUrl' => admin_url('admin-ajax.php'),
-			'nonce'   => wp_create_nonce( 'azure-storage-media-replace' ),
-			'i18n'    => array(
-				'title'              => __( 'Replace this media', 'windows-azure-storage' ),
-				'replaceMediaButton' => __( 'Replace media', 'windows-azure-storage' ),
-			)
-		) );
+		wp_localize_script(
+			'windows-azure-storage-media-replace',
+			'AzureMediaReplaceObject',
+			array(
+				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+				'nonce'   => wp_create_nonce( 'azure-storage-media-replace' ),
+				'i18n'    => array(
+					'title'              => __( 'Replace this media', 'windows-azure-storage' ),
+					'replaceMediaButton' => __( 'Replace media', 'windows-azure-storage' ),
+				),
+			) 
+		);
 	}
 
+	/**
+	 * Ajax handler to process replace request
+	 *
+	 * @return void
+	 */
 	public function process_media_replacement() {
 
 		$nonce = sanitize_text_field( $_POST['nonce'] );
@@ -113,11 +131,18 @@ class Windows_Azure_Replace_Media {
 		$current_attachment = filter_input( INPUT_POST, 'current_attachment', FILTER_VALIDATE_INT );
 		$replace_attachment = filter_input( INPUT_POST, 'replace_attachment', FILTER_VALIDATE_INT );
 
-		echo json_encode( $this->replace_media_with( $current_attachment, $replace_attachment ) );
+		echo wp_json_encode( $this->replace_media_with( $current_attachment, $replace_attachment ) );
 
 		wp_die();
 	}
 
+	/**
+	 * Replace media id with another id
+	 *
+	 * @param int $source_attachment_id Source attachment ID
+	 * @param int $media_to_replace_id Replacement file ID
+	 * @return Array
+	 */
 	private function replace_media_with( $source_attachment_id, $media_to_replace_id ) {
 		if ( empty( $source_attachment_id ) || empty( $media_to_replace_id ) ) {
 			return __( 'Cannot determine images IDs, aborting...', 'windows-azure-storage' );
@@ -163,28 +188,32 @@ class Windows_Azure_Replace_Media {
 
 		$replacement = array();
 		
-		$replacement['is_image'] = $this->is_image( $source_filetype );
+		$replacement['is_image']  = $this->is_image( $source_filetype );
 		$replacement['file_name'] = basename( $replacement['original_image'] );
 		
-		$replacement = $this->media_replacement( $source_attachment_id, $media_to_replace_id );
-
-		// $should_delete = apply_filters( 'windowz-azure-storage-delete-files-on-replacement', true );
-		// if ( $should_delete ) {
-		// 	$this->remove_attachment_files( $source_attachment_id );
-		// }
-
-
-		// $this->remove_attachment_post( $media_to_replace_id );
+		$replacement = $this->media_meta_replacement( $source_attachment_id, $media_to_replace_id );
 
 		return $replacement;
-
 	}
 
+	/**
+	 * If Attachment is an image
+	 *
+	 * @param string $filetype mime type
+	 * @return boolean
+	 */
 	private function is_image( $filetype ) {
 		return ( strpos( $filetype['type'], 'image' ) !== false );
 	}
 
-	private function media_replacement( $source_attachment_id, $media_to_replace_id ) {
+	/**
+	 * Media meta replacement and copy
+	 *
+	 * @param int $source_attachment_id Source attachment ID
+	 * @param int $media_to_replace_id Replacement file ID
+	 * @return array
+	 */
+	private function media_meta_replacement( $source_attachment_id, $media_to_replace_id ) {
 		$replacement_meta_attachment_file = get_post_meta( $media_to_replace_id, '_wp_attached_file', true );
 		$replacement_azure_data           = get_post_meta( $media_to_replace_id, 'windows_azure_storage_info', true );
 		$replacement_attachment_data      = get_post_meta( $media_to_replace_id, '_wp_attachment_metadata', true );
@@ -253,98 +282,5 @@ class Windows_Azure_Replace_Media {
 		$return_data['version']         = $new_version;
 
 		return $return_data;
-	}
-
-	private function remove_attachment_files( $attachment_id ) {
-		$meta         = wp_get_attachment_metadata( $attachment_id );
-		$backup_sizes = get_post_meta( $attachment_id, '_wp_attachment_backup_sizes', true );
-		$file         = get_attached_file( $attachment_id );
-
-		return wp_delete_attachment_files( $attachment_id, $meta, $backup_sizes, $file );
-
-	}
-
-	private function remove_attachment_post( $attachment_id ) {
-		global $wpdb;
-
-		if ( empty( $attachment_id ) ) {
-			return false;
-		}
-
-		wp_delete_object_term_relationships( $attachment_id, array( 'category', 'post_tag' ) );
-		wp_delete_object_term_relationships( $attachment_id, get_object_taxonomies( 'attachment' ) );
-
-		// Delete all for any posts.
-		delete_metadata( 'post', null, '_thumbnail_id', $attachment_id, true );
-
-		wp_defer_comment_counting( true );
-
-		$comment_ids = $wpdb->get_col( $wpdb->prepare( "SELECT comment_ID FROM $wpdb->comments WHERE comment_post_ID = %d ORDER BY comment_ID DESC", $attachment_id ) );
-		foreach ( $comment_ids as $comment_id ) {
-			wp_delete_comment( $comment_id, true );
-		}
-
-		wp_defer_comment_counting( false );
-
-		$post_meta_ids = $wpdb->get_col( $wpdb->prepare( "SELECT meta_id FROM $wpdb->postmeta WHERE post_id = %d ", $attachment_id ) );
-		foreach ( $post_meta_ids as $mid ) {
-			delete_metadata_by_mid( 'post', $mid );
-		}
-
-		delete_post_meta( $attachment_id, '_wp_trash_meta_status' );
-
-		$result = $wpdb->delete( $wpdb->posts, array( 'ID' => $attachment_id ) );
-
-		if ( ! $result ) {
-			return false;
-		}
-
-		return $attachment_id;
-	}
-
-
-	/**
-	 * Set transient to indicate we're replacing an image
-	 *
-	 * @return void
-	 */
-	public function set_media_replacement_transient() {
-		$nonce = sanitize_text_field( $_POST['nonce'] );
-
-		if ( ! wp_verify_nonce( $nonce, 'azure-storage-media-replace' ) ) {
-				die ( 'nope' );
-		}
-
-		$current_attachment = filter_input( INPUT_POST, 'current_attachment', FILTER_VALIDATE_INT );
-		
-		if ( empty( $current_attachment ) ) {
-			return;
-		}
-		$attachment_url    = wp_get_attachment_url( $current_attachment );
-		$url_path          = pathinfo( $attachment_url );
-		$filename          = $url_path['basename'];
-		$azure_replace_key = 'azure_storage_replace_' . sanitize_text_field( trim( $filename ) );
-
-		$transient_data = array(
-			'attachment_to_replace' => $current_attachment,
-			'attachment_url'        => $attachment_url,
-			'attachment_file'       => $filename,
-		);
-
-		// set transient
-		set_transient(
-			$azure_replace_key,
-			$transient_data,
-			5 * MINUTE_IN_SECONDS
-		);
-
-		wp_send_json_success(
-			array(
-				'success' => true,
-				'data'    => $transient_data,
-			)
-		);
-
-		wp_die();
 	}
 }
