@@ -1,6 +1,6 @@
-/*!  - v4.3.4
+/*!  - v4.4.1
  * https://github.com/10up/windows-azure-storage#readme
- * Copyright (c) 2023; */
+ * Copyright (c) 2024; */
 (function ( $, window, undefined ) {
   'use strict';
   $( document ).ready( function () {

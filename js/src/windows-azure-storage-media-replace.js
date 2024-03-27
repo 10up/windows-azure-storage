@@ -8,6 +8,11 @@ var replaceMedia = function(attachmentID) {
 
   mediaUploader = wp.media.frames.file_frame = wp.media({
     title: AzureMediaReplaceObject.i18n.title,
+    frame: 'select',
+    library: {
+      search: null,
+      type: 'application/pdf',
+    },
     button: {
       text: AzureMediaReplaceObject.i18n.replaceMediaButton,
     },
@@ -38,5 +43,13 @@ var replaceMedia = function(attachmentID) {
     });
     
   });
+  
+  mediaUploader.on('open', function(){
+    var tab = document.getElementById('menu-item-upload');
+    var browse = document.getElementById('menu-item-browse');
+    browse.style.display = 'none';
+    tab.click();
+  });
+
   mediaUploader.open();
 };

@@ -41,6 +41,14 @@
  * @link      http://www.microsoft.com
  * @since     4.0.0
  */
+
+use MicrosoftAzure\Storage\Blob\BlobRestProxy;
+use MicrosoftAzure\Storage\Blob\Models\CreateContainerOptions;
+use MicrosoftAzure\Storage\Blob\Models\ListBlobsOptions;
+use MicrosoftAzure\Storage\Blob\Models\ListContainersOptions;
+use MicrosoftAzure\Storage\Blob\Models\SetBlobPropertiesOptions;
+use MicrosoftAzure\Storage\Blob\Models\SetBlobTierOptions;
+
 class Windows_Azure_Rest_Api_Client {
 
 	/**
@@ -50,7 +58,7 @@ class Windows_Azure_Rest_Api_Client {
 	 *
 	 * @const string
 	 */
-	const API_VERSION = '2015-12-11';
+	const API_VERSION = '2020-04-08';
 
 	/**
 	 * Blob API default request timeout.
@@ -359,6 +367,15 @@ class Windows_Azure_Rest_Api_Client {
 	const API_HEADER_MS_BLOB_CONTENT_DISPOSITION = 'x-ms-blob-content-disposition';
 
 	/**
+	 * Azure API blob tier.
+	 *
+	 * @since 4.4.0
+	 *
+	 * @const string
+	 */
+	const API_HEADER_MS_ACCESS_TIER = 'x-ms-access-tier';
+
+	/**
 	 * Accept-Ranges header name.
 	 *
 	 * @since 4.0.0
@@ -422,6 +439,15 @@ class Windows_Azure_Rest_Api_Client {
 	protected $_access_key;
 
 	/**
+	 * Azure Storage connection string.
+	 *
+	 * @since 4.4.0
+	 *
+	 * @var null|string
+	 */
+	protected $_connection_string;
+
+	/**
 	 * URL which is currently being requested.
 	 *
 	 * @since 4.0.0
@@ -463,6 +489,7 @@ class Windows_Azure_Rest_Api_Client {
 			'If-Unmodified-Since',
 			'Range',
 		);
+		$this->set_connection_string();
 	}
 
 	/**
@@ -514,6 +541,258 @@ class Windows_Azure_Rest_Api_Client {
 	}
 
 	/**
+	 * Set storage access key.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param null|string $access_key Storage access key.
+	 *
+	 * @return void
+	 */
+	public function set_connection_string() {
+		$this->_connection_string = sprintf(
+			'DefaultEndpointsProtocol=https;AccountName=%s;AccountKey=%s',
+			$this->_account_name,
+			$this->_access_key
+		);
+	}
+
+	/**
+	 * List containers.
+	 *
+	 * @param string $prefix List containers which names start with this prefix.
+	 * @param int $max_results Max containers to return.
+	 * @param bool $next_marker Next collection marker.
+	 *
+	 * @return Windows_Azure_List_Containers_Response|WP_Error List of containers of WP_Error on failure.
+	 * @since 4.0.0
+	 *
+	 */
+	public function list_containers( $prefix = '', $max_results = self::API_REQUEST_BULK_SIZE, $next_marker = false ) {
+		$query_args = array(
+			'comp' => 'list',
+		);
+
+		$options = new ListContainersOptions();
+		$options->setMaxResults( apply_filters( 'azure_blob_list_containers_max_results', $max_results ) );
+
+		if ( ! empty( $prefix ) ) {
+			$options->setPrefix( $prefix );
+		}
+
+		if ( $next_marker ) {
+			$options->setMarker( $next_marker );
+		}
+
+		try {
+			$blobClient      = BlobRestProxy::createBlobService( $this->_connection_string, $query_args );
+			$containers_list = $blobClient->listContainers( $options );
+
+			return new Windows_Azure_List_Containers_Response( $containers_list, $prefix, $max_results );
+		} catch ( Exception $exception ) {
+			return new \WP_Error( 401, $exception->getMessage() );
+		}
+	}
+
+	/**
+	 * Create new container.
+	 *
+	 * @param string $name Container name.
+	 * @param string $visibility Container visibility.
+	 *
+	 * @return string|WP_Error New container name or WP_Error on failure.
+	 * @since 4.0.0
+	 *
+	 */
+	public function create_container( $name, $visibility = self::CONTAINER_VISIBILITY_BLOB ) {
+		$query_args = array(
+			'restype' => 'container',
+		);
+
+		$name    = sanitize_title_with_dashes( $name );
+		$options = new CreateContainerOptions();
+
+		switch ( $visibility ) {
+			case self::CONTAINER_VISIBILITY_BLOB:
+			case self::CONTAINER_VISIBILITY_CONTAINER:
+				$options->setPublicAccess( $visibility );
+				break;
+		}
+
+		try {
+			$blobClient = BlobRestProxy::createBlobService( $this->_connection_string, $query_args );
+			$blobClient->createContainer( $name, $options );
+		} catch ( Exception $exception ) {
+			return new \WP_Error( 401, $exception->getMessage() );
+		}
+
+		return $name;
+	}
+
+	/**
+	 * Get container properties.
+	 *
+	 * @param string $name Container name.
+	 *
+	 * @return array|WP_Error Container properties array of WP_Error on failure.
+	 * @since 4.0.0
+	 *
+	 */
+	public function get_container_properties( $name ) {
+		$query_args = array(
+			'restype' => 'container',
+		);
+
+		try {
+			$blobClient = BlobRestProxy::createBlobService( $this->_connection_string, $query_args );
+			$result     = $blobClient->getContainerProperties( $name );
+		} catch ( Exception $exception ) {
+			return new \WP_Error( 401, $exception->getMessage() );
+		}
+
+		$properties[ self::API_HEADER_LAST_MODIFIED ]  = sprintf( '%s %s', date_i18n( 'D, j M Y H:i:s', $result->getLastModified()->getTimestamp() ), $result->getLastModified()->getTimezone()->getName() );
+		$properties[ self::API_HEADER_ETAG ]           = $result->getETag();
+		$properties[ self::API_HEADER_LEASE_STATUS ]   = $result->getLeaseStatus();
+		$properties[ self::API_HEADER_LEASE_STATE ]    = $result->getLeaseState();
+		$properties[ self::API_HEADER_LEASE_DURATION ] = $result->getLeaseDuration();
+
+		return $properties;
+	}
+
+	/**
+	 * Get container ACL.
+	 *
+	 * @param string $name Container name.
+	 *
+	 * @return string|WP_Error Container ACL string or WP_Error on failure.
+	 * @since 4.0.0
+	 *
+	 */
+	public function get_container_acl( $name ) {
+		$query_args = array(
+			'restype' => 'container',
+			'comp'    => 'acl',
+		);
+
+		try {
+			$blobClient = BlobRestProxy::createBlobService( $this->_connection_string, $query_args );
+			$result     = $blobClient->getContainerProperties( $name );
+		} catch ( Exception $exception ) {
+			return new \WP_Error( 401, $exception->getMessage() );
+		}
+
+		$acl_header = $result->getPublicAccess();
+		if ( empty( $acl_header ) ) {
+			$acl_header = self::CONTAINER_VISIBILITY_PRIVATE;
+		}
+
+		return $acl_header;
+	}
+
+	/**
+	 * List blobs in container.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $container   Container name.
+	 * @param string $prefix      List blobs which names start with this prefix.
+	 * @param int    $max_results Max blobs to return.
+	 * @param bool   $next_marker Next collection marker.
+	 *
+	 * @return Windows_Azure_List_Blobs_Response|WP_Error Blobs list or WP_Error on failure.
+	 */
+	public function list_blobs( $container, $prefix = '', $max_results = self::API_REQUEST_BULK_SIZE, $next_marker = false ) {
+		$query_args = array(
+			'comp'    => 'list',
+			'restype' => 'container',
+		);
+
+		$options = new ListBlobsOptions();
+		$options->setMaxResults( apply_filters( 'azure_blob_list_blobs_max_results', $max_results ) );
+		if ( ! empty( $prefix ) ) {
+			$options->setPrefix( $prefix );
+		}
+
+		if ( $next_marker ) {
+			$query_args['marker'] = $next_marker;
+		}
+
+		try {
+			$blobClient = BlobRestProxy::createBlobService( $this->_connection_string, $query_args );
+			$blobs     = $blobClient->listBlobs( $container, $options );
+		} catch ( Exception $exception ) {
+			return new \WP_Error( 401, $exception->getMessage() );
+		}
+
+		return new Windows_Azure_List_Blobs_Response( $blobs, $prefix, $max_results, $container );
+	}
+
+	/**
+	 * Delete blob from container.
+	 *
+	 * @param string $container Container name.
+	 * @param string $remote_path Remote blob path.
+	 *
+	 * @return bool|WP_Error True on success or WP_Error on failure.
+	 * @since 4.0.0
+	 *
+	 */
+	public function delete_blob( $container, $remote_path ) {
+		try {
+			$blobClient = BlobRestProxy::createBlobService( $this->_connection_string );
+			$blobClient->deleteBlob( $container, $remote_path );
+		} catch ( Exception $exception ) {
+			return new \WP_Error( 401, $exception->getMessage() );
+		}
+
+		return true;
+	}
+
+	/**
+	 * Get blob properties.
+	 *
+	 * @param string $container Container name.
+	 * @param string $remote_path Remote blob path.
+	 *
+	 * @return array|WP_Error Blob properties array or WP_Error on failure.
+	 * @since 4.0.0
+	 *
+	 */
+	public function get_blob_properties( $container, $remote_path ) {
+		try {
+			$blobClient = BlobRestProxy::createBlobService( $this->_connection_string );
+			$result     = $blobClient->getBlobProperties( $container, $remote_path );
+		} catch ( GuzzleHttp\Exception\ConnectException $exception ) {
+			return new \WP_Error( 401, $exception->getMessage() );
+		}
+
+		$blob_properties                                          = $result->getProperties();
+		$properties[ self::API_HEADER_LAST_MODIFIED ]             = Windows_Azure_Helper::get_formatted_date_for_blob( $blob_properties );
+		$properties[ self::API_HEADER_BLOB_TYPE ]                 = $blob_properties->getBlobType();
+		$properties[ self::API_HEADER_COPY_COMPLETION_TIME ]      = $blob_properties->getCopyState()->getCompletionTime();
+		$properties[ self::API_HEADER_COPY_STATUS_DESCRIPTION ]   = $blob_properties->getCopyState()->getStatusDescription();
+		$properties[ self::API_HEADER_COPY_ID ]                   = $blob_properties->getCopyState()->getCopyId();
+		$properties[ self::API_HEADER_COPY_PROGRESS ]             = sprintf( '%s/%s', $blob_properties->getCopyState()->getBytesCopied(), $blob_properties->getCopyState()->getTotalBytes() );
+		$properties[ self::API_HEADER_COPY_SOURCE ]               = $blob_properties->getCopyState()->getSource();
+		$properties[ self::API_HEADER_COPY_STATUS ]               = $blob_properties->getCopyState()->getStatus();
+		$properties[ self::API_HEADER_LEASE_DURATION ]            = $blob_properties->getLeaseDuration();
+		$properties[ self::API_HEADER_LEASE_STATE ]               = $blob_properties->getLeaseState();
+		$properties[ self::API_HEADER_LEASE_STATUS ]              = $blob_properties->getLeaseStatus();
+		$properties[ self::API_HEADER_CONTENT_LENGTH ]            = $blob_properties->getContentLength();
+		$properties[ self::API_HEADER_CONTENT_TYPE ]              = $blob_properties->getContentType();
+		$properties[ self::API_HEADER_ETAG ]                      = $blob_properties->getETag();
+		$properties[ self::API_HEADER_CONTENT_MD5 ]               = $blob_properties->getContentMD5();
+		$properties[ self::API_HEADER_CONTENT_ENCODING ]          = $blob_properties->getContentEncoding();
+		$properties[ self::API_HEADER_CONTENT_LANGUAGE ]          = $blob_properties->getContentLanguage();
+		$properties[ self::API_HEADER_CONTENT_DISPOSITION ]       = $blob_properties->getContentDisposition();
+		$properties[ self::API_HEADER_CACHE_CONTROL ]             = $blob_properties->getCacheControl();
+		$properties[ self::API_HEADER_BLOB_SEQUENCE_NUMBER ]      = $blob_properties->getSequenceNumber();
+		$properties[ self::API_HEADER_BLOB_COMMITED_BLOCK_COUNT ] = $blob_properties->getCommittedBlockCount();
+
+		return $properties;
+	}
+
+	/**
 	 * Filter hook for http_request_args.
 	 *
 	 * @since 4.0.0
@@ -556,279 +835,56 @@ class Windows_Azure_Rest_Api_Client {
 	}
 
 	/**
-	 * List containers.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @param string $prefix      List containers which names start with this prefix.
-	 * @param int    $max_results Max containers to return.
-	 * @param bool   $next_marker Next collection marker.
-	 *
-	 * @return Windows_Azure_List_Containers_Response|WP_Error List of containers of WP_Error on failure.
-	 */
-	public function list_containers( $prefix = '', $max_results = self::API_REQUEST_BULK_SIZE, $next_marker = false ) {
-		$query_args = array(
-			'comp'       => 'list',
-			'maxresults' => apply_filters( 'azure_blob_list_containers_max_results', $max_results ),
-		);
-
-		if ( ! empty( $prefix ) ) {
-			$query_args['prefix'] = rawurlencode( $prefix );
-		}
-
-		if ( $next_marker ) {
-			$query_args['marker'] = $next_marker;
-		}
-
-		$result = $this->_send_request( 'GET', $query_args );
-
-		if ( is_wp_error( $result ) ) {
-			return $result;
-		}
-
-		return new Windows_Azure_List_Containers_Response( $result, $this, $prefix, $max_results );
-	}
-
-	/**
-	 * Create new container.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @param string $name       Container name.
-	 * @param string $visibility Container visibility.
-	 *
-	 * @return string|WP_Error New container name or WP_Error on failure.
-	 */
-	public function create_container( $name, $visibility = self::CONTAINER_VISIBILITY_BLOB ) {
-		$query_args = array(
-			'restype' => 'container',
-		);
-
-		$name = sanitize_title_with_dashes( $name );
-
-		$headers = array();
-
-		switch ( $visibility ) {
-			case self::CONTAINER_VISIBILITY_BLOB:
-			case self::CONTAINER_VISIBILITY_CONTAINER:
-				$headers[ self::API_HEADER_BLOB_PUBLIC_ACCESS ] = $visibility;
-				break;
-		}
-
-		$result = $this->_send_request( 'PUT', $query_args, $headers, '', $name );
-
-		if ( is_wp_error( $result ) ) {
-			return $result;
-		}
-
-		return $name;
-	}
-
-	/**
-	 * Get container properties.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @param string $name Container name.
-	 *
-	 * @return array|WP_Error Container properties array of WP_Error on failure.
-	 */
-	public function get_container_properties( $name ) {
-		$query_args = array(
-			'restype' => 'container',
-		);
-
-		$result = $this->_send_request( 'HEAD', $query_args, array(), '', $name );
-
-		if ( is_wp_error( $result ) ) {
-			return $result;
-		}
-
-		$headers    = array( self::API_HEADER_LAST_MODIFIED, 'etag', 'x-ms-lease-status', 'x-ms-lease-state', 'x-ms-lease-duration' );
-		$properties = array();
-
-		foreach ( $headers as $header ) {
-			$properties[ $header ] = wp_remote_retrieve_header( $result, $header );
-		}
-
-		return $properties;
-	}
-
-	/**
-	 * Get container ACL.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @param string $name Container name.
-	 *
-	 * @return string|WP_Error Container ACL string or WP_Error on failure.
-	 */
-	public function get_container_acl( $name ) {
-		$query_args = array(
-			'restype' => 'container',
-			'comp'    => 'acl',
-		);
-
-		$result = $this->_send_request( 'HEAD', $query_args, array(), '', $name );
-
-		if ( is_wp_error( $result ) ) {
-			return $result;
-		}
-
-		$acl_header = wp_remote_retrieve_header( $result, 'x-ms-blob-public-access' );
-		if ( empty( $acl_header ) ) {
-			$acl_header = self::CONTAINER_VISIBILITY_PRIVATE;
-		}
-
-		return $acl_header;
-	}
-
-	/**
-	 * List blobs in container.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @param string $container   Container name.
-	 * @param string $prefix      List blobs which names start with this prefix.
-	 * @param int    $max_results Max blobs to return.
-	 * @param bool   $next_marker Next collection marker.
-	 *
-	 * @return Windows_Azure_List_Blobs_Response|WP_Error Blobs list or WP_Error on failure.
-	 */
-	public function list_blobs( $container, $prefix = '', $max_results = self::API_REQUEST_BULK_SIZE, $next_marker = false ) {
-		$query_args = array(
-			'comp'       => 'list',
-			'maxresults' => apply_filters( 'azure_blob_list_blobs_max_results', $max_results ),
-			'restype'    => 'container',
-		);
-
-		if ( ! empty( $prefix ) ) {
-			$query_args['prefix'] = rawurlencode( $prefix );
-		}
-
-		if ( $next_marker ) {
-			$query_args['marker'] = $next_marker;
-		}
-
-		$result = $this->_send_request( 'GET', $query_args, array(), '', $container );
-
-		if ( is_wp_error( $result ) ) {
-			return $result;
-		}
-
-		return new Windows_Azure_List_Blobs_Response( $result, $this, $prefix, $max_results, $container );
-	}
-
-	/**
-	 * Delete blob from container.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @param string $container   Container name.
-	 * @param string $remote_path Remote blob path.
-	 *
-	 * @return bool|WP_Error True on success or WP_Error on failure.
-	 */
-	public function delete_blob( $container, $remote_path ) {
-		$container = trailingslashit( $container );
-		$result    = $this->_send_request( 'DELETE', array(), array(), '', $container . $remote_path );
-
-		if ( is_wp_error( $result ) ) {
-			return $result;
-		}
-
-		return true;
-	}
-
-	/**
-	 * Get blob properties.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @param string $container   Container name.
-	 * @param string $remote_path Remote blob path.
-	 *
-	 * @return array|WP_Error Blob properties array or WP_Error on failure.
-	 */
-	public function get_blob_properties( $container, $remote_path ) {
-		$container = trailingslashit( $container );
-		$result    = $this->_send_request( 'HEAD', array(), array(), '', $container . $remote_path );
-
-		if ( is_wp_error( $result ) ) {
-			return $result;
-		}
-
-		$headers    = array(
-			self::API_HEADER_LAST_MODIFIED,
-			self::API_HEADER_BLOB_TYPE,
-			self::API_HEADER_COPY_COMPLETION_TIME,
-			self::API_HEADER_COPY_STATUS_DESCRIPTION,
-			self::API_HEADER_COPY_ID,
-			self::API_HEADER_COPY_PROGRESS,
-			self::API_HEADER_COPY_SOURCE,
-			self::API_HEADER_COPY_STATUS,
-			self::API_HEADER_LEASE_DURATION,
-			self::API_HEADER_LEASE_STATE,
-			self::API_HEADER_LEASE_STATUS,
-			self::API_HEADER_CONTENT_LENGTH,
-			self::API_HEADER_CONTENT_TYPE,
-			self::API_HEADER_ETAG,
-			self::API_HEADER_CONTENT_MD5,
-			self::API_HEADER_CONTENT_ENCODING,
-			self::API_HEADER_CONTENT_LANGUAGE,
-			self::API_HEADER_CONTENT_DISPOSITION,
-			self::API_HEADER_CACHE_CONTROL,
-			self::API_HEADER_BLOB_SEQUENCE_NUMBER,
-			self::API_HEADER_ACCEPT_RANGES,
-			self::API_HEADER_BLOB_COMMITED_BLOCK_COUNT,
-		);
-		$properties = array();
-
-		foreach ( $headers as $header ) {
-			$properties[ $header ] = wp_remote_retrieve_header( $result, $header );
-		}
-
-		return $properties;
-	}
-
-	/**
 	 * Put blob properties.
 	 *
-	 * @since 4.0.0
-	 *
-	 * @param string $container   Container name.
+	 * @param string $container Container name.
 	 * @param string $remote_path Remote blob path.
-	 * @param array  $properties  Array with properties.
+	 * @param array $properties Array with properties.
 	 *
 	 * @return bool|WP_Error True on success or WP_Error on failure.
+	 * @since 4.0.0
+	 *
 	 */
 	public function put_blob_properties( $container, $remote_path, array $properties = array() ) {
-		$container  = trailingslashit( $container );
-		$query_args = array(
-			'comp' => 'properties',
-		);
 		$properties = apply_filters( 'windows_azure_storage_blob_properties', $properties, $container, $remote_path );
+		try {
+			$blobClient      = BlobRestProxy::createBlobService( $this->_connection_string );
+			$blob_properties = new SetBlobPropertiesOptions();
 
-		$allowed_properties  = array(
-			self::API_HEADER_MS_BLOB_CACHE_CONTROL,
-			self::API_HEADER_MS_BLOB_CONTENT_TYPE,
-			self::API_HEADER_MS_BLOB_CONTENT_MD5,
-			self::API_HEADER_MS_BLOB_CONTENT_ENCODING,
-			self::API_HEADER_MS_BLOB_CONTENT_LANGUAGE,
-			self::API_HEADER_MS_BLOB_CONTENT_DISPOSITION,
-		);
-		$filtered_properties = array();
-
-		foreach ( $allowed_properties as $allowed_property ) {
-			if ( isset( $properties[ $allowed_property ] ) ) {
-				$filtered_properties[ $allowed_property ] = $properties[ $allowed_property ];
+			if ( isset( $properties[ self::API_HEADER_MS_BLOB_CACHE_CONTROL ] ) ) {
+				$blob_properties->setCacheControl( $properties[ self::API_HEADER_MS_BLOB_CACHE_CONTROL ] );
 			}
-		}
 
-		$result = $this->_send_request( 'PUT', $query_args, $filtered_properties, '', $container . $remote_path );
+			if ( isset( $properties[ self::API_HEADER_MS_BLOB_CONTENT_TYPE ] ) ) {
+				$blob_properties->setContentType( $properties[ self::API_HEADER_MS_BLOB_CONTENT_TYPE ] );
+			}
 
-		if ( is_wp_error( $result ) ) {
-			return $result;
+			if ( isset( $properties[ self::API_HEADER_MS_BLOB_CONTENT_MD5 ] ) ) {
+				$blob_properties->setContentMD5( $properties[ self::API_HEADER_MS_BLOB_CONTENT_MD5 ] );
+			}
+
+			if ( isset( $properties[ self::API_HEADER_MS_BLOB_CONTENT_ENCODING ] ) ) {
+				$blob_properties->setContentEncoding( $properties[ self::API_HEADER_MS_BLOB_CONTENT_ENCODING ] );
+			}
+
+			if ( isset( $properties[ self::API_HEADER_MS_BLOB_CONTENT_LANGUAGE ] ) ) {
+				$blob_properties->setContentLanguage( $properties[ self::API_HEADER_MS_BLOB_CONTENT_LANGUAGE ] );
+			}
+
+			if ( isset( $properties[ self::API_HEADER_MS_BLOB_CONTENT_DISPOSITION ] ) ) {
+				$blob_properties->setContentDisposition( $properties[ self::API_HEADER_MS_BLOB_CONTENT_DISPOSITION ] );
+			}
+
+			if ( isset( $properties[ self::API_HEADER_MS_ACCESS_TIER ] ) ) {
+				$options = new SetBlobTierOptions();
+				$options->setAccessTier( $properties[ self::API_HEADER_MS_ACCESS_TIER ] );
+				$blobClient->setBlobTier( $container, $remote_path, $options );
+			}
+
+			$blobClient->setBlobProperties( $container, $remote_path, $blob_properties );
+
+		} catch ( Exception $exception ) {
+			return new \WP_Error( $exception->getMessage() );
 		}
 
 		return true;
@@ -933,144 +989,48 @@ class Windows_Azure_Rest_Api_Client {
 	 * @return bool|string|WP_Error Newly put blob URI or WP_Error|false on failure.
 	 */
 	public function put_blob( $container, $local_path, $remote_path, $force_direct_file_access = false ) {
-		$container  = trailingslashit( $container );
-		$query_args = array();
-		$headers    = apply_filters( 'azure_blob_put_blob_headers', array() );
-
-		// overwrite blob type.
-		$headers[ self::API_HEADER_BLOB_TYPE ] = self::APPEND_BLOB_TYPE;
-
-		$result = $this->_send_request( 'PUT', $query_args, $headers, '', $container . $remote_path );
-		if ( is_wp_error( $result ) ) {
-			return $result;
-		}
-
-		$contents_provider = new Windows_Azure_File_Contents_Provider( $local_path, null, $force_direct_file_access );
+		$blobClient        = BlobRestProxy::createBlobService( $this->_connection_string );
+		$contents_provider = new Windows_Azure_File_Contents_Provider( $local_path, null );
 		$is_valid          = $contents_provider->is_valid();
+
 		if ( ! $is_valid || is_wp_error( $is_valid ) ) {
 			return $is_valid;
 		}
-		do {
-			$chunk = $contents_provider->get_chunk();
-			if ( $chunk ) {
-				$result = $this->_append_blob( $container, $remote_path, $chunk );
-			}
-		} while ( false !== $chunk && true === $result );
 
-		$contents_provider->close();
+		$blob_content = fopen( $contents_provider->get_file_path(), 'r' );
 
-		if ( is_wp_error( $result ) ) {
-			return $result;
+		//Upload blob.
+		try {
+			$blobClient->createBlockBlob( $container, $remote_path, $blob_content );
+		} catch ( Exception $exception ) {
+			return new \WP_Error( $exception->getMessage() );
 		}
 
 		return $this->_build_api_endpoint_url( $container . $remote_path );
 	}
 
 	/**
-	 * Append blob operation.
+	 * Copy blob within same container on Azure Storage account.
 	 *
 	 * @since 4.0.0
 	 *
-	 * @param string $container   Container.
-	 * @param string $remote_path Remote path.
-	 * @param string $content     Content to append.
+	 * @param string $container                Container name.
+	 * @param string $source_path              Source path.
+	 * @param string $destination_path         Destination path.
 	 *
-	 * @return bool|WP_Error True on success or WP_Error on failure.
+	 * @return bool|string|WP_Error Newly put blob URI or WP_Error|false on failure.
 	 */
-	protected function _append_blob( $container, $remote_path, $content ) {
-		$container  = trailingslashit( $container );
-		$query_args = array(
-			'comp' => 'appendblock',
-		);
-		$headers    = apply_filters( 'azure_blob_append_blob_headers', array(), $container, $remote_path, $content, $this );
-		$result     = $this->_send_request( 'PUT', $query_args, $headers, $content, $container . $remote_path );
-		if ( is_wp_error( $result ) ) {
-			return $result;
+	public function copy_blob( $container, $source_path, $destination_path ) {
+		$blobClient = BlobRestProxy::createBlobService( $this->_connection_string );
+
+		//Move blob.
+		try {
+			$blobClient->copyBlob( $container, $destination_path, $container, $source_path );
+		} catch ( Exception $exception ) {
+			return new \WP_Error( $exception->getMessage() );
 		}
 
-		return true;
-	}
-
-	/**
-	 * Send REST request and return response.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @param string       $method     HTTP verb.
-	 * @param array        $query_args Request query args.
-	 * @param array        $headers    Request headers.
-	 * @param string|array $body       Request body.
-	 * @param string       $path       REST API endpoint path.
-	 *
-	 * @return array|WP_Error Response structure on success or WP_Error on failure.
-	 */
-	protected function _send_request( $method, array $query_args = array(), array $headers = array(), $body = '', $path = '' ) {
-
-		$query_args = wp_parse_args( $query_args, array(
-			'timeout' => apply_filters( 'azure_blob_operation_timeout', self::API_REQUEST_TIMEOUT ),
-		) );
-
-		// Encode filename to support special characters
-		$path = urlencode( $path );
-
-		$endpoint_url = $this->_build_api_endpoint_url( $path );
-
-		if ( is_wp_error( $endpoint_url ) ) {
-			return $endpoint_url;
-		}
-
-		$endpoint_url = add_query_arg( $query_args, $endpoint_url );
-
-		if ( is_array( $body ) ) {
-			$body = http_build_query( $body, null, '&' );
-		}
-
-		$headers = array_merge( $headers, array(
-			self::API_HEADER_MS_VERSION => self::API_VERSION,
-			self::API_HEADER_MS_DATE    => get_gmt_from_date( current_time( 'mysql', 0 ), 'D, d M Y H:i:s' ) . ' GMT',
-			'Content-Length'            => strlen( $body ) > 0 ? strlen( $body ) : null,
-			'Content-Type'              => 'text/plain',
-		) );
-
-		// Add this filter to be able to inject authorization header.
-		add_filter( 'http_request_args', array( $this, 'inject_authorization_header' ), PHP_INT_MAX, 2 );
-
-		$this->_current_url = $endpoint_url;
-
-		$result = wp_remote_request( $endpoint_url, array(
-			'method'      => $method,
-			'headers'     => $headers,
-			'body'        => $body,
-			'timeout'     => $query_args['timeout'],
-			'httpversion' => '1.1',
-		) );
-
-		$this->_current_url = null;
-
-		// Remove this filter once request is done.
-		remove_filter( 'http_request_args', array( $this, 'inject_authorization_header' ), PHP_INT_MAX );
-
-		if ( is_wp_error( $result ) ) {
-			return $result;
-		}
-
-		$response_code = (int) wp_remote_retrieve_response_code( $result );
-		if ( $response_code < 200 || $response_code > 299 ) {
-			return new WP_Error( $response_code, wp_remote_retrieve_response_message( $result ) );
-		}
-
-		$body = wp_remote_retrieve_body( $result );
-		if ( ! empty( $body ) ) {
-			if ( ! function_exists( 'simplexml_load_string' ) ) {
-				$message = __( "SimpleXML library hasn't been found. Please, check your PHP config.", 'windows-azure-storage' );
-				return new WP_Error( 'simplexml', $message );
-			}
-
-			$xml_structure = simplexml_load_string( $body );
-			return json_decode( json_encode( $xml_structure ), true );
-		} else {
-			return $result;
-		}
+		return $this->_build_api_endpoint_url( $container . $destination_path );
 	}
 
 	/**
@@ -1178,10 +1138,10 @@ class Windows_Azure_Rest_Api_Client {
 
 		$needs_sanitization = array();
 		foreach ( $blobs as $blob ) {
-			if ( isset( $remote_paths[ $blob['Name'] ] ) ) {
-
-				$needs_sanitization[] = $blob['Name'];
-				unset( $remote_paths[ $blob['Name'] ] );
+			$blob_name = $blob->getName();
+			if ( isset( $remote_paths[ $blob_name ] ) ) {
+				$needs_sanitization[] = $blob_name;
+				unset( $remote_paths[ $blob_name ] );
 
 				// quit early as $blob is an Iterator instance with lazy loading.
 				if ( 0 === count( $remote_paths ) ) {

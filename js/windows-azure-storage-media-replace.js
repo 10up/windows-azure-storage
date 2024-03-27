@@ -1,6 +1,6 @@
-/*!  - v4.3.4
+/*!  - v4.4.1
  * https://github.com/10up/windows-azure-storage#readme
- * Copyright (c) 2023; */
+ * Copyright (c) 2024; */
 var replaceMedia = function(attachmentID) {
   var mediaUploader;
   
@@ -11,6 +11,11 @@ var replaceMedia = function(attachmentID) {
 
   mediaUploader = wp.media.frames.file_frame = wp.media({
     title: AzureMediaReplaceObject.i18n.title,
+    frame: 'select',
+    library: {
+      search: null,
+      type: 'application/pdf',
+    },
     button: {
       text: AzureMediaReplaceObject.i18n.replaceMediaButton,
     },
@@ -41,5 +46,13 @@ var replaceMedia = function(attachmentID) {
     });
     
   });
+  
+  mediaUploader.on('open', function(){
+    var tab = document.getElementById('menu-item-upload');
+    var browse = document.getElementById('menu-item-browse');
+    browse.style.display = 'none';
+    tab.click();
+  });
+
   mediaUploader.open();
 };
