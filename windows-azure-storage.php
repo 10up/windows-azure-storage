@@ -3,8 +3,8 @@
  * Plugin Name:       Microsoft Azure Storage for WordPress
  * Plugin URI:        https://wordpress.org/plugins/windows-azure-storage/
  * Description:       Use the Microsoft Azure Storage service to host your website's media files.
- * Version:           4.4.1
- * Requires at least: 5.7
+ * Version:           4.4.2
+ * Requires at least: 6.3
  * Requires PHP:      8.0
  * Author:            10up, Microsoft Open Technologies
  * Author URI:        https://10up.com/
@@ -62,7 +62,7 @@
 define( 'MSFT_AZURE_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'MSFT_AZURE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'MSFT_AZURE_PLUGIN_LEGACY_MEDIA_URL', get_admin_url( get_current_blog_id(), 'media-upload.php' ) );
-define( 'MSFT_AZURE_PLUGIN_VERSION', '4.4.1' );
+define( 'MSFT_AZURE_PLUGIN_VERSION', '4.4.2' );
 
 /**
  * Get the minimum version of PHP required by this plugin.
@@ -121,6 +121,7 @@ require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php';
 require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
 require_once MSFT_AZURE_PLUGIN_PATH . 'includes/class-windows-azure-wp-filesystem-direct.php';
 require_once MSFT_AZURE_PLUGIN_PATH . 'includes/class-windows-azure-helper.php';
+require_once MSFT_AZURE_PLUGIN_PATH . 'includes/class-windows-azure-replace-media.php';
 
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	require_once MSFT_AZURE_PLUGIN_PATH . 'bin/wp-cli.php';
@@ -197,6 +198,9 @@ if ( function_exists( 'wp_calculate_image_srcset' ) ) {
 	add_filter( 'wp_calculate_image_srcset', 'windows_azure_storage_wp_calculate_image_srcset', 9, 5 );
 	add_filter( 'wp_calculate_image_srcset_meta', 'windows_azure_storage_image_srcset_meta', 9, 4 );
 }
+
+// Load media replace module
+new Windows_Azure_Replace_Media();
 
 /**
  * Loads text domain.
@@ -472,7 +476,7 @@ function windows_azure_storage_wp_generate_attachment_metadata( $data, $post_id 
 		}
 
 		try {
-			set_transient( $azure_progress_key, array( 'current' => ++$current, 'total' => $total, 5 * MINUTE_IN_SECONDS ) );
+			set_transient( $azure_progress_key, array( 'current' => ++$current, 'total' => $total ), 5 * MINUTE_IN_SECONDS );
 
 			// only upload file if file exists locally
 			if ( \Windows_Azure_Helper::file_exists( $file_path ) ) {

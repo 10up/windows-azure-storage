@@ -29,7 +29,7 @@ The `develop` branch is the development branch which means it contains the next 
 ## Release instructions
 
 1. Branch: Starting from `develop`, cut a release branch named `release/X.Y.Z` for your changes.
-1. Version bump: Bump the version number in `js/windows-azure-storage-admin.js`, `js/windows-azure-storage-media-browser.js`, `package.json`, `package-lock.json`, `readme.txt`, and `windows-azure-storage.php` if it does not already reflect the version being released.  Update both the plugin "Version:" property and the plugin `MSFT_AZURE_PLUGIN_VERSION` constant in `windows-azure-storage.php`.
+1. Version bump: Bump the version number in `js/windows-azure-storage-admin.js`, `js/windows-azure-storage-media-browser.js`, `js/windows-azure-storage-media-replace.js`, `package.json`, `package-lock.json`, `readme.txt`, and `windows-azure-storage.php` if it does not already reflect the version being released.  Update both the plugin "Version:" property and the plugin `MSFT_AZURE_PLUGIN_VERSION` constant in `windows-azure-storage.php`.
 1. Changelog: Add/update the changelog in both `readme.txt` and `CHANGELOG.md`.
 1. Props: Update `CREDITS.md` file with any new contributors, confirm maintainers are accurate.
 1. New files: Check to be sure any new files/paths that are unnecessary in the production version are included in `.distignore`.

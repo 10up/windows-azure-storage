@@ -1,10 +1,8 @@
 === Microsoft Azure Storage for WordPress ===
 Contributors:      msopentech, 10up, morganestes, stevegrunwell, lpawlik, ritteshpatel, johnwatkins0, rickalee, eflorea, phyrax, ravichandra, jeffpaul
 Tags:              Microsoft, Microsoft Open Technologies, Microsoft Azure, Microsoft Azure Storage, Media Files, Upload, CDN, blob storage
-Requires at least: 5.7
-Tested up to:      6.4
-Requires PHP:      7.4
-Stable tag:        4.4.1
+Tested up to:      6.5
+Stable tag:        4.4.2
 License:           BSD 2-Clause
 License URI:       http://www.opensource.org/licenses/bsd-license.php
 
@@ -34,6 +32,16 @@ For multisites or to enforce Azure Blob Storage settings, you can define the fol
 See Settings->Microsoft Azure for more information.
 
 == Changelog ==
+
+= 4.4.2 - 2024-05-06 =
+**Note that this release bumps the minimum WordPress version from 5.7 to 6.3.**
+
+* **Added:** New feature to replace PDF files at the blob storage level (props [@hugosolar](https://github.com/hugosolar), [@rickalee](https://github.com/rickalee) via [#220](https://github.com/10up/windows-azure-storage/pull/220)).
+* **Changed:** Bump WordPress "tested up to" version 6.5 (props [@QAharshalkadu](https://github.com/QAharshalkadu), [@jeffpaul](https://github.com/jeffpaul) via [#223](https://github.com/10up/windows-azure-storage/pull/223)).
+* **Changed:** Bump WordPress minimum from 5.7 to 6.3 (props [@QAharshalkadu](https://github.com/QAharshalkadu), [@jeffpaul](https://github.com/jeffpaul) via [#223](https://github.com/10up/windows-azure-storage/pull/223)).
+* **Changed:** Replaced [lee-dohm/no-response](https://github.com/lee-dohm/no-response) with [actions/stale](https://github.com/actions/stale) to help with closing no-response/stale issues (props [@jeffpaul](https://github.com/jeffpaul) via [#218](https://github.com/10up/windows-azure-storage/pull/218)).
+* **Fixed:** Issue with the transient generated for displaying progress (props [@hugosolar](https://github.com/hugosolar), [@rickalee](https://github.com/rickalee) via [#220](https://github.com/10up/windows-azure-storage/pull/220)).
+* **Fixed:** Ensure we send the proper content type when creating the Block Blob in the container (props [@hugosolar](https://github.com/hugosolar), [@rickalee](https://github.com/rickalee), [@MWaser](https://github.com/MWaser), [@okadots](https://github.com/okadots), [@sarahannnicholson](https://github.com/sarahannnicholson), [@nicoladj77](https://github.com/nicoladj77) via [#224](https://github.com/10up/windows-azure-storage/pull/224)).
 
 = 4.4.1 - 2024-01-08 =
 * **Added:** Support for the WordPress.org plugin preview (props [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul) via [#212](https://github.com/10up/windows-azure-storage/pull/212)).
@@ -204,6 +212,9 @@ See Settings->Microsoft Azure for more information.
 * First release of Microsoft Azure Storage plugin for WordPress.
 
 == Upgrade Notice ==
+
+= 4.4.2 =
+Note that this release bumps the minimum WordPress version from 5.7 to 6.3.
 
 = 4.4.0 =
 Note that this version bumps the minimum PHP version from 7.4 to 8.0.

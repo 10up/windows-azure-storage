@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file, per [the Ke
 
 ## [Unreleased] - TBD
 
+## [4.4.2] - 2024-05-06
+**Note that this release bumps the minimum WordPress version from 5.7 to 6.3.**
+
+### Added
+- New feature to replace PDF files at the blob storage level (props [@hugosolar](https://github.com/hugosolar), [@rickalee](https://github.com/rickalee) via [#220](https://github.com/10up/windows-azure-storage/pull/220)).
+
+### Changed
+- Bump WordPress "tested up to" version 6.5 (props [@QAharshalkadu](https://github.com/QAharshalkadu), [@jeffpaul](https://github.com/jeffpaul) via [#223](https://github.com/10up/windows-azure-storage/pull/223)).
+- Bump WordPress minimum from 5.7 to 6.3 (props [@QAharshalkadu](https://github.com/QAharshalkadu), [@jeffpaul](https://github.com/jeffpaul) via [#223](https://github.com/10up/windows-azure-storage/pull/223)).
+- Replaced [lee-dohm/no-response](https://github.com/lee-dohm/no-response) with [actions/stale](https://github.com/actions/stale) to help with closing no-response/stale issues (props [@jeffpaul](https://github.com/jeffpaul) via [#218](https://github.com/10up/windows-azure-storage/pull/218)).
+
+### Fixed
+- Issue with the transient generated for displaying progress (props [@hugosolar](https://github.com/hugosolar), [@rickalee](https://github.com/rickalee) via [#220](https://github.com/10up/windows-azure-storage/pull/220)).
+- Ensure we send the proper content type when creating the Block Blob in the container (props [@hugosolar](https://github.com/hugosolar), [@rickalee](https://github.com/rickalee), [@MWaser](https://github.com/MWaser), [@okadots](https://github.com/okadots), [@sarahannnicholson](https://github.com/sarahannnicholson), [@nicoladj77](https://github.com/nicoladj77) via [#224](https://github.com/10up/windows-azure-storage/pull/224)).
+
 ## [4.4.1] - 2024-01-08
 ### Added
 - Support for the WordPress.org plugin preview (props [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul) via [#212](https://github.com/10up/windows-azure-storage/pull/212)).
