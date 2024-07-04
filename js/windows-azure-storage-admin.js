@@ -81,6 +81,8 @@
           window.setTimeout( function () {
             get_upload_progress( item_id, item );
           }, 1000 );
+        } else {
+          $( 'div.media-modal.wp-core-ui' ).find( 'div.media-frame-title > h1' ).text( azureStorageConfig.l10n.uploadReady );
         }
       } ).fail( function () {
         window.setTimeout( function () {
