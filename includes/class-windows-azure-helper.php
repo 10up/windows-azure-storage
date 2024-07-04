@@ -105,6 +105,19 @@ class Windows_Azure_Helper {
 			: get_option( 'azure_storage_account_primary_access_key' );
 	}
 
+        /**
+         * Return override container name.
+         *
+         * @since 4.4.3
+         *
+         * @return mixed|void Account key.
+         */
+        static public function get_azure_storage_override_container_path() {
+                return defined( 'MICROSOFT_AZURE_OVERRIDE_CONTAINER_PATH' )
+                        ? MICROSOFT_AZURE_OVERRIDE_CONTAINER_PATH
+                        : get_option( 'azure_storage_override_container_path' );
+        }
+ 
 	/**
 	 * Return CNAME url.
 	 *
