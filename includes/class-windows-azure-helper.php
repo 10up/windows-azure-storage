@@ -108,7 +108,7 @@ class Windows_Azure_Helper {
         /**
          * Return override container name.
          *
-         * @since 4.4.3
+         * @since 4.4.2
          *
          * @return mixed|void Account key.
          */

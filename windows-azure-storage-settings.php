@@ -169,7 +169,7 @@ function windows_azure_storage_plugin_register_settings() {
 		'windows-azure-storage-settings'
 	);
 	/**
-	 * @since 4.4.3
+	 * @since 4.4.2
 	 */
         add_settings_field(
                 'azure_storage_override_container_path',
@@ -348,7 +348,7 @@ function windows_azure_storage_setting_storage_container() {
 /**
  * Container ovveride path setting callback function.
  *
- * @since 4.0.0
+ * @since 4.4.2
  *
  * @return void
  */
