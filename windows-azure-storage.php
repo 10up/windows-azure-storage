@@ -455,6 +455,12 @@ function windows_azure_storage_wp_generate_attachment_metadata( $data, $post_id 
 		)
 	);
 
+	// Check if yearmonth_folders is checked
+	$user_filemonth_folders = get_option( 'uploads_use_yearmonth_folders' );
+	if ( empty( $user_filemonth_folders ) ) {
+		$upload_folder_path = '/';
+	}
+
 	try {
 		$post_array = wp_unslash( $_POST );
 		$post_array = wp_parse_args( $post_array, array(
