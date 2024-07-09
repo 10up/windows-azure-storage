@@ -45,31 +45,60 @@
 class Windows_Azure_Replace_Media {
 
 	/**
+	 * Allowed types to be replaced
+	 *
+	 * @var array
+	 */
+	private $allowed_types = array();
+
+	/**
+	 * Container name from plugin config
+	 *
+	 * @var string
+	 */
+	private $container_name = '';
+
+	/**
 	 * Class constructor
 	 *
 	 */
 
 	public function __construct() {
-		// Add fields to attachment editor
+		// Add fields to attachment editor.
 		add_filter( 'attachment_fields_to_edit', array( $this, 'register_azure_fields_attachment_editor' ), 10, 2 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_replace_media_script' ) );
 
-		// ajax event to replace media
-		add_action( 'wp_ajax_nopriv_azure-storage-media-replace', array(  $this, 'process_media_replacement' ) );
-		add_action( 'wp_ajax_azure-storage-media-replace', array(  $this, 'process_media_replacement' ) );
+		// ajax event to replace media.
+		add_action( 'wp_ajax_azure-storage-media-replace', array( $this, 'process_media_replacement' ) );
 
-		// Ajax event to set transient for replacement
-		add_action( 'wp_ajax_nopriv_azure-storage-media-replace-set-transient', array(  $this, 'set_media_replacement_transient' ) );
-		add_action( 'wp_ajax_azure-storage-media-replace-set-transient', array(  $this, 'set_media_replacement_transient' ) );
-
+		/**
+		 * Set a list of mime types allowed to be replaced.
+		 *
+		 * Filter azure_blob_storage_allowed_types_replace hook into default list of mime types allowed to be replaced, for now just common images and pdf files.
+		 *
+		 * @since 4.2.3
+		 *
+		 * @param array $types array of allowed mime types
+		 */
+		$this->allowed_types = apply_filters(
+			'azure_blob_storage_allowed_types_replace',
+			array(
+				'image/jpeg',
+				'image/png',
+				'image/gif',
+				'image/bmp',
+				'image/webp',
+				'application/pdf',
+			)
+		);
 	}
 
 
 	/**
 	 * Register replace media button
 	 *
-	 * @param array   $form_fields Form fields
-	 * @param WP_Post $post the post ID
+	 * @param array   $form_fields Form fields.
+	 * @param WP_Post $post the post ID.
 	 * @return array
 	 */
 	public function register_azure_fields_attachment_editor( $form_fields, $post ) {
@@ -81,14 +110,14 @@ class Windows_Azure_Replace_Media {
 		}
 		wp_enqueue_media();
 		$mime_type = get_post_mime_type( $post->ID );
-		if ( 'application/pdf' === $mime_type ) {
+		if ( in_array( $mime_type, $this->allowed_types, true ) ) {
 			$form_fields['azure-media-replace'] = array(
 				'label' => esc_html__( 'Replace media', 'windows-azure-storage' ),
 				'input' => 'html',
 				'html'  => sprintf( '<button class="button-secondary" id="azure-media-replacement" onclick="replaceMedia(%d);"> %s </button>', $post->ID, esc_html__( 'Replace this media', 'windows-azure-storage' ) ),
 			);
 		}
-	
+
 		return $form_fields;
 	}
 
@@ -98,9 +127,9 @@ class Windows_Azure_Replace_Media {
 	 * @return void
 	 */
 	public function enqueue_replace_media_script() {
-		$js_ext  = ( ! defined( 'SCRIPT_DEBUG' ) || false === SCRIPT_DEBUG ) ? '.min.js' : '.js';
+		$js_ext = ( ! defined( 'SCRIPT_DEBUG' ) || false === SCRIPT_DEBUG ) ? '.min.js' : '.js';
 		wp_enqueue_script( 'windows-azure-storage-media-replace', MSFT_AZURE_PLUGIN_URL . 'js/windows-azure-storage-media-replace' . $js_ext, array( 'jquery', 'media-editor' ), MSFT_AZURE_PLUGIN_VERSION, true );
-		
+
 		wp_localize_script(
 			'windows-azure-storage-media-replace',
 			'AzureMediaReplaceObject',
@@ -111,14 +140,14 @@ class Windows_Azure_Replace_Media {
 					'title'              => __( 'Replace this media', 'windows-azure-storage' ),
 					'replaceMediaButton' => __( 'Replace media', 'windows-azure-storage' ),
 				),
-			) 
+			),
 		);
 	}
 
 	/**
 	 * Ajax handler to process replace request
 	 *
-	 * @return void
+	 * @return mixed
 	 */
 	public function process_media_replacement() {
 
@@ -131,7 +160,14 @@ class Windows_Azure_Replace_Media {
 		$current_attachment = filter_input( INPUT_POST, 'current_attachment', FILTER_VALIDATE_INT );
 		$replace_attachment = filter_input( INPUT_POST, 'replace_attachment', FILTER_VALIDATE_INT );
 
-		wp_send_json( $this->replace_media_with( $current_attachment, $replace_attachment ) );
+		$this->container_name = \Windows_Azure_Helper::get_default_container();
+		$response             = $this->replace_media_with( $current_attachment, $replace_attachment );
+
+		if ( ! is_wp_error( $response ) ) {
+			wp_send_json( $response );
+		} else {
+			wp_send_json_error( $response->get_error_message() );
+		}
 	}
 
 	/**
@@ -139,59 +175,57 @@ class Windows_Azure_Replace_Media {
 	 *
 	 * @param int $source_attachment_id Source attachment ID
 	 * @param int $media_to_replace_id Replacement file ID
-	 * @return Mixed
+	 * @return mixed
 	 */
 	private function replace_media_with( $source_attachment_id, $media_to_replace_id ) {
 		if ( empty( $source_attachment_id ) || empty( $media_to_replace_id ) ) {
-			return esc_html__( 'Cannot determine images IDs, aborting...', 'windows-azure-storage' );
+			return new WP_Error( 'missing_ids', __( 'Cannot determine images IDs, aborting...', 'windows-azure-storage' ) );
 		}
 
 		$source_file  = get_post_meta( $source_attachment_id, '_wp_attached_file', true );
 		$replace_file = get_post_meta( $media_to_replace_id, '_wp_attached_file', true );
 
 		if ( empty( $source_file ) || empty( $replace_file ) ) {
-			return esc_html__( 'Path issues, aborting...', 'windows-azure-storage' );
+			return new WP_Error( 'path_issues', __( 'Path issues, aborting...', 'windows-azure-storage' ) );
 		}
 
 		$source_filetype  = wp_check_filetype( $source_file );
 		$replace_filetype = wp_check_filetype( $replace_file );
 
 		if ( empty( $source_filetype['type'] ) && empty( $replace_filetype['type'] ) ) {
-			return esc_html__( 'Cannot determine file type, aborting...', 'windows-azure-storage' );
+			return new WP_Error( 'file_type_error', __( 'Cannot determine file type, aborting...', 'windows-azure-storage' ) );
 		}
 
-		$source_media_type  = explode( '/', $source_filetype['type'] );
-		$replace_media_type = explode( '/', $replace_filetype['type'] );
-
-		if ( ( is_array( $source_media_type ) && is_array( $replace_filetype ) ) && ( $source_media_type[0] !== $replace_media_type[0] ) ) {
-			return esc_html__( 'File type mismatch', 'windows-azure-storage' );
+		if ( $source_filetype['type'] !== $replace_filetype['type'] ) {
+			return new WP_Error( 'file_type_mismatch', __( 'File type mismatch', 'windows-azure-storage' ) );
 		}
 
-		// Let's replace the file remotely
-		$default_azure_storage_account_container_name = \Windows_Azure_Helper::get_default_container();
-
-		// only upload file if file exists locally
+		// only upload file if file exists locally.
 		try {
 			$full_blob_url = \Windows_Azure_Helper::get_full_blob_url( $replace_file );
 			if ( ! empty( $full_blob_url ) ) {
 				\Windows_Azure_Helper::copy_media_to_blob_storage(
-					$default_azure_storage_account_container_name,
+					$this->container_name,
 					$replace_file,
 					$source_file,
-					$replace_filetype['type']
+					$replace_filetype['type'],
+					'',
+					'',
+					30
 				);
 			}
 		} catch ( Exception $e ) {
-			// translators: %s would be an error message
+			// translators: %s would be an error message.
 			printf( esc_html__( 'Error in uploading file. Error: %s', 'windows-azure-storage' ), esc_html( $e->getMessage() ) );
 		}
 
 		$replacement = array();
-		
+
+		$replacement['success']   = true;
 		$replacement['is_image']  = $this->is_image( $source_filetype );
-		$replacement['file_name'] = basename( $replacement['original_image'] );
-		
-		$replacement = $this->media_meta_replacement( $source_attachment_id, $media_to_replace_id );
+		$replacement['file_name'] = basename( $replace_file );
+
+		$replacement = array_merge( $replacement, $this->media_meta_replacement_prepare( $source_attachment_id, $media_to_replace_id ) );
 
 		return $replacement;
 	}
@@ -199,7 +233,7 @@ class Windows_Azure_Replace_Media {
 	/**
 	 * If Attachment is an image
 	 *
-	 * @param string $filetype mime type
+	 * @param array $filetype mime type.
 	 * @return boolean
 	 */
 	private function is_image( $filetype ) {
@@ -207,83 +241,215 @@ class Windows_Azure_Replace_Media {
 	}
 
 	/**
+	 * If Attachment is a PDF
+	 *
+	 * @param string $filetype mime type.
+	 * @return boolean
+	 */
+	private function is_pdf( $filetype ) {
+		return ( strpos( $filetype, 'pdf' ) !== false );
+	}
+
+	/**
 	 * Media meta replacement and copy
 	 *
-	 * @param int $source_attachment_id Source attachment ID
-	 * @param int $media_to_replace_id Replacement file ID
+	 * @param int $source_attachment_id Source attachment ID.
+	 * @param int $media_to_replace_id Replacement file ID.
 	 * @return array
 	 */
-	private function media_meta_replacement( $source_attachment_id, $media_to_replace_id ) {
+	private function media_meta_replacement_prepare( $source_attachment_id, $media_to_replace_id ) {
 		$replacement_meta_attachment_file = get_post_meta( $media_to_replace_id, '_wp_attached_file', true );
 		$replacement_azure_data           = get_post_meta( $media_to_replace_id, 'windows_azure_storage_info', true );
 		$replacement_attachment_data      = get_post_meta( $media_to_replace_id, '_wp_attachment_metadata', true );
+		$replace_filename                 = pathinfo( basename( $replacement_meta_attachment_file ) );
 		$replacement_mime_type            = get_post_mime_type( $media_to_replace_id );
 
 		$source_meta_attachment_file = get_post_meta( $source_attachment_id, '_wp_attached_file', true );
 		$source_azure_data           = get_post_meta( $source_attachment_id, 'windows_azure_storage_info', true );
 		$source_attachment_data      = get_post_meta( $source_attachment_id, '_wp_attachment_metadata', true );
 		$source_attachment_version   = get_post_meta( $source_attachment_id, '_wp_attachment_replace_version', true );
+		$source_filename             = pathinfo( basename( $source_meta_attachment_file ) );
+		$source_mime_type            = get_post_mime_type( $source_attachment_id );
+
 		if ( empty( $source_attachment_data ) ) {
 			$source_attachment_version = 1;
 		}
 		$new_version = ++$source_attachment_version;
 
+		$replace_data = array(
+			'id'         => $media_to_replace_id,
+			'meta_file'  => $replacement_meta_attachment_file,
+			'meta_azure' => $replacement_azure_data,
+			'meta_data'  => $replacement_attachment_data,
+			'version'    => 0,
+			'filename'   => $replace_filename,
+			'mime_type'  => $replacement_mime_type,
+		);
+
+		$source_data = array(
+			'id'         => $source_attachment_id,
+			'meta_file'  => $source_meta_attachment_file,
+			'meta_azure' => $source_azure_data,
+			'meta_data'  => $source_attachment_data,
+			'version'    => $new_version,
+			'filename'   => $source_filename,
+			'mime_type'  => $source_mime_type,
+		);
+
 		$return_data = array();
 
-		$return_data['ID']     = $source_attachment_id;
 		$return_data['old_ID'] = $media_to_replace_id;
 
-		$source_filename  = pathinfo( basename( $source_meta_attachment_file ) );
-		$replace_filename = pathinfo( basename( $replacement_meta_attachment_file ) );
+		$return_replacement = $this->process_media_thumbnails( $source_data, $replace_data );
 
-		if ( 'pdf' === $source_filename['extension'] ) {
-			unset( $source_attachment_data['sizes'] );
-			if ( ! empty( $replacement_attachment_data['sizes'] ) ) {
-				foreach ( $replacement_attachment_data['sizes'] as $size_key => $size_data ) {
-					$size_data['file'] = str_replace( $replace_filename, $source_filename, $size_data['file'] );
-					$source_attachment_data['sizes'][ $size_key ] = $size_data;
-				}
+		return array_merge( $return_data, $return_replacement );
+	}
 
-				update_post_meta( $source_attachment_id, '_wp_attachment_metadata', $source_attachment_data );
+	/**
+	 * Process media and replace
+	 *
+	 * @param array $source_data source data.
+	 * @param array $replace_data replacement file data.
+	 * @return array
+	 */
+	public function process_media_thumbnails( $source_data, $replace_data ) {
+
+		$sizes     = $this->find_nearest_size( $source_data, $replace_data );
+		$mime_type = ( $this->is_pdf( $replace_data['mime_type'] ) ) ? 'image/jpg' : $replace_data['mime_type'];
+
+		if ( ! empty( $sizes ) ) {
+			foreach ( $sizes as $size_key => $size_data ) {
+				$source_data['meta_data']['sizes'][ $size_key ] = $size_data['source_data'];
 			}
 
-			if ( ! empty( $replacement_azure_data['thumbnails'] ) ) {
-				// Let's replace the file remotely
-				$default_azure_storage_account_container_name = \Windows_Azure_Helper::get_default_container();
-				
-				unset( $source_azure_data['thumbnails'] );
-				
-				foreach ( $replacement_azure_data['thumbnails'] as $thumbnails ) {
-					$new_filename                      = str_replace( $replace_filename, $source_filename, $thumbnails );
-					$source_azure_data['thumbnails'][] = $new_filename;
-					try {
-						$full_blob_url = \Windows_Azure_Helper::get_full_blob_url( $thumbnails );
-						if ( ! empty( $full_blob_url ) ) {
-							\Windows_Azure_Helper::copy_media_to_blob_storage(
-								$default_azure_storage_account_container_name,
-								$thumbnails,
-								$new_filename,
-								$replacement_mime_type
-							);
-						}
-					} catch ( Exception $e ) {
-						// translators: %s would be an error message
-						printf( esc_html__( 'Error in uploading file. Error: %s', 'windows-azure-storage' ), esc_html( $e->getMessage() ) );
-					}
-				}
-
-				update_post_meta( $source_attachment_id, 'windows_azure_storage_info', $source_azure_data );
-			}
-
-			wp_delete_attachment( $media_to_replace_id, true );
+			update_post_meta( $source_data['id'], '_wp_attachment_metadata', $source_data['meta_data'] );
 		}
 
-		$return_data['original_image']  = $source_filename;
-		$return_data['attachment_data'] = $source_attachment_data;
-		$return_data['attachment_data'] = $source_attachment_data;
-		$return_data['azure_data']      = $source_azure_data;
-		$return_data['version']         = $new_version;
+		if ( ! empty( $replace_data['meta_data']['sizes'] ) ) {
 
-		return $return_data;
+			// Let's replace the file remotely.
+			foreach ( $sizes as $source_size => $sizes_source_data ) {
+				try {
+					\Windows_Azure_Helper::copy_media_to_blob_storage(
+						$this->container_name,
+						$sizes_source_data['replace_file'],
+						$sizes_source_data['source_file'],
+						$mime_type,
+						'',
+						'',
+						30,
+					);
+				} catch ( Exception $e ) {
+					// translators: %s would be an error message.
+					printf( esc_html__( 'Error in uploading file. Error: %s', 'windows-azure-storage' ), esc_html( $e->getMessage() ) );
+				}
+			}
+		}
+
+		wp_delete_attachment( $replace_data['id'], true );
+
+		return $source_data;
+	}
+
+	/**
+	 * Delete blobs from source
+	 *
+	 * @param array $data source or replacement data.
+	 * @return void
+	 */
+	public function delete_previous_thumbnails( $data ) {
+		$default_azure_storage_account_container_name = \Windows_Azure_Helper::get_default_container();
+
+		// delete remaining blobs from source.
+		if ( ! empty( $data['meta_azure']['thumbnails'] ) ) {
+			foreach ( $data['meta_azure']['thumbnails'] as $blob_location ) {
+				try {
+					$full_blob_url = \Windows_Azure_Helper::get_full_blob_url( $blob_location );
+					if ( ! empty( $full_blob_url ) ) {
+						\Windows_Azure_Helper::delete_blob(
+							$default_azure_storage_account_container_name,
+							$blob_location,
+						);
+					}
+				} catch ( Exception $e ) {
+					// translators: %s would be an error message.
+					printf( esc_html__( 'Blob could not be removed. Error: %s', 'windows-azure-storage' ), esc_html( $e->getMessage() ) );
+				}
+			}
+		}
+	}
+
+	/**
+	 * Get the nearest size from the replacement image
+	 *
+	 * @param array $source_sizes Source image data.
+	 * @param array $target_sizes Replacement image data.
+	 * @return array
+	 */
+	private function find_nearest_size( $source_sizes, $target_sizes ) {
+		// Bail early if no attachment meta field.
+		if ( empty( $source_sizes['meta_data'] ) || empty( $target_sizes['meta_data'] ) ) {
+			return array();
+		}
+
+		if ( empty( $source_sizes['meta_data']['file'] ) || empty( $target_sizes['meta_data']['file'] ) ) {
+			return array();
+		}
+
+		$convert_sizes = array();
+		$filename_path = $source_sizes['meta_data']['file'];
+		$file_path     = dirname( $filename_path );
+
+		$target_filename  = $target_sizes['meta_data']['file'];
+		$target_file_path = dirname( $target_filename );
+
+		if ( empty( $source_sizes['meta_data']['sizes'] ) || empty( $target_sizes['meta_data']['sizes'] ) ) {
+			return array();
+		}
+
+		foreach ( $source_sizes['meta_data']['sizes'] as $size => $size_data ) {
+			$target_width = ! empty( $target_sizes['meta_data']['sizes'][ $size ] ) ? $target_sizes['meta_data']['sizes'][ $size ]['width'] : 0;
+			$source_width = $size_data['width'];
+
+			$diff = abs( $source_width - $target_width );
+
+			$target_file            = $target_sizes['meta_data']['sizes'][ $size ];
+			$convert_sizes[ $size ] = array(
+				'source_file'  => $file_path . '/' . $size_data['file'],
+				'replace_file' => $target_file_path . '/' . $target_file['file'],
+				'source_data'  => array(
+					'file'      => $size_data['file'],
+					'width'     => $target_file['width'],
+					'height'    => $target_file['height'],
+					'mime-type' => $target_file['mime-type'],
+					'filesize'  => $target_file['filesize'],
+				),
+			);
+
+			foreach ( $target_sizes['meta_data']['sizes'] as $target_size => $target_data ) {
+				$target_width = $target_data['width'];
+				$source_width = $size_data['width'];
+
+				$new_diff = abs( $source_width - $target_width );
+
+				if ( $new_diff < $diff ) {
+					$diff = $new_diff;
+
+					$convert_sizes[ $size ] = array(
+						'source_file'  => $file_path . '/' . $size_data['file'],
+						'replace_file' => $target_file_path . '/' . $target_data['file'],
+						'source_data'  => array(
+							'file'      => $size_data['file'],
+							'width'     => $target_data['width'],
+							'height'    => $target_data['height'],
+							'mime-type' => $target_data['mime-type'],
+							'filesize'  => $target_data['filesize'],
+						),
+					);
+				}
+			}
+		}
+
+		return $convert_sizes;
 	}
 }

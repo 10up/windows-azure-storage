@@ -923,7 +923,11 @@ class Windows_Azure_Rest_Api_Client {
 			$cycles = 0;
 			do {
 				$sanitized_group_contents = $this->_sanitize_remote_paths( $container, $prefix_group, $group_contents );
-				$was_sanitized            = $sanitized_group_contents !== $group_contents;
+				if ( is_wp_error( $sanitized_group_contents ) ) {
+					continue;
+				}
+
+				$was_sanitized = $sanitized_group_contents !== $group_contents;
 				if ( $was_sanitized ) {
 					$group_contents = $sanitized_group_contents;
 				}
@@ -1033,6 +1037,7 @@ class Windows_Azure_Rest_Api_Client {
 		} catch ( Exception $exception ) {
 			return new \WP_Error( $exception->getMessage() );
 		}
+		$destination_path = '/' . ltrim( $destination_path, '/' );
 
 		return $this->_build_api_endpoint_url( $container . $destination_path );
 	}
@@ -1133,6 +1138,10 @@ class Windows_Azure_Rest_Api_Client {
 	 * @return array|WP_Error Sanitized remote paths array or WP_Error on failure.
 	 */
 	protected function _sanitize_remote_paths( $container, $prefix_group, $group_contents ) {
+		if ( ! is_array( $group_contents ) ) {
+			return new \WP_Error( -1, __( 'Error when sanitizing filename.', 'windows-azure-storage' ) );
+		}
+		
 		$remote_paths = array_flip( $group_contents );
 		$blobs        = $this->list_blobs( $container, $prefix_group );
 
