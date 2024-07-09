@@ -37,6 +37,6 @@
   "devDependencies": {
     "@10up/cypress-wp-utils": "^0.2.0",
     "@wordpress/env": "^10.1.0",
-    "cypress": "^13.1.0"
+    "cypress": "^13.3.1"
   }
 }
