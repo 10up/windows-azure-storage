@@ -28,6 +28,7 @@ For multisites or to enforce Azure Blob Storage settings, you can define the fol
 * MICROSOFT_AZURE_CONTAINER - Azure Blob Container
 * MICROSOFT_AZURE_CNAME - Domain: must start with http(s)://
 * MICROSOFT_AZURE_USE_FOR_DEFAULT_UPLOAD - boolean (default false)
+* MICROSOFT_AZURE_OVERRIDE_CONTAINER_PATH - Override Container name in the Image URL , can be just "/"
 
 See Settings->Microsoft Azure for more information.
 
