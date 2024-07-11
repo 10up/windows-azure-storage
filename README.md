@@ -3,6 +3,7 @@
 > Use the Microsoft Azure Storage service to host your website's media files.
 
 [![Support Level](https://img.shields.io/badge/support-stable-blue.svg)](#support-level) [![Release Version](https://img.shields.io/github/release/10up/windows-azure-storage.svg)](https://github.com/10up/windows-azure-storage/releases/latest) ![WordPress tested up to version](https://img.shields.io/wordpress/plugin/tested/windows-azure-storage?label=WordPress) [![BSD 2-Clause License](https://img.shields.io/github/license/10up/windows-azure-storage.svg)](https://github.com/10up/windows-azure-storage/blob/trunk/LICENSE)
+[![E2E test](https://github.com/10up/windows-azure-storage/actions/workflows/cypress.yml/badge.svg)](https://github.com/10up/windows-azure-storage/actions/workflows/cypress.yml) [![PHP Compatibility](https://github.com/10up/windows-azure-storage/actions/workflows/php-compatibility.yml/badge.svg)](https://github.com/10up/windows-azure-storage/actions/workflows/php-compatibility.yml) [![Dependency Review](https://github.com/10up/windows-azure-storage/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/10up/windows-azure-storage/actions/workflows/dependency-review.yml)
 
 ## Description
 
@@ -33,15 +34,6 @@ For multisites or to enforce Azure Blob Storage settings, you can define the fol
 
 See Settings->Microsoft Azure for more information.
 
-## Upgrade Notice
-
-### 3.0.0
-This release features several security fixes and enhancements.
-It is highly recommended that all users upgrade immediately.
-
-## Support Level
-**Stable:** 10up is not planning to develop any new features for this, but will still respond to bug reports and security concerns.  We welcome PRs, but any that include new features should be small and easy to integrate and should not include breaking changes.  We otherwise intend to keep this tested up to the most recent version of WordPress.
-
 ## Known Issues
 
 ### Storage Account Versions
@@ -69,6 +61,9 @@ Data should be updated in these tables:
 1. Using WP-CLI, detailed instructions [here](https://dba.stackexchange.com/questions/64675/replace-string-within-serialized-data/239923#239923).
 2. Directly inside WordPress, using the [Better Search Replace plugin](https://wordpress.org/plugins/better-search-replace/).
 3. Using an external tool that supports PHP serialization, like [Search Replace DB](https://github.com/interconnectit/Search-Replace-DB).
+
+## Support Level
+**Stable:** 10up is not planning to develop any new features for this, but will still respond to bug reports and security concerns.  We welcome PRs, but any that include new features should be small and easy to integrate and should not include breaking changes.  We otherwise intend to keep this tested up to the most recent version of WordPress.
 
 ## Changelog
 

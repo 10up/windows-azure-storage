@@ -17,6 +17,7 @@ For more details on Microsoft Azure Storage, please visit the [Microsoft Azure w
 For more details on configuring a Microsoft Azure Storage account and on using the plugin with the Block Editor or Classic Editor, please visit the [user guide](https://github.com/10up/windows-azure-storage/blob/develop/UserGuide.md).
 
 == Installation ==
+
 1. Upload the plugin files to the `/wp-content/plugins/windows-azure-storage` directory, or install the plugin through the WordPress plugins screen directly.
 1. Activate the plugin through the 'Plugins' screen in WordPress.
 1. Use the Settings->Microsoft Azure screen to configure the plugin.
