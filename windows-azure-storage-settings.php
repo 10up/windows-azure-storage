@@ -169,18 +169,18 @@ function windows_azure_storage_plugin_register_settings() {
 		'windows-azure-storage-settings'
 	);
 	/**
-	 * @since 4.4.2
+	 * @since 4.5.0
 	 */
-        add_settings_field(
-                'azure_storage_override_container_path',
-                __( 'Override Container Path', 'windows-azure-storage' ),
-                'windows_azure_storage_override_container_path',
-                'windows-azure-storage-plugin-options',
-                'windows-azure-storage-settings'
-        );
-        /**
-         * @since 4.0.0
-         */
+	add_settings_field(
+		'azure_storage_override_container_path',
+		__( 'Override Container Path', 'windows-azure-storage' ),
+		'windows_azure_storage_override_container_path',
+		'windows-azure-storage-plugin-options',
+		'windows-azure-storage-settings'
+	);
+	/**
+	 * @since 4.0.0
+	 */
 	add_settings_field(
 		'azure_storage_cname',
 		__( 'CNAME', 'windows-azure-storage' ),
@@ -348,22 +348,22 @@ function windows_azure_storage_setting_storage_container() {
 /**
  * Container ovveride path setting callback function.
  *
- * @since 4.4.2
+ * @since 4.5.0
  *
  * @return void
  */
 function windows_azure_storage_override_container_path() {
-        $azure_storage_override_container_path = Windows_Azure_Helper::get_azure_storage_override_container_path();
+	$azure_storage_override_container_path = Windows_Azure_Helper::get_azure_storage_override_container_path();
 
-        if ( defined( 'MICROSOFT_AZURE_OVERRIDE_CONTAINER_PATH' ) ) {
-                echo '<input type="text" class="regular-text" value="', esc_attr( $azure_storage_override_container_path ), '" readonly disabled>';
-        } else {
-                echo '<input type="text" name="azure_storage_override_container_path" class="regular-text" value="', esc_attr( $azure_storage_override_container_path ), '">';
-        }
+	if ( defined( 'MICROSOFT_AZURE_OVERRIDE_CONTAINER_PATH' ) ) {
+		echo '<input type="text" class="regular-text" value="', esc_attr( $azure_storage_override_container_path ), '" readonly disabled>';
+	} else {
+		echo '<input type="text" name="azure_storage_override_container_path" class="regular-text" value="', esc_attr( $azure_storage_override_container_path ), '">';
+	}
 
-        echo '<p>';
-                _e( 'Use this option if you do not like to display container name in the image URLs  like <code>http://mydomain.com/uploads</code> instead of <code>http://mydomain.com/[container_name]/</code>. As sometime container name can be wired and log and also container names can change during migration resulting in URL change for the images. Using this option image urls will remain same. You can use <code>MICROSOFT_AZURE_OVERRIDE_CONTAINER_PATH</code> constant to override it.', 'windows-azure-storage' );
-        echo '</p>';
+	echo '<p>';
+		_e( 'Use this option if you do not like to display container name in the image URLs  like <code>http://mydomain.com/uploads</code> instead of <code>http://mydomain.com/[container_name]/</code>. As sometime container name can be wired and log and also container names can change during migration resulting in URL change for the images. Using this option image urls will remain same. You can use <code>MICROSOFT_AZURE_OVERRIDE_CONTAINER_PATH</code> constant to override it.', 'windows-azure-storage' );
+	echo '</p>';
 }
 
 /**

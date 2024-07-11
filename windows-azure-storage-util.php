@@ -338,11 +338,12 @@ class WindowsAzureStorageUtil {
 
 		// Get CNAME if defined.
 		$cname = \Windows_Azure_Helper::get_cname();
-		if ( ! ( empty( $cname ) ) ) {
+		if ( ! empty( $cname ) ) {
 			$url = sprintf( '%1$s/%2$s',
 				$cname,
-                                $append_container = !empty($azure_storage_override_container_path) ? $azure_storage_override_container_path : $default_azure_storage_account_container_name
+				$append_container = ! empty( $azure_storage_override_container_path ) ? $azure_storage_override_container_path : $default_azure_storage_account_container_name
 			);
+		}
 
 		} else {
 			$blob_storage_host_name = \Windows_Azure_Helper::get_hostname();
