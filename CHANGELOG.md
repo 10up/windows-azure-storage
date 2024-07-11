@@ -9,6 +9,10 @@ All notable changes to this project will be documented in this file, per [the Ke
 - Feature to replace images at the blob storage level (props [@hugosolar](https://github.com/hugosolar), [@rickalee](https://github.com/rickalee), [@dkotter](https://github.com/dkotter) via [#230](https://github.com/10up/windows-azure-storage/pull/230)).
 - Constant for `MICROSOFT_AZURE_OVERRIDE_CONTAINER_PATH` (props [@rickalee](https://github.com/rickalee), [@engrshakirali](https://github.com/engrshakirali), [@hugosolar](https://github.com/hugosolar) via [#240](https://github.com/10up/windows-azure-storage/pull/240)).
 
+### Changed
+- Bump WordPress "tested up to" version 6.6 (props [@hugosolar](https://github.com/hugosolar), [@jeffpaul](https://github.com/jeffpaul) via [#242](https://github.com/10up/windows-azure-storage/pull/242)).
+- Update WordPress minimum supported version to 6.4 (props [@hugosolar](https://github.com/hugosolar), [@jeffpaul](https://github.com/jeffpaul) via [#242](https://github.com/10up/windows-azure-storage/pull/242)).
+
 ### Removed
 - Image with special character which isn't needed anymore (props [@hugosolar](https://github.com/hugosolar), [@dkotter](https://github.com/dkotter), [@rickalee](https://github.com/rickalee), [@jeffpaul](https://github.com/jeffpaul) via [#234](https://github.com/10up/windows-azure-storage/pull/234)).
 
