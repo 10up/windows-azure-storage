@@ -343,9 +343,7 @@ class WindowsAzureStorageUtil {
 				$cname,
 				$append_container = ! empty( $azure_storage_override_container_path ) ? $azure_storage_override_container_path : $default_azure_storage_account_container_name
 			);
-		}
-
-		} else {
+		else {
 			$blob_storage_host_name = \Windows_Azure_Helper::get_hostname();
 			$storage_account_name   = \Windows_Azure_Helper::get_account_name();
 
