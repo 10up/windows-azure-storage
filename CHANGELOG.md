@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file, per [the Ke
 
 ## [Unreleased] - TBD
 
+## [4.5.0] - 2024-07-15
+### Added
+- Feature to replace images at the blob storage level (props [@hugosolar](https://github.com/hugosolar), [@rickalee](https://github.com/rickalee), [@dkotter](https://github.com/dkotter) via [#230](https://github.com/10up/windows-azure-storage/pull/230)).
+- Constant for `MICROSOFT_AZURE_OVERRIDE_CONTAINER_PATH` (props [@rickalee](https://github.com/rickalee), [@engrshakirali](https://github.com/engrshakirali), [@hugosolar](https://github.com/hugosolar) via [#240](https://github.com/10up/windows-azure-storage/pull/240)).
+
+### Changed
+- Bump WordPress "tested up to" version 6.6 (props [@hugosolar](https://github.com/hugosolar), [@jeffpaul](https://github.com/jeffpaul) via [#242](https://github.com/10up/windows-azure-storage/pull/242)).
+- Update WordPress minimum supported version to 6.4 (props [@hugosolar](https://github.com/hugosolar), [@jeffpaul](https://github.com/jeffpaul) via [#242](https://github.com/10up/windows-azure-storage/pull/242)).
+
+### Removed
+- Image with special character which isn't needed anymore (props [@hugosolar](https://github.com/hugosolar), [@dkotter](https://github.com/dkotter), [@rickalee](https://github.com/rickalee), [@jeffpaul](https://github.com/jeffpaul) via [#234](https://github.com/10up/windows-azure-storage/pull/234)).
+
+### Fixed
+- Issue with the use of `array_flip` and not ensuring it was an actual array (props [@hugosolar](https://github.com/hugosolar), [@rickalee](https://github.com/rickalee), [@dkotter](https://github.com/dkotter) via [#230](https://github.com/10up/windows-azure-storage/pull/230)).
+- `webp` compatibility when uploading original images (props [@hugosolar](https://github.com/hugosolar), [@rickalee](https://github.com/rickalee), [@ali-awwad](https://github.com/ali-awwad) via [#231](https://github.com/10up/windows-azure-storage/pull/231)).
+- Issue with unchecking year/month option under Settings > Media causes intermediate images not being uploaded to the container (props [@hugosolar](https://github.com/hugosolar), [@rickalee](https://github.com/rickalee), [@glowmedia](https://github.com/glowmedia) via [#232](https://github.com/10up/windows-azure-storage/pull/232)).
+- Media uploader title "Uploading to Azure..." stuck after image is uploaded (props [@hugosolar](https://github.com/hugosolar), [@rickalee](https://github.com/rickalee), [@eflorea](https://github.com/eflorea) via [#233](https://github.com/10up/windows-azure-storage/pull/233)).
+- Issue with enqueuing admin script in the footer (props [@hugosolar](https://github.com/hugosolar), [@rickalee](https://github.com/rickalee) via [#238](https://github.com/10up/windows-azure-storage/pull/238)).
+
 ## [4.4.2] - 2024-05-06
 **Note that this release bumps the minimum WordPress version from 5.7 to 6.3.**
 
@@ -266,6 +285,8 @@ All notable changes to this project will be documented in this file, per [the Ke
 - First release of Microsoft Azure Storage plugin for WordPress.
 
 [Unreleased]: https://github.com/10up/windows-azure-storage/compare/trunk...develop
+[4.5.0]: https://github.com/10up/windows-azure-storage/compare/4.4.2...4.5.0
+[4.4.2]: https://github.com/10up/windows-azure-storage/compare/4.4.1...4.4.2
 [4.4.1]: https://github.com/10up/windows-azure-storage/compare/4.4.0...4.4.1
 [4.4.0]: https://github.com/10up/windows-azure-storage/compare/4.3.5...4.4.0
 [4.3.5]: https://github.com/10up/windows-azure-storage/compare/4.3.4...4.3.5
