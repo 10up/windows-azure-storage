@@ -3,8 +3,8 @@
  * Plugin Name:       Microsoft Azure Storage for WordPress
  * Plugin URI:        https://wordpress.org/plugins/windows-azure-storage/
  * Description:       Use the Microsoft Azure Storage service to host your website's media files.
- * Version:           4.4.2
- * Requires at least: 6.3
+ * Version:           4.5.0
+ * Requires at least: 6.4
  * Requires PHP:      8.0
  * Author:            10up, Microsoft Open Technologies
  * Author URI:        https://10up.com/
@@ -62,7 +62,7 @@
 define( 'MSFT_AZURE_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'MSFT_AZURE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'MSFT_AZURE_PLUGIN_LEGACY_MEDIA_URL', get_admin_url( get_current_blog_id(), 'media-upload.php' ) );
-define( 'MSFT_AZURE_PLUGIN_VERSION', '4.4.2' );
+define( 'MSFT_AZURE_PLUGIN_VERSION', '4.5.0' );
 
 /**
  * Get the minimum version of PHP required by this plugin.
@@ -166,10 +166,10 @@ add_action( 'media_upload_browse', 'windows_azure_browse_tab' );
 
 // Hooks for handling default file uploads.
 if ( Windows_Azure_Helper::get_use_for_default_upload() ) {
-	add_filter( 'wp_generate_attachment_metadata', 'windows_azure_storage_wp_generate_attachment_metadata', 9, 2 );
+	add_filter( 'wp_generate_attachment_metadata', 'windows_azure_storage_wp_generate_attachment_metadata', 10, 2 );
 
 	if ( Windows_Azure_Helper::delete_local_file() ) {
-		add_filter( 'wp_generate_attachment_metadata', 'windows_azure_storage_delete_local_files', 9, 2 );
+		add_filter( 'wp_generate_attachment_metadata', 'windows_azure_storage_delete_local_files', 10, 2 );
 	}
 
 	// Hook for handling blog posts via xmlrpc. This is not full proof check.
@@ -454,6 +454,12 @@ function windows_azure_storage_wp_generate_attachment_metadata( $data, $post_id 
 			ltrim( ( ! empty( $upload_file_path_info['dirname'] ) ? $upload_file_path_info['dirname'] : '' ), '/' )
 		)
 	);
+
+	// Check if yearmonth_folders is checked
+	$user_filemonth_folders = get_option( 'uploads_use_yearmonth_folders' );
+	if ( empty( $user_filemonth_folders ) ) {
+		$upload_folder_path = '/';
+	}
 
 	try {
 		$post_array = wp_unslash( $_POST );

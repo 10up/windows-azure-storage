@@ -1,4 +1,4 @@
-/*!  - v4.4.2
+/*!  - v4.5.0
  * https://github.com/10up/windows-azure-storage#readme
  * Copyright (c) 2024; */
 (function ( $, window, undefined ) {
@@ -81,6 +81,8 @@
           window.setTimeout( function () {
             get_upload_progress( item_id, item );
           }, 1000 );
+        } else {
+          $( 'div.media-modal.wp-core-ui' ).find( 'div.media-frame-title > h1' ).text( azureStorageConfig.l10n.uploadReady );
         }
       } ).fail( function () {
         window.setTimeout( function () {
