@@ -35,6 +35,9 @@ See Settings->Microsoft Azure for more information.
 
 == Changelog ==
 
+= 4.5.1 - 2024-07-17 =
+* **Fixed:** Fix path issue that duplicates the container name in URL paths (props [@hugosolar](https://github.com/hugosolar), [@cally423](https://github.com/cally423), [@Besdima](https://github.com/Besdima), [@ms2oo8](https://github.com/ms2oo8), [@BCornelissen](https://github.com/BCornelissen), [@dkotter](https://github.com/dkotter) via [#246](https://github.com/10up/windows-azure-storage/pull/246)).
+
 = 4.5.0 - 2024-07-15 =
 * **Added:** Feature to replace images at the blob storage level (props [@hugosolar](https://github.com/hugosolar), [@rickalee](https://github.com/rickalee), [@dkotter](https://github.com/dkotter) via [#230](https://github.com/10up/windows-azure-storage/pull/230)).
 * **Added:** Constant for `MICROSOFT_AZURE_OVERRIDE_CONTAINER_PATH` (props [@rickalee](https://github.com/rickalee), [@engrshakirali](https://github.com/engrshakirali), [@hugosolar](https://github.com/hugosolar) via [#240](https://github.com/10up/windows-azure-storage/pull/240)).

@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file, per [the Ke
 
 ## [Unreleased] - TBD
 
+## [4.5.1] - 2024-07-17
+### Fixed
+- Fix path issue that duplicates the container name in URL paths (props [@hugosolar](https://github.com/hugosolar), [@cally423](https://github.com/cally423), [@Besdima](https://github.com/Besdima), [@ms2oo8](https://github.com/ms2oo8), [@BCornelissen](https://github.com/BCornelissen), [@dkotter](https://github.com/dkotter) via [#246](https://github.com/10up/windows-azure-storage/pull/246)).
+
 ## [4.5.0] - 2024-07-15
 ### Added
 - Feature to replace images at the blob storage level (props [@hugosolar](https://github.com/hugosolar), [@rickalee](https://github.com/rickalee), [@dkotter](https://github.com/dkotter) via [#230](https://github.com/10up/windows-azure-storage/pull/230)).
@@ -285,6 +289,7 @@ All notable changes to this project will be documented in this file, per [the Ke
 - First release of Microsoft Azure Storage plugin for WordPress.
 
 [Unreleased]: https://github.com/10up/windows-azure-storage/compare/trunk...develop
+[4.5.1]: https://github.com/10up/windows-azure-storage/compare/4.5.0...4.5.1
 [4.5.0]: https://github.com/10up/windows-azure-storage/compare/4.4.2...4.5.0
 [4.4.2]: https://github.com/10up/windows-azure-storage/compare/4.4.1...4.4.2
 [4.4.1]: https://github.com/10up/windows-azure-storage/compare/4.4.0...4.4.1
