@@ -315,7 +315,7 @@ class WindowsAzureStorageUtil {
 	public static function get_storage_url_base( $append_container = true ) {
 		$azure_storage_account_name                   = \Windows_Azure_Helper::get_account_name();
 		$default_azure_storage_account_container_name = \Windows_Azure_Helper::get_default_container();
-        $azure_storage_override_container_path        = \Windows_Azure_Helper::get_azure_storage_override_container_path();
+		$azure_storage_override_container_path        = \Windows_Azure_Helper::get_azure_storage_override_container_path();
 		/**
 		 * Filter the blob URL protocol to force a specific one.
 		 *
