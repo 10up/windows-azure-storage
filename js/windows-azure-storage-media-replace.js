@@ -1,15 +1,15 @@
-/*!  - v4.5.0
+/*!  - v4.5.1
  * https://github.com/10up/windows-azure-storage#readme
  * Copyright (c) 2024; */
 function generateCacheVar(length) {
   var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   var result = '';
-  
+
   for (var i = 0; i < length; i++) {
     var randomIndex = Math.floor(Math.random() * characters.length);
     result += characters[randomIndex];
   }
-  
+
   return result;
 }
 
@@ -27,7 +27,7 @@ var alertMessage = function(message,status,fadeOutSeconds) {
 
 var replaceMedia = function(attachmentID) {
   var mediaUploader;
-  
+
   if (mediaUploader) {
     mediaUploader.open();
     return;
@@ -93,9 +93,9 @@ var replaceMedia = function(attachmentID) {
         console.error("AJAX request failed: ", status, error);
       }
     });
-    
+
   });
-  
+
   mediaUploader.on('open', function(){
     mediaUploader.reset();
     var context = jQuery(mediaUploader.el);
