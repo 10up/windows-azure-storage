@@ -2,7 +2,7 @@
 Contributors:      msopentech, 10up, morganestes, stevegrunwell, lpawlik, ritteshpatel, johnwatkins0, rickalee, eflorea, phyrax, ravichandra, jeffpaul
 Tags:              Microsoft Azure Storage, Media Files, Upload, CDN, blob storage
 Tested up to:      6.6
-Stable tag:        4.5.0
+Stable tag:        4.5.1
 License:           BSD 2-Clause
 License URI:       http://www.opensource.org/licenses/bsd-license.php
 
@@ -34,6 +34,9 @@ For multisites or to enforce Azure Blob Storage settings, you can define the fol
 See Settings->Microsoft Azure for more information.
 
 == Changelog ==
+
+= 4.5.1 - 2024-07-17 =
+* **Fixed:** Fix path issue that duplicates the container name in URL paths (props [@hugosolar](https://github.com/hugosolar), [@cally423](https://github.com/cally423), [@Besdima](https://github.com/Besdima), [@ms2oo8](https://github.com/ms2oo8), [@BCornelissen](https://github.com/BCornelissen), [@dkotter](https://github.com/dkotter) via [#246](https://github.com/10up/windows-azure-storage/pull/246)).
 
 = 4.5.0 - 2024-07-15 =
 * **Added:** Feature to replace images at the blob storage level (props [@hugosolar](https://github.com/hugosolar), [@rickalee](https://github.com/rickalee), [@dkotter](https://github.com/dkotter) via [#230](https://github.com/10up/windows-azure-storage/pull/230)).

@@ -3,7 +3,7 @@
  * Plugin Name:       Microsoft Azure Storage for WordPress
  * Plugin URI:        https://wordpress.org/plugins/windows-azure-storage/
  * Description:       Use the Microsoft Azure Storage service to host your website's media files.
- * Version:           4.5.0
+ * Version:           4.5.1
  * Requires at least: 6.4
  * Requires PHP:      8.0
  * Author:            10up, Microsoft Open Technologies
@@ -62,7 +62,7 @@
 define( 'MSFT_AZURE_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'MSFT_AZURE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'MSFT_AZURE_PLUGIN_LEGACY_MEDIA_URL', get_admin_url( get_current_blog_id(), 'media-upload.php' ) );
-define( 'MSFT_AZURE_PLUGIN_VERSION', '4.5.0' );
+define( 'MSFT_AZURE_PLUGIN_VERSION', '4.5.1' );
 
 /**
  * Get the minimum version of PHP required by this plugin.
@@ -874,14 +874,17 @@ function windows_azure_storage_plugin_menu() {
  * @return array The filtered $sources array.
  */
 function windows_azure_storage_wp_calculate_image_srcset( $sources, $size_array, $image_src, $image_meta, $attachment_id ) {
-	$media_info = get_post_meta( $attachment_id, 'windows_azure_storage_info', true );
+	$media_info                                   = get_post_meta( $attachment_id, 'windows_azure_storage_info', true );
+	$default_azure_storage_account_container_name = \Windows_Azure_Helper::get_default_container();
+	$azure_storage_override_container_path        = \Windows_Azure_Helper::get_azure_storage_override_container_path();
+	$maybe_override_container_path                = ! empty( $azure_storage_override_container_path ) ? $azure_storage_override_container_path : $default_azure_storage_account_container_name;
 
 	// If a CNAME is configured, make sure only 'http' is used for the protocol.
 	$azure_cname       = \Windows_Azure_Helper::get_cname();
 	$esc_url_protocols = ! empty( $azure_cname ) ? array( 'https', 'http', '//' ) : null;
 
 	if ( ! empty( $media_info ) ) {
-		$base_url = trailingslashit( WindowsAzureStorageUtil::get_storage_url_base( false ) . $media_info['container'] );
+		$base_url = trailingslashit( WindowsAzureStorageUtil::get_storage_url_base( false ) . $maybe_override_container_path );
 
 		foreach ( $sources as &$source ) {
 			$img_filename = substr( $source['url'], strrpos( $source['url'], '/' ) + 1 );

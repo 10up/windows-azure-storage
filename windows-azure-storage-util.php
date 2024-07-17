@@ -315,7 +315,7 @@ class WindowsAzureStorageUtil {
 	public static function get_storage_url_base( $append_container = true ) {
 		$azure_storage_account_name                   = \Windows_Azure_Helper::get_account_name();
 		$default_azure_storage_account_container_name = \Windows_Azure_Helper::get_default_container();
-                $azure_storage_override_container_path        = \Windows_Azure_Helper::get_azure_storage_override_container_path();
+		$azure_storage_override_container_path        = \Windows_Azure_Helper::get_azure_storage_override_container_path();
 		/**
 		 * Filter the blob URL protocol to force a specific one.
 		 *
@@ -337,11 +337,12 @@ class WindowsAzureStorageUtil {
 		}
 
 		// Get CNAME if defined.
-		$cname = \Windows_Azure_Helper::get_cname();
+		$cname                         = \Windows_Azure_Helper::get_cname();
+		$maybe_override_container_name = ! empty( $azure_storage_override_container_path ) ? $azure_storage_override_container_path : $default_azure_storage_account_container_name;
 		if ( ! empty( $cname ) ) {
 			$url = sprintf( '%1$s/%2$s',
 				$cname,
-				$append_container = ! empty( $azure_storage_override_container_path ) ? $azure_storage_override_container_path : $default_azure_storage_account_container_name
+				$append_container = $append_container ? $maybe_override_container_name : ''
 			);
 		} else {
 			$blob_storage_host_name = \Windows_Azure_Helper::get_hostname();
