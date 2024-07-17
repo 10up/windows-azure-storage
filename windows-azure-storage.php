@@ -874,14 +874,17 @@ function windows_azure_storage_plugin_menu() {
  * @return array The filtered $sources array.
  */
 function windows_azure_storage_wp_calculate_image_srcset( $sources, $size_array, $image_src, $image_meta, $attachment_id ) {
-	$media_info = get_post_meta( $attachment_id, 'windows_azure_storage_info', true );
+	$media_info                                   = get_post_meta( $attachment_id, 'windows_azure_storage_info', true );
+	$default_azure_storage_account_container_name = \Windows_Azure_Helper::get_default_container();
+	$azure_storage_override_container_path        = \Windows_Azure_Helper::get_azure_storage_override_container_path();
+	$maybe_override_container_path                = ! empty( $azure_storage_override_container_path ) ? $azure_storage_override_container_path : $default_azure_storage_account_container_name;
 
 	// If a CNAME is configured, make sure only 'http' is used for the protocol.
 	$azure_cname       = \Windows_Azure_Helper::get_cname();
 	$esc_url_protocols = ! empty( $azure_cname ) ? array( 'https', 'http', '//' ) : null;
 
 	if ( ! empty( $media_info ) ) {
-		$base_url = trailingslashit( WindowsAzureStorageUtil::get_storage_url_base( false ) . $media_info['container'] );
+		$base_url = trailingslashit( WindowsAzureStorageUtil::get_storage_url_base( false ) . $maybe_override_container_path );
 
 		foreach ( $sources as &$source ) {
 			$img_filename = substr( $source['url'], strrpos( $source['url'], '/' ) + 1 );
