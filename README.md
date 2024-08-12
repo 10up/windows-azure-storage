@@ -2,7 +2,8 @@
 
 > Use the Microsoft Azure Storage service to host your website's media files.
 
-[![Support Level](https://img.shields.io/badge/support-stable-blue.svg)](#support-level) [![Release Version](https://img.shields.io/github/release/10up/windows-azure-storage.svg)](https://github.com/10up/windows-azure-storage/releases/latest) ![WordPress tested up to version](https://img.shields.io/wordpress/plugin/tested/windows-azure-storage?label=WordPress) [![BSD 2-Clause License](https://img.shields.io/github/license/10up/windows-azure-storage.svg)](https://github.com/10up/windows-azure-storage/blob/trunk/LICENSE)
+[![Support Level](https://img.shields.io/badge/support-stable-blue.svg)](#support-level) ![WordPress tested up to version](https://img.shields.io/wordpress/plugin/tested/windows-azure-storage?label=WordPress) [![BSD 2-Clause License](https://img.shields.io/github/license/10up/windows-azure-storage.svg)](https://github.com/10up/windows-azure-storage/blob/trunk/LICENSE) [![WordPress Playground Demo](https://img.shields.io/wordpress/plugin/v/windows-azure-storage?logo=wordpress&logoColor=FFFFFF&label=Playground%20Demo&labelColor=3858E9&color=3858E9)](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/10up/windows-azure-storage/add/playground/.wordpress-org/blueprints/blueprint.json)
+
 [![E2E test](https://github.com/10up/windows-azure-storage/actions/workflows/cypress.yml/badge.svg)](https://github.com/10up/windows-azure-storage/actions/workflows/cypress.yml) [![PHP Compatibility](https://github.com/10up/windows-azure-storage/actions/workflows/php-compatibility.yml/badge.svg)](https://github.com/10up/windows-azure-storage/actions/workflows/php-compatibility.yml) [![Dependency Review](https://github.com/10up/windows-azure-storage/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/10up/windows-azure-storage/actions/workflows/dependency-review.yml)
 
 ## Description
