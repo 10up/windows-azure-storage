@@ -1,10 +1,12 @@
 # Microsoft Azure Storage for WordPress
 
+![Microsoft Azure Storage for WordPress](https://github.com/10up/windows-azure-storage/blob/develop/.wordpress-org/banner-1544x500.png)
+
+[![Support Level](https://img.shields.io/badge/support-stable-blue.svg)](#support-level) ![WordPress tested up to version](https://img.shields.io/wordpress/plugin/tested/windows-azure-storage?label=WordPress) [![BSD 2-Clause License](https://img.shields.io/github/license/10up/windows-azure-storage.svg)](https://github.com/10up/windows-azure-storage/blob/trunk/LICENSE) [![Dependency Review](https://github.com/10up/windows-azure-storage/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/10up/windows-azure-storage/actions/workflows/dependency-review.yml) [![WordPress Playground Demo](https://img.shields.io/wordpress/plugin/v/windows-azure-storage?logo=wordpress&logoColor=FFFFFF&label=Playground%20Demo&labelColor=3858E9&color=3858E9)](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/10up/windows-azure-storage/add/playground/.wordpress-org/blueprints/blueprint.json)
+
+[![E2E test](https://github.com/10up/windows-azure-storage/actions/workflows/cypress.yml/badge.svg)](https://github.com/10up/windows-azure-storage/actions/workflows/cypress.yml) [![PHP Compatibility](https://github.com/10up/windows-azure-storage/actions/workflows/php-compatibility.yml/badge.svg)](https://github.com/10up/windows-azure-storage/actions/workflows/php-compatibility.yml) [![CodeQL](https://github.com/10up/windows-azure-storage/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/10up/windows-azure-storage/actions/workflows/github-code-scanning/codeql)
+
 > Use the Microsoft Azure Storage service to host your website's media files.
-
-[![Support Level](https://img.shields.io/badge/support-stable-blue.svg)](#support-level) ![WordPress tested up to version](https://img.shields.io/wordpress/plugin/tested/windows-azure-storage?label=WordPress) [![BSD 2-Clause License](https://img.shields.io/github/license/10up/windows-azure-storage.svg)](https://github.com/10up/windows-azure-storage/blob/trunk/LICENSE) [![WordPress Playground Demo](https://img.shields.io/wordpress/plugin/v/windows-azure-storage?logo=wordpress&logoColor=FFFFFF&label=Playground%20Demo&labelColor=3858E9&color=3858E9)](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/10up/windows-azure-storage/add/playground/.wordpress-org/blueprints/blueprint.json)
-
-[![E2E test](https://github.com/10up/windows-azure-storage/actions/workflows/cypress.yml/badge.svg)](https://github.com/10up/windows-azure-storage/actions/workflows/cypress.yml) [![PHP Compatibility](https://github.com/10up/windows-azure-storage/actions/workflows/php-compatibility.yml/badge.svg)](https://github.com/10up/windows-azure-storage/actions/workflows/php-compatibility.yml) [![Dependency Review](https://github.com/10up/windows-azure-storage/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/10up/windows-azure-storage/actions/workflows/dependency-review.yml)
 
 ## Description
 
@@ -64,6 +66,7 @@ Data should be updated in these tables:
 3. Using an external tool that supports PHP serialization, like [Search Replace DB](https://github.com/interconnectit/Search-Replace-DB).
 
 ## Support Level
+
 **Stable:** 10up is not planning to develop any new features for this, but will still respond to bug reports and security concerns.  We welcome PRs, but any that include new features should be small and easy to integrate and should not include breaking changes.  We otherwise intend to keep this tested up to the most recent version of WordPress.
 
 ## Changelog
