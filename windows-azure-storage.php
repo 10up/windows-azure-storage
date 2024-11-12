@@ -4,7 +4,7 @@
  * Plugin URI:        https://wordpress.org/plugins/windows-azure-storage/
  * Description:       Use the Microsoft Azure Storage service to host your website's media files.
  * Version:           4.5.1
- * Requires at least: 6.4
+ * Requires at least: 6.6
  * Requires PHP:      8.0
  * Author:            10up, Microsoft Open Technologies
  * Author URI:        https://10up.com/
