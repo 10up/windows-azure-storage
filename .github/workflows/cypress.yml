@@ -8,35 +8,45 @@ on:
   pull_request:
     branches:
       - develop
+
 jobs:
   cypress:
     name: ${{ matrix.core.name }}
     runs-on: ubuntu-latest
+
     env:
       CYPRESS_MICROSOFT_AZURE_ACCOUNT_NAME: ${{ secrets.MICROSOFT_AZURE_ACCOUNT_NAME }}
       CYPRESS_MICROSOFT_AZURE_ACCOUNT_KEY: ${{ secrets.MICROSOFT_AZURE_ACCOUNT_KEY }}
       CYPRESS_MICROSOFT_AZURE_CONTAINER: ${{ secrets.MICROSOFT_AZURE_CONTAINER }}
       CYPRESS_MICROSOFT_AZURE_USE_FOR_DEFAULT_UPLOAD: ${{ secrets.MICROSOFT_AZURE_USE_FOR_DEFAULT_UPLOAD }}
+
     strategy:
       matrix:
         core:
           - {name: 'WP latest', version: 'latest'}
           - {name: 'WP minimum', version: 'WordPress/WordPress#6.5'}
           - {name: 'WP trunk', version: 'WordPress/WordPress#master'}
+
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
     - name: Install dependencies
       run: npm install
+
     - name: Composer (optional)
       run: composer install
       continue-on-error: true
+
     - name: Build (optional)
       run: npm run build
       continue-on-error: true
+
     - name: Set the core version
       run: ./tests/bin/set-core-version.js ${{ matrix.core.version }}
+
     - name: Set up WP environment
       run: npm run env:start
+
     - name: Test
       run: npm run cypress:run
