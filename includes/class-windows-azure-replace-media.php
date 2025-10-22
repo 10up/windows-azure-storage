@@ -148,14 +148,22 @@ class Windows_Azure_Replace_Media {
 	 */
 	public function process_media_replacement() {
 
-		$nonce = sanitize_text_field( $_POST['nonce'] );
+		$nonce = sanitize_text_field( wp_unslash( $_POST['nonce'] ) );
 
 		if ( ! wp_verify_nonce( $nonce, 'azure-storage-media-replace' ) ) {
-				wp_die( 'This action is not allowed' );
+				wp_die( __( 'You do not have permission to edit this attachment.', 'windows-azure-storage' ) );
 		}
 
 		$current_attachment = filter_input( INPUT_POST, 'current_attachment', FILTER_VALIDATE_INT );
 		$replace_attachment = filter_input( INPUT_POST, 'replace_attachment', FILTER_VALIDATE_INT );
+
+		if ( ! current_user_can( 'edit_post', $current_attachment ) ) {
+			wp_die( __( 'You do not have permission to edit this attachment.', 'windows-azure-storage' ) );
+		}
+
+		if ( ! current_user_can( 'delete_post', $replace_attachment ) ) {
+			wp_die( __( 'You do not have permission to edit this attachment.', 'windows-azure-storage' ) );
+		}
 
 		$this->container_name = \Windows_Azure_Helper::get_default_container();
 		$response             = $this->replace_media_with( $current_attachment, $replace_attachment );
