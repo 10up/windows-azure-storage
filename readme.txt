@@ -3,8 +3,8 @@ Contributors:      msopentech, 10up, morganestes, stevegrunwell, lpawlik, rittes
 Tags:              Microsoft Azure Storage, Media Files, Upload, CDN, blob storage
 Tested up to:      6.8
 Stable tag:        4.5.1
-License:           BSD 2-Clause
-License URI:       http://www.opensource.org/licenses/bsd-license.php
+License:           BSD-2-Clause
+License URI:       https://spdx.org/licenses/BSD-2-Clause.html
 
 Use the Microsoft Azure Storage service to host your website's media files.
 
