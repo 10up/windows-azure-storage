@@ -220,12 +220,18 @@ function windows_azure_plugin_check_prerequisite() {
 	global $wp_version;
 	if ( ! was_site_meets_php_requirements() ) {
 		deactivate_plugins( plugin_basename( __FILE__ ) );
-		wp_die( __( 'Microsoft Azure Storage for WordPress requires at least PHP ' . was_minimum_php_requirement(), 'windows-azure-storage' ) );
+		wp_die(
+			sprintf(
+				/* translators: %s: Minimum required PHP version */
+				esc_html__( 'Microsoft Azure Storage for WordPress requires at least PHP %s', 'windows-azure-storage' ),
+				esc_html( was_minimum_php_requirement() )
+			)
+		);
 	}
 	$wp_compat = version_compare( $wp_version, '5.7', '>=' );
 	if ( ! $wp_compat ) {
 		deactivate_plugins( plugin_basename( __FILE__ ) );
-		wp_die( __( 'Microsoft Azure Storage for WordPress requires at least WordPress 5.7', 'windows-azure-storage' ) );
+		wp_die( esc_html__( 'Microsoft Azure Storage for WordPress requires at least WordPress 5.7', 'windows-azure-storage' ) );
 	}
 }
 
@@ -494,7 +500,7 @@ function windows_azure_storage_wp_generate_attachment_metadata( $data, $post_id 
 				);
 			}
 		} catch ( Exception $e ) {
-			echo '<p>', sprintf( __( 'Error in uploading file. Error: %s', 'windows-azure-storage' ), esc_html( $e->getMessage() ) ), '</p>';
+			echo '<p>', sprintf( esc_html__( 'Error in uploading file. Error: %s', 'windows-azure-storage' ), esc_html( $e->getMessage() ) ), '</p>';
 
 			return $data;
 		}
@@ -576,7 +582,7 @@ function windows_azure_storage_wp_generate_attachment_metadata( $data, $post_id 
 		) );
 
 	} catch ( Exception $e ) {
-		echo '<p>', sprintf( __( 'Error in uploading file. Error: %s', 'windows-azure-storage' ), esc_html( $e->getMessage() ) ), '</p>';
+		echo '<p>', sprintf( esc_html__( 'Error in uploading file. Error: %s', 'windows-azure-storage' ), esc_html( $e->getMessage() ) ), '</p>';
 	}
 
 	return $data;
