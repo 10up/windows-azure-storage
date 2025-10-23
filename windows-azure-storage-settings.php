@@ -479,18 +479,19 @@ function windows_azure_cache_control() {
  */
 function create_container_if_required( &$success = null ) {
 	$success    = false;
-	$post_array = wp_unslash( $_POST );
-	$action_set = isset( $post_array['newcontainer'] ) && $permissions = current_user_can( 'manage_options' ) && $admin_referer = check_admin_referer( 'create_container', 'create_new_container_settings' );
+	$action_set = isset( $_POST['newcontainer'] ) && $permissions = current_user_can( 'manage_options' ) && $admin_referer = check_admin_referer( 'create_container', 'create_new_container_settings' );
 	if ( $action_set ) {
-		if ( ! empty( $post_array['newcontainer'] ) ) {
-			if ( empty( $post_array['azure_storage_account_name'] ) || empty( $post_array['azure_storage_account_primary_access_key'] ) ) {
+		if ( ! empty( $_POST['newcontainer'] ) ) {
+			if ( empty( $_POST['azure_storage_account_name'] ) || empty( $_POST['azure_storage_account_primary_access_key'] ) ) {
 				return new WP_Error( -2, __( 'Please specify Storage Account Name and Primary Access Key to create container.', 'windows-azure-storage' ) );
 			}
 
 			try {
-				$account_name = $post_array['azure_storage_account_name'];
-				$account_key  = $post_array['azure_storage_account_primary_access_key'];
-				$result       = Windows_Azure_Helper::create_container( sanitize_text_field( $post_array['newcontainer'] ), $account_name, $account_key );
+				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- credentials are to be used as passed to ensure they are valid.
+				$account_name = wp_unslash( $_POST['azure_storage_account_name'] );
+				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- credentials are to be used as passed to ensure they are valid.
+				$account_key  = wp_unslash( $_POST['azure_storage_account_primary_access_key'] );
+				$result       = Windows_Azure_Helper::create_container( sanitize_text_field( wp_unslash( $_POST['newcontainer'] ) ), $account_name, $account_key );
 
 				if ( ! is_wp_error( $result ) ) {
 					return sprintf(

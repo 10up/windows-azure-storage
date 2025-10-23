@@ -468,11 +468,11 @@ function windows_azure_storage_wp_generate_attachment_metadata( $data, $post_id 
 	}
 
 	try {
-		$post_array = wp_unslash( $_POST );
-		$post_array = wp_parse_args( $post_array, array(
-			 'item_id' => $post_array['name'] . '_' . $post_array['_wpnonce'],
-		) );
-		$azure_progress_key = 'azure_progress_' . sanitize_text_field( trim( $post_array['item_id'] ) );
+		$wp_nonce_value = isset( $_POST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ) : '';
+		$posted_name = isset( $_POST['name'] ) ? sanitize_text_field( wp_unslash( $_POST['name'] ) ) : '';
+		$item_id = isset( $_POST['item_id'] ) ? sanitize_text_field( wp_unslash( $_POST['item_id'] ) ) : $posted_name . '_' . $wp_nonce_value;
+
+		$azure_progress_key = 'azure_progress_' . sanitize_text_field( trim( $item_id ) );
 		$current            = 0;
 		// Get full file path of uploaded file.
 		$data['file'] = $upload_file_name;
@@ -1016,8 +1016,7 @@ function windows_azure_storage_query_azure_attachments() {
  * @return void
  */
 function windows_azure_storage_delete_blob() {
-	$post_array = wp_unslash( $_POST );
-	$id         = isset( $post_array['id'] ) ? $post_array['id'] : 0;
+	$id = isset( $_POST['id'] ) ? sanitize_text_field( wp_unslash( $_POST['id'] ) ) : 0;
 
 	if ( ! check_ajax_referer( "delete-blob_$id", false, false ) ) {
 		wp_die( -1 );
@@ -1050,9 +1049,8 @@ function windows_azure_storage_delete_blob() {
  * @return void
  */
 function windows_azure_upload_progress() {
-	$post_array = wp_unslash( $_POST );
-	$item_id    = isset( $post_array['data']['item_id'] ) ? sanitize_text_field( $post_array['data']['item_id'] ) : false;
-	$item_id    = trim( $item_id );
+	$item_id = isset( $_POST['data']['item_id'] ) ? sanitize_text_field( wp_unslash( $_POST['data']['item_id'] ) ) : false;
+	$item_id = trim( $item_id );
 	if ( ! $item_id ) {
 		wp_send_json_success( array(
 			'progress' => 100,
