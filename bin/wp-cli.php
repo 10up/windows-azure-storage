@@ -124,6 +124,7 @@ class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 
 		WP_CLI::success(
 			sprintf(
+				// translators: %s is container name.
 				__( 'Created container with name "%s"', 'windows-azure-storage' ),
 				$result
 			)
@@ -210,7 +211,8 @@ class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 
 		WP_CLI::success(
 			sprintf(
-				__( 'Container "%s" access policy set to: "%s"', 'windows-azure-storage' ),
+				// translators: %1$s is container name, %2$s is access policy.
+				__( 'Container "%1$s" access policy set to: "%2$s"', 'windows-azure-storage' ),
 				$name,
 				$result
 			)
