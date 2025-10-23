@@ -297,6 +297,7 @@ function windows_azure_storage_setting_storage_container() {
 		echo '<input type="text" class="regular-text" value="', esc_attr( $default_container ), '" readonly disabled>';
 	} else {
 		$containers_list = Windows_Azure_Helper::list_containers();
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- data is processed in create_container_if_required().
 		$new_container_name = isset( $_POST['newcontainer'] ) ? sanitize_text_field( wp_unslash( $_POST['newcontainer'] ) ) : '';
 		$container_creation_failed = apply_filters( 'windows_azure_storage_container_creation_failed', false );
 
@@ -560,6 +561,7 @@ function windows_azure_storage_load_settings_page() {
  * @return void
  */
 function windows_azure_storage_check_container_access_policy() {
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- checking for settings update only.
 	if ( ! isset( $_REQUEST['settings-updated'] ) || 'true' !== $_REQUEST['settings-updated'] ) {
 		return;
 	}
