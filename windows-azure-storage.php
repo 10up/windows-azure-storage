@@ -259,7 +259,6 @@ function windows_azure_storage_xmlrpc_methods( $methods ) {
 function windows_azure_storage_new_media_object( $args ) {
 	global $wpdb, $wp_xmlrpc_server;
 
-	$blog_id  = (int) $args[0];
 	$username = $wp_xmlrpc_server->escape( $args[1] );
 	$password = $wp_xmlrpc_server->escape( $args[2] );
 	$data     = $args[3];
@@ -268,7 +267,7 @@ function windows_azure_storage_new_media_object( $args ) {
 	$type = $data['type'];
 	$bits = $data['bits'];
 
-	if ( ! $user = $wp_xmlrpc_server->login( $username, $password ) ) {
+	if ( ! $wp_xmlrpc_server->login( $username, $password ) ) {
 		return $wp_xmlrpc_server->error;
 	}
 
