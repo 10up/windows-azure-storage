@@ -58,7 +58,7 @@ function windows_azure_storage_dialog_scripts( $hook_suffix ) {
 				'uploadingToAzure' => __( 'Uploading to Azure', 'windows-azure-storage' ),
 				'uploadReady'      => __( 'Attachment details', 'windows-azure-storage' ),
 			),
-		) 
+		)
 	);
 }
 
@@ -89,8 +89,8 @@ function deleteBlob( $container_name, $blob_name ) {
 			WindowsAzureStorageUtil::deleteBlob( $container_name, $blob_name );
 		}
 	} catch ( Exception $e ) {
-		/* translators: 1: blob (file) name, 2: container name, 3: error message */
 		$message = sprintf(
+			/* translators: 1: blob (file) name, 2: container name, 3: error message */
 			__( 'Error in deleting blob %1$s from container %2$s: %3$s', 'windows-azure-storage' ),
 			$blob_name,
 			$container_name,

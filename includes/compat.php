@@ -70,7 +70,7 @@ function restore_original_image( $file, $attachment_id ) {
 
 	if ( is_wp_error( $response ) ) {
 		error_log( esc_html( sprintf(
-			/** Translators: %1$s is the URL, %2$s is the filepath, %3$d is the attachment ID, and %4$s the error message. */
+			/* Translators: %1$s is the URL, %2$s is the filepath, %3$d is the attachment ID, and %4$s the error message. */
 			__( 'Unable to download %1$s to %2$s for attachment ID %3$d: %4$s', 'windows-azure-storage' ),
 			$url,
 			$file,
@@ -80,7 +80,7 @@ function restore_original_image( $file, $attachment_id ) {
 
 	} elseif ( 200 !== wp_remote_retrieve_response_code( $response ) ) {
 		error_log( esc_html( sprintf(
-			/** Translators: %1$d is the response code, %2$s is the URL. */
+			/* Translators: %1$d is the response code, %2$s is the URL. */
 			__( 'Received %1$d response code for %2$s', 'windows-azure-storage' ),
 			wp_remote_retrieve_response_code( $response ),
 			$url
