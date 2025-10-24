@@ -84,6 +84,7 @@ function deleteBlob( $container_name, $blob_name ) {
 					'filename',
 					'selected_container',
 				),
+				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- see wp_fix_server_vars()
 				$_SERVER['REQUEST_URI']
 			);
 			WindowsAzureStorageUtil::deleteBlob( $container_name, $blob_name );
