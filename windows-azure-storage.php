@@ -968,13 +968,27 @@ function windows_azure_storage_query_azure_attachments() {
 	}
 
 	$cache_ttl = Windows_Azure_Helper::get_cache_ttl();
-	$request   = wp_unslash( $_REQUEST );
-	$query     = isset( $request['query'] ) ? (array) $request['query'] : array();
-	$query     = array_intersect_key( $query, array_flip( array(
-		's',
-		'posts_per_page',
-		'paged',
-	) ) );
+	$query     = isset( $_REQUEST['query'] ) ? array_map( 'sanitize_text_field', (array) wp_unslash( $_REQUEST['query'] ) ) : array();
+	// Sanitize: Limit to s, posts_per_page, paged only.
+	$query     = array_intersect_key(
+		$query,
+		array_flip(
+			array(
+				's',
+				'posts_per_page',
+				'paged',
+			)
+		)
+	);
+
+	// Ensure posts_per_page and paged are numeric
+	if ( ! isset( $query['posts_per_page'] ) || ! is_numeric( $query['posts_per_page'] ) ) {
+		unset( $query['posts_per_page'] );
+	}
+
+	if ( ! isset( $query['paged'] ) || ! is_numeric( $query['paged'] ) ) {
+		unset( $query['paged'] );
+	}
 
 	$query = wp_parse_args( $query, array(
 		's'              => '',
