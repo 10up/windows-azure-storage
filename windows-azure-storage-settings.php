@@ -332,7 +332,7 @@ function windows_azure_storage_setting_storage_container() {
 					<input type="text" name="newcontainer" class="regular-text" value="<?php echo esc_attr( $new_container_name ); ?>"/>
 				</p>
 				<p>
-					<input type="button" class="button-primary azure-create-container-button" value="<?php esc_attr_e( 'Create', 'windows-azure-storage' ); ?>" data-container-url="<?php echo esc_url( $_SERVER['REQUEST_URI'] ); ?>"/>
+					<input type="button" class="button-primary azure-create-container-button" value="<?php esc_attr_e( 'Create', 'windows-azure-storage' ); ?>" data-container-url="<?php echo esc_url( admin_url( '/options-general.php?page=windows-azure-storage-plugin-options' ) ); ?>"/>
 				</p>
 			</div><?php
 		endif;
