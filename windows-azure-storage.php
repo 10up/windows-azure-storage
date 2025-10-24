@@ -481,8 +481,8 @@ function windows_azure_storage_wp_generate_attachment_metadata( $data, $post_id 
 
 	try {
 		$wp_nonce_value = isset( $_POST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ) : '';
-		$posted_name = isset( $_POST['name'] ) ? sanitize_text_field( wp_unslash( $_POST['name'] ) ) : '';
-		$item_id = isset( $_POST['item_id'] ) ? sanitize_text_field( wp_unslash( $_POST['item_id'] ) ) : $posted_name . '_' . $wp_nonce_value;
+		$posted_name    = isset( $_POST['name'] ) ? sanitize_text_field( wp_unslash( $_POST['name'] ) ) : '';
+		$item_id        = isset( $_POST['item_id'] ) ? sanitize_text_field( wp_unslash( $_POST['item_id'] ) ) : $posted_name . '_' . $wp_nonce_value;
 
 		$azure_progress_key = 'azure_progress_' . sanitize_text_field( trim( $item_id ) );
 		$current            = 0;
