@@ -148,6 +148,10 @@ class Windows_Azure_Replace_Media {
 	 */
 	public function process_media_replacement() {
 
+		if ( empty( $_POST['nonce'] ) ) {
+			wp_die( esc_html__( 'You do not have permission to edit this attachment.', 'windows-azure-storage' ) );
+		}
+
 		$nonce = sanitize_text_field( wp_unslash( $_POST['nonce'] ) );
 
 		if ( ! wp_verify_nonce( $nonce, 'azure-storage-media-replace' ) ) {
