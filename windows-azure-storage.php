@@ -973,6 +973,8 @@ function windows_azure_storage_query_azure_attachments() {
 		wp_send_json_error();
 	}
 
+	check_ajax_referer( 'windows-azure-storage-media-browser-nonce' );
+
 	$cache_ttl = Windows_Azure_Helper::get_cache_ttl();
 	$query     = isset( $_REQUEST['query'] ) ? array_map( 'sanitize_text_field', (array) wp_unslash( $_REQUEST['query'] ) ) : array();
 	// Sanitize: Limit to s, posts_per_page, paged only.
