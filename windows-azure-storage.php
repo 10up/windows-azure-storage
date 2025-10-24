@@ -480,9 +480,18 @@ function windows_azure_storage_wp_generate_attachment_metadata( $data, $post_id 
 	}
 
 	try {
+		/*
+		 * Nonce verification by WordPress.
+		 *
+		 * This code runs on the hook 'wp_generate_attachment_metadata' which is called during file upload.
+		 * WordPress core does the required permission and nonce verification during the upload process and
+		 * therefore it is not required to do again here.
+		 */
+		// phpcs:disable WordPress.Security.NonceVerification.Missing
 		$wp_nonce_value = isset( $_POST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ) : '';
 		$posted_name    = isset( $_POST['name'] ) ? sanitize_text_field( wp_unslash( $_POST['name'] ) ) : '';
 		$item_id        = isset( $_POST['item_id'] ) ? sanitize_text_field( wp_unslash( $_POST['item_id'] ) ) : $posted_name . '_' . $wp_nonce_value;
+		// phpcs:enable
 
 		$azure_progress_key = 'azure_progress_' . sanitize_text_field( trim( $item_id ) );
 		$current            = 0;
