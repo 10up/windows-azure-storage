@@ -775,7 +775,13 @@ function windows_azure_browse_tab() {
 	add_action( 'admin_enqueue_scripts', 'windows_azure_storage_dialog_scripts' );
 	wp_enqueue_media();
 	wp_enqueue_script( 'media-grid' );
-	wp_enqueue_script( 'windows-azure-storage-media-browser', MSFT_AZURE_PLUGIN_URL . 'js/windows-azure-storage-media-browser' . $js_ext, array( 'media-grid' ), MSFT_AZURE_PLUGIN_VERSION );
+	wp_register_script( 'windows-azure-storage-media-browser', MSFT_AZURE_PLUGIN_URL . 'js/windows-azure-storage-media-browser' . $js_ext, array( 'media-grid' ), MSFT_AZURE_PLUGIN_VERSION );
+	wp_add_inline_script(
+		'windows-azure-storage-media-browser',
+		'var windowsAzureStorageMediaBrowserNonce = "' . wp_create_nonce( 'windows-azure-storage-media-browser-nonce' ) . '";',
+		'before'
+	);
+	wp_enqueue_script( 'windows-azure-storage-media-browser' );
 	wp_localize_script( 'media-grid', '_wpMediaGridSettings', array(
 		'adminUrl' => $path_parsed,
 		'l10n'     => array(
