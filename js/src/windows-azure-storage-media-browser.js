@@ -59,6 +59,7 @@ window.wp = window.wp || {};
           options.context = this;
           options.data = _.extend( options.data || {}, {
             action: 'query-azure-attachments',
+            _ajax_nonce: window.windowsAzureStorageMediaBrowserNonce
           } );
 
           args = _.clone( this.args );
