@@ -257,7 +257,7 @@ function windows_azure_storage_xmlrpc_methods( $methods ) {
  * @return array
  */
 function windows_azure_storage_new_media_object( $args ) {
-	global $wpdb, $wp_xmlrpc_server;
+	global $wp_xmlrpc_server;
 
 	$username = $wp_xmlrpc_server->escape( $args[1] );
 	$password = $wp_xmlrpc_server->escape( $args[2] );
@@ -296,25 +296,38 @@ function windows_azure_storage_new_media_object( $args ) {
 
 	if ( ! empty( $data['overwrite'] ) && ( true === $data['overwrite'] ) ) {
 		// Get postmeta info on the object.
-		$old_file = $wpdb->get_row(
-			$wpdb->prepare( 'SELECT ID FROM %s WHERE post_title = %s  AND post_type = %s LIMIT 1', $wpdb->posts, $name, 'attachment' )
-		);
+		$query_old_files = new WP_Query( array(
+			'post_type'              => 'attachment',
+			'title'                  => $name,
+			'posts_per_page'         => 1,
+			'post_status'            => 'all',
+			'fields'                 => 'ids',
+			'no_found_rows'          => true,
+			'update_post_meta_cache' => false,
+			'update_post_term_cache' => false,
+		) );
 
+		$old_file = $query_old_files->posts;
 		// If query isn't successful, bail.
-		if ( is_null( $old_file ) ) {
-			return new WP_Error( -1, sprintf(
-				__( 'Attachment not found in %s', 'windows-azure-storage' ),
-				esc_html( $name )
-			), $wpdb->print_error( $old_file ) );
+		if ( empty( $old_file ) ) {
+			return new WP_Error(
+				-1,
+				sprintf(
+					__( 'Attachment not found in %s', 'windows-azure-storage' ),
+					esc_html( $name )
+				)
+			);
 		}
 
+		$old_file_id = $old_file[0];
+
 		// Delete previous file.
-		wp_delete_attachment( $old_file->ID );
+		wp_delete_attachment( $old_file_id );
 
 		// Make sure the new name is different by pre-pending the
 		// previous post id.
 		$filename = preg_replace( '/^wpid\d+-/', '', $name );
-		$name     = "wpid{$old_file->ID}-{$filename}";
+		$name     = "wpid{$old_file_id}-{$filename}";
 	}
 
 	// default azure storage container.
