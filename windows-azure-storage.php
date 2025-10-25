@@ -313,7 +313,7 @@ function windows_azure_storage_new_media_object( $args ) {
 			return new WP_Error(
 				-1,
 				sprintf(
-					__( 'Attachment not found in %s', 'windows-azure-storage' ),
+					esc_html__( 'Attachment not found in %s', 'windows-azure-storage' ),
 					esc_html( $name )
 				)
 			);
