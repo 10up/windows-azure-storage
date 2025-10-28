@@ -202,7 +202,7 @@ class WindowsAzureStorageUtil {
 		$proxy_user_name = null,
 		$proxy_password = null
 	) {
-		throw new Exception( __( 'Function has been removed.', 'windows-azure-storage' ), -1 );
+		throw new Exception( esc_html__( 'Function has been removed.', 'windows-azure-storage' ), -1 );
 	}
 
 	/**
