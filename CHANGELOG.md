@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file, per [the Ke
 
 ## [Unreleased] - TBD
 
+## [4.5.2] - 2025-10-29
+### Security
+- Add capability check when replacing media to prevent privilege escalation by authenticated users (props [@peterwilsoncc](https://github.com/peterwilsoncc), [@dkotter](https://github.com/dkotter) via [GHSA-pwm5-mwxv-fjrh](https://github.com/10up/windows-azure-storage/security/advisories/GHSA-pwm5-mwxv-fjrh), [CVE-2025-10749](https://www.cve.org/CVERecord?id=CVE-2025-10749))
+- Bump `minimatch` from 4.0.7 to 4.0.8 (props [@dependabot](https://github.com/apps/dependabot) via [#253](https://github.com/10up/windows-azure-storage/pull/253)).
+
+### Changed
+- Bump WordPress "tested up to" version 6.7 (props [@mehidi258](https://github.com/mehidi258), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@hugosolar](https://github.com/hugosolar) via [#259](https://github.com/10up/windows-azure-storage/pull/259)).
+- Bump WordPress "tested up to" version 6.7 (props [@QAharshalkadu](https://github.com/QAharshalkadu), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter) via [#264](https://github.com/10up/windows-azure-storage/pull/264)).
+
+### Developer
+- Update all third-party actions our workflows rely on to use versions based on specific commit hashes (props [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter) via [#262](https://github.com/10up/windows-azure-storage/pull/262)).
+- Updated GitHub Action workflow permissions (props [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter) via [#265](https://github.com/10up/windows-azure-storage/pull/265)).
+- Clarified all license references to explicitly reference BSD-2-Clause (props [@jeffpaul](https://github.com/jeffpaul), [@peterwilsoncc](https://github.com/peterwilsoncc) via [#269](https://github.com/10up/windows-azure-storage/pull/269)).
+
 ## [4.5.1] - 2024-07-17
 ### Fixed
 - Fix path issue that duplicates the container name in URL paths (props [@hugosolar](https://github.com/hugosolar), [@cally423](https://github.com/cally423), [@Besdima](https://github.com/Besdima), [@ms2oo8](https://github.com/ms2oo8), [@BCornelissen](https://github.com/BCornelissen), [@dkotter](https://github.com/dkotter) via [#246](https://github.com/10up/windows-azure-storage/pull/246)).
@@ -289,6 +303,7 @@ All notable changes to this project will be documented in this file, per [the Ke
 - First release of Microsoft Azure Storage plugin for WordPress.
 
 [Unreleased]: https://github.com/10up/windows-azure-storage/compare/trunk...develop
+[4.5.2]: https://github.com/10up/windows-azure-storage/compare/4.5.1...4.5.2
 [4.5.1]: https://github.com/10up/windows-azure-storage/compare/4.5.0...4.5.1
 [4.5.0]: https://github.com/10up/windows-azure-storage/compare/4.4.2...4.5.0
 [4.4.2]: https://github.com/10up/windows-azure-storage/compare/4.4.1...4.4.2
