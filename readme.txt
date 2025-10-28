@@ -36,7 +36,12 @@ See Settings->Microsoft Azure for more information.
 == Changelog ==
 
 = 4.5.2 - 2025-10-29 =
-* **Fixed:**
+* **Security:** Bump `minimatch` from 4.0.7 to 4.0.8 (props [@dependabot](https://github.com/apps/dependabot) via [#253](https://github.com/10up/windows-azure-storage/pull/253)).
+* **Changed:** Bump WordPress "tested up to" version 6.7 (props [@mehidi258](https://github.com/mehidi258), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@hugosolar](https://github.com/hugosolar) via [#259](https://github.com/10up/windows-azure-storage/pull/259)).
+* **Changed:** Bump WordPress "tested up to" version 6.7 (props [@QAharshalkadu](https://github.com/QAharshalkadu), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter) via [#264](https://github.com/10up/windows-azure-storage/pull/264)).
+* **Developer:** Update all third-party actions our workflows rely on to use versions based on specific commit hashes (props [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter) via [#262](https://github.com/10up/windows-azure-storage/pull/262)).
+* **Developer:** Updated GitHub Action workflow permissions (props [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter) via [#265](https://github.com/10up/windows-azure-storage/pull/265)).
+* **Developer:** Clarified all license references to explicitly reference BSD-2-Clause (props [@jeffpaul](https://github.com/jeffpaul), [@peterwilsoncc](https://github.com/peterwilsoncc) via [#269](https://github.com/10up/windows-azure-storage/pull/269)).
 
 = 4.5.1 - 2024-07-17 =
 * **Fixed:** Fix path issue that duplicates the container name in URL paths (props [@hugosolar](https://github.com/hugosolar), [@cally423](https://github.com/cally423), [@Besdima](https://github.com/Besdima), [@ms2oo8](https://github.com/ms2oo8), [@BCornelissen](https://github.com/BCornelissen), [@dkotter](https://github.com/dkotter) via [#246](https://github.com/10up/windows-azure-storage/pull/246)).
