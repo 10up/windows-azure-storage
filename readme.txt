@@ -3,9 +3,9 @@ Contributors:      msopentech, 10up, morganestes, stevegrunwell, lpawlik, rittes
 Tags:              Microsoft Azure Storage, Media Files, Upload, CDN, blob storage
 Requires at least: 6.5
 Tested up to:      6.8
-Stable tag:        4.5.1
-License:           BSD 2-Clause
-License URI:       http://www.opensource.org/licenses/bsd-license.php
+Stable tag:        4.5.2
+License:           BSD-2-Clause
+License URI:       https://spdx.org/licenses/BSD-2-Clause.html
 
 Use the Microsoft Azure Storage service to host your website's media files.
 
@@ -35,6 +35,15 @@ For multisites or to enforce Azure Blob Storage settings, you can define the fol
 See Settings->Microsoft Azure for more information.
 
 == Changelog ==
+
+= 4.5.2 - 2025-10-29 =
+* **Security:** Add capability check when replacing media to prevent privilege escalation by authenticated users (props [@peterwilsoncc](https://github.com/peterwilsoncc), [@dkotter](https://github.com/dkotter) via [GHSA-pwm5-mwxv-fjrh](https://github.com/10up/windows-azure-storage/security/advisories/GHSA-pwm5-mwxv-fjrh), [CVE-2025-10749](https://www.cve.org/CVERecord?id=CVE-2025-10749))
+* **Security:** Bump `minimatch` from 4.0.7 to 4.0.8 (props [@dependabot](https://github.com/apps/dependabot) via [#253](https://github.com/10up/windows-azure-storage/pull/253)).
+* **Changed:** Bump WordPress "tested up to" version 6.7 (props [@mehidi258](https://github.com/mehidi258), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@hugosolar](https://github.com/hugosolar) via [#259](https://github.com/10up/windows-azure-storage/pull/259)).
+* **Changed:** Bump WordPress "tested up to" version 6.7 (props [@QAharshalkadu](https://github.com/QAharshalkadu), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter) via [#264](https://github.com/10up/windows-azure-storage/pull/264)).
+* **Developer:** Update all third-party actions our workflows rely on to use versions based on specific commit hashes (props [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter) via [#262](https://github.com/10up/windows-azure-storage/pull/262)).
+* **Developer:** Updated GitHub Action workflow permissions (props [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter) via [#265](https://github.com/10up/windows-azure-storage/pull/265)).
+* **Developer:** Clarified all license references to explicitly reference BSD-2-Clause (props [@jeffpaul](https://github.com/jeffpaul), [@peterwilsoncc](https://github.com/peterwilsoncc) via [#269](https://github.com/10up/windows-azure-storage/pull/269)).
 
 = 4.5.1 - 2024-07-17 =
 * **Fixed:** Fix path issue that duplicates the container name in URL paths (props [@hugosolar](https://github.com/hugosolar), [@cally423](https://github.com/cally423), [@Besdima](https://github.com/Besdima), [@ms2oo8](https://github.com/ms2oo8), [@BCornelissen](https://github.com/BCornelissen), [@dkotter](https://github.com/dkotter) via [#246](https://github.com/10up/windows-azure-storage/pull/246)).
@@ -67,18 +76,12 @@ See Settings->Microsoft Azure for more information.
 * **Changed:** Align our PHP minimum version checks to use new helper method (props [@radeno](https://github.com/radeno), [@ravinderk](https://github.com/ravinderk) via [#202](https://github.com/10up/windows-azure-storage/pull/202)).
 * **Fixed:** Remove urlencode from srcset calculation function (props [@hugosolar](https://github.com/hugosolar), [@rickalee](https://github.com/rickalee), [@Sidsector9](https://github.com/Sidsector9) via [#211](https://github.com/10up/windows-azure-storage/pull/211)).
 
-= 4.4.0 - 2023-10-17 =
-**Note that this release bumps the minimum PHP version from 7.4 to 8.0**
-
-* **Added:** Check for minimum required PHP version before loading the plugin (props [@bmarshall511](https://github.com/bmarshall511), [@iamdharmesh](https://github.com/iamdharmesh) via [#200](https://github.com/10up/windows-azure-storage/pull/200)).
-* **Changed:** Update to the `2020-04-08` version of the Azure Blob Storage API (props [@thrijith](https://github.com/thrijith), [@colegeissinger](https://github.com/colegeissinger) via [#136](https://github.com/10up/windows-azure-storage/pull/136)).
-* **Changed:** Bump minimum PHP version from 7.4 to 8.0 (props [@thrijith](https://github.com/thrijith), [@colegeissinger](https://github.com/colegeissinger) via [#136](https://github.com/10up/windows-azure-storage/pull/136)).
-* **Changed:** Bump WordPress version "tested up to" 6.3 (props [@QAharshalkadu](https://github.com/QAharshalkadu), [@jeffpaul](https://github.com/jeffpaul), [@peterwilsoncc](https://github.com/peterwilsoncc) via [#192](https://github.com/10up/windows-azure-storage/pull/192), [#198](https://github.com/10up/windows-azure-storage/pull/198)).
-* **Changed:** Bump `cypress` from 10.11.0 to 13.1.0, `@10up/cypress-wp-utils` from 0.1.0 to 0.2.0 and `@wordpress/env` from 5.13.0 to 8.7.0, to ensure E2E tests work on the latest version of WordPress (props [@iamdharmesh](https://github.com/iamdharmesh), [@Sidsector9](https://github.com/Sidsector9) via [#199](https://github.com/10up/windows-azure-storage/pull/199)).
-
 [View historical changelog details here](https://github.com/10up/windows-azure-storage/blob/develop/CHANGELOG.md).
 
 == Upgrade Notice ==
+
+= 4.5.2 =
+This is a security release, it is recommended to upgrade immediately.
 
 = 4.4.2 =
 Note that this release bumps the minimum WordPress version from 5.7 to 6.3.

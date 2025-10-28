@@ -4,12 +4,9 @@
  * Microsoft Azure Storage config provider.
  *
  * Version: 4.0.0
- *
  * Author: Microsoft Open Technologies, Inc.
- *
  * Author URI: http://www.microsoft.com/
- *
- * License: New BSD License (BSD)
+ * License: BSD-2-Clause
  *
  * Copyright (c) Microsoft Open Technologies, Inc.
  * All rights reserved.
@@ -37,7 +34,7 @@
  * @package   Windows_Azure_Storage_For_WordPress
  * @author    Microsoft Open Technologies, Inc. <msopentech@microsoft.com>
  * @copyright Microsoft Open Technologies, Inc.
- * @license   New BSD license, (http://www.opensource.org/licenses/bsd-license.php)
+ * @license   BSD-2-Clause, (http://www.opensource.org/licenses/bsd-license.php)
  * @link      http://www.microsoft.com
  */
 class Windows_Azure_Config_Provider {

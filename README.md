@@ -1,9 +1,10 @@
 # Microsoft Azure Storage for WordPress
 
-> Use the Microsoft Azure Storage service to host your website's media files.
+![Microsoft Azure Storage for WordPress](https://github.com/10up/windows-azure-storage/blob/develop/.wordpress-org/banner-1544x500.png)
 
-[![Support Level](https://img.shields.io/badge/support-stable-blue.svg)](#support-level) [![Release Version](https://img.shields.io/github/release/10up/windows-azure-storage.svg)](https://github.com/10up/windows-azure-storage/releases/latest) ![WordPress tested up to version](https://img.shields.io/wordpress/plugin/tested/windows-azure-storage?label=WordPress) [![BSD 2-Clause License](https://img.shields.io/github/license/10up/windows-azure-storage.svg)](https://github.com/10up/windows-azure-storage/blob/trunk/LICENSE)
-[![E2E test](https://github.com/10up/windows-azure-storage/actions/workflows/cypress.yml/badge.svg)](https://github.com/10up/windows-azure-storage/actions/workflows/cypress.yml) [![PHP Compatibility](https://github.com/10up/windows-azure-storage/actions/workflows/php-compatibility.yml/badge.svg)](https://github.com/10up/windows-azure-storage/actions/workflows/php-compatibility.yml) [![Dependency Review](https://github.com/10up/windows-azure-storage/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/10up/windows-azure-storage/actions/workflows/dependency-review.yml)
+[![Support Level](https://img.shields.io/badge/support-stable-blue.svg)](#support-level) ![Required PHP Version](https://img.shields.io/wordpress/plugin/required-php/windows-azure-storage?label=Requires%20PHP) ![Required WP Version](https://img.shields.io/wordpress/plugin/wp-version/windows-azure-storage?label=Requires%20WordPress) ![WordPress tested up to version](https://img.shields.io/wordpress/plugin/tested/windows-azure-storage?label=WordPress) [![BSD-2-Clause License](https://img.shields.io/github/license/10up/windows-azure-storage.svg)](https://github.com/10up/windows-azure-storage/blob/trunk/LICENSE) [![Dependency Review](https://github.com/10up/windows-azure-storage/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/10up/windows-azure-storage/actions/workflows/dependency-review.yml) [![E2E test](https://github.com/10up/windows-azure-storage/actions/workflows/cypress.yml/badge.svg)](https://github.com/10up/windows-azure-storage/actions/workflows/cypress.yml) [![PHP Compatibility](https://github.com/10up/windows-azure-storage/actions/workflows/php-compatibility.yml/badge.svg)](https://github.com/10up/windows-azure-storage/actions/workflows/php-compatibility.yml) [![CodeQL](https://github.com/10up/windows-azure-storage/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/10up/windows-azure-storage/actions/workflows/github-code-scanning/codeql) [![WordPress Playground Demo](https://img.shields.io/wordpress/plugin/v/windows-azure-storage?logo=wordpress&logoColor=FFFFFF&label=Playground%20Demo&labelColor=3858E9&color=3858E9)](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/10up/windows-azure-storage/add/playground/.wordpress-org/blueprints/blueprint.json)
+
+> Use the Microsoft Azure Storage service to host your website's media files.
 
 ## Description
 
@@ -16,7 +17,7 @@ For more details on configuring a Microsoft Azure Storage account and on using t
 ## Requirements
 
 * PHP 8.0+ (For PHP 7.4 support you need to use 4.3.5)
-* [WordPress](http://wordpress.org/) 6.4+
+* [WordPress](http://wordpress.org/) 6.6+
 
 ## Installation
 
@@ -63,6 +64,7 @@ Data should be updated in these tables:
 3. Using an external tool that supports PHP serialization, like [Search Replace DB](https://github.com/interconnectit/Search-Replace-DB).
 
 ## Support Level
+
 **Stable:** 10up is not planning to develop any new features for this, but will still respond to bug reports and security concerns.  We welcome PRs, but any that include new features should be small and easy to integrate and should not include breaking changes.  We otherwise intend to keep this tested up to the most recent version of WordPress.
 
 ## Changelog
@@ -75,6 +77,4 @@ Please read [CODE_OF_CONDUCT.md](https://github.com/10up/windows-azure-storage/b
 
 ## Like what you see?
 
-<p align="center">
-<a href="http://10up.com/contact/"><img src="https://10up.com/uploads/2016/10/10up-Github-Banner.png" width="850"></a>
-</p>
+<a href="http://10up.com/contact/"><img src="https://github.com/10up/.github/blob/trunk/profile/10up-github-banner.jpg" width="850" alt="Work with the 10up WordPress Practice at Fueled"></a>

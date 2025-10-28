@@ -4,12 +4,9 @@
  * Microsoft Azure Storage helper class.
  *
  * Version: 4.0.0
- *
  * Author: Microsoft Open Technologies, Inc.
- *
  * Author URI: http://www.microsoft.com/
- *
- * License: New BSD License (BSD)
+ * License: BSD-2-Clause
  *
  * Copyright (c) Microsoft Open Technologies, Inc.
  * All rights reserved.
@@ -37,7 +34,7 @@
  * @package   Windows_Azure_Storage_For_WordPress
  * @author    Microsoft Open Technologies, Inc. <msopentech@microsoft.com>
  * @copyright Microsoft Open Technologies, Inc.
- * @license   New BSD license, (http://www.opensource.org/licenses/bsd-license.php)
+ * @license   BSD-2-Clause, (http://www.opensource.org/licenses/bsd-license.php)
  * @link      http://www.microsoft.com
  * @since     4.0.0
  */
@@ -117,7 +114,7 @@ class Windows_Azure_Helper {
 			? MICROSOFT_AZURE_OVERRIDE_CONTAINER_PATH
 			: get_option( 'azure_storage_override_container_path' );
 	}
- 
+
 	/**
 	 * Return CNAME url.
 	 *
@@ -416,7 +413,13 @@ class Windows_Azure_Helper {
 	 */
 	static public function put_uploaded_file_to_blob_storage( $container_name, $blob_name, $local_path, $account_name = '', $account_key = '' ) {
 		if ( ! file_exists( $local_path ) ) {
-			return new \WP_Error( -1, sprintf( __( 'Uploaded file %s does not exist.', 'windows-azure-storage' ) ), $blob_name );
+			return new \WP_Error(
+				-1,
+				sprintf(
+					// translators: %s is the file name.
+					__( 'Uploaded file %s does not exist.', 'windows-azure-storage' ), $blob_name
+				)
+			);
 		}
 		list( $account_name, $account_key ) = self::get_api_credentials( $account_name, $account_key );
 		$rest_api_client = new Windows_Azure_Rest_Api_Client( $account_name, $account_key );

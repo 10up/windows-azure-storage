@@ -3,12 +3,9 @@
  * Shows popup dialog when clicked on the Microsoft Azure Toolbar
  *
  * Version: 3.0.1
- *
  * Author: Microsoft Open Technologies, Inc.
- *
  * Author URI: http://www.microsoft.com/
- *
- * License: New BSD License (BSD)
+ * License: BSD-2-Clause
  *
  * Copyright (c) Microsoft Open Technologies, Inc.
  * All rights reserved.
@@ -36,7 +33,7 @@
  * @package   Windows_Azure_Storage_For_WordPress
  * @author    Microsoft Open Technologies, Inc. <msopentech@microsoft.com>
  * @copyright Microsoft Open Technologies, Inc.
- * @license   New BSD license, (http://www.opensource.org/licenses/bsd-license.php)
+ * @license   BSD-2-Clause, (http://www.opensource.org/licenses/bsd-license.php)
  * @link      http://www.microsoft.com
  */
 
@@ -61,7 +58,7 @@ function windows_azure_storage_dialog_scripts( $hook_suffix ) {
 				'uploadingToAzure' => __( 'Uploading to Azure', 'windows-azure-storage' ),
 				'uploadReady'      => __( 'Attachment details', 'windows-azure-storage' ),
 			),
-		) 
+		)
 	);
 }
 
@@ -87,13 +84,14 @@ function deleteBlob( $container_name, $blob_name ) {
 					'filename',
 					'selected_container',
 				),
+				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- see wp_fix_server_vars()
 				$_SERVER['REQUEST_URI']
 			);
 			WindowsAzureStorageUtil::deleteBlob( $container_name, $blob_name );
 		}
 	} catch ( Exception $e ) {
-		/* translators: 1: blob (file) name, 2: container name, 3: error message */
 		$message = sprintf(
+			/* translators: 1: blob (file) name, 2: container name, 3: error message */
 			__( 'Error in deleting blob %1$s from container %2$s: %3$s', 'windows-azure-storage' ),
 			$blob_name,
 			$container_name,

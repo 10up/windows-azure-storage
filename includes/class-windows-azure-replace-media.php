@@ -4,12 +4,9 @@
  * Microsoft Azure Storage REST API client.
  *
  * Version: 4.0.0
- *
  * Author: Microsoft Open Technologies, Inc.
- *
  * Author URI: http://www.microsoft.com/
- *
- * License: New BSD License (BSD)
+ * License: BSD-2-Clause
  *
  * Copyright (c) Microsoft Open Technologies, Inc.
  * All rights reserved.
@@ -37,7 +34,7 @@
  * @package   Windows_Azure_Storage_For_WordPress
  * @author    Microsoft Open Technologies, Inc. <msopentech@microsoft.com>
  * @copyright Microsoft Open Technologies, Inc.
- * @license   New BSD license, (http://www.opensource.org/licenses/bsd-license.php)
+ * @license   BSD-2-Clause, (http://www.opensource.org/licenses/bsd-license.php)
  * @link      http://www.microsoft.com
  */
 
@@ -151,14 +148,26 @@ class Windows_Azure_Replace_Media {
 	 */
 	public function process_media_replacement() {
 
-		$nonce = sanitize_text_field( $_POST['nonce'] );
+		if ( empty( $_POST['nonce'] ) ) {
+			wp_die( esc_html__( 'You do not have permission to edit this attachment.', 'windows-azure-storage' ) );
+		}
+
+		$nonce = sanitize_text_field( wp_unslash( $_POST['nonce'] ) );
 
 		if ( ! wp_verify_nonce( $nonce, 'azure-storage-media-replace' ) ) {
-				wp_die( 'This action is not allowed' );
+				wp_die( esc_html__( 'You do not have permission to edit this attachment.', 'windows-azure-storage' ) );
 		}
 
 		$current_attachment = filter_input( INPUT_POST, 'current_attachment', FILTER_VALIDATE_INT );
 		$replace_attachment = filter_input( INPUT_POST, 'replace_attachment', FILTER_VALIDATE_INT );
+
+		if ( ! current_user_can( 'edit_post', $current_attachment ) ) {
+			wp_die( esc_html__( 'You do not have permission to edit this attachment.', 'windows-azure-storage' ) );
+		}
+
+		if ( ! current_user_can( 'delete_post', $replace_attachment ) ) {
+			wp_die( esc_html__( 'You do not have permission to edit this attachment.', 'windows-azure-storage' ) );
+		}
 
 		$this->container_name = \Windows_Azure_Helper::get_default_container();
 		$response             = $this->replace_media_with( $current_attachment, $replace_attachment );

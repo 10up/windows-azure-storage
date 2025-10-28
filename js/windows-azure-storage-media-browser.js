@@ -1,6 +1,6 @@
-/*!  - v4.5.1
+/*!  - v4.5.2
  * https://github.com/10up/windows-azure-storage#readme
- * Copyright (c) 2024; */
+ * Copyright (c) 2025; */
 window.wp = window.wp || {};
 (function ( $, window, _ ) {
   $( document ).ready( function () {
@@ -62,6 +62,7 @@ window.wp = window.wp || {};
           options.context = this;
           options.data = _.extend( options.data || {}, {
             action: 'query-azure-attachments',
+            _ajax_nonce: window.windowsAzureStorageMediaBrowserNonce
           } );
 
           args = _.clone( this.args );

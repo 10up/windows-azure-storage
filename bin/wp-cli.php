@@ -1,14 +1,10 @@
 <?php
 /**
  * Microsoft Azure Storage command line client.
- *
  * Version: 4.0.0
- *
  * Author: Microsoft Open Technologies, Inc.
- *
  * Author URI: http://www.microsoft.com/
- *
- * License: New BSD License (BSD)
+ * License: BSD-2-Clause
  *
  * Copyright (c) Microsoft Open Technologies, Inc.
  * All rights reserved.
@@ -36,7 +32,7 @@
  * @package   Windows_Azure_Storage_For_WordPress
  * @author    Microsoft Open Technologies, Inc. <msopentech@microsoft.com>
  * @copyright Microsoft Open Technologies, Inc.
- * @license   New BSD license, (http://www.opensource.org/licenses/bsd-license.php)
+ * @license   BSD-2-Clause, (http://www.opensource.org/licenses/bsd-license.php)
  * @link      http://www.microsoft.com
  */
 class Windows_Azure_Storage_CLI extends WP_CLI_Command {
@@ -128,6 +124,7 @@ class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 
 		WP_CLI::success(
 			sprintf(
+				// translators: %s is container name.
 				__( 'Created container with name "%s"', 'windows-azure-storage' ),
 				$result
 			)
@@ -214,7 +211,8 @@ class Windows_Azure_Storage_CLI extends WP_CLI_Command {
 
 		WP_CLI::success(
 			sprintf(
-				__( 'Container "%s" access policy set to: "%s"', 'windows-azure-storage' ),
+				// translators: %1$s is container name, %2$s is access policy.
+				__( 'Container "%1$s" access policy set to: "%2$s"', 'windows-azure-storage' ),
 				$name,
 				$result
 			)

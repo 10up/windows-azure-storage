@@ -3,13 +3,13 @@
  * Plugin Name:       Microsoft Azure Storage for WordPress
  * Plugin URI:        https://wordpress.org/plugins/windows-azure-storage/
  * Description:       Use the Microsoft Azure Storage service to host your website's media files.
- * Version:           4.5.1
- * Requires at least: 6.4
+ * Version:           4.5.2
+ * Requires at least: 6.6
  * Requires PHP:      8.0
  * Author:            10up, Microsoft Open Technologies
  * Author URI:        https://10up.com/
- * License:           BSD 2-Clause
- * License URI:       http://www.opensource.org/licenses/bsd-license.php
+ * License:           BSD-2-Clause
+ * License URI:       https://spdx.org/licenses/BSD-2-Clause.html
  * Text Domain:       windows-azure-storage
  * Domain Path:       /languages
  */
@@ -46,7 +46,7 @@
  * @package   Windows_Azure_Storage_For_WordPress
  * @author    Microsoft Open Technologies, Inc. <msopentech@microsoft.com>
  * @copyright Microsoft Open Technologies, Inc.
- * @license   New BSD license, (http://www.opensource.org/licenses/bsd-license.php)
+ * @license   BSD-2-Clause, (http://www.opensource.org/licenses/bsd-license.php)
  * @link      http://www.microsoft.com
  */
 
@@ -62,7 +62,7 @@
 define( 'MSFT_AZURE_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'MSFT_AZURE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'MSFT_AZURE_PLUGIN_LEGACY_MEDIA_URL', get_admin_url( get_current_blog_id(), 'media-upload.php' ) );
-define( 'MSFT_AZURE_PLUGIN_VERSION', '4.5.1' );
+define( 'MSFT_AZURE_PLUGIN_VERSION', '4.5.2' );
 
 /**
  * Get the minimum version of PHP required by this plugin.
@@ -220,12 +220,18 @@ function windows_azure_plugin_check_prerequisite() {
 	global $wp_version;
 	if ( ! was_site_meets_php_requirements() ) {
 		deactivate_plugins( plugin_basename( __FILE__ ) );
-		wp_die( __( 'Microsoft Azure Storage for WordPress requires at least PHP ' . was_minimum_php_requirement(), 'windows-azure-storage' ) );
+		wp_die(
+			sprintf(
+				/* translators: %s: Minimum required PHP version */
+				esc_html__( 'Microsoft Azure Storage for WordPress requires at least PHP %s', 'windows-azure-storage' ),
+				esc_html( was_minimum_php_requirement() )
+			)
+		);
 	}
 	$wp_compat = version_compare( $wp_version, '5.7', '>=' );
 	if ( ! $wp_compat ) {
 		deactivate_plugins( plugin_basename( __FILE__ ) );
-		wp_die( __( 'Microsoft Azure Storage for WordPress requires at least WordPress 5.7', 'windows-azure-storage' ) );
+		wp_die( esc_html__( 'Microsoft Azure Storage for WordPress requires at least WordPress 5.7', 'windows-azure-storage' ) );
 	}
 }
 
@@ -251,9 +257,8 @@ function windows_azure_storage_xmlrpc_methods( $methods ) {
  * @return array
  */
 function windows_azure_storage_new_media_object( $args ) {
-	global $wpdb, $wp_xmlrpc_server;
+	global $wp_xmlrpc_server;
 
-	$blog_id  = (int) $args[0];
 	$username = $wp_xmlrpc_server->escape( $args[1] );
 	$password = $wp_xmlrpc_server->escape( $args[2] );
 	$data     = $args[3];
@@ -262,7 +267,7 @@ function windows_azure_storage_new_media_object( $args ) {
 	$type = $data['type'];
 	$bits = $data['bits'];
 
-	if ( ! $user = $wp_xmlrpc_server->login( $username, $password ) ) {
+	if ( ! $wp_xmlrpc_server->login( $username, $password ) ) {
 		return $wp_xmlrpc_server->error;
 	}
 
@@ -291,25 +296,38 @@ function windows_azure_storage_new_media_object( $args ) {
 
 	if ( ! empty( $data['overwrite'] ) && ( true === $data['overwrite'] ) ) {
 		// Get postmeta info on the object.
-		$old_file = $wpdb->get_row(
-			$wpdb->prepare( 'SELECT ID FROM %s WHERE post_title = %s  AND post_type = %s LIMIT 1', $wpdb->posts, $name, 'attachment' )
-		);
+		$query_old_files = new WP_Query( array(
+			'post_type'              => 'attachment',
+			'title'                  => $name,
+			'posts_per_page'         => 1,
+			'post_status'            => 'all',
+			'fields'                 => 'ids',
+			'no_found_rows'          => true,
+			'update_post_meta_cache' => false,
+			'update_post_term_cache' => false,
+		) );
 
+		$old_file = $query_old_files->posts;
 		// If query isn't successful, bail.
-		if ( is_null( $old_file ) ) {
-			return new WP_Error( -1, sprintf(
-				__( 'Attachment not found in %s', 'windows-azure-storage' ),
-				esc_html( $name )
-			), $wpdb->print_error( $old_file ) );
+		if ( empty( $old_file ) ) {
+			return new WP_Error(
+				-1,
+				sprintf(
+					esc_html__( 'Attachment not found in %s', 'windows-azure-storage' ),
+					esc_html( $name )
+				)
+			);
 		}
 
+		$old_file_id = $old_file[0];
+
 		// Delete previous file.
-		wp_delete_attachment( $old_file->ID );
+		wp_delete_attachment( $old_file_id );
 
 		// Make sure the new name is different by pre-pending the
 		// previous post id.
 		$filename = preg_replace( '/^wpid\d+-/', '', $name );
-		$name     = "wpid{$old_file->ID}-{$filename}";
+		$name     = "wpid{$old_file_id}-{$filename}";
 	}
 
 	// default azure storage container.
@@ -462,11 +480,20 @@ function windows_azure_storage_wp_generate_attachment_metadata( $data, $post_id 
 	}
 
 	try {
-		$post_array = wp_unslash( $_POST );
-		$post_array = wp_parse_args( $post_array, array(
-			 'item_id' => $post_array['name'] . '_' . $post_array['_wpnonce'],
-		) );
-		$azure_progress_key = 'azure_progress_' . sanitize_text_field( trim( $post_array['item_id'] ) );
+		/*
+		 * Nonce verification by WordPress.
+		 *
+		 * This code runs on the hook 'wp_generate_attachment_metadata' which is called during file upload.
+		 * WordPress core does the required permission and nonce verification during the upload process and
+		 * therefore it is not required to do again here.
+		 */
+		// phpcs:disable WordPress.Security.NonceVerification.Missing
+		$wp_nonce_value = isset( $_POST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ) : '';
+		$posted_name    = isset( $_POST['name'] ) ? sanitize_text_field( wp_unslash( $_POST['name'] ) ) : '';
+		$item_id        = isset( $_POST['item_id'] ) ? sanitize_text_field( wp_unslash( $_POST['item_id'] ) ) : $posted_name . '_' . $wp_nonce_value;
+		// phpcs:enable
+
+		$azure_progress_key = 'azure_progress_' . sanitize_text_field( trim( $item_id ) );
 		$current            = 0;
 		// Get full file path of uploaded file.
 		$data['file'] = $upload_file_name;
@@ -494,7 +521,7 @@ function windows_azure_storage_wp_generate_attachment_metadata( $data, $post_id 
 				);
 			}
 		} catch ( Exception $e ) {
-			echo '<p>', sprintf( __( 'Error in uploading file. Error: %s', 'windows-azure-storage' ), esc_html( $e->getMessage() ) ), '</p>';
+			echo '<p>', sprintf( esc_html__( 'Error in uploading file. Error: %s', 'windows-azure-storage' ), esc_html( $e->getMessage() ) ), '</p>';
 
 			return $data;
 		}
@@ -576,7 +603,7 @@ function windows_azure_storage_wp_generate_attachment_metadata( $data, $post_id 
 		) );
 
 	} catch ( Exception $e ) {
-		echo '<p>', sprintf( __( 'Error in uploading file. Error: %s', 'windows-azure-storage' ), esc_html( $e->getMessage() ) ), '</p>';
+		echo '<p>', sprintf( esc_html__( 'Error in uploading file. Error: %s', 'windows-azure-storage' ), esc_html( $e->getMessage() ) ), '</p>';
 	}
 
 	return $data;
@@ -748,7 +775,13 @@ function windows_azure_browse_tab() {
 	add_action( 'admin_enqueue_scripts', 'windows_azure_storage_dialog_scripts' );
 	wp_enqueue_media();
 	wp_enqueue_script( 'media-grid' );
-	wp_enqueue_script( 'windows-azure-storage-media-browser', MSFT_AZURE_PLUGIN_URL . 'js/windows-azure-storage-media-browser' . $js_ext, array( 'media-grid' ), MSFT_AZURE_PLUGIN_VERSION );
+	wp_register_script( 'windows-azure-storage-media-browser', MSFT_AZURE_PLUGIN_URL . 'js/windows-azure-storage-media-browser' . $js_ext, array( 'media-grid' ), MSFT_AZURE_PLUGIN_VERSION );
+	wp_add_inline_script(
+		'windows-azure-storage-media-browser',
+		'var windowsAzureStorageMediaBrowserNonce = "' . wp_create_nonce( 'windows-azure-storage-media-browser-nonce' ) . '";',
+		'before'
+	);
+	wp_enqueue_script( 'windows-azure-storage-media-browser' );
 	wp_localize_script( 'media-grid', '_wpMediaGridSettings', array(
 		'adminUrl' => $path_parsed,
 		'l10n'     => array(
@@ -940,14 +973,30 @@ function windows_azure_storage_query_azure_attachments() {
 		wp_send_json_error();
 	}
 
+	check_ajax_referer( 'windows-azure-storage-media-browser-nonce' );
+
 	$cache_ttl = Windows_Azure_Helper::get_cache_ttl();
-	$request   = wp_unslash( $_REQUEST );
-	$query     = isset( $request['query'] ) ? (array) $request['query'] : array();
-	$query     = array_intersect_key( $query, array_flip( array(
-		's',
-		'posts_per_page',
-		'paged',
-	) ) );
+	$query     = isset( $_REQUEST['query'] ) ? array_map( 'sanitize_text_field', (array) wp_unslash( $_REQUEST['query'] ) ) : array();
+	// Sanitize: Limit to s, posts_per_page, paged only.
+	$query     = array_intersect_key(
+		$query,
+		array_flip(
+			array(
+				's',
+				'posts_per_page',
+				'paged',
+			)
+		)
+	);
+
+	// Ensure posts_per_page and paged are numeric
+	if ( ! isset( $query['posts_per_page'] ) || ! is_numeric( $query['posts_per_page'] ) ) {
+		unset( $query['posts_per_page'] );
+	}
+
+	if ( ! isset( $query['paged'] ) || ! is_numeric( $query['paged'] ) ) {
+		unset( $query['paged'] );
+	}
 
 	$query = wp_parse_args( $query, array(
 		's'              => '',
@@ -1010,8 +1059,7 @@ function windows_azure_storage_query_azure_attachments() {
  * @return void
  */
 function windows_azure_storage_delete_blob() {
-	$post_array = wp_unslash( $_POST );
-	$id         = isset( $post_array['id'] ) ? $post_array['id'] : 0;
+	$id = isset( $_POST['id'] ) ? sanitize_text_field( wp_unslash( $_POST['id'] ) ) : 0;
 
 	if ( ! check_ajax_referer( "delete-blob_$id", false, false ) ) {
 		wp_die( -1 );
@@ -1044,9 +1092,8 @@ function windows_azure_storage_delete_blob() {
  * @return void
  */
 function windows_azure_upload_progress() {
-	$post_array = wp_unslash( $_POST );
-	$item_id    = isset( $post_array['data']['item_id'] ) ? sanitize_text_field( $post_array['data']['item_id'] ) : false;
-	$item_id    = trim( $item_id );
+	$item_id = isset( $_POST['data']['item_id'] ) ? sanitize_text_field( wp_unslash( $_POST['data']['item_id'] ) ) : false;
+	$item_id = trim( $item_id );
 	if ( ! $item_id ) {
 		wp_send_json_success( array(
 			'progress' => 100,

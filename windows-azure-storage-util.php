@@ -3,12 +3,9 @@
  * Various utility functions for accessing Microsoft Azure Storage
  *
  * Version: 3.0.1
- *
  * Author: Microsoft Open Technologies, Inc.
- *
  * Author URI: http://www.microsoft.com/
- *
- * License: New BSD License (BSD)
+ * License: BSD-2-Clause
  *
  * Copyright (c) Microsoft Open Technologies, Inc.
  * All rights reserved.
@@ -36,7 +33,7 @@
  * @package   Windows_Azure_Storage_For_WordPress
  * @author    Microsoft Open Technologies, Inc. <msopentech@microsoft.com>
  * @copyright Microsoft Open Technologies, Inc.
- * @license   New BSD license, (http://www.opensource.org/licenses/bsd-license.php)
+ * @license   BSD-2-Clause, (http://www.opensource.org/licenses/bsd-license.php)
  * @link      http://www.microsoft.com
  */
 
@@ -47,7 +44,7 @@
  * @package   Windows_Azure_Storage_For_WordPress
  * @author    Microsoft Open Technologies, Inc. <msopentech@microsoft.com>
  * @copyright Microsoft Open Technologies, Inc.
- * @license   New BSD license, (http://www.opensource.org/licenses/bsd-license.php)
+ * @license   BSD-2-Clause, (http://www.opensource.org/licenses/bsd-license.php)
  * @link      http://www.microsoft.com
  */
 class WindowsAzureStorageUtil {
@@ -205,7 +202,7 @@ class WindowsAzureStorageUtil {
 		$proxy_user_name = null,
 		$proxy_password = null
 	) {
-		throw new Exception( __( 'Function has been removed.', 'windows-azure-storage' ), -1 );
+		throw new Exception( esc_html__( 'Function has been removed.', 'windows-azure-storage' ), -1 );
 	}
 
 	/**

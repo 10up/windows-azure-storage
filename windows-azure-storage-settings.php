@@ -3,12 +3,9 @@
  * Shows various settings for Microsoft Azure Storage Plugin
  *
  * Version: 3.0.1
- *
  * Author: Microsoft Open Technologies, Inc.
- *
  * Author URI: http://www.microsoft.com/
- *
- * License: New BSD License (BSD)
+ * License: BSD-2-Clause
  *
  * Copyright (c) Microsoft Open Technologies, Inc.
  * All rights reserved.
@@ -36,7 +33,7 @@
  * @package   Microsoft_Azure_Storage_For_WordPress
  * @author    Microsoft Open Technologies, Inc. <msopentech@microsoft.com>
  * @copyright Microsoft Open Technologies, Inc.
- * @license   New BSD license, (http://www.opensource.org/licenses/bsd-license.php)
+ * @license   BSD-2-Clause, (http://www.opensource.org/licenses/bsd-license.php)
  * @link      http://www.microsoft.com
  */
 
@@ -62,7 +59,7 @@ function windows_azure_storage_plugin_settings_preamble() {
 		</p>
 
 		<p style="margin-bottom:4em">
-			<?php echo __( 'For more details on Microsoft Azure Storage Services, please visit the <a href="https://azure.microsoft.com/en-us/">Microsoft Azure Platform web-site</a>.', 'windows-azure-storage' ); ?><br>
+			<?php echo wp_kses_post( __( 'For more details on Microsoft Azure Storage Services, please visit the <a href="https://azure.microsoft.com/en-us/">Microsoft Azure Platform web-site</a>.', 'windows-azure-storage' ) ); ?><br>
 			<b><?php esc_html_e( 'Plugin Web Site:', 'windows-azure-storage' ); ?></b>
 			<a href="https://wordpress.org/plugins/windows-azure-storage/">https://wordpress.org/plugins/windows-azure-storage/</a>
 		</p>
@@ -239,7 +236,7 @@ function windows_azure_storage_plugin_register_settings() {
  */
 function windows_azure_storage_plugin_settings_section() {
 	?>
-	<p><?php echo __( 'If you do not have Microsoft Azure Storage Account, please <a href="https://azure.microsoft.com/en-us/free/">register </a>for Microsoft Azure Services.', 'windows-azure-storage' ); ?></p>
+	<p><?php echo wp_kses_post( __( 'If you do not have Microsoft Azure Storage Account, please <a href="https://azure.microsoft.com/en-us/free/">register </a>for Microsoft Azure Services.', 'windows-azure-storage' ) ); ?></p>
 	<?php
 }
 
@@ -261,7 +258,7 @@ function windows_azure_storage_setting_account_name() {
 	}
 
 	echo '<p>';
-		_e( 'Microsoft Azure Storage Account Name. You can define <code>MICROSOFT_AZURE_ACCOUNT_NAME</code> constant to override it.', 'windows-azure-storage' );
+	echo wp_kses_post( __( 'Microsoft Azure Storage Account Name. You can define <code>MICROSOFT_AZURE_ACCOUNT_NAME</code> constant to override it.', 'windows-azure-storage' ) );
 	echo '</p>';
 }
 
@@ -282,7 +279,7 @@ function windows_azure_storage_setting_account_key() {
 	}
 
 	echo '<p>';
-		_e( 'Microsoft Azure Storage Account Primary Access Key. You can define <code>MICROSOFT_AZURE_ACCOUNT_KEY</code> constant to override it.', 'windows-azure-storage' );
+	echo wp_kses_post( __( 'Microsoft Azure Storage Account Primary Access Key. You can define <code>MICROSOFT_AZURE_ACCOUNT_KEY</code> constant to override it.', 'windows-azure-storage' ) );
 	echo '</p>';
 }
 
@@ -297,9 +294,10 @@ function windows_azure_storage_setting_storage_container() {
 	$default_container = Windows_Azure_Helper::get_default_container();
 
 	if ( defined( 'MICROSOFT_AZURE_CONTAINER' ) ) {
-		echo '<input type="text" class="regular-text" value="', $default_container, '" readonly disabled>';
+		echo '<input type="text" class="regular-text" value="', esc_attr( $default_container ), '" readonly disabled>';
 	} else {
 		$containers_list = Windows_Azure_Helper::list_containers();
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- data is processed in create_container_if_required().
 		$new_container_name = isset( $_POST['newcontainer'] ) ? sanitize_text_field( wp_unslash( $_POST['newcontainer'] ) ) : '';
 		$container_creation_failed = apply_filters( 'windows_azure_storage_container_creation_failed', false );
 
@@ -330,18 +328,18 @@ function windows_azure_storage_setting_storage_container() {
 			wp_nonce_field( 'create_container', 'create_new_container_settings' );
 			?><div id="div-create-container" name="div-create-container" <?php if ( ! $container_creation_failed ) : ?>style="display:none;"<?php endif; ?>>
 				<p>
-					<label for="newcontainer" title="<?php __( 'Name of the new container to create', 'windows-azure-storage' ); ?>"><?php echo __( 'New container name: ', 'windows-azure-storage' ); ?></label>
-					<input type="text" name="newcontainer" class="regular-text" title="<?php __( 'Name of the new container to create', 'windows-azure-storage' ); ?>" value="<?php echo esc_attr( $new_container_name ); ?>"/>
+					<label for="newcontainer"><?php esc_html_e( 'New container name: ', 'windows-azure-storage' ); ?></label>
+					<input type="text" name="newcontainer" class="regular-text" value="<?php echo esc_attr( $new_container_name ); ?>"/>
 				</p>
 				<p>
-					<input type="button" class="button-primary azure-create-container-button" value="<?php esc_attr_e( 'Create', 'windows-azure-storage' ); ?>" data-container-url="<?php echo esc_attr( sprintf( '%s', esc_url( $_SERVER['REQUEST_URI'] ) ) ); ?>"/>
+					<input type="button" class="button-primary azure-create-container-button" value="<?php esc_attr_e( 'Create', 'windows-azure-storage' ); ?>" data-container-url="<?php echo esc_url( admin_url( '/options-general.php?page=windows-azure-storage-plugin-options' ) ); ?>"/>
 				</p>
 			</div><?php
 		endif;
 	}
 
 	echo '<p>';
-		_e( 'Default container to be used for storing media files. You can define <code>MICROSOFT_AZURE_CONTAINER</code> constant to override it.', 'windows-azure-storage' );
+	echo wp_kses_post( __( 'Default container to be used for storing media files. You can define <code>MICROSOFT_AZURE_CONTAINER</code> constant to override it.', 'windows-azure-storage' ) );
 	echo '</p>';
 }
 
@@ -362,7 +360,7 @@ function windows_azure_storage_override_container_path() {
 	}
 
 	echo '<p>';
-		_e( 'Use this option if you do not like to display container name in the image URLs  like <code>http://mydomain.com/uploads</code> instead of <code>http://mydomain.com/[container_name]/</code>. As sometime container name can be wired and log and also container names can change during migration resulting in URL change for the images. Using this option image urls will remain same. You can use <code>MICROSOFT_AZURE_OVERRIDE_CONTAINER_PATH</code> constant to override it.', 'windows-azure-storage' );
+	echo wp_kses_post( __( 'Use this option if you do not like to display container name in the image URLs  like <code>http://mydomain.com/uploads</code> instead of <code>http://mydomain.com/[container_name]/</code>. As sometime container name can be wired and log and also container names can change during migration resulting in URL change for the images. Using this option image urls will remain same. You can use <code>MICROSOFT_AZURE_OVERRIDE_CONTAINER_PATH</code> constant to override it.', 'windows-azure-storage' ) );
 	echo '</p>';
 }
 
@@ -383,7 +381,7 @@ function windows_azure_storage_setting_cname() {
 	}
 
 	echo '<p>';
-		_e( 'Use this option if you would like to display image URLs belonging to your domain like <code>http://mydomain.com/</code> instead of <code>http://your-account-name.blob.core.windows.net/</code>. This CNAME must start with <code>http(s)://</code> and the administrator will have to update <abbr title="Domain Name System">DNS</abbr> entries accordingly. You can use <code>MICROSOFT_AZURE_CNAME</code> constant to override it.', 'windows-azure-storage' );
+	echo wp_kses_post( __( 'Use this option if you would like to display image URLs belonging to your domain like <code>http://mydomain.com/</code> instead of <code>http://your-account-name.blob.core.windows.net/</code>. This CNAME must start with <code>http(s)://</code> and the administrator will have to update <abbr title="Domain Name System">DNS</abbr> entries accordingly. You can use <code>MICROSOFT_AZURE_CNAME</code> constant to override it.', 'windows-azure-storage' ) );
 	echo '</p>';
 }
 
@@ -408,7 +406,7 @@ function windows_azure_storage_setting_handle_uploads() {
 	echo '</label>';
 
 	echo '<p>';
-		_e( 'Note: Uncheck this to store uploads on your web server by default. This setting can be overriden using the <code>MICROSOFT_AZURE_USE_FOR_DEFAULT_UPLOAD</code> PHP constant.', 'windows-azure-storage' );
+	echo wp_kses_post( __( 'Note: Uncheck this to store uploads on your web server by default. This setting can be overriden using the <code>MICROSOFT_AZURE_USE_FOR_DEFAULT_UPLOAD</code> PHP constant.', 'windows-azure-storage' ) );
 	echo '</p>';
 }
 
@@ -441,7 +439,7 @@ function windows_azure_browse_cache_results() {
 	<input type="number" name="azure_browse_cache_results" class="regular-text" title="<?php esc_attr_e( 'Browse azure file list cache TTL', 'windows-azure-storage' ); ?>" value="<?php echo esc_attr( $ttl ); ?>"/>
 	<p class="field-description">
 		<?php
-		echo __(
+		esc_html_e(
 			'Note: If you want to disable azure file list caching please set this value to 0.',
 			'windows-azure-storage'
 		);
@@ -467,7 +465,7 @@ function windows_azure_cache_control() {
 	}
 
 	echo '<p>';
-		_e( 'Setting Cache-Control on publicly accessible Microsoft Azure Blobs can help reduce bandwidth by preventing consumers from having to continuously download resources. Specify a relative amount of time in seconds to cache data after it was received or enter exact cache-control value which you want to use for your assets. You can define <code>MICROSOFT_AZURE_CACHE_CONTROL</code> constant to override it.', 'windows-azure-storage' );
+	echo wp_kses_post( __( 'Setting Cache-Control on publicly accessible Microsoft Azure Blobs can help reduce bandwidth by preventing consumers from having to continuously download resources. Specify a relative amount of time in seconds to cache data after it was received or enter exact cache-control value which you want to use for your assets. You can define <code>MICROSOFT_AZURE_CACHE_CONTROL</code> constant to override it.', 'windows-azure-storage' ) );
 	echo '</p>';
 }
 
@@ -482,18 +480,19 @@ function windows_azure_cache_control() {
  */
 function create_container_if_required( &$success = null ) {
 	$success    = false;
-	$post_array = wp_unslash( $_POST );
-	$action_set = isset( $post_array['newcontainer'] ) && $permissions = current_user_can( 'manage_options' ) && $admin_referer = check_admin_referer( 'create_container', 'create_new_container_settings' );
+	$action_set = isset( $_POST['newcontainer'] ) && $permissions = current_user_can( 'manage_options' ) && $admin_referer = check_admin_referer( 'create_container', 'create_new_container_settings' );
 	if ( $action_set ) {
-		if ( ! empty( $post_array['newcontainer'] ) ) {
-			if ( empty( $post_array['azure_storage_account_name'] ) || empty( $post_array['azure_storage_account_primary_access_key'] ) ) {
+		if ( ! empty( $_POST['newcontainer'] ) ) {
+			if ( empty( $_POST['azure_storage_account_name'] ) || empty( $_POST['azure_storage_account_primary_access_key'] ) ) {
 				return new WP_Error( -2, __( 'Please specify Storage Account Name and Primary Access Key to create container.', 'windows-azure-storage' ) );
 			}
 
 			try {
-				$account_name = $post_array['azure_storage_account_name'];
-				$account_key  = $post_array['azure_storage_account_primary_access_key'];
-				$result       = Windows_Azure_Helper::create_container( sanitize_text_field( $post_array['newcontainer'] ), $account_name, $account_key );
+				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- credentials are to be used as passed to ensure they are valid.
+				$account_name = wp_unslash( $_POST['azure_storage_account_name'] );
+				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- credentials are to be used as passed to ensure they are valid.
+				$account_key  = wp_unslash( $_POST['azure_storage_account_primary_access_key'] );
+				$result       = Windows_Azure_Helper::create_container( sanitize_text_field( wp_unslash( $_POST['newcontainer'] ) ), $account_name, $account_key );
 
 				if ( ! is_wp_error( $result ) ) {
 					return sprintf(
@@ -562,6 +561,7 @@ function windows_azure_storage_load_settings_page() {
  * @return void
  */
 function windows_azure_storage_check_container_access_policy() {
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- checking for settings update only.
 	if ( ! isset( $_REQUEST['settings-updated'] ) || 'true' !== $_REQUEST['settings-updated'] ) {
 		return;
 	}
@@ -581,7 +581,7 @@ function windows_azure_storage_check_container_access_policy() {
 		);
 		?>
 		<div class="notice notice-warning is-dismissible">
-			<p><?php echo $private_container_warning; ?></p>
+			<p><?php echo wp_kses_post( $private_container_warning ); ?></p>
 		</div>
 		<?php
 	} );
