@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file, per [the Ke
 
 ## [4.5.2] - 2025-10-29
 ### Security
+- Add capability check when replacing media to prevent privilege escalation by authenticated users (props [@peterwilsoncc](https://github.com/peterwilsoncc), [@dkotter](https://github.com/dkotter) via [GHSA-pwm5-mwxv-fjrh](https://github.com/10up/windows-azure-storage/security/advisories/GHSA-pwm5-mwxv-fjrh), [CVE-2025-10749](https://www.cve.org/CVERecord?id=CVE-2025-10749))
 - Bump `minimatch` from 4.0.7 to 4.0.8 (props [@dependabot](https://github.com/apps/dependabot) via [#253](https://github.com/10up/windows-azure-storage/pull/253)).
 
 ### Changed
@@ -16,7 +17,6 @@ All notable changes to this project will be documented in this file, per [the Ke
 - Update all third-party actions our workflows rely on to use versions based on specific commit hashes (props [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter) via [#262](https://github.com/10up/windows-azure-storage/pull/262)).
 - Updated GitHub Action workflow permissions (props [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter) via [#265](https://github.com/10up/windows-azure-storage/pull/265)).
 - Clarified all license references to explicitly reference BSD-2-Clause (props [@jeffpaul](https://github.com/jeffpaul), [@peterwilsoncc](https://github.com/peterwilsoncc) via [#269](https://github.com/10up/windows-azure-storage/pull/269)).
-
 
 ## [4.5.1] - 2024-07-17
 ### Fixed

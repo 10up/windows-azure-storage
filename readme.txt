@@ -36,6 +36,7 @@ See Settings->Microsoft Azure for more information.
 == Changelog ==
 
 = 4.5.2 - 2025-10-29 =
+* **Security:** Add capability check when replacing media to prevent privilege escalation by authenticated users (props [@peterwilsoncc](https://github.com/peterwilsoncc), [@dkotter](https://github.com/dkotter) via [GHSA-pwm5-mwxv-fjrh](https://github.com/10up/windows-azure-storage/security/advisories/GHSA-pwm5-mwxv-fjrh), [CVE-2025-10749](https://www.cve.org/CVERecord?id=CVE-2025-10749))
 * **Security:** Bump `minimatch` from 4.0.7 to 4.0.8 (props [@dependabot](https://github.com/apps/dependabot) via [#253](https://github.com/10up/windows-azure-storage/pull/253)).
 * **Changed:** Bump WordPress "tested up to" version 6.7 (props [@mehidi258](https://github.com/mehidi258), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@hugosolar](https://github.com/hugosolar) via [#259](https://github.com/10up/windows-azure-storage/pull/259)).
 * **Changed:** Bump WordPress "tested up to" version 6.7 (props [@QAharshalkadu](https://github.com/QAharshalkadu), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter) via [#264](https://github.com/10up/windows-azure-storage/pull/264)).
@@ -79,7 +80,7 @@ See Settings->Microsoft Azure for more information.
 == Upgrade Notice ==
 
 = 4.5.2 =
-Upgrade notice
+This is a security release, it is recommended to upgrade immediately.
 
 = 4.4.2 =
 Note that this release bumps the minimum WordPress version from 5.7 to 6.3.
