@@ -7,3 +7,7 @@ vendor/*
 !vendor/psr
 !vendor/ralouphie
 !vendor/symfony
+
+# Cypress error artifacts.
+/tests/cypress/screenshots
+/tests/cypress/videos
