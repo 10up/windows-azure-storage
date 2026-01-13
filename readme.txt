@@ -33,6 +33,28 @@ For multisites or to enforce Azure Blob Storage settings, you can define the fol
 
 See Settings->Microsoft Azure for more information.
 
+== Known Issues ==
+
+= Storage Account Versions =
+Storage accounts can be created via CLI, classic Azure portal, or the new Azure portal,
+with varying results.
+
+If a Storage account is created with the new Azure portal, authentication will fail,
+resulting in the inability to view/add containers or files. Creating a Storage account
+with the Azure CLI should allow the plugin to work with new Storage accounts.
+
+= Responsive Images in WordPress 4.4 =
+Images uploaded to the Azure Storage service will not automatically receive responsive versions.
+Images added through the WordPress Media Loader *should* get automatically converted to responsive
+images when inserted into a post or page.
+We are investigating options for full support of responsive images in the plugin.
+
+== Frequently Asked Questions ==
+
+= Where do I report security bugs found in this plugin? =
+
+Please report security bugs found in the source code of the Microsoft Azure Storage for WordPress plugin through the [Patchstack Vulnerability Disclosure  Program](https://patchstack.com/database/vdp/20a3e125-3a29-4f58-afaf-c282fe713964).  The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
+
 == Changelog ==
 
 = 4.5.2 - 2025-10-29 =
@@ -95,19 +117,3 @@ Note that this version bumps the minimum WordPress version from 4.0 to 5.7 and t
 = 3.0.0 =
 This release features several security fixes and enhancements.
 It is highly recommended that all users upgrade immediately.
-
-== Known Issues ==
-
-= Storage Account Versions =
-Storage accounts can be created via CLI, classic Azure portal, or the new Azure portal,
-with varying results.
-
-If a Storage account is created with the new Azure portal, authentication will fail,
-resulting in the inability to view/add containers or files. Creating a Storage account
-with the Azure CLI should allow the plugin to work with new Storage accounts.
-
-= Responsive Images in WordPress 4.4 =
-Images uploaded to the Azure Storage service will not automatically receive responsive versions.
-Images added through the WordPress Media Loader *should* get automatically converted to responsive
-images when inserted into a post or page.
-We are investigating options for full support of responsive images in the plugin.
